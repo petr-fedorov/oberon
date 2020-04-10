@@ -1,0 +1,16 @@
+digraph G {
+ rankdir=TB;
+ size="10!";
+ node [shape=doublecircle]; Done;
+ node [shape=circle];
+ New [style="invis"; shape="point"];
+ New -> Received;
+ Received -> Open [label = "1. Placed"; weight=1; fontsize=12];
+ Received -> Open [label = "2. Partially Filled"; fontsize=12];
+ Received -> Done [label = "3. Filled"; fontsize=12];
+ Received -> Done [label = "4. Cancelled"; fontsize=12];
+ Open -> Open [label = "5. Partially Filled\n 8. Volume Amended"; fontsize=12];
+ Open -> Done [label = "6. Filled"; weight=2; fontsize=12];
+ Open -> Done [label = "7. Cancelled"; weight=2; fontsize=12];
+ Open -> Received [label = "9. Price Amended"; fontsize=12];
+}

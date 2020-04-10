@@ -1,0 +1,729 @@
+---
+title: "Order book events reconstruction from empirical data"
+subtitle: A preliminary draft
+author: "Petr Fedorov"
+date: "`r Sys.Date()`"
+header-includes: 
+output:
+  bookdown::gitbook:
+    number_sections: TRUE
+    figure_captions: TRUE
+bibliography: oberon.bib    
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(scipen = 999, digits = 6, digits.secs=6)
+library(data.table)
+library(huxtable)
+library(magrittr)
+library(tibble)
+library(ggplot2)
+library(gridExtra)
+library(latex2exp)
+load("oberon.Rdata")
+
+#futile.logger::flog.threshold(futile.logger::WARN, 'obadiah')
+
+```
+
+
+
+
+ 
+# Introduction{#index}
+
+
+## Continous-time double auction and LOB
+
+
+Today, most liquid markets – including stocks, futures, and foreign exchange – are electronic, and adopt a continuous-time double auction mechanism using a limit order book (LOB), in which a transaction occurs whenever a buyer and a seller agree on a price[@bouchaud_trades_2018]. Cryptocurrenices are not exception. 
+
+The mechanics of the countinous double auction or LOB trading may be briefly described as follows: 
+
+1. Traders submit *limit orders* and *market* orders 
+2. *Market* orders are [matched](https://www.investopedia.com/terms/m/matchingorders.asp) with *limit orders*  and executed to produce *trades*.
+3. Unmatched amounts of *limit orders* reside in LOB's queues until matched with another *market* order or cancelled by the participant who submitted it.
+
+Market orders are also often called *takers* (of liquidity) while limit orders sitting in queues are called *makers* (of liquidity).
+
+Note that not all matched orders are necessarily executed to produce trades. Due to so called self-match or self-trade prevention rules the matched orders may be cancelled instead. See for example [CME Globex Self-Match Prevention](https://www.cmegroup.com/globex/trade-on-cme-globex/self-match-faq.html) or [Coinbase Markets Trading Rules 2.4 Self-trade prevention](https://www.coinbase.com/legal/trading_rules).
+
+Thus in order to reconstruct the dynamics of the trading process and order book one needs  information about submitted limit and market orders as well as about the trades produced. As we will see below this information is not always provided by exchanges fully.
+
+
+## Available data sets
+
+Most of data sets containing information about orders and trades consist of two separate loosely coupled files: a **trades** file recording  trades and an **orders** file recording limit and sometimes market order placements, changes and cancellations. Loosely coupled in this context means that records in **trades** file do not always have clearly identifiable corresponding records in **orders** file as one would expect since by definition every trade shoud change some limit order. A matching or *coupling* procedure is required in order to establish the link between the **trades** and **orders** files in order to
+
+* Distinguish between limit order changes due to cancellation and market order execution
+* Calculate sizes of submitted market orders
+
+and, overall, to achieve the ultimate goal - to perform a complete order book reconstruction at every moment of time.
+
+A recently published book [@abergel_limit_2016] uses the [Thomson Reuters Tick History (TRTH)](https://www.refinitiv.com/en/financial-data/market-data/tick-history) database tells us that
+
+> Because one cannot distinguish market orders from cancellations just by observing changes in the limit order book (the “event” file), and since, the timestamps of the “trade” and “event” files are asynchronous, we use a matching procedure to reconstruct the order book events.
+
+The reported matching rate of the above procedure is about 85% for CAC 40 stocks and as a byproduct the procedure outputs the sign of each matched trade, that is whether it is a buyer or a seller initiated trade. Note that TRTH data set does not even provide information about trade direction, it has to be deduced!
+
+The description of similar issues we find in [@hautsch_modelling_2004]:
+
+> A typical problem occurs when trades and quotes are recorded in separate trade and quote databases, like, for example, in the Trade and Quote (TAQ) database released by the NYSE. In this case, it is not directly identifiable whether a quote which has been posted some seconds before a transaction was already valid at the corresponding trade.
+
+[Websocket API v2](https://www.bitstamp.net/websocket/v2/) of the cryptocurrency exchange Bitstamp gives access to the following information for every instrument traded:
+
+ * **Live ticker** channel - information about trades. Unique ids of participating limit and market order are provided for every trade,
+ * **Live orders** channel - information about limit and market orders (all order creation, change and deletion events are reported).
+
+As we will see later, events in these channels are not always sent in correct order. Sometimes some events appears to be ommitted. Timestamps in Live tickers and Live orders channels are not synchronized: market order, changes of limit orders and of market order itself caused by the execution of the market order, trades produced - all may have different timestamps. Substantial amount of orders which appears to be matched are not executed due to [self-trade prevention](https://www.reddit.com/r/Bitstamp/comments/bbvut2/bitstamp_api_behaviour/?utm_source=share&utm_medium=web2x) policy of Bitstamp.
+ 
+
+Similarly [Websocket API version 2.0]() of the cryptocurrency exchange Bitfinex have the following channels (for every instrument traded):
+
+ * **Trades** channel - information about trades. Ids of participating limit and market orders are not provided,
+ * **Raw book** channel - provides information about 100 best bid and 100 ask limit orders. Market orders are not reported at all. A limit order is reported as deleted when it falls beyond 100+ best limit orders and as re-created (i.e. with the same id) when it returns back. What has happened to it between these moments is not known: Bitfinex allows traders to change the price and volume of submitted limit order, so the order could be changed or just cancelled. 
+ 
+As well as at Bitstamp, records in Trades and Raw book channels are not synchronized.
+
+It should be clear from the above that substantial effort is required to reconstruct the true dynamics of order submission, matching and execution.
+
+# Reconstruction algorithm
+
+First we need to define what we reconstruct. Surprisingly, the concept of order and operations of a continous double auction are rather complicated things if one attempts to define them rigorously! Consider, for example,  a definition given in the book [@bouchaud_trades_2018]:
+
+
+> An order is a commitment, declared at a given submission time, to buy or sell a given volume of an asset at no worse than a given price. An order $x$ is thus described by four attributes:
+>
+> * its sign (or direction) $\epsilon = \pm 1$, ($\epsilon_x = +1$ for buy orders; $\epsilon_x = −1$ for sell orders),
+  * its price $p_x$ ,
+  * its volume $v_x > 0$, and
+  * its submission time $t_x$.
+>  
+> We introduce the succinct notation $x := (\epsilon_x , p_x ,v_x, t_x )$.
+
+[@bouchaud_trades_2018] then continues with a description of what they call The Trade-Matching Algorithm:
+
+> Whenever a trader submits a buy (respectively, sell) order $x$, an LOB’s *trade-matching algorithm* checks whether it is possible for $x$ to match to existing sell (respectively,buy)orders $y$ such that $p_y \leq p_x$ (respectively, $p_y \geq p_x$). If so, the matching occurs immediately and the relevant traders perform a trade for the agreed amount at the agreed price. Any portion of $x$ that does not match instead becomes active at the price $p_x$, and it remains active until either it matches to an incoming sell (respectively, buy) order or it is cancelled. Cancellation usually occurs when the owner of an order no longer wishes to offer a trade at the stated price.
+
+It might not be obvious, but above definition and description are incomplete:
+
+* According to the definition, an order $x$ seems to be an immutable entity. But according to the Trade-Matching algorithm, a portion of $x$ may become 'active' and it is not clear how the quality of being 'active' is different from the mere existence of submitted orders,
+
+* At what price the trade is performed - $p_x$ or $p_y$ - is not explicitly stated,
+
+* It is not stated what will happen if $v_x \leq v_y$, etc. 
+
+Below we propose stricter definitions that address these and the other similar issues while staying as close as possible to [@bouchaud_trades_2018].
+
+## Basic Tools
+
+
+```{definition Support, name="Support", label=support}
+Suppose $X \subset \mathbb{R}$ and $f : X \mapsto \mathbb{R}$. The support of $f$ is defined as the closure of the subset of $X$ where $f$ is non-zero: 
+  $$
+    \text{supp}(f) = \overline{\{x : x \in X, f(x) \neq 0 \}}
+  $$
+
+```
+
+
+```{definition Piecewise Constant Function, name="Piecewise Constant Function", label=piecewise-constant}
+A function $f : \mathbb{R} \mapsto \mathbb{R}$ is called a piecewise constant function if it can be written as 
+$$ 
+  f(t) = \sum_{T_k \in \mathcal{T} } f_k \mathbf{1}_{T_k}(t)
+$$
+where  
+
+ a. $\mathcal{T} = \{T_k\}_{k=1}^{K}$ is a set of proper intervals of $\mathbb{R}$ with endpoints $t_{k,1} \in \mathbb{R}$, $t_{k,2} \in \mathbb{R} \cup \{+\infty\}$, $t_{k,1} < t_{k,2}$ such that $\forall k_1 \neq k_2 : T_{k_1} \cap T_{k_2} = \emptyset$, 
+ 
+ a. $\mathbf{1}_{T_k}(\cdot)$ is an indicator function of interval $T_k$: 
+$$
+\mathbf{1}_{T_k}(t) = \begin{cases} 1, & t \in T_k \\ 0, & t \not \in T_k  \end{cases}
+$$
+ a. $f_k \in \mathbb{R}$ are constants called *function values* such that $\forall k_1 \neq k_2 : f_{k_1} \neq f_{k_2}$
+```
+
+All piecewise constant functions we use hereafter must also have either left or right (or both) limits at every point of their domains. So in our definition of piecewise constant function set $\mathcal{T}$ does not include  degenerate intervals. 
+
+
+```{definition Volume Function, name="Volume Function", label="volume-function"}
+A function $v : \mathbb{R} \mapsto \mathbb{R}_{\geq 0}$ or $v : \mathbb{R} \mapsto \mathbb{R}_{\leq 0}$ such that
+
+ a. $v(\cdot)$ is a piecewise constant function as defined by \@ref(def:piecewise-constant) with values in the set $\{ n v_0 : n \in \mathbb{Z}\setminus \{0\} \}$ where $v_0$ is a constant called *lot size*,
+ b. $v(\cdot)$ is either càdlàg or càglàd at each point of discontinuity 
+ 
+is called a *volume function*.
+```
+
+
+```{definition Filled Volume, name="Filled Volume", label=fill-volume}
+Suppose a volume function $v(t)$ as defined by \@ref(def:volume-function) is given. The function 
+  $$
+  f_{v}(t) = \lim_{t^{'} \uparrow t} v(t^{'}) - v(t)
+  $$ is called a *filled volume* at time $t$.  
+
+```
+
+
+```{definition Amended Volume, name="Amended Volume", label=amended-volume}
+Suppose a volume function $v(t)$ as defined by \@ref(def:volume-function) is given. The function 
+  $$
+  a_{v}(t) = v(t) - \lim_{t^{'} \downarrow t} v(t^{'})
+$$ is called an *amended* volume at time $t$.
+
+```
+
+Note that $\text{supp}(f_{v})$ is a set of càdlàg discontinuity points of $v(t)$ while $\text{supp}(a_{v})$ is a set of càglàd discontinuity points of $v(t)$.
+
+
+```{r Sample Order Table Data, include=FALSE}
+time_0 <- as.POSIXct('2020-04-02 13:59:57', origin='1970-01-01 00:00:00')
+sot <- tribble( ~i, ~n,   ~t,   ~f, ~e,   ~p,   ~v,
+                1,   1,	  0.3,   0,	 1,	50,	200,
+                1,   2,	  3.1,   1,	 0,	50,	200,
+                2,   1,	  1.1,   0,	 1,	80,  -200,
+                2,   2,	  1.9,   0,	 1,	80,  -100,
+                2,   3,	  4.3,   0,	 0,	80,  -100,
+                3,   1,	  2.5,   0,	 1,	25,  500,
+                3,   2,	  3.1,   1,	 0,	25,  500,
+                4,   1,	  3.1,   0,	 1,	25,  -500,
+                4,   2,	  5.0,   1,	 0,	25,	-500,
+                5,   1,	  3.7,   0,	 1,	50,  -400,
+                5,   2,	  5.0,   1,	 1,	50,  -100,
+                5,   3,	  5.4,   1,	 0,	50,  -100,
+                6,   1,	  4.8,   0,	 1,	10,	500,
+                6,   2,	  5.4,   0,	 1,	60,	400,)
+setDT(sot)
+sot[ ,"volume.decrease" := nafill(shift(v,1),fill=0) - nafill(xor(1,xor(e,1)*f)*v,fill=0), by=i]
+
+sot.intervals <- sot[,
+                   .(t_1=t,
+                     t_2=shift(t, fill=max(sot$t) + 0.4, type="lead"), # infinity is emulated by max(sot$t) + 0.2                            
+                     n=n,
+                     e,
+                     p.p = nafill(shift(p,type="lag"),fill=0),
+                     p, 
+                     p.v=nafill(shift(v,type="lag"), fill=0), 
+                     v,
+                     f,
+                     volume.decrease),
+                   by=i ]
+
+
+sample.colours <- c('1'='#66bd63', # 'Buy order 1'
+             '2'='#f46d43', # 'Sell order 2'
+             '3'='#1a9850', # Buy order 3'
+             '4'='#d73027', # 'Sell order 4'
+             '5'='#a50026', # Sell order 5'
+             '6'='#006837' # 'Buy order 6'
+             )
+sample.labels <- c('1'='Order 1 (buy)',
+                                '2'='Order 2 (sell)',
+                                '3'='Order 3 (buy)',
+                                '4'='Order 4 (sell)',
+                                '5'='Order 5 (sell)',
+                                '6'='Order 6 (buy)')
+
+
+
+```
+
+
+
+```{r, eval=FALSE}
+as_hux(sot[order(t),
+           .( `#`=.I,
+              `\\(i\\)`=i,
+              `\\(n\\)`=n,
+              `\\(t^i_n\\)`=format(time_0 + t, "%H:%M:%OS1"),
+              `\\(e^i_n\\)`=e,
+              `\\(p^i_n\\)`=p,
+              `\\(v^i_n\\)`=v,
+              `\\(f^i_n\\)`=f,
+              volume.decrease, 
+               `\\(\\Delta v^i_n \\)`=fifelse(v*volume.decrease > 0 & n > 1, volume.decrease, NA_real_)
+                 )]) %>%
+  add_colnames() %>%
+  set_align(everywhere, c(1:4), 'center') %>%
+  set_align(1, c(5:8), 'right') %>%
+  set_right_border(everywhere,1, 1) %>%
+  set_caption('(#tab:example-order-table) The sample order table contains information about six limit orders, three market orders and six trades.') %>%
+  set_caption_pos("topleft") %>%
+  set_width(0.9) %>%
+  set_position("left")
+
+```
+
+
+
+```{definition Price Function, name="Price Function", label="price-function"}
+A function $p : \mathbb{R} \mapsto \mathbb{R}_{\geq 0}$ such that
+
+ a. $p(\cdot)$ is a piecewise constant function as defined by \@ref(def:piecewise-constant) with values in the set $\{ n \vartheta : n \in \mathbb{Z}\setminus \{0\} \}$ where $\vartheta$ is a constant called *tick size*
+ b. $p(\cdot)$ is a càglàd at each point of discontinuity 
+ 
+is called a *price function*.
+```
+
+The lot size $v_0$ and tick size $\vartheta$ are collectively called *resolution parameters*.
+
+## Order and Trade
+
+
+Hereafter is assumed that a single asset is traded and a single currency is used. 
+
+
+```{definition Order, name="Order", label=order}
+Suppose that $i \in \mathbb{N}$ is an *unique order identification*, $v^i(t)$ is a volume function as defined by \@ref(def:volume-function), $p^i(t)$ is a price function as defined by \@ref(def:price-function) such that $$\text{supp}\,(v^i) = \text{supp}\,(p^i)$$ Then a vector-valued function $o^i : \mathbb{R} \mapsto \mathbb{R}_{>0} \times \mathbb{R}$ representing a commitment to buy or sell a given volume $v^i(t)$ of an asset at no worse than a given price $p^i(t)$ at a particular time $t$  with a closed form $$o^i(t) = (p^i(t), v^i(t))$$ is called an *order*. If $\forall t : v^i(t) \in \mathbb{R}_{\leq 0}$ the order is a commitment to *sell* and is also called a *sell order*. If $\forall t : v^i(t) \in \mathbb{R}_{\geq 0}$ the order is a commitment to *buy* and is also called a *buy order*.
+```
+
+It should be clear from the definition above that an order is a [limit order](https://www.investopedia.com/terms/l/limitorder.asp) and without further qualifications (i.e. a market order, a stop order etc), an order always means a limit order. 
+
+Now we can define
+
+```{definition Order Volume, name="Order Volume", label=order-volume}
+The function $v^i(t)$ in definition \@ref(def:order) is called an *order volume*.
+```
+
+
+```{definition Order Price, name="Order Price", label=order-price}
+The function $p^i(t)$ in definition \@ref(def:order) is called an *order price*.
+```
+
+
+
+```{definition Trade, name="Trade", label=trade}
+Suppose an order $o^i(t)$ is given and $\exists t_j : f^i(t_j) \neq 0$. Then a tuple $$(t_j, i,p^i(t_j), f_{v^i}(t_j))$$ is called a *trade*. If $f_{v^i}(t_j) < 0$ or, equivalently, $i$ is a sell order, then the trade is a buy trade. Otherwise it is a sell trade.
+
+```
+
+
+An order can be conveniently represented in the form of a order table defined by \@ref(def:order-table).
+
+
+```{definition Order Table, name="Order Table", label=order-table}
+
+An *order table* is a set of tuples $$\{(i, n, t^i_n,e^i_n, p^i_n, v^i_n,f^i_n)\}_{n=1}^{N^i}$$ called *order events* where
+
+a. $i \in \mathbb{N}$ is an *unique order identification*,
+a. $n \in \{1, \ldots, N^i\}$ is an *order event number*, 
+b. $t^i_n \in \mathbb{R}_{>0}$ is an *event timestamp*, $\forall n: t^i_n < t^i_{n+1}$, 
+b. $e^i_n \in \{0, 1\}$ is a *event type*; $e^i_n = 1$ is an *activation* event, $e^i_n = 0$ is an *deactivation* event,
+b. $e^i_1 = 1$ and $\forall n \in \{2, \ldots, N^i\} : e^i_n = 0 \implies e^i_{n-1} = 1$,
+b. $p_n^i \in \mathbb{R}_{>0}$ is an *order price*,
+b. $v_n^i \in \mathbb{R}$ is an *order volume*,
+b. $\forall n_1, n_2: \text{sgn}(v_{n_1}^i) = \text{sgn}(v_{n_2}^i)$,
+b. $f^i_n \in \{0, 1\}$ is a *fill indicator*; $f^i_n = 1$ indicates that the volume is changed due to fill.
+```
+
+We say that an order $i$ event $n$ with $e^i_n = 1$ is an *activation* event in a sense that after the event $n$  order $i$ is *active*, i.e. represents a commitment to buy or sell given volume $v_n^i$ of an asset at no worse than  a price $p^i_n$. If $b^i_n = 1$ then the commitment is valid at $t_n^i$ and afterwards. If $b^i_n = 0$ then the commitment is valid after $t_n^i$. 
+
+Similarly, we say that an event $m$ with $e^i_m = 0$  is a *deactivation* event in a sense that it indicates the last moment when the commitment to buy or sell $v^i_m$ at no worse than $p^i_m$ is still valid. If $b^i_m = 1$ then the commitment is valid at $t_m^i$ and not valid afterwards. If $b^i_m = 0$ then the commitment is valid before $t_m^i$ and not valid at $t_m^i$ and afterwards. 
+
+
+
+```{theorem Order Table Equivalence,label=equivalence}
+There is one-to-one correspondance between orders as defined by \@ref(def:order) and order tables as defined by \@ref(def:order-table).
+
+```
+
+
+## Limit Order Book (LOB)
+
+Typically the term [order book](https://www.investopedia.com/terms/o/order-book.asp) refers to an electronic list of buy and sell orders for a specific security or financial instrument organized by price level. An order book lists the number of shares being bid on or offered at each price point, or market depth. Order books are used by almost every exchange to list the orders for different securities. 
+
+
+```{definition Order Book, name="Order Book", label=order-book}
+A set of orders with common resolution parameters $v_0$ and $\vartheta$ $\mathcal{O} = \{o^i(t)\}_i$ where $o^i(t)$ is defined by \@ref(def:order) is called an *order book*. A (possibly empty) subset $\mathcal{B} =\{o^b(t)\}_{v_k^b > 0} \subset \mathcal{O}$ of buy orders is called *bids* and  a (possibly empty) subset $\mathcal{A} =\{o^a(t)\}_{v_k^a < 0} \subset \mathcal{O}$ of sell orders is called *asks*.
+```
+
+From definition of an order \@ref(def:order) follows that $\mathcal{O} = \mathcal{A} \cup \mathcal{B}$ and $\mathcal{A} \cap \mathcal{B} = \emptyset$.
+
+
+```{definition Best Bid Price, name="Best Bid Price", label=best-bid-price}
+Suppose an order book $\mathcal{O}$ is given.  The function $b(t)$ defined as:
+  $$
+  b_{\mathcal{O}}(t) = \begin{cases} \max_{o^b(t) \in \mathcal{B}} p^b(t), & \text{ if } \mathcal{B} \neq \emptyset \\0, & \text{ otherwise }  \end{cases}
+  $$ is called *best bid price*.
+```
+
+
+```{definition Best Ask Price, name="Best Ask Price", label=best-ask-price}
+Suppose an order book $\mathcal{O}$ is given. The function $a(t)$ defined as:
+  $$
+  a_{\mathcal{O}}(t) = \begin{cases} \min_{o^a(t) \in \mathcal{A}} p^a(t) & \text{ if } \mathcal{A} \neq \emptyset \\ +\infty, & \text{ otherwise } \end{cases}
+  $$ is called *best ask price*
+```
+
+
+```{definition Spread, name="Spread", label=spread}
+Suppose an order book $\mathcal{O}$ is given and $a_{\mathcal{O}}(t)$ and $b_{\mathcal{O}}(t)$ are its best ask price and best bid price functions as defined by \@ref(def:best-ask-price) and \@ref(def:best-bid-price) respectively. Then the function $$
+  s_{\mathcal{O}}(t) = a_{\mathcal{O}}(t) -  b_{\mathcal{O}}(t) 
+  $$ is called *spread*.
+```
+
+
+```{definition Limit Order Book, name="Limit Order Book", label=lob}
+Suppose an order book $\mathcal{L}$ as defined by \@ref(def:order-book) is given.  Then $\mathcal{L}$ is called a *Limit Order Book (LOB)* if its spread function as defined by \@ref(def:spread) is always positive:
+$$ 
+  \forall t: s_{\mathcal{L}}(t) > 0
+$$
+```
+
+
+
+A [market order](https://www.investopedia.com/terms/m/marketorder.asp) is a request by an investor to buy or sell a security at the best available price at the time of order placement. The request is usually made through a broker or brokerage service and is ultimately executed by an exchange that maintains an order book.  Clearly, a market order cause an exchange's order book to be updated so market orders are modeled as *changes* of an order book. 
+
+
+```{definition Market Buy Order, name="Market Buy Order", label=market-buy-order}
+Suppose a Limit Order Book $\mathcal{L}$ is given and $\mathcal{A} =\{o^a(t)\}_{v_k^a < 0} \subset \mathcal{L}$ as defined by \@ref(def:order) and \@ref(def:lob). Suppose that at time $t_j$ $$\sum_{o^a(t) \in \mathcal{A} } f^a(t_j) < 0 $$ Then it is said that a *market buy order* is placed and executed at time $t_j$ for $\sum_{o^a(t) \in \mathcal{A} } |f^a(t_j)p^a(t_j)|$ units of currency.  
+
+```
+
+
+```{definition Market Sell Order, name="Market Sell Order", label=market-sell-order}
+Suppose a Limit Order Book $\mathcal{L}$ is given and $\mathcal{B} =\{o^b(t)\}_{v_k^b > 0} \subset \mathcal{L}$ as defined by \@ref(def:order) and \@ref(def:lob). Suppose that at time $t_j$ $$\sum_{o^b(t) \in \mathcal{B} } f^b(t_j) > 0 $$ Then it is said that a *market sell order* is placed and executed at time $t_j$ for $\sum_{o^b(t) \in \mathcal{B} } f^a(t_j)$ units of asset.  
+
+```
+
+
+
+## Example of LOB
+
+To make the above definitions intuitively clear, let's consider an example. Table \@ref(tab:example-order-table) contains a consolidated order table for six limit orders and figure \@ref(fig:order-life-cycle) shows all possible ways of processing an order by an exchange (though not every exchange supports all operations shown).
+
+```{r order-life-cycle, echo=FALSE, fig.cap="All possible ways of processing an order by an exchange.", fig.align="center"}
+knitr::include_graphics("order-life-cycle.png")
+```
+
+
+
+```{r Sample Order Table Print, echo=FALSE}
+as_hux(sot[order(t),
+           .( `#`=.I,
+              `\\(i\\)`=sprintf("%010i", i),
+              `\\(n\\)`=n,
+              `\\(t^i_n\\)`=format(time_0 + t, "%H:%M:%OS1"),
+              `\\(e^i_n\\)`=e,
+              `\\(p^i_n\\)`=p,
+              `\\(v^i_n\\)`=v,
+              `\\(f^i_n\\)`=f,
+               `\\(\\Delta v^i_n \\)`=fifelse(v*volume.decrease > 0 & n > 1, volume.decrease, NA_real_)
+                 )]) %>%
+  add_colnames() %>%
+  set_width(0.9) %>%
+  set_align(everywhere, c(1:4), 'center') %>%
+  set_align(1, c(5:9), 'right') %>%
+  set_right_border(everywhere,1, 1) %>%
+  set_left_border(everywhere,9, 1) %>%
+  set_caption('(#tab:example-order-table) The sample order table contains information about six limit orders, three market orders and five trades.') %>%
+  set_caption_pos("topleft") %>%
+  set_position("left")
+
+
+
+```
+
+
+Figure \@ref(fig:example-order-book) shows price and volume functions for six limit orders in table \@ref(tab:example-order-table).
+
+```{r example-order-book, fig.height= 7, echo=FALSE, fig.cap="Price and Volume functions for the limit orders in table \\@ref(tab:example-order-table)"}
+p <- ggplot(mapping=aes(x=t_1, y=p, colour=as.character(i),   group=as.character(i))) + 
+  geom_segment(aes(xend=t_2,yend=p),
+               sot.intervals[e ==1 ],
+               size=2,
+               show.legend=F
+               ) + 
+  geom_point(data=sot.intervals[e==1 & p != p.p], fill="white", size=4, show.legend=F, shape="circle filled") + 
+  geom_point(data=rbind(sot.intervals[e==0, .(t_1, p=p, i) ],
+                        sot.intervals[e==1 & p != p.p & n > 1, .(t_1, p=p.p, i) ]
+  ),
+                        fill="white", size=4, show.legend=F, shape="circle") +
+  scale_color_manual("", values=sample.colours ) + 
+  scale_x_continuous("", breaks=sot$t, minor_breaks=NULL, labels=NULL) +  
+  scale_y_continuous("Price", breaks=c(0, unique(sot$p)), minor_breaks=NULL, limits=c(0,80))+
+  theme(legend.position = "none") 
+
+v <- ggplot(mapping=aes(x=t, y=v, colour=as.character(i),  group=as.character(i))) + 
+  geom_segment(aes(xend=t_2,yend=v),
+               sot.intervals[e ==1, .(t = t_1, t_2, v, e, i) ],
+               size=2
+               ) + 
+  geom_point(data=rbind(sot.intervals[e==1 & v != p.v & f == 0,  .(t = t_1, v, e, i) ],
+                        sot.intervals[f == 1,.(t = t_1, v=p.v, e, i)]),
+             fill="white", size=4, show.legend=F, shape="circle filled") +
+  geom_point(data=rbind(sot.intervals[e==1 & v != p.v & f == 1,  .(t = t_1, v, e, i)],
+                        sot.intervals[e==1 & v != p.v & f == 0 & n > 1,  .(t = t_1, v=p.v, e, i)]),
+             fill="white", size=4, show.legend=F, shape="circle") + 
+  scale_color_manual("", 
+                       values=sample.colours,
+                       labels=sample.labels) +
+  scale_y_continuous("Volume", trans="reverse",
+                     breaks=c(0, unique(sot$v)),
+                     minor_breaks=NULL
+                     ) + 
+  scale_x_continuous("Time", breaks=sot$t,
+                     labels=format(time_0 + sot$t, "%H:%M:%OS1"),
+                     minor_breaks=NULL) +
+  scale_shape_manual("Interval", values=c("closed"="circle", "open"="circle filled")) +
+  theme(legend.position = "bottom", axis.text.x = element_text(angle = 30, hjust=1))
+grid.arrange(p,v, heights=c(3,4))
+
+```
+It can bee seen from figure \@ref(fig:example-order-book) that:
+
+  * At `r format(time_0 + sort(unique(sot$t))[1], "%H:%M:%OS1")` order 1 to buy 200 units of the asset at price no worse than 50 per unit has been placed,
+  * At `r format(time_0 + sort(unique(sot$t))[2], "%H:%M:%OS1")` order 2 to sell 200 units of the asset at price no worse than 80 per unit has been placed,
+  * At `r format(time_0 + sort(unique(sot$t))[3], "%H:%M:%OS1")` the volume of order 2 has been amended (reduced by half) by the trader who placed the order,
+  * At `r format(time_0 + sort(unique(sot$t))[4], "%H:%M:%OS1")` order 3 to buy 500 units of the asset at price no worse than 25 per unit has been placed,
+  * At `r format(time_0 + sort(unique(sot$t))[5], "%H:%M:%OS1")` order 4 to sell 500 units of the asset at price no worse than 25 has been placed. Exactly at the same time, a market order has been placed to sell 700 units of the asset and two  *sell* trades has been  executed: $(\text{`r format(time_0 + sort(unique(sot$t))[4], "%H:%M:%OS1")`}, 1, 50, 200)$ and $(\text{`r format(time_0 + sort(unique(sot$t))[4], "%H:%M:%OS1")`}, 3, 25, 500)$. Since the market order and order 4 have been placed at exactly the same time, it is very likely that order 4 has actually been placed to sell 1200 units, partially executed and the reminder (i.e. 500 units) has landed in LOB and there were no market order. Nevertheless fundamentally it is still a combination of a market order and a limit order. 
+* At `r format(time_0 + sort(unique(sot$t))[6], "%H:%M:%OS1")` order 5 to sell 400 units of the asset at price no worse than 50 per unit has been placed,
+* At `r format(time_0 + sort(unique(sot$t))[7], "%H:%M:%OS1")` order 2 has been cancelled,  
+* At `r format(time_0 + sort(unique(sot$t))[8], "%H:%M:%OS1")` order 6 to buy 500 units of the asset at price no worse than 10 per unit has been placed,
+* At `r format(time_0 + sort(unique(sot$t))[9], "%H:%M:%OS1")` a market order to buy the asset for 27500 units of the currency has been placed and two buy trades have been executed: $(\text{`r format(time_0 + sort(unique(sot$t))[9], "%H:%M:%OS1")`}, 4, 25, -500)$ and $(\text{`r format(time_0 + sort(unique(sot$t))[9], "%H:%M:%OS1")`}, 5, 50, -300)$. Alternatively, it could be a limit order to buy 800 units of the asset at price no worser than 50 that was fully executed. 
+* At `r format(time_0 + sort(unique(sot$t))[10], "%H:%M:%OS1")` volume and price of order 6 have been amended. Its volume has been reduced by 100 units of the asset and its price increased to 60. At the same time a market buy order has been placed for 5000 units of the currency and single trade has been executed: $(\text{`r format(time_0 + sort(unique(sot$t))[9], "%H:%M:%OS1")`}, 5, 50, -100)$. Most likely the change of price of order 6 has transformed it to a market limit order which was partially executed and the reminder was placed in the order book again. 
+
+
+
+# Results
+
+## Fragments of data streams
+
+In the tables below all order events and trades are shown in the order in which they were received from an exchange. 
+
+### Bitstamp Orders
+
+
+```{r Sample Bitstamp Order Stream, eval=TRUE, echo=FALSE}
+
+as_hux(stamp.q.1[order(local_timestamp), # i.e. in the order events were received from Bitstamp
+                    .(`#`=n,
+                    `\\(i\\)`=as.character(order_id),
+                    `\\(n\\)`=k,
+                    `\\(t^i_n\\)`=format(microtimestamp,format="%H:%M:%OS3"),
+                    `\\(e^i_n\\)`=fifelse(event == 'D',0, 1),
+                    `\\(p^i_n\\)`=price,
+                    `\\(v^i_n\\)`=fifelse(order_type=="buy", 1,-1)*amount,
+                    `\\(f^i_n\\)`=NA,
+                    `\\(\\Delta v^i_n \\)`=fifelse(volume.decrease > 0, sprintf("%.4f", fifelse(order_type=="buy", 1,-1)*volume.decrease), ""))
+                    ], 
+       scientific=F) %>%
+  add_colnames() %>%
+  set_align(1, c(2,4), 'center') %>%
+  set_align(everywhere, c(1,3, 5:9), 'right') %>%
+  set_number_format(row=everywhere, col=6:7,value="%.2f") %>%
+  set_number_format(row=everywhere, col=9,value="%.4f") %>%
+  set_left_border(everywhere,9, 1) %>%
+  set_right_border(everywhere,1, 1) %>%
+  set_na_string(everywhere, everywhere, "NA") %>%
+  set_caption('(#tab:stamp-quote-frag) A fragment of ETHUSD Order Stream generated by Bitstamp during 1 second. To facilitate a comparison with Trades Stream \\(\\Delta v^i_k \\) is calculated only for those events where volume decreased. Bitstamp sends events for limit and market orders in a jumble and does not send \\(f^i_n\\).') %>%
+  set_caption_pos("topleft")
+  
+
+```
+
+### Bitstamp Trades 
+
+```{r Sample Bitstamp Trades Stream, eval=TRUE, echo=FALSE}
+
+as_hux(stamp.t.1[order(local_timestamp),.(`#`=n,
+                    `\\(t_j\\)`=trade_timestamp,
+                    `\\(i^r_j\\)`=as.character(ifelse(trade_type =="sell", sell_order_id, buy_order_id)),
+                    `\\(p_j\\)`=price,
+                    `\\(f_{v^{i^r_j}}\\)`=ifelse(trade_type =="buy", -1, 1)*amount,
+                     `\\(i^a_j\\)`=as.character(ifelse(trade_type =="buy", sell_order_id, buy_order_id)))
+                    ], 
+       scientific=F) %>%
+  add_colnames() %>%
+  set_align(1, c(2:3,6), 'center') %>%
+  set_align(1, c(1,4:5), 'right') %>%
+  set_escape_contents(2,everywhere,value=TRUE) %>%
+  set_number_format(row=everywhere, col=4,value="%.2f") %>%
+  set_number_format(row=everywhere, col=5,value="%.4f") %>%
+  set_left_border(everywhere,6, 1) %>%
+  set_right_border(everywhere,1, 1) %>%
+  set_na_string(everywhere, everywhere, "NA") %>%
+  set_caption('(#tab:stamp-trade-frag) A fragment of ETHUSD Trades Stream generated by Bitstamp during 1 second. For each trade Bitstamp provides unique identifications of a resting order \\(i^r_j\\) and an aggressing order \\(i^a_j\\).') %>%
+  set_caption_pos("topleft")
+  
+
+```
+
+
+### Bitfinex Orders
+
+
+
+```{r Sample Bitfinex Order Stream, eval=TRUE, echo=FALSE}
+
+as_hux(finex.q.1[order(local_timestamp),.(`#`=.I,
+                    `\\(i\\)`=as.character(order_id),                                          
+                    `\\(n\\)`=n,
+                    `\\(t^i_n\\)`=format(exchange_timestamp,format="%H:%M:%OS3"),
+                    `\\(e^i_n\\)`=event,                    
+                    `\\(p^i_n\\)`=price,
+                    `\\(v^i_n\\)`=amount,
+                    `\\(f^i_n\\)`=NA,
+                    `\\(\\Delta v^i_n \\)`=fifelse(volume.decrease > 0, sprintf("%.5f",order.sign*volume.decrease), ""))
+                    ], 
+       scientific=F) %>%
+  add_colnames() %>%
+  set_align(1, c(2,4), 'center') %>%
+  set_align(everywhere, c(1,3,5:9), 'right') %>%
+  set_number_format(row=everywhere, col=6:7,value="%.5f") %>%
+  set_left_border(everywhere,9, 1) %>%
+  set_right_border(everywhere,1, 1) %>%
+  set_na_string(everywhere, everywhere, "NA") %>%
+  set_caption('(#tab:finex-quote-frag) A fragment of ETHUSD Order Stream generated by Bitfinex during 1 second. To facilitate a comparison with Trades Stream \\(\\Delta v^i_k \\) is calculated only for those events where volume decreased. Since Bitfinex does not report the remaining order amount in an order\'s deactivation event, the amount is assumed to be zero for \\(\\Delta v^i_k \\) calculation.') %>%
+  set_caption_pos("topleft")
+  
+
+```
+
+### Bitfinex Trades
+
+```{r Sample Bitfinex Trades Stream, eval=TRUE, echo=FALSE}
+
+as_hux(finex.t.1[order(local_timestamp),.(`#`=.I,
+                    `\\(t_j\\)`=exchange_timestamp,
+                    `\\(i^r_j\\)`=NA_real_,
+                    `\\(p_j\\)`=price,
+                    `\\(v_j\\)`=d*qty)
+                    ], 
+       scientific=F) %>%
+  add_colnames() %>%
+  set_width(0.75) %>%
+  set_align(1, 2:3, 'center') %>%
+  set_align(1, c(1,4:5), 'right') %>%
+  set_number_format(row=everywhere, col=4,value="%.5f") %>%
+  set_number_format(row=everywhere, col=5,value="%.5f") %>%
+  set_right_border(everywhere,1, 1) %>%
+  set_na_string(everywhere, everywhere, "NA") %>%
+  set_caption('(#tab:finex-trade-frag) A fragment of ETHUSD Trades Stream generated by Bitfinex during 1 second. Unique identifications of orders matched to produce trade is not provided.') %>%
+  set_caption_pos("topleft")
+  
+
+```
+
+
+
+
+# Discussion
+
+TBD
+
+
+
+
+
+# References
+
+
+
+
+
+```{r Stub vars for sql chunks, include=FALSE, echo=FALSE}
+con <- NULL
+bitstamp.quotes <- NULL
+bitstamp.trades <- NULL
+bitfinex.quotes <- NULL
+bitfinex.trades <- NULL
+coinbase.quotes <- NULL
+coinbase.trades <- NULL
+
+```
+
+
+
+
+```{sql sql - bitstamp.quotes, eval=FALSE, echo=FALSE, connection=con, output.var=bitstamp.quotes}
+select * from bitstamp.transient_live_orders 
+where era between '2020-03-25 11:27:12.829+03' and '2020-03-26 18:50:59.555+03'
+order by microtimestamp;
+
+
+```
+
+
+```{sql sql - bitstamp.trades, eval=FALSE, echo=FALSE, connection=con, output.var=bitstamp.trades}
+select * from bitstamp.transient_live_trades
+where trade_timestamp between '2020-03-25 11:27:12.829+03' and '2020-03-26 18:50:59.555+03' order by trade_timestamp
+
+```
+
+
+
+```{sql sql - bitfinex.quotes, eval=FALSE, echo=FALSE, connection=con, output.var=bitfinex.quotes}
+select * from bitfinex.transient_raw_book_events
+where channel_id = 11230
+order by exchange_timestamp
+
+```
+
+
+
+
+```{sql sql - bitfinex.trades, eval=FALSE, echo=FALSE, connection=con, output.var=bitfinex.trades}
+select * from bitfinex.transient_trades
+where channel_id = 206
+order by exchange_timestamp
+
+```
+
+
+
+```{sql sql - coinbase.quotes, eval=FALSE, echo=FALSE, connection=con, output.var=coinbase.quotes}
+select * 
+from coinbase.full
+where _type != 'match'
+order by _time, _type
+```
+
+```{sql sql - coinbase.trades, eval=FALSE, echo=FALSE, connection=con, output.var=coinbase.trades}
+select * 
+from coinbase.full
+where _type = 'match'
+order by _time, _type
+```
+
+
+
+```{r Load Bitstamp data, eval=FALSE, echo=FALSE,}
+load(file="bitstamp.Rdata")
+setDT(bitstamp.trades)
+setDT(bitstamp.quotes)
+```
+
+```{r Load Bitfinex data, eval=FALSE, echo=FALSE,}
+load(file="bitfinex.Rdata")
+setDT(bitfinex.trades)
+setDT(bitfinex.quotes)
+
+```
+
+
+```{r Prepare oberon.Rdata, eval=FALSE, echo=FALSE,}
+bitstamp.quotes[order(microtimestamp), c("volume.decrease", "k") := .(nafill(shift(amount,1),fill=0) - amount, seq_len(.N)), by=order_id]
+
+stamp.digits <- 4
+
+stamp.q.1 <- bitstamp.quotes[between(microtimestamp,'2020-03-25 12:17:23+03','2020-03-25 12:17:24+03'), .(microtimestamp, order_id, k, price, amount, volume.decrease=round(volume.decrease,stamp.digits), order_type,  event=fifelse(event=='order_deleted', 'D', fifelse(event=='order_created', 'A',  'C') ), local_timestamp, n=.I )]
+
+stamp.t.1 <- bitstamp.trades[between(trade_timestamp,'2020-03-25 12:17:23+03','2020-03-25 12:17:24+03'), .(bitstamp_trade_id, amount=round(amount, stamp.digits), price=round(price, stamp.digits), trade_type, trade_timestamp, buy_order_id, sell_order_id, local_timestamp, n=.I) ]
+
+bitfinex.quotes[order(exchange_timestamp, local_timestamp), c("price", "event","amount", "order.sign") := .(fifelse(price != 0, price, shift(price,1)),fifelse(price == 0, 0,1), fifelse(price==0, NA_real_, amount), fifelse(amount > 0, 1,-1)), by=order_id]
+
+bitfinex.quotes[order(exchange_timestamp, local_timestamp), c("volume.decrease", "n") := .(round(abs(nafill(shift(amount,1),fill=0)) - abs(nafill(amount,fill=0)), finex.digits), seq_len(.N)), by=order_id]
+
+finex.digits <- 5
+
+finex.q.1 <- bitfinex.quotes[between(exchange_timestamp,'2020-03-26 07:01:33+03','2020-03-26 07:01:34+03')][order(local_timestamp), .(exchange_timestamp, order_id, price=round(price, finex.digits), amount=round(amount, finex.digits), event, local_timestamp, order.sign, volume.decrease, n) ]
+
+
+finex.t.1 <- bitfinex.trades[between(exchange_timestamp,'2020-03-26 07:01:33+03','2020-03-26 07:01:34+03')][order(local_timestamp), .(id, qty, price=round(price, finex.digits), exchange_timestamp, trade_id, local_timestamp, n=.I)]
+finex.t.1[, c("qty", "d") := .(round(abs(qty), finex.digits), ifelse(qty > 0, -1, 1))]
+
+save(stamp.q.1, stamp.t.1, finex.q.1, finex.t.1, file="oberon.Rdata", compress=TRUE)
+
+```
