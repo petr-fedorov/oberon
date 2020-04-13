@@ -82,7 +82,7 @@ As we will see later, events in these channels are not always sent in correct or
 Similarly [Websocket API version 2.0]() of the cryptocurrency exchange Bitfinex have the following channels (for every instrument traded):
 
  * **Trades** channel - information about trades. Ids of participating limit and market orders are not provided,
- * **Raw book** channel - provides information about 100 best bid and 100 ask limit orders. Market orders are not reported at all. A limit order is reported as deleted when it falls beyond 100+ best limit orders and as re-created (i.e. with the same id) when it returns back. What has happened to it between these moments is not known: Bitfinex allows traders to change the price and volume of submitted limit order, so the order could be changed or just cancelled. 
+ * **Raw book** channel - provides information about 100 best bid and 100 ask limit orders. Market orders are not reported at all. A limit order is reported as deleted when it falls beyond 100+ best limit orders and as re-created (i.e. with the same id) if it returns back. What happens to the order after it has fallen beyound 100+ is not known: Bitfinex allows traders to change the price and volume of submitted limit order, so the order can be changed, cancelled or stay unchanged. 
  
 As well as at Bitstamp, records in Trades and Raw book channels are not synchronized.
 
@@ -90,7 +90,16 @@ It should be clear from the above that substantial effort is required to reconst
 
 # Reconstruction algorithm
 
-First we need to define what we reconstruct. Surprisingly, the concept of order and operations of a continous double auction are rather complicated things if one attempts to define them rigorously! Consider, for example,  a definition given in the book [@bouchaud_trades_2018]:
+## Overview
+
+Figure \@ref(fig:reconstruction-flowchart) shows a flowchart of the reconstruction algorithm (see [@iso_5807_information_1985] for the meaning of the shapes):
+
+```{r reconstruction-flowchart, echo=FALSE, fig.cap="An overview of the reconstruction algorithm", fig.align="center"}
+knitr::include_graphics("reconstruction.png")
+```
+The content of Order and Trade Streams depends on an exchange.  From these streams we *extract* information in the standard format for an order event as defined by \@ref(def:order-event) and a trade as defined by \@ref(def:trade). This information is *integrated* (i.e. trades and their corresponding order events must be coupled) to produce Order Table as defined by \@ref(def:order-table). The order table may not satisfy constraints of Limit Order Book as defined by \@ref(def:lob), so it needs to be *cleansed* [@rahm_data_2000]. Limit Order Book Stream consists of order events which collectively satisfy constraints of Order Table and Limit Order Book.
+
+Let's start the detailed description of the algoritm from the definition of what we reconstruct. Surprisingly, an order,  a limit order book,  the operations of a continous double auction are rather complicated things if one attempts to define them rigorously. Consider, for example,  a definition given in the recent book [@bouchaud_trades_2018]:
 
 
 > An order is a commitment, declared at a given submission time, to buy or sell a given volume of an asset at no worse than a given price. An order $x$ is thus described by four attributes:
@@ -106,7 +115,7 @@ First we need to define what we reconstruct. Surprisingly, the concept of order 
 
 > Whenever a trader submits a buy (respectively, sell) order $x$, an LOB’s *trade-matching algorithm* checks whether it is possible for $x$ to match to existing sell (respectively,buy)orders $y$ such that $p_y \leq p_x$ (respectively, $p_y \geq p_x$). If so, the matching occurs immediately and the relevant traders perform a trade for the agreed amount at the agreed price. Any portion of $x$ that does not match instead becomes active at the price $p_x$, and it remains active until either it matches to an incoming sell (respectively, buy) order or it is cancelled. Cancellation usually occurs when the owner of an order no longer wishes to offer a trade at the stated price.
 
-It might not be obvious, but above definition and description are incomplete:
+The above definition and description are incomplete:
 
 * According to the definition, an order $x$ seems to be an immutable entity. But according to the Trade-Matching algorithm, a portion of $x$ may become 'active' and it is not clear how the quality of being 'active' is different from the mere existence of submitted orders,
 
@@ -231,32 +240,6 @@ sample.labels <- c('1'='Order 1 (buy)',
 
 
 
-```{r, eval=FALSE}
-as_hux(sot[order(t),
-           .( `#`=.I,
-              `\\(i\\)`=i,
-              `\\(n\\)`=n,
-              `\\(t^i_n\\)`=format(time_0 + t, "%H:%M:%OS1"),
-              `\\(e^i_n\\)`=e,
-              `\\(p^i_n\\)`=p,
-              `\\(v^i_n\\)`=v,
-              `\\(f^i_n\\)`=f,
-              volume.decrease, 
-               `\\(\\Delta v^i_n \\)`=fifelse(v*volume.decrease > 0 & n > 1, volume.decrease, NA_real_)
-                 )]) %>%
-  add_colnames() %>%
-  set_align(everywhere, c(1:4), 'center') %>%
-  set_align(1, c(5:8), 'right') %>%
-  set_right_border(everywhere,1, 1) %>%
-  set_caption('(#tab:example-order-table) The sample order table contains information about six limit orders, three market orders and six trades.') %>%
-  set_caption_pos("topleft") %>%
-  set_width(0.9) %>%
-  set_position("left")
-
-```
-
-
-
 ```{definition Price Function, name="Price Function", label="price-function"}
 A function $p : \mathbb{R} \mapsto \mathbb{R}_{\geq 0}$ such that
 
@@ -273,12 +256,29 @@ The lot size $v_0$ and tick size $\vartheta$ are collectively called *resolution
 
 Hereafter is assumed that a single asset is traded and a single currency is used. 
 
+As it has already been mentioned above an order is a commitment at a given time, to buy or sell a given volume of an asset at no worse than a given price. Figure \@ref(fig:order-life-cycle) shows [the state diagram](https://en.wikipedia.org/wiki/State_diagram) of an order while the order is being processed by an exchange.  The possible states an order can be in are:
 
-```{definition Order, name="Order", label=order}
-Suppose that $i \in \mathbb{N}$ is an *unique order identification*, $v^i(t)$ is a volume function as defined by \@ref(def:volume-function), $p^i(t)$ is a price function as defined by \@ref(def:price-function) such that $$\text{supp}\,(v^i) = \text{supp}\,(p^i)$$ Then a vector-valued function $o^i : \mathbb{R} \mapsto \mathbb{R}_{>0} \times \mathbb{R}$ representing a commitment to buy or sell a given volume $v^i(t)$ of an asset at no worse than a given price $p^i(t)$ at a particular time $t$  with a closed form $$o^i(t) = (p^i(t), v^i(t))$$ is called an *order*. If $\forall t : v^i(t) \in \mathbb{R}_{\leq 0}$ the order is a commitment to *sell* and is also called a *sell order*. If $\forall t : v^i(t) \in \mathbb{R}_{\geq 0}$ the order is a commitment to *buy* and is also called a *buy order*.
+ * *Received* - a valid order has been received by an exchange and is now active, i.e. it may be filled. This state is fleeting.
+ * *Open* - the order is now open on the order book. Orders which are not fully filled or cancelled immediately enters this state. This state is lasting.
+ * *Done* - the order is no longer on the order book. This state can result from an order being canceled or filled. This state is fleeting.
+
+
+```{r order-life-cycle, echo=FALSE, fig.cap="States of an order while it being processed by an exchange", fig.align="center"}
+knitr::include_graphics("order-life-cycle.png")
 ```
 
-It should be clear from the definition above that an order is a [limit order](https://www.investopedia.com/terms/l/limitorder.asp) and without further qualifications (i.e. a market order, a stop order etc), an order always means a limit order. 
+An order which has ever entered Open state is called a [limit order](https://www.investopedia.com/terms/l/limitorder.asp). 
+
+An order which has never entered Open state is called a [market order](https://www.investopedia.com/terms/m/marketorder.asp).
+
+If an order has been *Partially Filled* before entering *Open* state or it has been *Filled* or *Partially Filled* after *Price Amendment*, then the order is sometimes called a market limit order.  We always model market limit orders as a comibnation of an appropriate market order and a limit order that placed simultaneously. 
+
+Market orders are always fleeting. To model an evolution of a limit order we use the following function:
+
+```{definition Order, name="Order", label=order}
+Suppose that $i \in \mathbb{N}$ is an *unique order identification*, $v^i(t)$ is a volume function as defined by \@ref(def:volume-function), $p^i(t)$ is a price function as defined by \@ref(def:price-function) such that $$\text{supp}\,(v^i) = \text{supp}\,(p^i)$$ Then a vector-valued function $o^i : \mathbb{R} \mapsto \mathbb{R}_{>0} \times \mathbb{R}$ representing a commitment to buy or sell a given volume $v^i(t)$ of an asset at no worse than a given price $p^i(t)$ at a particular time $t$  with a closed form $$o^i(t) = (p^i(t), v^i(t))$$ is called an *order*. If $\forall t : v^i(t) \leq 0$ the order is a commitment to *sell* and is also called a *sell order*. If $\forall t : v^i(t) \geq 0$ the order is a commitment to *buy* and is also called a *buy order*.
+```
+
 
 Now we can define
 
@@ -294,7 +294,7 @@ The function $p^i(t)$ in definition \@ref(def:order) is called an *order price*.
 
 
 ```{definition Trade, name="Trade", label=trade}
-Suppose an order $o^i(t)$ is given and $\exists t_j : f^i(t_j) \neq 0$. Then a tuple $$(t_j, i,p^i(t_j), f_{v^i}(t_j))$$ is called a *trade*. If $f_{v^i}(t_j) < 0$ or, equivalently, $i$ is a sell order, then the trade is a buy trade. Otherwise it is a sell trade.
+Suppose an order $o^i(t)$ is given and $\exists t_j : f_{v^i}(t_j) \neq 0$. Then a tuple $$(t_j, i,p^i(t_j), f_{v^i}(t_j))$$ is called a *trade*. If $f_{v^i}(t_j) < 0$ or, equivalently, $i$ is a sell order, then the trade is a buy trade. Otherwise it is a sell trade.
 
 ```
 
@@ -302,25 +302,29 @@ Suppose an order $o^i(t)$ is given and $\exists t_j : f^i(t_j) \neq 0$. Then a t
 An order can be conveniently represented in the form of a order table defined by \@ref(def:order-table).
 
 
-```{definition Order Table, name="Order Table", label=order-table}
+```{definition Order Event, name="Order Event", label=order-event}
 
-An *order table* is a set of tuples $$\{(i, n, t^i_n,e^i_n, p^i_n, v^i_n,f^i_n)\}_{n=1}^{N^i}$$ called *order events* where
+An *order event* is a tuple $(i, n, t^i_n,s^i_n, p^i_n, v^i_n,f^i_n)$ where
 
-a. $i \in \mathbb{N}$ is an *unique order identification*,
+a. $i \in \mathbb{N}$ is an *unique order identification* of the order,
 a. $n \in \{1, \ldots, N^i\}$ is an *order event number*, 
-b. $t^i_n \in \mathbb{R}_{>0}$ is an *event timestamp*, $\forall n: t^i_n < t^i_{n+1}$, 
-b. $e^i_n \in \{0, 1\}$ is a *event type*; $e^i_n = 1$ is an *activation* event, $e^i_n = 0$ is an *deactivation* event,
-b. $e^i_1 = 1$ and $\forall n \in \{2, \ldots, N^i\} : e^i_n = 0 \implies e^i_{n-1} = 1$,
-b. $p_n^i \in \mathbb{R}_{>0}$ is an *order price*,
-b. $v_n^i \in \mathbb{R}$ is an *order volume*,
-b. $\forall n_1, n_2: \text{sgn}(v_{n_1}^i) = \text{sgn}(v_{n_2}^i)$,
-b. $f^i_n \in \{0, 1\}$ is a *fill indicator*; $f^i_n = 1$ indicates that the volume is changed due to fill.
+b. $t^i_n \in \mathbb{R}_{>0}$ is an *event timestamp*
+b. $s^i_n \in \{0, 1\}$ is the *state* of the order; $s^i_n = 1$ means *Open*, $s^i_n = 0$ means *Done* state,
+b. $p_n^i \in \mathbb{R}_{>0}$ is the *order price*,
+b. $v_n^i \in \mathbb{R}$ is the *order volume*,
+b. $f^i_n \in \{0, 1\}$ is a *fill indicator*; $f^i_n = 1$ indicates that the event is originated by a trade.
 ```
 
-We say that an order $i$ event $n$ with $e^i_n = 1$ is an *activation* event in a sense that after the event $n$  order $i$ is *active*, i.e. represents a commitment to buy or sell given volume $v_n^i$ of an asset at no worse than  a price $p^i_n$. If $b^i_n = 1$ then the commitment is valid at $t_n^i$ and afterwards. If $b^i_n = 0$ then the commitment is valid after $t_n^i$. 
+Note that we do not need to capture an event for Received state.
 
-Similarly, we say that an event $m$ with $e^i_m = 0$  is a *deactivation* event in a sense that it indicates the last moment when the commitment to buy or sell $v^i_m$ at no worse than $p^i_m$ is still valid. If $b^i_m = 1$ then the commitment is valid at $t_m^i$ and not valid afterwards. If $b^i_m = 0$ then the commitment is valid before $t_m^i$ and not valid at $t_m^i$ and afterwards. 
+```{definition Order Table, name="Order Table", label=order-table}
 
+An *order table* is a set of *order events* as defined by \@ref(def:order-event) such that
+
+b. $\forall i, \forall n: t^i_n < t^i_{n+1}$, 
+b. $\forall i : s^i_1 = 1$ and $\forall n \in \{2, \ldots, N^i\} : s^i_n = 0 \implies s^i_{n-1} = 1$,
+b. $\forall i, \forall n_1, n_2: \text{sgn}(v_{n_1}^i) = \text{sgn}(v_{n_2}^i)$,
+```
 
 
 ```{theorem Order Table Equivalence,label=equivalence}
@@ -389,13 +393,7 @@ Suppose a Limit Order Book $\mathcal{L}$ is given and $\mathcal{B} =\{o^b(t)\}_{
 
 
 
-## Example of LOB
-
-To make the above definitions intuitively clear, let's consider an example. Table \@ref(tab:example-order-table) contains a consolidated order table for six limit orders and figure \@ref(fig:order-life-cycle) shows all possible ways of processing an order by an exchange (though not every exchange supports all operations shown).
-
-```{r order-life-cycle, echo=FALSE, fig.cap="All possible ways of processing an order by an exchange.", fig.align="center"}
-knitr::include_graphics("order-life-cycle.png")
-```
+To make the above definitions intuitively clear, let's consider an example. Table \@ref(tab:example-order-table) contains a consolidated order table for six limit orders 
 
 
 
@@ -405,7 +403,7 @@ as_hux(sot[order(t),
               `\\(i\\)`=sprintf("%010i", i),
               `\\(n\\)`=n,
               `\\(t^i_n\\)`=format(time_0 + t, "%H:%M:%OS1"),
-              `\\(e^i_n\\)`=e,
+              `\\(s^i_n\\)`=e,
               `\\(p^i_n\\)`=p,
               `\\(v^i_n\\)`=v,
               `\\(f^i_n\\)`=f,
@@ -484,11 +482,24 @@ It can bee seen from figure \@ref(fig:example-order-book) that:
 * At `r format(time_0 + sort(unique(sot$t))[9], "%H:%M:%OS1")` a market order to buy the asset for 27500 units of the currency has been placed and two buy trades have been executed: $(\text{`r format(time_0 + sort(unique(sot$t))[9], "%H:%M:%OS1")`}, 4, 25, -500)$ and $(\text{`r format(time_0 + sort(unique(sot$t))[9], "%H:%M:%OS1")`}, 5, 50, -300)$. Alternatively, it could be a limit order to buy 800 units of the asset at price no worser than 50 that was fully executed. 
 * At `r format(time_0 + sort(unique(sot$t))[10], "%H:%M:%OS1")` volume and price of order 6 have been amended. Its volume has been reduced by 100 units of the asset and its price increased to 60. At the same time a market buy order has been placed for 5000 units of the currency and single trade has been executed: $(\text{`r format(time_0 + sort(unique(sot$t))[9], "%H:%M:%OS1")`}, 5, 50, -100)$. Most likely the change of price of order 6 has transformed it to a market limit order which was partially executed and the reminder was placed in the order book again. 
 
+## Extraction
+
+TBD
+
+## Integration
+
+
+TBD
+
+## Cleansing
+
+
+TBD
 
 
 # Results
 
-## Fragments of data streams
+## Extracted fragments of data streams
 
 In the tables below all order events and trades are shown in the order in which they were received from an exchange. 
 
@@ -502,7 +513,7 @@ as_hux(stamp.q.1[order(local_timestamp), # i.e. in the order events were receive
                     `\\(i\\)`=as.character(order_id),
                     `\\(n\\)`=k,
                     `\\(t^i_n\\)`=format(microtimestamp,format="%H:%M:%OS3"),
-                    `\\(e^i_n\\)`=fifelse(event == 'D',0, 1),
+                    `\\(s^i_n\\)`=fifelse(event == 'D',0, 1),
                     `\\(p^i_n\\)`=price,
                     `\\(v^i_n\\)`=fifelse(order_type=="buy", 1,-1)*amount,
                     `\\(f^i_n\\)`=NA,
@@ -561,7 +572,7 @@ as_hux(finex.q.1[order(local_timestamp),.(`#`=.I,
                     `\\(i\\)`=as.character(order_id),                                          
                     `\\(n\\)`=n,
                     `\\(t^i_n\\)`=format(exchange_timestamp,format="%H:%M:%OS3"),
-                    `\\(e^i_n\\)`=event,                    
+                    `\\(s^i_n\\)`=event,                    
                     `\\(p^i_n\\)`=price,
                     `\\(v^i_n\\)`=amount,
                     `\\(f^i_n\\)`=NA,
@@ -589,7 +600,7 @@ as_hux(finex.t.1[order(local_timestamp),.(`#`=.I,
                     `\\(t_j\\)`=exchange_timestamp,
                     `\\(i^r_j\\)`=NA_real_,
                     `\\(p_j\\)`=price,
-                    `\\(v_j\\)`=d*qty)
+                    `\\(f_{v^{i^r_j}}\\)`=d*qty)
                     ], 
        scientific=F) %>%
   add_colnames() %>%
@@ -631,10 +642,15 @@ bitfinex.quotes <- NULL
 bitfinex.trades <- NULL
 coinbase.quotes <- NULL
 coinbase.trades <- NULL
+coinbase.full <- NULL
 
 ```
 
 
+```{r, eval=FALSE, echo=FALSE}
+conn <- obadiah::connect("192.168.3.5", "5433", dbname = "obadiah-devel", use.cache=F, user="ob-analytics")
+con <- conn$con()
+```
 
 
 ```{sql sql - bitstamp.quotes, eval=FALSE, echo=FALSE, connection=con, output.var=bitstamp.quotes}
@@ -673,17 +689,9 @@ order by exchange_timestamp
 
 
 
-```{sql sql - coinbase.quotes, eval=FALSE, echo=FALSE, connection=con, output.var=coinbase.quotes}
-select * 
+```{sql sql - coinbase.full, eval=FALSE, echo=FALSE, connection=con, output.var=coinbase.full}
+select *
 from coinbase.full
-where _type != 'match'
-order by _time, _type
-```
-
-```{sql sql - coinbase.trades, eval=FALSE, echo=FALSE, connection=con, output.var=coinbase.trades}
-select * 
-from coinbase.full
-where _type = 'match'
 order by _time, _type
 ```
 
@@ -695,12 +703,28 @@ setDT(bitstamp.trades)
 setDT(bitstamp.quotes)
 ```
 
-```{r Load Bitfinex data, eval=FALSE, echo=FALSE,}
+```{r Load Bitfinex data, eval=FALSE, echo=FALSE}
 load(file="bitfinex.Rdata")
 setDT(bitfinex.trades)
 setDT(bitfinex.quotes)
 
 ```
+
+```{r Load Coinbase data, eval=FALSE, echo=FALSE}
+load(file="coinbase.Rdata")
+setDT(coinbase.full)
+# Interesting seconds
+dcast(coinbase.full[`_type` != 'match', .N, by=ceiling_date(`_time`)][coinbase.full[`_type` == 'match', .N, by=.(ceiling_date(`_time`), `_side`)], on="ceiling_date"][order(-(N*i.N))], ceiling_date + N ~ `_side`, value.var="i.N")[!is.na(buy)& !is.na(sell), ][order(ceiling_date)]
+
+```
+
+
+```{r, eval=FALSE, echo=FALSE}
+coinbase.full[order(`_time`), `_order_type` := `_order_type`[1], by=`_order_id` ]
+coinbase.o <- coinbase.full[ceiling_date(`_time`) == '2020-04-01 16:51:57',]
+
+```
+
 
 
 ```{r Prepare oberon.Rdata, eval=FALSE, echo=FALSE,}

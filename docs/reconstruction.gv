@@ -1,0 +1,24 @@
+digraph G {
+ rankdir=TB;
+ size="10!";
+ node [fixedsize=true; width=1.5; height=0.5;];
+ OStream [label="Order Stream"; shape=parallelogram;];
+ TStream [label="Trade Stream"; shape=parallelogram;];
+ Extract [label="1. Extract";shape="box";];
+ OE [label="Order events"; shape=cylinder;]
+ TR [label="Trades"; shape=cylinder;]
+ OT [label="Order Table"; shape=cylinder;]
+ Integrate [label="2. Integrate"; shape="box"];
+ Cleanse [label="3. Cleanse"; shape="box"];
+ LOB [label="Limit Order\nBook Stream"; shape=parallelogram;];
+
+ OStream -> Extract;
+ TStream -> Extract;
+ Extract -> OE;
+ Extract -> TR;
+ OE -> Integrate;
+ TR -> Integrate;
+ Integrate -> OT;
+ OT ->  Cleanse;
+ Cleanse -> LOB;
+}
