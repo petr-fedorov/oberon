@@ -92,12 +92,12 @@ It should be clear from the above that substantial effort is required to reconst
 
 ## Overview
 
-Figure \@ref(fig:reconstruction-flowchart) shows a flowchart of the reconstruction algorithm (see [@iso_5807_information_1985] for the meaning of the shapes):
+Figure \@ref(fig:reconstruction-flowchart) shows UML2 Activity Diagram of the reconstruction algorithm (see [@cook_omg_2017] for the meaning of the shapes):
 
 ```{r reconstruction-flowchart, echo=FALSE, fig.cap="An overview of the reconstruction algorithm", fig.align="center"}
-knitr::include_graphics("reconstruction.png")
+knitr::include_graphics("reconstruction.png", dpi=80)
 ```
-The content of Order and Trade Streams depends on an exchange.  From these streams we *extract* information in the standard format for an order event as defined by \@ref(def:order-event) and a trade as defined by \@ref(def:trade). This information is *integrated* (i.e. trades and their corresponding order events must be coupled) to produce Order Table as defined by \@ref(def:order-table). The order table may not satisfy constraints of Limit Order Book as defined by \@ref(def:lob), so it needs to be *cleansed* [@rahm_data_2000]. Limit Order Book Stream consists of order events which collectively satisfy constraints of Order Table and Limit Order Book.
+The content of Order and Trade Records depends on an exchange.  From these records we *extract* information in the standard format for an order event as defined by \@ref(def:order-event) and a trade as defined by \@ref(def:trade). These objects are then *integrated* (i.e. for each trade a corresponding order event is found) to produce Order Event[Integrated]. Collectively Order Event[Integrated] form Order Table as defined by \@ref(def:order-table). Order Table may not satisfy constraints of Limit Order Book as defined by \@ref(def:lob) yet, so it is *cleansed* [@rahm_data_2000]. Collectively Order event[Cleansed] constitute Limit Order Book.
 
 Let's start the detailed description of the algoritm from the definition of what we reconstruct. Surprisingly, an order,  a limit order book,  the operations of a continous double auction are rather complicated things if one attempts to define them rigorously. Consider, for example,  a definition given in the recent book [@bouchaud_trades_2018]:
 
@@ -339,7 +339,11 @@ Typically the term [order book](https://www.investopedia.com/terms/o/order-book.
 
 
 ```{definition Order Book, name="Order Book", label=order-book}
-A set of orders with common resolution parameters $v_0$ and $\vartheta$ $\mathcal{O} = \{o^i(t)\}_i$ where $o^i(t)$ is defined by \@ref(def:order) is called an *order book*. A (possibly empty) subset $\mathcal{B} =\{o^b(t)\}_{v_k^b > 0} \subset \mathcal{O}$ of buy orders is called *bids* and  a (possibly empty) subset $\mathcal{A} =\{o^a(t)\}_{v_k^a < 0} \subset \mathcal{O}$ of sell orders is called *asks*.
+A set of orders with common resolution parameters $v_0$ and $\vartheta$ $\mathcal{O} = \{o^i(\cdot)\}_i$ where $o^i(\cdot)$ is defined by \@ref(def:order) is called an *order book*. 
+
+A (possibly empty) subset $\mathcal{B} =\{o^b(\cdot)\}_{v^b(\cdot) \geq 0} \subset \mathcal{O}$ of buy orders is called *bids*.  A (possibly empty) subset of *bids* $\mathcal{B}(t) =\{o^b(\cdot)\}_{v^b(\cdot) \geq 0 \land p^b(t) > 0} \subset \mathcal{B}$ of buy orders is called *bids* at time $t$.
+
+A (possibly empty) subset $\mathcal{A} =\{o^a(\cdot)\}_{v^a(\cdot) \leq 0} \subset \mathcal{O}$ of sell orders is called *asks*. A (possibly empty) subset of *asks* $\mathcal{A}(t) =\{o^a(\cdot)\}_{v^a(\cdot) \leq 0 \land p^a(t) > 0} \subset \mathcal{A}$ of buy orders is called *asks* at time $t$.
 ```
 
 From definition of an order \@ref(def:order) follows that $\mathcal{O} = \mathcal{A} \cup \mathcal{B}$ and $\mathcal{A} \cap \mathcal{B} = \emptyset$.
@@ -348,7 +352,7 @@ From definition of an order \@ref(def:order) follows that $\mathcal{O} = \mathca
 ```{definition Best Bid Price, name="Best Bid Price", label=best-bid-price}
 Suppose an order book $\mathcal{O}$ is given.  The function $b(t)$ defined as:
   $$
-  b_{\mathcal{O}}(t) = \begin{cases} \max_{o^b(t) \in \mathcal{B}} p^b(t), & \text{ if } \mathcal{B} \neq \emptyset \\0, & \text{ otherwise }  \end{cases}
+  b_{\mathcal{O}}(t) = \begin{cases} \max_{o^b(\cdot) \in \mathcal{B}(t)} p^b(t), & \text{ if } \mathcal{B}(t) \neq \emptyset \\0, & \text{ otherwise }  \end{cases}
   $$ is called *best bid price*.
 ```
 
@@ -356,7 +360,7 @@ Suppose an order book $\mathcal{O}$ is given.  The function $b(t)$ defined as:
 ```{definition Best Ask Price, name="Best Ask Price", label=best-ask-price}
 Suppose an order book $\mathcal{O}$ is given. The function $a(t)$ defined as:
   $$
-  a_{\mathcal{O}}(t) = \begin{cases} \min_{o^a(t) \in \mathcal{A}} p^a(t) & \text{ if } \mathcal{A} \neq \emptyset \\ +\infty, & \text{ otherwise } \end{cases}
+  a_{\mathcal{O}}(t) = \begin{cases} \min_{o^a(\cdot) \in \mathcal{A}(t)} p^a(t) & \text{ if } \mathcal{A}(t) \neq \emptyset \\ +\infty, & \text{ otherwise } \end{cases}
   $$ is called *best ask price*
 ```
 
@@ -381,13 +385,13 @@ A [market order](https://www.investopedia.com/terms/m/marketorder.asp) is a requ
 
 
 ```{definition Market Buy Order, name="Market Buy Order", label=market-buy-order}
-Suppose a Limit Order Book $\mathcal{L}$ is given and $\mathcal{A} =\{o^a(t)\}_{v_k^a < 0} \subset \mathcal{L}$ as defined by \@ref(def:order) and \@ref(def:lob). Suppose that at time $t_j$ $$\sum_{o^a(t) \in \mathcal{A} } f^a(t_j) < 0 $$ Then it is said that a *market buy order* is placed and executed at time $t_j$ for $\sum_{o^a(t) \in \mathcal{A} } |f^a(t_j)p^a(t_j)|$ units of currency.  
+Suppose a Limit Order Book $\mathcal{L}$ is given as defined by \@ref(def:lob). Suppose that at time $t_j$ $$\sum_{o^a(\cdot) \in \mathcal{A(t_j)} } f_{v^a}(t_j) < 0 $$ Then it is said that a *market buy order* is placed and executed at time $t_j$ for $\sum_{o^a(\cdot) \in \mathcal{A}(t_j) } |f_{v^a}(t_j)p^a(t_j)|$ units of currency.  
 
 ```
 
 
 ```{definition Market Sell Order, name="Market Sell Order", label=market-sell-order}
-Suppose a Limit Order Book $\mathcal{L}$ is given and $\mathcal{B} =\{o^b(t)\}_{v_k^b > 0} \subset \mathcal{L}$ as defined by \@ref(def:order) and \@ref(def:lob). Suppose that at time $t_j$ $$\sum_{o^b(t) \in \mathcal{B} } f^b(t_j) > 0 $$ Then it is said that a *market sell order* is placed and executed at time $t_j$ for $\sum_{o^b(t) \in \mathcal{B} } f^a(t_j)$ units of asset.  
+Suppose a Limit Order Book $\mathcal{L}$ is given as defined by \@ref(def:lob). Suppose that at time $t_j$ $$\sum_{o^b(\cdot) \in \mathcal{B}(t_j) } f_{v^b}(t_j) > 0 $$ Then it is said that a *market sell order* is placed and executed at time $t_j$ for $\sum_{o^b(\cdot) \in \mathcal{B}(t_j) } f_{v^b}(t_j)$ units of asset.  
 
 ```
 
@@ -411,8 +415,8 @@ as_hux(sot[order(t),
                  )]) %>%
   add_colnames() %>%
   set_width(0.9) %>%
-  set_align(everywhere, c(1:4), 'center') %>%
-  set_align(1, c(5:9), 'right') %>%
+  set_align(everywhere, c(1:5), 'center') %>%
+  set_align(1, c(6:9), 'right') %>%
   set_right_border(everywhere,1, 1) %>%
   set_left_border(everywhere,9, 1) %>%
   set_caption('(#tab:example-order-table) The sample order table contains information about six limit orders, three market orders and five trades.') %>%

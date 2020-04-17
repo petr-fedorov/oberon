@@ -1,0 +1,239 @@
+format 222
+"oberon"
+  revision 6
+  modified_by 6 "petr"
+  cpp_root_dir "/home/petr/repos/oberon/src/"
+
+
+  
+  // class settings
+  default_attribute_visibility private default_relation_visibility private default_operation_visibility public
+  
+  classdiagramsettings draw_all_relations yes hide_attributes no hide_operations no hide_getset_operations no hide_ports no show_members_full_definition no show_members_visibility no show_members_stereotype no show_members_context no show_members_multiplicity no show_members_initialization no show_attribute_modifiers no member_max_width 127 show_parameter_dir yes show_parameter_name yes package_name_in_tab no class_drawing_mode natural drawing_language uml show_context_mode no auto_label_position yes show_relation_modifiers no show_relation_visibility no show_infonote no shadow yes gradient none show_stereotype_properties no end
+  
+  classcompositediagramsettings auto_label_position yes draw_all_relations yes shadow yes gradient none end
+  
+  usecasediagramsettings package_name_in_tab no show_context_mode no auto_label_position yes draw_all_relations yes class_drawing_mode actor shadow yes gradient none show_stereotype_properties no end
+  
+  sequencediagramsettings show_full_operations_definition no show_class_of_operation no write_horizontally yes instances_drawing_mode natural drawing_language uml draw_all_relations yes shadow yes gradient none show_stereotype_properties no show_class_context_mode no show_msg_context_mode no end
+  
+  collaborationdiagramsettings show_full_operations_definition no show_class_of_operation no show_hierarchical_rank no write_horizontally yes instances_drawing_mode natural drawing_language uml package_name_in_tab no show_class_pack_context_mode no show_msg_context_mode no draw_all_relations yes shadow yes gradient none show_stereotype_properties no end
+  
+  objectdiagramsettings write_horizontally yes package_name_in_tab no show_class_pack_context_mode no auto_label_position yes draw_all_relations yes shadow yes gradient none show_stereotype_properties no end
+  
+  objectcompositediagramsettings auto_label_position yes draw_all_relations yes shadow yes gradient none end
+  
+  componentdiagramsettings package_name_in_tab no show_context_mode no auto_label_position yes draw_all_relations yes shadow yes gradient none
+   draw_component_as_icon no show_component_req_prov no show_component_rea no show_stereotype_properties no end
+  
+  deploymentdiagramsettings package_name_in_tab no show_context_mode no write_horizontally yes auto_label_position yes draw_all_relations yes shadow yes gradient none
+   draw_component_as_icon no show_component_req_prov no show_component_rea no show_stereotype_properties no end
+  
+  statediagramsettings package_name_in_tab no show_context_mode no auto_label_position yes write_label_horizontally yes show_trans_definition no draw_all_relations yes shadow yes gradient none
+   show_activities yes region_horizontally yes drawing_language uml show_stereotype_properties no end
+  
+  activitydiagramsettings package_name_in_tab no show_context_mode no show_opaque_action_definition no auto_label_position yes write_label_horizontally no draw_all_relations yes shadow yes gradient none
+   show_infonote yes drawing_language uml show_stereotype_properties no end
+  
+  class_color yellow duration_color transparent continuation_color gray note_color blue fragment_color transparent subject_color transparent usecase_color yellow package_color transparent component_color green artifact_color green deploymentnode_color gray state_color yellow stateaction_color transparent activity_color transparent activityregion_color transparent activitypartition_color transparent activityaction_color transparent parameterpin_color white generalization_color black 
+  dpi 96
+  font_size 9
+  diagram_format A4
+
+  image_root_dir ""
+
+
+  mark_for_import
+  
+  ncouples 1
+  key "html dir" value "/tmp/bouml/"
+  usecaseview 128006 "Oberon"
+    
+    usecasediagramsettings end
+    
+    sequencediagramsettings end
+    
+    collaborationdiagramsettings end
+    
+    classdiagramsettings member_max_width 0 end
+    
+    classcompositediagramsettings end
+    
+    objectdiagramsettings end
+    
+    objectcompositediagramsettings end
+    
+    statediagramsettings
+     end
+    
+    activitydiagramsettings
+     end
+    activity 128006 "Order Book Reconstruction"
+      activitydiagram 128006 "Order Book Reconstruction"
+	activitydiagramsettings draw_all_relations no
+	 end
+	size A4
+      end
+
+      activityaction 134534 "Order Record Received"
+	accept_event_action
+	flow 135046 "<flow>"
+	  on activityobject_ref 128134 // activity object Order Record
+	end
+      end
+
+      activityaction 134662 "Extract Event"
+	create_object_action
+	flow 135174 "<flow>"
+	  on activityobject_ref 128262 // activity object Order Event
+	end
+      end
+
+      activityobject 128134 "Order Record"
+	 explicit_type ""
+	unordered 
+	flow 134918 "<flow>"
+	  on activityaction_ref 134662 // activity action Extract Event
+	end
+      end
+
+      activityobject 128262 "Order Event"
+	stereotype "centralBuffer"
+	 explicit_type ""
+	unordered  in_state "Unintegrated" 
+	flow 135302 "<flow>"
+	  on activityaction_ref 134790 // activity action Integrate Event
+	    uml_guard "Occured > N secs ago"
+	end
+      end
+
+      activityaction 134790 "Integrate Event"
+	opaque_action
+	pin 141574 "output" explicit_type ""
+	   multiplicity "*" unordered 
+	  out
+	  flow 143238 "<flow>"
+	    on activitynode_ref 134534 // merge
+	  end
+	end
+      end
+
+      activityaction 134918 "Integrate Trade"
+	opaque_action
+	pin 141702 "output" explicit_type ""
+	   multiplicity "*" unordered 
+	  out
+	  flow 143366 "<flow>"
+	    on activitynode_ref 134534 // merge
+	  end
+	end
+      end
+
+      activitynode 134534 merge ""
+	flow 135686 "<flow>"
+	  on activitynode_ref 134662 // decision
+	end
+      end
+
+      activitynode 134662 decision ""
+	flow 135814 "<flow>"
+	  on activitynode_ref 134790 // flow_final
+	    uml_guard "null"
+	end
+
+	flow 135942 "<flow>"
+	  on activityobject_ref 128390 // activity object Order Event
+	    uml_guard "else"
+	end
+      end
+
+      activitynode 134790 flow_final ""
+      end
+
+      activityobject 128390 "Order Event"
+	stereotype "centralBuffer"
+	 explicit_type ""
+	unordered  in_state "Integrated" 
+	flow 136070 "<flow>"
+	  on activityaction_ref 135046 // activity action Cleanse
+	end
+      end
+
+      activityaction 135046 "Cleanse"
+	opaque_action
+	pin 141830 "output" explicit_type ""
+	   multiplicity "*" fifo 
+	  out
+	  flow 143494 "<flow>"
+	    on activitynode_ref 141318 // decision
+	  end
+	end
+      end
+
+      activityobject 128518 "Order Event"
+	stereotype "datastore"
+	 explicit_type ""
+	unordered  in_state "Cleansed" 
+      end
+
+      activityaction 141574 "Trade Record Received"
+	accept_event_action
+	flow 142726 "<flow>"
+	  on activityobject_ref 135046 // activity object Trade Record
+	end
+      end
+
+      activityobject 135046 "Trade Record"
+	 explicit_type ""
+	unordered 
+	flow 142854 "<flow>"
+	  on activityaction_ref 141702 // activity action Extract Trade
+	end
+      end
+
+      activityaction 141702 "Extract Trade"
+	opaque_action
+	flow 142982 "<flow>"
+	  on activityobject_ref 135174 // activity object Trade Event
+	end
+      end
+
+      activityobject 135174 "Trade Event"
+	stereotype "centralBuffer"
+	 explicit_type ""
+	unordered 
+	flow 143110 "<flow>"
+	  on activityaction_ref 134918 // activity action Integrate Trade
+	    uml_guard "Occured > M secs ago"
+	end
+      end
+
+      activitynode 141318 decision ""
+	flow 143622 "<flow>"
+	  on activityobject_ref 128518 // activity object Order Event
+	    uml_guard "else"
+	end
+
+	flow 143750 "<flow>"
+	  on activitynode_ref 141446 // flow_final
+	    uml_guard "null"
+	end
+      end
+
+      activitynode 141446 flow_final ""
+      end
+
+      activitynode 147974 initial_node ""
+	flow 150278 "<flow>"
+	  on activityaction_ref 134534 // activity action Order Record Received
+	end
+
+	flow 150406 "<flow>"
+	  on activityaction_ref 141574 // activity action Trade Record Received
+	end
+      end
+
+    end
+
+  end
+end
