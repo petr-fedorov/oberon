@@ -1,6 +1,6 @@
 format 222
 "oberon"
-  revision 6
+  revision 11
   modified_by 6 "petr"
   cpp_root_dir "/home/petr/repos/oberon/src/"
 
@@ -45,6 +45,7 @@ format 222
 
   mark_for_import
   
+  cpp_namespace "oberon"
   ncouples 1
   key "html dir" value "/tmp/bouml/"
   usecaseview 128006 "Oberon"
@@ -69,171 +70,227 @@ format 222
     activitydiagramsettings
      end
     activity 128006 "Order Book Reconstruction"
-      activitydiagram 128006 "Order Book Reconstruction"
-	activitydiagramsettings draw_all_relations no
-	 end
-	size A4
-      end
-
-      activityaction 134534 "Order Record Received"
+      activityaction 134534 "Record Received"
 	accept_event_action
-	flow 135046 "<flow>"
-	  on activityobject_ref 128134 // activity object Order Record
-	end
-      end
-
-      activityaction 134662 "Extract Event"
-	create_object_action
-	flow 135174 "<flow>"
-	  on activityobject_ref 128262 // activity object Order Event
-	end
-      end
-
-      activityobject 128134 "Order Record"
-	 explicit_type ""
-	unordered 
-	flow 134918 "<flow>"
-	  on activityaction_ref 134662 // activity action Extract Event
-	end
-      end
-
-      activityobject 128262 "Order Event"
-	stereotype "centralBuffer"
-	 explicit_type ""
-	unordered  in_state "Unintegrated" 
-	flow 135302 "<flow>"
-	  on activityaction_ref 134790 // activity action Integrate Event
-	    uml_guard "Occured > N secs ago"
-	end
-      end
-
-      activityaction 134790 "Integrate Event"
-	opaque_action
-	pin 141574 "output" explicit_type ""
-	   multiplicity "*" unordered 
+	pin 155014 "Order Record" explicit_type ""
+	  unordered 
 	  out
-	  flow 143238 "<flow>"
-	    on activitynode_ref 134534 // merge
+	  flow 171398 "<flow>"
+	    on activitynode_ref 167942 // merge
 	  end
 	end
-      end
 
-      activityaction 134918 "Integrate Trade"
-	opaque_action
-	pin 141702 "output" explicit_type ""
-	   multiplicity "*" unordered 
-	  out
-	  flow 143366 "<flow>"
-	    on activitynode_ref 134534 // merge
-	  end
-	end
-      end
-
-      activitynode 134534 merge ""
-	flow 135686 "<flow>"
-	  on activitynode_ref 134662 // decision
-	end
-      end
-
-      activitynode 134662 decision ""
-	flow 135814 "<flow>"
-	  on activitynode_ref 134790 // flow_final
-	    uml_guard "null"
-	end
-
-	flow 135942 "<flow>"
-	  on activityobject_ref 128390 // activity object Order Event
-	    uml_guard "else"
-	end
-      end
-
-      activitynode 134790 flow_final ""
-      end
-
-      activityobject 128390 "Order Event"
-	stereotype "centralBuffer"
-	 explicit_type ""
-	unordered  in_state "Integrated" 
-	flow 136070 "<flow>"
-	  on activityaction_ref 135046 // activity action Cleanse
+	flow 163846 "<flow>"
+	  on activityaction_ref 134534 // activity action Record Received
 	end
       end
 
       activityaction 135046 "Cleanse"
 	opaque_action
-	pin 141830 "output" explicit_type ""
+	pin 141830 "event" explicit_type ""
 	   multiplicity "*" fifo 
 	  out
-	  flow 143494 "<flow>"
-	    on activitynode_ref 141318 // decision
+	  flow 175366 "<flow>"
+	    on activitynode_ref 169350 // merge
+	  end
+
+	  flow 175494 "<flow>"
+	    on activitynode_ref 169606 // fork
+	  end
+	end
+
+	pin 162310 "event" explicit_type ""
+	   multiplicity "1..*" unordered is_control
+	  in
+	end
+      end
+
+      activitynode 154502 merge ""
+      end
+
+      activitydiagram 147718 "Order Book Events Reconstruction"
+	activitydiagramsettings draw_all_relations no
+	 end
+	size A4
+      end
+
+      activitynode 161030 merge ""
+	flow 170886 "<flow>"
+	  on activityaction_ref 134534 // activity action Record Received
+	end
+      end
+
+      activitynode 161158 initial_node ""
+	flow 163590 "<flow>"
+	  on activitynode_ref 161030 // merge
+	end
+      end
+
+      activitynode 167686 decision ""
+	flow 171014 "<flow>"
+	  on activitynode_ref 167814 // activity_final
+	    uml_guard "Stop Request"
+	end
+
+	flow 172166 "<flow>"
+	  on activitynode_ref 168198 // fork
+	    uml_guard "Record"
+	end
+      end
+
+      activitynode 167814 activity_final ""
+      end
+
+      activityaction 148230 "Stop Request Received"
+	accept_event_action
+	pin 161542 "Stop Request" explicit_type ""
+	  unordered is_control
+	  out
+	  flow 171270 "<flow>"
+	    on activitynode_ref 167942 // merge
 	  end
 	end
       end
 
-      activityobject 128518 "Order Event"
-	stereotype "datastore"
-	 explicit_type ""
-	unordered  in_state "Cleansed" 
-      end
-
-      activityaction 141574 "Trade Record Received"
-	accept_event_action
-	flow 142726 "<flow>"
-	  on activityobject_ref 135046 // activity object Trade Record
+      activitynode 167942 merge ""
+	flow 171526 "<flow>"
+	  on activitynode_ref 167686 // decision
 	end
       end
 
-      activityobject 135046 "Trade Record"
-	 explicit_type ""
-	unordered 
-	flow 142854 "<flow>"
-	  on activityaction_ref 141702 // activity action Extract Trade
+      activitynode 168198 fork ""
+	flow 172294 "<flow>"
+	  on activitynode_ref 161030 // merge
+	end
+
+	flow 172422 "<flow>"
+	  on activityaction_ref 148358 // activity action Process Order
+	end
+
+	flow 175110 "<flow>"
+	  on pin_ref 161798 // record
 	end
       end
 
-      activityaction 141702 "Extract Trade"
+      activityaction 148358 "Process Order"
 	opaque_action
-	flow 142982 "<flow>"
-	  on activityobject_ref 135174 // activity object Trade Event
+      end
+
+      activityaction 148614 "Extract"
+	opaque_action
+	pin 161798 "record" explicit_type ""
+	   multiplicity "1..*" unordered is_control
+	  in
+	end
+
+	pin 161926 "event" explicit_type ""
+	   multiplicity "1..*" unordered 
+	  out
+	  flow 173830 "<flow>"
+	    on activitynode_ref 168710 // fork
+	  end
 	end
       end
 
-      activityobject 135174 "Trade Event"
-	stereotype "centralBuffer"
-	 explicit_type ""
-	unordered 
-	flow 143110 "<flow>"
-	  on activityaction_ref 134918 // activity action Integrate Trade
-	    uml_guard "Occured > M secs ago"
+      activitynode 168710 fork ""
+	flow 173958 "<flow>"
+	  on activityaction_ref 148614 // activity action Extract
+	end
+
+	flow 174086 "<flow>"
+	  on activityaction_ref 148614 // activity action Extract
+	end
+
+	flow 174214 "<flow>"
+	  on activityaction_ref 148614 // activity action Extract
+	end
+
+	flow 174470 "<flow>"
+	  on pin_ref 162054 // event
 	end
       end
 
-      activitynode 141318 decision ""
-	flow 143622 "<flow>"
-	  on activityobject_ref 128518 // activity object Order Event
-	    uml_guard "else"
+      activityaction 148742 "Integrate"
+	opaque_action
+	pin 162054 "event" explicit_type ""
+	   multiplicity "1..*" unordered is_control
+	  in
 	end
 
-	flow 143750 "<flow>"
-	  on activitynode_ref 141446 // flow_final
+	pin 162182 "event" explicit_type ""
+	   multiplicity "*" unordered is_control
+	  out
+	  flow 174598 "<flow>"
+	    on activitynode_ref 168966 // fork
+	  end
+	end
+      end
+
+      activitynode 168966 fork ""
+	flow 174726 "<flow>"
+	  on activityaction_ref 148742 // activity action Integrate
+	end
+
+	flow 174854 "<flow>"
+	  on activitynode_ref 169094 // decision
+	end
+      end
+
+      activitynode 169094 decision ""
+	flow 174982 "<flow>"
+	  on activitynode_ref 169222 // flow_final
 	    uml_guard "null"
 	end
-      end
 
-      activitynode 141446 flow_final ""
-      end
-
-      activitynode 147974 initial_node ""
-	flow 150278 "<flow>"
-	  on activityaction_ref 134534 // activity action Order Record Received
-	end
-
-	flow 150406 "<flow>"
-	  on activityaction_ref 141574 // activity action Trade Record Received
+	flow 175238 "<flow>"
+	  on pin_ref 162310 // event
 	end
       end
 
+      activitynode 169222 flow_final ""
+      end
+
+      activitynode 169350 merge ""
+      end
+
+      activitynode 169478 flow_final ""
+      end
+
+      activitynode 169606 fork ""
+	flow 175622 "<flow>"
+	  on activityaction_ref 135046 // activity action Cleanse
+	end
+
+	flow 175750 "<flow>"
+	  on activitynode_ref 169734 // decision
+	end
+      end
+
+      activitynode 169734 decision ""
+	flow 175878 "<flow>"
+	  on activitynode_ref 169862 // flow_final
+	    uml_guard "null"
+	end
+
+	flow 176006 "<flow>"
+	  on pin_ref 162438 // event
+	end
+      end
+
+      activitynode 169862 flow_final ""
+      end
+
+      activityaction 148870 "Send Order Event"
+	send_signal_action
+	pin 162438 "event" explicit_type ""
+	   multiplicity "1..*" unordered is_control
+	  in
+	end
+      end
     end
-
   end
+
+  package_ref 134534 // postgresql
+
+  package_ref 134662 // R
 end

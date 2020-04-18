@@ -1,112 +1,117 @@
 format 222
 
-activityactioncanvas 130694 activityaction_ref 134534 // activity action Order Record Received
+activityactioncanvas 130694 activityaction_ref 134534 // activity action Record Received
   
   show_opaque_action_definition default
-  xyzwh 180 71 3034 100 60
+  xyzwh 230.188 231.273 3034 101 61
+  pins
+    pincanvas 139270 pin_ref 155014 // Order Record
+      xyzwh 281.75 221.06 3036 11 11 label_xy 242 213
+    end
+  end
 end
 activityactioncanvas 130950 activityaction_ref 134662 // activity action Extract Event
   
   show_opaque_action_definition default
-  xyzwh 180 254 3022 100 60
-end
-activityobjectcanvas 131334 activityobject_ref 128134 // activity object Order Record
-  
-  xyzwh 184 176 3028 89 31
+  xyzwh 230.188 414.008 3022 101 61
 end
 activityobjectcanvas 131718 activityobject_ref 128262 // activity object Order Event
   
-  xyzwh 172 362 3034 113 57
+  xyzwh 224.512 523.492 3034 113 57
 end
 activityactioncanvas 131974 activityaction_ref 134790 // activity action Integrate Event
   
   show_opaque_action_definition default
-  xyzwh 184 498 3028 100 60
+  xyzwh 235.292 658.655 3028 101 61
   pins
     pincanvas 135430 pin_ref 141574 // output
-      xyzwh 283 520 3029 11 11 label_xy 287 504
+      xyzwh 335.228 680.663 3029 11 11 label_xy 339 665
+    end
+    pincanvas 138502 pin_ref 148358 // p1
+      xyzwh 225.951 685.091 3030 11 11 label_xy 206 674
+    end
+    pincanvas 138630 pin_ref 148486 // p2
+      xyzwh 225.951 666.528 3030 11 11 label_xy 205 655
     end
   end
 end
 activityactioncanvas 132358 activityaction_ref 134918 // activity action Integrate Trade
   
   show_opaque_action_definition default
-  xyzwh 493 493 3028 100 60
+  xyzwh 543.194 653.875 3028 101 61
   pins
     pincanvas 135686 pin_ref 141702 // output
-      xyzwh 483 518 3029 11 11 label_xy 442 499
+      xyzwh 533.214 680.311 3029 11 11 label_xy 493 660
     end
   end
 end
 activitynodecanvas 132486 activitynode_ref 134534 // merge
-  xyz 373 507 3022
+  xyz 425.793 667.663 3022
 end
 activitynodecanvas 132870 activitynode_ref 134662 // decision
-  xyz 376 573 3028
+  xyz 427.581 733.354 3028
 end
 activitynodecanvas 133126 activitynode_ref 134790 // flow_final
-  xyz 461 583 3022
+  xyz 513.047 745.67 3022
 end
 activityobjectcanvas 133382 activityobject_ref 128390 // activity object Order Event
   
-  xyzwh 332 655 3022 113 57
+  xyzwh 383.581 816.38 3022 113 57
 end
 activityactioncanvas 133638 activityaction_ref 135046 // activity action Cleanse
   
   show_opaque_action_definition default
-  xyzwh 342 747 3028 100 60
+  xyzwh 394.008 907.081 3028 101 61
   pins
-    pincanvas 135942 pin_ref 141830 // output
-      xyzwh 385 806 3029 11 11 label_xy 334 809
+    pincanvas 135942 pin_ref 141830 // event
+      xyzwh 436.692 967.979 3029 11 11 label_xy 387 970
+    end
+    pincanvas 139526 pin_ref 162310 // event
+      xyzwh 384 912 3030 11 11 label_xy 336 903
     end
   end
 end
 activityobjectcanvas 133894 activityobject_ref 128518 // activity object Order Event
   
-  xyzwh 349 905 3022 95 57
+  xyzwh 399.148 1065.48 3022 95 57
 end
 activityactioncanvas 134150 activityaction_ref 141574 // activity action Trade Record Received
   
   show_opaque_action_definition default
-  xyzwh 482 63 3022 100 60
+  xyzwh 530.319 224.706 3022 101 61
+  pins
+    pincanvas 139398 pin_ref 161670 // Trade Record
+      xyzwh 630.35 228.73 3024 11 11 label_xy 624 219
+    end
+  end
 end
 activityobjectcanvas 134278 activityobject_ref 135046 // activity object Trade Record
   
-  xyzwh 487 172 3034 89 31
+  xyzwh 536.319 334.519 3034 89 31
 end
 activityactioncanvas 134534 activityaction_ref 141702 // activity action Extract Trade
   
   show_opaque_action_definition default
-  xyzwh 484 250 3028 100 60
+  xyzwh 535.07 409.904 3028 101 61
 end
 activityobjectcanvas 134790 activityobject_ref 135174 // activity object Trade Event
   
-  xyzwh 482 370 3022 113 43
+  xyzwh 532.09 533.808 3022 113 43
 end
 activitynodecanvas 136070 activitynode_ref 141318 // decision
-  xyz 381 857 3028
+  xyz 432.36 1019 3028
 end
 activitynodecanvas 136454 activitynode_ref 141446 // flow_final
-  xyz 461 864 3022
+  xyz 513.047 1025.01 3022
 end
 note 136710 "Records are in an exchange-specific formats"
-  xyzwh 315 160 2000 141 57
+  xyzwh 367.793 323.955 2000 141 57
 note 137094 "Events are in the standard formats "
-  xyzwh 323 365 2000 113 47
+  xyzwh 373.697 526.381 2000 113 47
 note 137478 "Integrate might not be able to produce Order Event[Integrated] immediately - it saves an input event for later and returns NULL"
-  xyzwh 518 556 2000 223 73
+  xyzwh 569.56 718.67 2000 223 73
 activitynodecanvas 137862 activitynode_ref 147974 // initial_node
-  xyz 380 15 3028
-end
-flowcanvas 131462 flow_ref 134918 // <flow>
-  
-  from ref 131334 z 3029 to ref 130950
-   write_horizontally default
-end
-flowcanvas 131590 flow_ref 135046 // <flow>
-  
-  from ref 130694 z 3035 to ref 131334
-   write_horizontally default
+  xyz 428.793 115.814 3028
 end
 flowcanvas 131846 flow_ref 135174 // <flow>
   
@@ -116,7 +121,7 @@ end
 flowcanvas 132102 flow_ref 135302 // <flow>
   decenter_begin 522
   
-  from ref 131718 z 3035 label "[Occured > N secs ago]" xyz 101 451 3035 to ref 131974
+  from ref 131718 z 3035 label "[Occured > N secs ago]" xyz 152 611 3035 to ref 131974
    write_horizontally default
 end
 flowcanvas 132998 flow_ref 135686 // <flow>
@@ -126,12 +131,12 @@ flowcanvas 132998 flow_ref 135686 // <flow>
 end
 flowcanvas 133254 flow_ref 135814 // <flow>
   
-  from ref 132870 z 3029 label "[null]" xyz 417 574 3029 to ref 133126
+  from ref 132870 z 3029 label "[null]" xyz 467 735 3029 to ref 133126
    write_horizontally default
 end
 flowcanvas 133510 flow_ref 135942 // <flow>
   
-  from ref 132870 z 3029 label "[else]" xyz 352 625 3029 to ref 133382
+  from ref 132870 z 3029 label "[else]" xyz 403 787 3029 to ref 133382
    write_horizontally default
 end
 flowcanvas 133766 flow_ref 136070 // <flow>
@@ -156,7 +161,7 @@ flowcanvas 134918 flow_ref 142982 // <flow>
 end
 flowcanvas 135046 flow_ref 143110 // <flow>
   
-  from ref 134790 z 3029 label "[Occured > M secs ago]" xyz 549 450 3029 to ref 132358
+  from ref 134790 z 3029 label "[Occured > M secs ago]" xyz 600 611 3029 to ref 132358
    write_horizontally default
 end
 flowcanvas 135558 flow_ref 143238 // <flow>
@@ -176,26 +181,25 @@ flowcanvas 136198 flow_ref 143494 // <flow>
 end
 flowcanvas 136326 flow_ref 143622 // <flow>
   
-  from ref 136070 z 3029 label "[else]" xyz 358 885 3029 to ref 133894
+  from ref 136070 z 3029 label "[else]" xyz 410 1045 3029 to ref 133894
    write_horizontally default
 end
 flowcanvas 136582 flow_ref 143750 // <flow>
   
-  from ref 136070 z 3029 label "[null]" xyz 420 861 3029 to ref 136454
-   write_horizontally default
-end
-flowcanvas 137990 flow_ref 150278 // <flow>
-  
-  from ref 137862 z 3035 to ref 130694
+  from ref 136070 z 3029 label "[null]" xyz 472 1021 3029 to ref 136454
    write_horizontally default
 end
 flowcanvas 138118 flow_ref 150406 // <flow>
   
-  from ref 137862 z 3029 to ref 134150
+  from ref 137862 z 3029 to point 520.46 201.29
+  line 139014 z 3029 to ref 134150
    write_horizontally default
 end
-line 136838 -_-_
-  from ref 136710 z 3029 to ref 131334
+flowcanvas 139142 flow_ref 157062 // <flow>
+  
+  from ref 137862 z 3035 to ref 130694
+   write_horizontally default
+end
 line 136966 -_-_
   from ref 136710 z 3035 to ref 134278
 line 137222 -_-_
