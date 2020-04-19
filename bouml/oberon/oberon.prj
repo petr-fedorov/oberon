@@ -1,6 +1,6 @@
 format 222
 "oberon"
-  revision 11
+  revision 13
   modified_by 6 "petr"
   cpp_root_dir "/home/petr/repos/oberon/src/"
 
@@ -75,8 +75,8 @@ format 222
 	pin 155014 "Order Record" explicit_type ""
 	  unordered 
 	  out
-	  flow 171398 "<flow>"
-	    on activitynode_ref 167942 // merge
+	  flow 182534 "<flow>"
+	    on activitynode_ref 168198 // fork
 	  end
 	end
 
@@ -126,35 +126,13 @@ format 222
 	end
       end
 
-      activitynode 167686 decision ""
-	flow 171014 "<flow>"
-	  on activitynode_ref 167814 // activity_final
-	    uml_guard "Stop Request"
-	end
-
-	flow 172166 "<flow>"
-	  on activitynode_ref 168198 // fork
-	    uml_guard "Record"
-	end
-      end
-
       activitynode 167814 activity_final ""
       end
 
       activityaction 148230 "Stop Request Received"
 	accept_event_action
-	pin 161542 "Stop Request" explicit_type ""
-	  unordered is_control
-	  out
-	  flow 171270 "<flow>"
-	    on activitynode_ref 167942 // merge
-	  end
-	end
-      end
-
-      activitynode 167942 merge ""
-	flow 171526 "<flow>"
-	  on activitynode_ref 167686 // decision
+	flow 182662 "<flow>"
+	  on activitynode_ref 167814 // activity_final
 	end
       end
 
@@ -193,14 +171,6 @@ format 222
       end
 
       activitynode 168710 fork ""
-	flow 173958 "<flow>"
-	  on activityaction_ref 148614 // activity action Extract
-	end
-
-	flow 174086 "<flow>"
-	  on activityaction_ref 148614 // activity action Extract
-	end
-
 	flow 174214 "<flow>"
 	  on activityaction_ref 148614 // activity action Extract
 	end
@@ -286,6 +256,9 @@ format 222
 	   multiplicity "1..*" unordered is_control
 	  in
 	end
+      end
+
+      interruptibleactivityregion 134534 ""
       end
     end
   end
