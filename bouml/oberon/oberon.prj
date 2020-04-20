@@ -1,8 +1,8 @@
 format 222
 "oberon"
-  revision 13
+  revision 19
   modified_by 6 "petr"
-  cpp_root_dir "/home/petr/repos/oberon/src/"
+  cpp_root_dir "/home/petr/repos/oberon/"
 
 
   
@@ -45,10 +45,13 @@ format 222
 
   mark_for_import
   
+  cpp_h_dir "src"
+  cpp_src_dir "src"
   cpp_namespace "oberon"
   ncouples 1
-  key "html dir" value "/tmp/bouml/"
-  usecaseview 128006 "Oberon"
+  key "html dir" value "/home/petr/repos/oberon/docs/design/"
+  comment "Order Book Events ReconstructiON"
+  usecaseview 128006 "Overview"
     
     usecasediagramsettings end
     
@@ -69,113 +72,69 @@ format 222
     
     activitydiagramsettings
      end
-    activity 128006 "Order Book Reconstruction"
-      activityaction 134534 "Record Received"
-	accept_event_action
-	pin 155014 "Order Record" explicit_type ""
-	  unordered 
-	  out
-	  flow 182534 "<flow>"
-	    on activitynode_ref 168198 // fork
-	  end
-	end
-
-	flow 163846 "<flow>"
-	  on activityaction_ref 134534 // activity action Record Received
-	end
-      end
-
-      activityaction 135046 "Cleanse"
-	opaque_action
-	pin 141830 "event" explicit_type ""
-	   multiplicity "*" fifo 
-	  out
-	  flow 175366 "<flow>"
-	    on activitynode_ref 169350 // merge
-	  end
-
-	  flow 175494 "<flow>"
-	    on activitynode_ref 169606 // fork
-	  end
-	end
-
-	pin 162310 "event" explicit_type ""
-	   multiplicity "1..*" unordered is_control
-	  in
-	end
-      end
-
-      activitynode 154502 merge ""
-      end
-
-      activitydiagram 147718 "Order Book Events Reconstruction"
+    activity 128006 "Overview"
+      activitydiagram 147718 "Overview Diagram"
 	activitydiagramsettings draw_all_relations no
 	 end
 	size A4
       end
 
-      activitynode 161030 merge ""
-	flow 170886 "<flow>"
+      activitynode 161158 initial_node "Launch"
+	flow 163590 "0"
+	  on activitynode_ref 161030 // merge
+	end
+      end
+
+      activitynode 161030 merge "M1"
+	flow 170886 "1"
 	  on activityaction_ref 134534 // activity action Record Received
 	end
       end
 
-      activitynode 161158 initial_node ""
-	flow 163590 "<flow>"
-	  on activitynode_ref 161030 // merge
-	end
-      end
-
-      activitynode 167814 activity_final ""
-      end
-
-      activityaction 148230 "Stop Request Received"
+      activityaction 134534 "Record Received"
 	accept_event_action
-	flow 182662 "<flow>"
-	  on activitynode_ref 167814 // activity_final
+	pin 155014 "record" type class_ref 174214 // Record
+	  unordered 
+	  out
+	  flow 182534 "2"
+	    on activitynode_ref 168198 // fork
+	  end
 	end
       end
 
-      activitynode 168198 fork ""
-	flow 172294 "<flow>"
+      activitynode 168198 fork "A"
+	comment "Sends received record for further processsing and reactivate Record Received, so next record can be received"
+	flow 172294 "3b"
 	  on activitynode_ref 161030 // merge
 	end
 
-	flow 172422 "<flow>"
-	  on activityaction_ref 148358 // activity action Process Order
-	end
-
-	flow 175110 "<flow>"
+	flow 175110 "3a"
 	  on pin_ref 161798 // record
 	end
       end
 
-      activityaction 148358 "Process Order"
-	opaque_action
-      end
-
       activityaction 148614 "Extract"
 	opaque_action
-	pin 161798 "record" explicit_type ""
+	pin 161798 "record" type class_ref 174214 // Record
 	   multiplicity "1..*" unordered is_control
 	  in
 	end
 
-	pin 161926 "event" explicit_type ""
+	pin 161926 "event" type class_ref 134534 // Event
 	   multiplicity "1..*" unordered 
 	  out
-	  flow 173830 "<flow>"
+	  flow 173830 "4"
 	    on activitynode_ref 168710 // fork
 	  end
 	end
       end
 
-      activitynode 168710 fork ""
-	flow 174214 "<flow>"
+      activitynode 168710 fork "B"
+	flow 174214 "5b"
 	  on activityaction_ref 148614 // activity action Extract
 	end
 
-	flow 174470 "<flow>"
+	flow 174470 "5a"
 	  on pin_ref 162054 // event
 	end
       end
@@ -190,30 +149,51 @@ format 222
 	pin 162182 "event" explicit_type ""
 	   multiplicity "*" unordered is_control
 	  out
-	  flow 174598 "<flow>"
+	  flow 174598 "6"
 	    on activitynode_ref 168966 // fork
 	  end
 	end
       end
 
-      activitynode 168966 fork ""
-	flow 174726 "<flow>"
+      activitynode 168966 fork "C"
+	flow 174726 "7b"
 	  on activityaction_ref 148742 // activity action Integrate
 	end
 
-	flow 174854 "<flow>"
+	flow 174854 "7a"
 	  on activitynode_ref 169094 // decision
 	end
       end
 
       activitynode 169094 decision ""
-	flow 174982 "<flow>"
+	flow 174982 "8a"
 	  on activitynode_ref 169222 // flow_final
 	    uml_guard "null"
 	end
 
-	flow 175238 "<flow>"
+	flow 175238 "8b"
 	  on pin_ref 162310 // event
+	    uml_guard "else"
+	end
+      end
+
+      activityaction 135046 "Cleanse"
+	opaque_action
+	pin 141830 "event" explicit_type ""
+	   multiplicity "*" fifo 
+	  out
+	  flow 175366 "<flow>"
+	    on activitynode_ref 169350 // merge
+	  end
+
+	  flow 175494 "9"
+	    on activitynode_ref 169606 // fork
+	  end
+	end
+
+	pin 162310 "event" explicit_type ""
+	   multiplicity "1..*" unordered is_control
+	  in
 	end
       end
 
@@ -226,24 +206,25 @@ format 222
       activitynode 169478 flow_final ""
       end
 
-      activitynode 169606 fork ""
-	flow 175622 "<flow>"
+      activitynode 169606 fork "D"
+	flow 175622 "10b"
 	  on activityaction_ref 135046 // activity action Cleanse
 	end
 
-	flow 175750 "<flow>"
+	flow 175750 "10a"
 	  on activitynode_ref 169734 // decision
 	end
       end
 
       activitynode 169734 decision ""
-	flow 175878 "<flow>"
+	flow 175878 "11a"
 	  on activitynode_ref 169862 // flow_final
 	    uml_guard "null"
 	end
 
-	flow 176006 "<flow>"
+	flow 176006 "11b"
 	  on pin_ref 162438 // event
+	    uml_guard "else"
 	end
       end
 
@@ -258,12 +239,25 @@ format 222
 	end
       end
 
+      activityaction 148230 "Stop Request Received"
+	accept_event_action
+	flow 182662 "12"
+	  on activitynode_ref 167814 // activity_final
+	end
+      end
+
+      activitynode 167814 activity_final ""
+      end
+
       interruptibleactivityregion 134534 ""
       end
     end
+
   end
 
-  package_ref 134534 // postgresql
+  package_ref 141190 // everywhere
 
   package_ref 134662 // R
+
+  package_ref 134534 // postgres
 end
