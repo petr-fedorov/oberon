@@ -1,0 +1,194 @@
+format 222
+
+activitycanvas 142854 activity_ref 148230 // S.1 Standalone application
+  
+  xyzwh 54 15 2000 751 539
+  params
+    parametercanvas 142982 parameter_ref 148998 // exchange_name
+        xyzwh 3 291 2001 99 25
+    end
+    parametercanvas 143238 parameter_ref 149126 // pair_name
+        xyzwh 3 260 2001 99 25
+    end
+    parametercanvas 143494 parameter_ref 149254 // destination
+        xyzwh 3 363 2001 99 25
+    end
+    parametercanvas 150790 parameter_ref 158086 // delay
+        xyzwh 3 329 2001 99 25
+    end
+  end
+end
+activityactioncanvas 143750 activityaction_ref 192390 // activity action S.1 Receive messages
+  
+  show_opaque_action_definition default
+  xyzwh 350 138 3038 100 60
+  pins
+    pincanvas 143878 pin_ref 213126 // websocket
+      xyzwh 340 164 3039 11 11 label_xy 279 153
+    end
+    pincanvas 144006 pin_ref 213254 // message
+      xyzwh 449 164 3039 11 11 label_xy 461 173
+    end
+  end
+end
+activityactioncanvas 144518 activityaction_ref 192518 // activity action S.1 Extract
+  
+  show_opaque_action_definition default
+  xyzwh 616 140 3033 100 60
+  pins
+    pincanvas 144646 pin_ref 213382 // message
+      xyzwh 606 166 3034 11 11 label_xy 546 140
+    end
+    pincanvas 144774 pin_ref 213510 // target
+      xyzwh 662 199 3034 11 11 label_xy 615 210
+    end
+  end
+end
+activityobjectcanvas 145542 activityobject_ref 134662 // activity object S.1 reconstructor
+  
+  xyzwh 612 256 3005 113 57 label_xy 616 240
+end
+activityactioncanvas 146950 activityaction_ref 193158 // activity action S.1 Every N seconds
+  
+  show_opaque_action_definition default
+  xyzwh 336 383 3023 100 60
+  pins
+    pincanvas 150406 pin_ref 214918 // result
+      xyzwh 435 406 3024 11 11 label_xy 443 424
+    end
+  end
+end
+activityactioncanvas 147078 activityaction_ref 193286 // activity action S.1 Cleanse
+  
+  show_opaque_action_definition default
+  xyzwh 615 383 3026 100 60
+  pins
+    pincanvas 154502 pin_ref 245766 // target
+      xyzwh 663 373 3027 11 11 label_xy 619 364
+    end
+    pincanvas 154630 pin_ref 245894 // current_time
+      xyzwh 605 406 3027 11 11 label_xy 533 389
+    end
+  end
+end
+activitynodecanvas 148486 activitynode_ref 189958 // initial_node
+  xyz 260 28 3027
+end
+activityactioncanvas 148742 activityaction_ref 193542 // activity action S.1 Stop request
+  
+  show_opaque_action_definition default
+  xyzwh 227 383 3019 100 60
+end
+activitynodecanvas 148870 activitynode_ref 190086 // activity_final
+  xyz 265 521 2006
+end
+interruptibleactivityregioncanvas 149126 interruptibleactivityregion_ref 141062 // 
+  xyzwh 110 57 2012 657 447
+end
+activityactioncanvas 151686 activityaction_ref 213638 // activity action S.1 Initialize
+  
+  show_opaque_action_definition default
+  xyzwh 223 258 4013 100 60
+  pins
+    pincanvas 151814 pin_ref 237830 // exchange_name
+      xyzwh 213 298 4014 11 11 label_xy 115 284
+    end
+    pincanvas 151942 pin_ref 237958 // pair_name
+      xyzwh 213 267 4014 11 11 label_xy 149 250
+    end
+    pincanvas 152070 pin_ref 238086 // delay
+      xyzwh 232 317 4014 11 11 label_xy 186 330
+    end
+    pincanvas 152198 pin_ref 238214 // reconstructor
+      xyzwh 322 280 4014 11 11 label_xy 334 272
+    end
+    pincanvas 152326 pin_ref 238342 // websocket
+      xyzwh 291 248 4014 11 11 label_xy 300 236
+    end
+    pincanvas 152454 pin_ref 238470 // destination
+      xyzwh 250 317 4014 11 11 label_xy 263 335
+    end
+  end
+end
+activitynodecanvas 155014 activitynode_ref 209670 // initial_node
+  xyz 776 159 2014
+end
+activitypartitioncanvas 155270 activitypartition_ref 128006 // Reconstructor
+  color lightgreen
+  xyzwh 519 84 2005 221 379
+end
+activitypartitioncanvas 156038 activitypartition_ref 128134 // Application
+  xyzwh 125 84 2010 377 379
+end
+flowcanvas 144902 flow_ref 218374 // S.1.6
+  
+  from ref 144006 z 3022 label "S.1.6" xyz 517.5 163 3022 to ref 144646
+   write_horizontally default
+end
+flowcanvas 145798 flow_ref 218630 // S.1.8
+  
+  from ref 145542 z 2009 label "S.1.8" xyz 652.5 226 2009 to ref 144774
+   write_horizontally default
+end
+flowcanvas 148998 flow_ref 219782 // S.1.13
+  
+  from ref 148742 z 2013 label "S.1.13" xyz 257.5 475 2013 to ref 148870
+   write_horizontally default
+end
+flowcanvas 152582 flow_ref 243462 // S.1.9
+  geometry HV
+  
+  from ref 150790 z 2013 label "S.1.9" xyz 154.5 335 2013 to point 235 339
+  line 154246 z 2013 to ref 152070
+   write_horizontally default
+end
+flowcanvas 152710 flow_ref 243590 // S.1.10
+  geometry HV
+  
+  from ref 143494 z 2013 label "S.1.10" xyz 159.5 369 2013 to point 253 373
+  line 154374 z 2013 to ref 152454
+   write_horizontally default
+end
+flowcanvas 152838 flow_ref 243718 // S.1.3
+  
+  from ref 143238 z 2013 label "S.1.3" xyz 142.5 266 2013 to ref 151942
+   write_horizontally default
+end
+flowcanvas 152966 flow_ref 243846 // S.1.4
+  
+  from ref 142982 z 2013 label "S.1.4" xyz 142.5 297 2013 to ref 151814
+   write_horizontally default
+end
+flowcanvas 153350 flow_ref 243974 // S.1.5
+  geometry VH
+  
+  from ref 152326 z 3022 label "S.1.5" xyz 282 202 3022 to point 294 167
+  line 155910 z 3022 to ref 143878
+   write_horizontally default
+end
+flowcanvas 153478 flow_ref 244102 // S.1.7
+  
+  from ref 152198 z 2013 label "S.1.7" xyz 457 270.5 2013 to ref 145542
+   write_horizontally default
+end
+flowcanvas 153606 flow_ref 244230 // S.1.1
+  
+  from ref 148486 z 3039 label "S.1.1" xyz 255.5 145.5 5044 to ref 151686
+   write_horizontally default
+end
+flowcanvas 154758 flow_ref 251398 // S.1.11
+  
+  from ref 145542 z 3008 label "S.1.11" xyz 650.5 336 3008 to ref 154502
+   write_horizontally default
+end
+flowcanvas 154886 flow_ref 251526 // S.1.12
+  
+  from ref 150406 z 3021 label "S.1.12" xyz 506 405 3021 to ref 154630
+   write_horizontally default
+end
+flowcanvas 155142 flow_ref 251654 // S.1.2
+  
+  from ref 155014 z 3034 label "S.1.2" xyz 731 162 3034 to ref 144518
+   write_horizontally default
+end
+end

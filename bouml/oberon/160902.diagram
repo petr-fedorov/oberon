@@ -1,0 +1,53 @@
+format 222
+
+activitycanvas 128006 activity_ref 134534 // Extract
+  
+  xyzwh 90 51 2007 699 379
+  params
+    parametercanvas 128134 parameter_ref 128006 // record
+        xyzwh 37 109 2008 107 25
+    end
+    parametercanvas 128262 parameter_ref 128134 // exchange
+        xyzwh 37 283 2008 107 25
+    end
+    parametercanvas 128390 parameter_ref 128262 // event
+        xyzwh 741 202 2008 107 25
+    end
+  end
+end
+activityactioncanvas 129158 activityaction_ref 155782 // activity action Create
+  
+  show_opaque_action_definition default
+  xyzwh 343 190 2012 100 60
+  pins
+    pincanvas 129286 pin_ref 170118 // target
+      xyzwh 391 249 2014 11 11 label_xy 352 254
+    end
+    pincanvas 129414 pin_ref 170246 // 
+      xyzwh 442 214 2014 11 11 label_xy 457 205
+    end
+    pincanvas 129542 pin_ref 170374 // record
+      xyzwh 392 180 2014 11 11 label_xy 355 162
+    end
+  end
+end
+flowcanvas 129670 flow_ref 190598 // <flow>
+  geometry HV
+  
+  from ref 128262 z 2015 to point 394 293
+  line 130054 z 2015 to ref 129286
+   write_horizontally default
+end
+flowcanvas 129798 flow_ref 190726 // <flow>
+  geometry HV
+  
+  from ref 128134 z 2015 to point 395 119
+  line 130310 z 2015 to ref 129542
+   write_horizontally default
+end
+flowcanvas 129926 flow_ref 190854 // <flow>
+  
+  from ref 129414 z 2015 to ref 128390
+   write_horizontally default
+end
+end

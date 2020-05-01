@@ -1,0 +1,64 @@
+format 222
+
+statecanvas 128262 state_ref 143878 // Open
+  
+  xyzwh 104 75 2005 691 559
+end
+pseudostatecanvas 128390 pseudostate_ref 142598 // initial
+   xyz 196 131 2010
+end
+statecanvas 128518 state_ref 144006 // Populated
+  
+  xyzwh 391 206 2010 79 31
+end
+pseudostatecanvas 132486 pseudostate_ref 143110 // choice
+   xyz 479 373 2010
+end
+pseudostatecanvas 132870 pseudostate_ref 143238 // choice
+   xyz 298 447 2010
+end
+pseudostatecanvas 133510 pseudostate_ref 143494 // choice
+   xyz 185 356 2010
+end
+pseudostatecanvas 133766 pseudostate_ref 143622 // exit_point
+   xyz 299 344 3005 label_xy 278 333
+end
+transitioncanvas 128646 transition_ref 152326 // message
+  
+  from ref 128390 z 2011 label "Message / save" xyz 343 145 3000 to ref 128518
+  write_horizontally default show_definition yes drawing_language default
+end
+transitioncanvas 133126 transition_ref 153606 // <transition>
+  
+  from ref 132486 z 2011 label "[is same side]" xyz 362.5 420 3000 to ref 132870
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 133638 transition_ref 153862 // <transition>
+  
+  from ref 132870 z 2011 label "[is deleted] / delete" xyz 201.5 413 3000 to ref 133510
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 133894 transition_ref 153990 // <transition>
+  
+  from ref 133510 z 3006 label "[store is empty]" xyz 212.5 356.5 3000 to ref 133766
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 134022 transition_ref 154118 // <transition>
+  
+  from ref 133510 z 2011 label "[store is not empty]" xyz 145 302 3000 to point 194 260
+  line 134150 z 2011 to ref 128518
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 134406 transition_ref 154246 // <transition>
+  
+  from ref 132870 z 2011 to point 126 453
+  line 134662 z 2011 to point 141 208
+  line 134534 z 2011 label "[is not deleted]" xyz 310.5 185 3000 to ref 128518
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 135302 transition_ref 155014 // <transition>
+  
+  from ref 128518 z 2011 label "SingleOrderMessage" xyz 402.5 297.5 3000 to ref 132486
+  write_horizontally default show_definition default drawing_language default
+end
+end

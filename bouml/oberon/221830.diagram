@@ -1,0 +1,174 @@
+format 222
+
+activitycanvas 128518 activity_ref 168710 // S.7 Initialize
+  
+  xyzwh 75 96 2007 665 449
+  params
+    parametercanvas 128646 parameter_ref 164742 // exchange_name
+        xyzwh 24 276 2008 103 25
+    end
+    parametercanvas 128774 parameter_ref 164870 // pair_name
+        xyzwh 24 391 2008 103 25
+    end
+    parametercanvas 128902 parameter_ref 164998 // delay
+        xyzwh 389 532 2008 103 25
+    end
+    parametercanvas 129030 parameter_ref 165126 // reconstructor
+        xyzwh 688 424 2008 103 25
+    end
+    parametercanvas 129158 parameter_ref 165254 // websocket
+        xyzwh 688 283 2008 103 25
+    end
+    parametercanvas 129286 parameter_ref 165382 // destination
+        xyzwh 339 84 2009 115 25
+    end
+  end
+end
+activityobjectcanvas 129414 activityobject_ref 141190 // activity object exchange_name
+  
+  xyzwh 176 261 2012 111 57 label_xy 176 318
+end
+activityobjectcanvas 129542 activityobject_ref 141318 // activity object pair_name
+  
+  xyzwh 203 373 2012 95 57 label_xy 206 431
+end
+activityactioncanvas 129926 activityaction_ref 213254 // activity action S.7 Create a store for Limit Order Book
+  
+  show_opaque_action_definition default
+  xyzwh 347 172 2012 100 60
+  pins
+    pincanvas 130310 pin_ref 236294 // destination
+      xyzwh 390 162 2014 11 11 label_xy 311 153
+    end
+    pincanvas 130438 pin_ref 236422 // pair_name
+      xyzwh 337 207 2014 11 11 label_xy 267 210
+    end
+    pincanvas 130566 pin_ref 236550 // exchange_name
+      xyzwh 337 183 2014 11 11 label_xy 228 174
+    end
+    pincanvas 130694 pin_ref 236678 // store
+      xyzwh 386 231 2014 11 11 label_xy 403 237
+    end
+  end
+end
+activityactioncanvas 130054 activityaction_ref 213382 // activity action S.7 Create Order Book Reconstructor
+  
+  show_opaque_action_definition default
+  xyzwh 382 428 2012 100 60
+  pins
+    pincanvas 133638 pin_ref 238726 // 
+      xyzwh 481 434 2014 11 11 label_xy 496 425
+    end
+    pincanvas 133766 pin_ref 238854 // exchange_name
+      xyzwh 372 432 2014 11 11 label_xy 267 435
+    end
+    pincanvas 133894 pin_ref 238982 // pair_name
+      xyzwh 372 458 2014 11 11 label_xy 307 473
+    end
+    pincanvas 134022 pin_ref 239110 // store
+      xyzwh 389 418 2014 11 11 label_xy 403 407
+    end
+    pincanvas 134150 pin_ref 239238 // delay
+      xyzwh 434 487 2014 11 11 label_xy 455 494
+    end
+  end
+end
+activityactioncanvas 130182 activityaction_ref 213510 // activity action S.7 Subscribe
+  
+  show_opaque_action_definition default
+  xyzwh 518 270 2012 100 60
+  pins
+    pincanvas 132614 pin_ref 237446 // pair_name
+      xyzwh 508 304 2014 11 11 label_xy 431 295
+    end
+    pincanvas 132742 pin_ref 237574 // exchange_name
+      xyzwh 508 282 2014 11 11 label_xy 399 273
+    end
+    pincanvas 132870 pin_ref 237702 // websocket
+      xyzwh 617 290 2014 11 11 label_xy 624 268
+    end
+  end
+end
+activitynodecanvas 131206 activitynode_ref 203142 // initial_node
+  xyz 528 193 2012
+end
+flowcanvas 129670 flow_ref 241670 // S.7.3
+  
+  from ref 128646 z 2013 label "S.7.3" xyz 136 282 2013 to ref 129414
+   write_horizontally default
+end
+flowcanvas 129798 flow_ref 241798 // S.7.4
+  
+  from ref 128774 z 2013 label "S.7.4" xyz 150 395 2013 to ref 129542
+   write_horizontally default
+end
+flowcanvas 130822 flow_ref 241926 // S.7.6
+  geometry VH
+  
+  from ref 129414 z 2015 label "S.7.6" xyz 217 218 2015 to point 229 186
+  line 135174 z 2015 to ref 130566
+   write_horizontally default
+end
+flowcanvas 130950 flow_ref 242054 // S.7.10
+  
+  from ref 129542 z 2015 label "S.7.10" xyz 308 249 2015 to ref 130438
+   write_horizontally default
+end
+flowcanvas 131078 flow_ref 242182 // S.7.2
+  
+  from ref 129286 z 2015 label "S.7.2" xyz 381 128 2015 to ref 130310
+   write_horizontally default
+end
+flowcanvas 131334 flow_ref 242310 // S.7.1
+  
+  from ref 131206 z 2013 label "S.7.1" xyz 472 195 2013 to ref 129926
+   write_horizontally default
+end
+flowcanvas 132998 flow_ref 242950 // S.7.7
+  
+  from ref 129414 z 2015 label "S.7.7" xyz 336 282 2015 to ref 132742
+   write_horizontally default
+end
+flowcanvas 133126 flow_ref 243078 // S.7.9
+  
+  from ref 129542 z 2015 label "S.7.9" xyz 421 330 2015 to ref 132614
+   write_horizontally default
+end
+flowcanvas 133254 flow_ref 243206 // S.7.12
+  
+  from ref 132870 z 2015 label "S.7.12" xyz 639 289 2015 to ref 129158
+   write_horizontally default
+end
+flowcanvas 134278 flow_ref 244358 // S.7.8
+  
+  from ref 129414 z 2015 label "S.7.8" xyz 325 397 2015 to ref 133766
+   write_horizontally default
+end
+flowcanvas 134406 flow_ref 244486 // S.7.14
+  geometry VH
+  
+  from ref 129542 z 2015 label "S.7.14" xyz 284 458 2015 to point 247 461
+  line 134534 z 2015 to ref 133894
+   write_horizontally default
+end
+flowcanvas 134662 flow_ref 244614 // S.7.11
+  
+  from ref 130694 z 2015 label "S.7.11" xyz 375 323 2015 to ref 134022
+   write_horizontally default
+end
+flowcanvas 134790 flow_ref 244742 // S.7.5
+  
+  from ref 128902 z 2015 label "S.7.5" xyz 425 508 2015 to ref 134150
+   write_horizontally default
+end
+flowcanvas 134918 flow_ref 244870 // S.7.13
+  
+  from ref 133638 z 2015 label "S.7.13" xyz 621 431 2015 to ref 129030
+   write_horizontally default
+end
+flowcanvas 135302 flow_ref 251782 // S.7.15
+  
+  from ref 130054 z 2013 label "S.7.15" xyz 479 372 2013 to ref 130182
+   write_horizontally default
+end
+end

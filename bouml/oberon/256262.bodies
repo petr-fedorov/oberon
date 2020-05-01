@@ -1,0 +1,11 @@
+class Reconstruction_State
+!!!261894.cpp!!!	_upper(inout stm : Reconstruction) : Reconstruction::AnyState
+  return 0;
+!!!262406.cpp!!!	create(inout stm : Reconstruction) : void
+  {
+    stm._set_currentState(stm._reconstruction_state._pure_state);
+#ifdef VERBOSE_STATE_MACHINE
+    puts("DEBUG : current state is now .Reconstruction.Pure");
+#endif
+    stm._reconstruction_state._pure_state.create(stm);
+  }

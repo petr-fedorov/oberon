@@ -1,0 +1,151 @@
+format 222
+
+statecanvas 129798 state_ref 141446 // Reconstruction
+   region_horizontally no
+  xyzwh 67 84 2000 719 849
+end
+pseudostatecanvas 130438 pseudostate_ref 141702 // initial
+   xyz 398 127 2005
+end
+statecanvas 130566 state_ref 142726 // Pure
+  
+  xyzwh 381 179 2005 57 31
+end
+statecanvas 134022 state_ref 143110 // Stained
+   region_horizontally no
+  xyzwh 85 552 3017 567 455
+end
+pseudostatecanvas 134150 pseudostate_ref 141830 // initial
+   xyz 115 617 3022
+end
+pseudostatecanvas 134278 pseudostate_ref 141958 // initial
+   xyz 601 617 3028
+end
+statecanvas 134406 state_ref 143238 // Empty
+  
+  xyzwh 150 605 3028 57 31
+end
+statecanvas 134534 state_ref 143366 // Empty
+  
+  xyzwh 561 605 3022 57 31
+end
+statecanvas 134918 state_ref 143494 // Open
+  
+  xyzwh 86 600 3022 173 57
+end
+statecanvas 135046 state_ref 143622 // Open
+  
+  xyzwh 377 691 3040 175 57
+end
+pseudostatecanvas 137862 pseudostate_ref 142470 // exit_point
+   xyz 530 738 3046 label_xy 552 740
+end
+pseudostatecanvas 138246 pseudostate_ref 143750 // exit_point
+   xyz 522 738 3052 label_xy 505 757
+end
+statecanvas 138758 state_ref 144390 // Crossed
+  
+  xyzwh 382 841 3029 173 53
+end
+pseudostatecanvas 139142 pseudostate_ref 144006 // entry_point
+   xyz 503 884 3034 label_xy 516 1007
+end
+pseudostatecanvas 139526 pseudostate_ref 144134 // exit_point
+   xyz 404 626 3034 label_xy 361 727
+end
+pseudostatecanvas 139654 pseudostate_ref 144262 // exit_point
+   xyz 543 884 3034 label_xy 566 894
+end
+transitioncanvas 130694 transition_ref 150022 // <transition>
+  
+  from ref 130438 z 2006 to ref 130566
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 131334 transition_ref 150406 // Match
+  
+  from ref 130566 z 2006 label "Match" xyz 242 594 2006 to point 297 549
+  line 131590 z 2006 to point 202 611
+  line 137734 z 2006 to ref 130566
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 133638 transition_ref 150918 // deleted
+  
+  from ref 130566 z 2006 label "Deactivation" xyz 443.5 586.5 2006 to point 602 248
+  line 133766 z 2006 to point 527 691
+  line 133894 z 2006 to ref 130566
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 134662 transition_ref 151046 // <transition>
+  decenter_end 736
+  
+  from ref 134278 z 3029 to ref 134534
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 134790 transition_ref 151174 // <transition>
+  
+  from ref 134150 z 3029 to ref 134406
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 135174 transition_ref 151302 // Ask
+  
+  from ref 130566 z 3023 label "Ask / save" xyz 257.5 654.5 3023 to ref 134918
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 135302 transition_ref 151430 // active buy message
+  decenter_begin 842
+  
+  from ref 130566 z 3041 label "Bid" xyz 342.5 1156.5 3041 to ref 135046
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 136070 transition_ref 151686 // deleted
+  
+  from ref 134534 z 3023 label "Deactivation" xyz 575 645 3023 to point 617 666
+  line 136198 z 3023 to point 641 653
+  line 136326 z 3023 to ref 134534
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 136454 transition_ref 151814 // match
+  
+  from ref 134534 z 3023 label "Match" xyz 553 692 3023 to point 567 566
+  line 136582 z 3023 to point 542 691
+  line 136710 z 3023 to ref 134534
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 136838 transition_ref 151942 // active buy message
+  
+  from ref 134534 z 3041 label "Bid" xyz 504.5 1004.5 3041 to ref 135046
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 137350 transition_ref 152070 // active sell message
+  
+  from ref 134534 z 3023 label "Ask" xyz 529 715 3023 to point 525 717
+  line 137478 z 3023 to point 525 747
+  line 137606 z 3023 to ref 134534
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 137990 transition_ref 152198 // <transition>
+  
+  from ref 137862 z 3047 to ref 134534
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 139014 transition_ref 154630 // <transition>
+  
+  from ref 135046 z 3041 label "Sell" xyz 412 1360 3041 to ref 138758
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 139270 transition_ref 154758 // <transition>
+  
+  from ref 138246 z 3053 to ref 139142
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 140038 transition_ref 155270 // <transition>
+  
+  from ref 139654 z 3035 to ref 134534
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 140166 transition_ref 155398 // <transition>
+  
+  from ref 139526 z 3041 to ref 135046
+  write_horizontally default show_definition default drawing_language default
+end
+end

@@ -1,0 +1,51 @@
+format 222
+
+activitycanvas 128006 activity_ref 155270 // S.6 Extract
+  
+  xyzwh 118 96 0 625 359
+  params
+    parametercanvas 128134 parameter_ref 156678 // message
+        xyzwh 71 224 1 95 25 label_xy 99 207
+    end
+    parametercanvas 128262 parameter_ref 156806 // reconstructor
+        xyzwh 71 260 1 95 25
+    end
+  end
+end
+activityactioncanvas 128390 activityaction_ref 206726 // activity action Extract order events
+  
+  show_opaque_action_definition default
+  xyzwh 319 222 3010 100 60
+  pins
+    pincanvas 128902 pin_ref 229382 // target
+      xyzwh 309 265 3012 11 11 label_xy 277 288
+    end
+    pincanvas 129030 pin_ref 229510 // message
+      xyzwh 309 230 3012 11 11 label_xy 272 213
+    end
+  end
+end
+note 129926 "message {stream} is handled by an indefinite loop ."
+  xyzwh 463 296 2000 197 49
+flowcanvas 129158 flow_ref 234630 // <flow>
+  
+  from ref 128134 z 3013 to ref 129030
+   write_horizontally default
+end
+flowcanvas 129286 flow_ref 234758 // <flow>
+  
+  from ref 128262 z 3013 to ref 128902
+   write_horizontally default
+end
+flowcanvas 129414 flow_ref 234886 // <flow>
+  decenter_begin 316
+  decenter_end 650
+  
+  from ref 128390 z 3011 to point 467 237
+  line 129542 z 3011 to point 467 259
+  line 129670 z 3011 to ref 128390
+   write_horizontally default
+end
+line 130054 -_-_
+  from ref 129926 z 3016 to ref 129670
+end

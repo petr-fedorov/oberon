@@ -1,0 +1,155 @@
+format 222
+"Postgres stored function" // Postgres stored function
+  revision 8
+  modified_by 6 "petr"
+  // class settings
+  
+  classdiagramsettings member_max_width 0 end
+  
+  classcompositediagramsettings end
+  
+  usecasediagramsettings end
+  
+  sequencediagramsettings end
+  
+  collaborationdiagramsettings end
+  
+  objectdiagramsettings end
+  
+  objectcompositediagramsettings end
+  
+  componentdiagramsettings
+   end
+  
+  deploymentdiagramsettings
+   end
+  
+  statediagramsettings
+   end
+  
+  activitydiagramsettings
+   end
+  
+  cpp_h_dir "postgres"
+  cpp_src_dir "postgres"
+  cpp_namespace "oberon::postgres"
+  comment "Elements to be used only when run on PostgreSQL server"
+  usecaseview 134918 "Postgres stored function"
+    
+    usecasediagramsettings end
+    
+    sequencediagramsettings end
+    
+    collaborationdiagramsettings end
+    
+    classdiagramsettings member_max_width 0 end
+    
+    classcompositediagramsettings end
+    
+    objectdiagramsettings end
+    
+    objectcompositediagramsettings end
+    
+    statediagramsettings
+     end
+    
+    activitydiagramsettings
+     end
+  end
+
+  deploymentview 154118 "Source files"
+    //deployment diagram settings
+    deploymentdiagramsettings
+     end
+    deploymentnode 134534 "PostgreSQL Server"
+      stereotype "executionEnvironment"
+    end
+
+    deploymentdiagram 167942 "diagram"
+      deploymentdiagramsettings show_context_mode namespace
+       end
+      size A4
+    end
+
+    artifact 160646 "oberon"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+      end
+    end
+
+    artifact 174470 "liboberon"
+      stereotype "library"
+      associated_artifacts
+	artifact_ref 134534 // reconstructor
+	artifact_ref 160646 // oberon
+      end
+    end
+  end
+
+  classview 161286 "Postgres stored function"
+    
+    classdiagramsettings member_max_width 0 end
+    
+    classcompositediagramsettings end
+    
+    collaborationdiagramsettings end
+    
+    objectdiagramsettings end
+    
+    objectcompositediagramsettings end
+    
+    sequencediagramsettings end
+    
+    statediagramsettings
+     end
+    
+    
+    activitydiagramsettings
+     end
+    class 230150 "PostgresFunction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 197638 // <generalisation>
+	relation 197510 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 197638 // <generalisation>
+	  b parent class_ref 237958 // Source
+      end
+
+      classrelation 197894 // <generalisation>
+	relation 197766 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 197894 // <generalisation>
+	  b parent class_ref 231302 // Store
+      end
+    end
+  end
+end

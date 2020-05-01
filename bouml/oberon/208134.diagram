@@ -1,0 +1,197 @@
+format 222
+
+classcanvas 128006 class_ref 194054 // Websocket
+  simpleclassdiagramsettings end
+  xyz 751 144.6 2000
+end
+usecasecanvas 129030 usecase_ref 134662 // Output "rooted" LOB events
+  xyzwh 368 735 3015 115 69 max_width 15 label_xy 383 752
+end
+usecasecanvas 129798 usecase_ref 134918 // Decode Bitfinex messages
+  xyzwh 55 221 3010 115 69 max_width 20 label_xy 70 239
+end
+usecasecanvas 130054 usecase_ref 135046 // Detect market orders
+  xyzwh 374 446 3015 115 69 max_width 15 label_xy 392 464
+end
+usecasecanvas 131718 usecase_ref 141574 // Infer missing attributes
+  xyzwh 233 716 3015 115 69 max_width 20 label_xy 254 737
+end
+usecasecanvas 131846 usecase_ref 141702 // Remove duplicate events
+  xyzwh 82 597 3015 115 69 max_width 20 label_xy 91 617
+end
+usecasecanvas 131974 usecase_ref 141830 // Separate fills and cancellations
+  xyzwh 96 687 3015 115 69 max_width 20 label_xy 105 708
+end
+usecasecanvas 132614 usecase_ref 141958 // Break up merged events
+  xyzwh 519 453 3015 115 69 max_width 20 label_xy 529 468
+end
+usecasecanvas 132870 usecase_ref 142086 // Infer missing events
+  xyzwh 222 453 3015 115 69 max_width 15 label_xy 247 476
+end
+usecasecanvas 133126 usecase_ref 142214 // Rearrange events
+  xyzwh 113 507 3015 115 69 max_width 10 label_xy 141 524
+end
+classcanvas 133382 class_ref 231302 // Store
+  simpleclassdiagramsettings end
+  xyz 654.2 921.8 2000
+end
+classcanvas 133638 class_ref 229510 // File
+  simpleclassdiagramsettings end
+  xyz 768.4 962.6 2006
+end
+classcanvas 133894 class_ref 229638 // Database
+  simpleclassdiagramsettings end
+  xyz 529.4 936.8 2006
+end
+classcanvas 134150 class_ref 237830 // Process
+  simpleclassdiagramsettings end
+  xyz 767.6 876.8 2006
+end
+classcanvas 134406 class_ref 230022 // RFunction
+  simpleclassdiagramsettings end
+  xyz 769.6 511.8 3005
+end
+classcanvas 134662 class_ref 237958 // Source
+  simpleclassdiagramsettings end
+  xyz 670.2 218 3011
+end
+classcanvas 135046 class_ref 230150 // PostgresFunction
+  simpleclassdiagramsettings end
+  xyz 664.6 420.8 3017
+end
+packagecanvas 137094 
+  package_ref 141190 // Order Book Reconstructor
+    xyzwh 21 129 2000 641 717
+end
+usecasecanvas 137862 usecase_ref 148742 // Decode Bitstamp Messages
+  xyzwh 115 306 3005 115 69 max_width 20 label_xy 123 327
+end
+usecasecanvas 137990 usecase_ref 148870 // Decode Coinbase messages
+  xyzwh 250 359 3010 115 69 max_width 20 label_xy 257 380
+end
+usecasecanvas 138118 usecase_ref 148998 // Decode MOEX messages
+  xyzwh 395 368 3005 115 69 max_width 15 label_xy 409 389
+end
+usecasecanvas 139526 usecase_ref 149126 // Extract
+  xyzwh 336 230 3005 201 45 label_xy 411 243
+end
+usecasecanvas 140550 usecase_ref 149254 // Cleanse
+  xyzwh 419 632 3005 201 45 label_xy 494 645
+end
+subject 141958 "Reconstructor"
+  xyzwh 38.8 175 2005 606 641
+classcanvas 142214 class_ref 194182 // BitfinexWebsocket
+  simpleclassdiagramsettings end
+  xyz 517.4 57.6 2006
+end
+classcanvas 142470 class_ref 194310 // BitstampWebsocket
+  simpleclassdiagramsettings end
+  xyz 723.8 24.4 2012
+end
+classcanvas 142726 class_ref 194438 // CoinbaseWebsocket
+  simpleclassdiagramsettings end
+  xyz 594.6 16.4 2018
+end
+usecasecanvas 142982 usecase_ref 149382 // Accumulate for cleansing
+  xyzwh 524 322 3005 115 69 max_width 15 label_xy 541 342
+end
+relationcanvas 133766 relation_ref 190342 // <generalisation>
+  from ref 133638 z 2007 to ref 133382
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 134022 relation_ref 190214 // <generalisation>
+  from ref 133894 z 2007 to ref 133382
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 134278 relation_ref 197126 // <generalisation>
+  from ref 134150 z 2007 to ref 133382
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 134790 relation_ref 197382 // <generalisation>
+  from ref 134406 z 3012 to ref 134662
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 134918 relation_ref 197254 // <generalisation>
+  from ref 128006 z 3012 to ref 134662
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 135174 relation_ref 197510 // <generalisation>
+  from ref 135046 z 3018 to ref 134662
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 136326 relation_ref 197638 // <generalisation>
+  from ref 134406 z 2001 to ref 133382
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 136454 relation_ref 197766 // <generalisation>
+  from ref 135046 z 3018 to ref 133382
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+simplerelationcanvas 139910 simplerelation_ref 148870
+  from ref 129798 z 3011 stereotype "<<include>>" xyz 218 252 3000 to ref 139526
+end
+simplerelationcanvas 140166 simplerelation_ref 148998
+  from ref 137862 z 3006 stereotype "<<include>>" xyz 259 297.5 3000 to ref 139526
+end
+simplerelationcanvas 140294 simplerelation_ref 149126
+  from ref 137990 z 3011 stereotype "<<include>>" xyz 341 314.5 3000 to ref 139526
+end
+simplerelationcanvas 140422 simplerelation_ref 149254
+  from ref 138118 z 3006 stereotype "<<include>>" xyz 408.5 320.5 3000 to ref 139526
+end
+simplerelationcanvas 140678 simplerelation_ref 149382
+  from ref 132614 z 3016 stereotype "<<include>>" xyz 510 574 3000 to ref 140550
+end
+simplerelationcanvas 140806 simplerelation_ref 149510
+  from ref 130054 z 3016 stereotype "<<include>>" xyz 443 571 3000 to ref 140550
+end
+simplerelationcanvas 140934 simplerelation_ref 149638
+  from ref 132870 z 3016 stereotype "<<include>>" xyz 375 576 3000 to ref 140550
+end
+simplerelationcanvas 141062 simplerelation_ref 149766
+  from ref 133126 z 3016 stereotype "<<include>>" xyz 306 594 3000 to ref 140550
+end
+simplerelationcanvas 141190 simplerelation_ref 149894
+  from ref 131846 z 3016 stereotype "<<include>>" xyz 273 639 3000 to ref 140550
+end
+simplerelationcanvas 141318 simplerelation_ref 150022
+  from ref 129030 z 3016 stereotype "<<include>>" xyz 441 704 3000 to ref 140550
+end
+simplerelationcanvas 141446 simplerelation_ref 150150
+  from ref 131718 z 3016 stereotype "<<include>>" xyz 370 700 3000 to ref 140550
+end
+simplerelationcanvas 141574 simplerelation_ref 150278
+  from ref 131974 z 3016 stereotype "<<include>>" xyz 281 689 3000 to ref 140550
+end
+line 141702 --->
+  from ref 134662 z 3012 label "sends messages" max_width 255 xyz 556 235 3012 to ref 139526
+line 141830 --->
+  from ref 140550 z 3006 label "sends events" max_width 255 xyz 559 784 3006 to ref 133382
+relationcanvas 142342 relation_ref 162182 // <generalisation>
+  from ref 142214 z 2007 to ref 128006
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 142598 relation_ref 154758 // <generalisation>
+  decenter_begin 481
+  from ref 142470 z 2013 to ref 128006
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 142854 relation_ref 154886 // <generalisation>
+  from ref 142726 z 2019 to ref 128006
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+simplerelationcanvas 143110 simplerelation_ref 150406
+  from ref 142982 z 3006 stereotype "<<include>>" xyz 467 297 3000 to ref 139526
+end
+end

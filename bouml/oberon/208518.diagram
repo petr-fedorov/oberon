@@ -1,0 +1,36 @@
+format 222
+
+usecasecanvas 128390 usecase_ref 134534 // Reconstruct Order Book
+  xyzwh 455 101 3005 229 91 label_xy 506 138
+end
+usecasecanvas 129030 usecase_ref 134662 // Output stable LOB events
+  xyzwh 569 300 3005 191 75 label_xy 601 329
+end
+usecasecanvas 129798 usecase_ref 134918 // Integrate order events and trades
+  xyzwh 350 268 3005 191 75 label_xy 356 298
+end
+usecasecanvas 130054 usecase_ref 135046 // Detect market orders
+  xyzwh 443 390 3005 191 75 label_xy 473 420
+end
+subject 131590 "Reconstructor"
+  xyzwh 332 38 0 463 481
+classcanvas 132230 class_ref 230022 // RFunction
+  simpleclassdiagramsettings end
+  xyz 60 149 2000
+end
+simplerelationcanvas 129158 simplerelation_ref 134662
+  from ref 129030 z 3006 stereotype "<<include>>" xyz 585 244 3000 to ref 128390
+end
+simplerelationcanvas 129926 simplerelation_ref 134918
+  from ref 129798 z 3006 stereotype "<<include>>" xyz 469 228 3000 to ref 128390
+end
+simplerelationcanvas 130182 simplerelation_ref 135046
+  from ref 130054 z 3006 stereotype "<<include>>" xyz 518 290 3000 to ref 128390
+end
+line 132358 --->
+  from ref 132230 z 3006 label "sends data from parameter" max_width 255 xyz 104 114 3000 to point 228 95
+  line 132742 z 3006 to ref 128390
+line 132486 --->
+  from ref 128390 z 3006 to point 269 248
+  line 132614 z 3006 label "receives and returns to R" max_width 255 xyz 129 207 3000 to ref 132230
+end

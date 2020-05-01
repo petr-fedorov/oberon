@@ -92,14 +92,32 @@ It should be clear from the above that substantial effort is required to reconst
 
 ## Overview
 
-Figure \@ref(fig:reconstruction-flowchart) shows UML2 Activity Diagram of the reconstruction algorithm (see [@cook_omg_2017] for the meaning of the shapes):
+Reconstruction algorithm comprises extract and cleanse parts. Figure \@ref(fig:reconstruction-activity) shows UML2 Activity Diagram [@cook_omg_2017] of a standalone application where interaction of the algorithm' parts can be seen.  The application consists of two classes: 
 
-```{r reconstruction-flowchart, echo=FALSE, fig.cap="An overview of the reconstruction algorithm", fig.align="center"}
+* `Application`, that provides data for the algorithm, and,
+* `Reconstructor` shown in light green, that implements the algorithm
+
+
+```{r reconstruction-activity, echo=FALSE, fig.cap="UML2 Activity Diagram  of a standalone application using Reconstruction algorithm", fig.align="center"}
 knitr::include_graphics("reconstruction.png", dpi=80)
 ```
-The content of *Records Received* depends on an exchange and type of a record, it may describe an order-related event or trade.  From these records we *Extract* information in the standard format for an order event as defined by \@ref(def:order-event) and a trade as defined by \@ref(def:trade). Then we  *Integrate* these objects and in particular attempts to find for each trade a corresponding order event. The output event is Order Event as defiind by \@ref(def:order-event) and collectively at this stage the events satisfy constraints of Order Table as defined by \@ref(def:order-table). Order Table may not satisfy constraints of Limit Order Book as defined by \@ref(def:lob) yet, so it is *Cleansed* [@rahm_data_2000] and, in particular, we attempt to identify market orders as defined by \@ref(def:market-buy-order) and \@ref(def:market-sell-order). See [oberon Documentation](design/index.html) for additional info.
+`Application` class starts from `S.1 Initialize` activity.  The activity connects to a websocket of the exchange specified by `exchange_name` and subscribes for the channels sending messages about the pair specified by `pair_name`. Then `S.1 Initialize` creates a store (i.e. file) where reconstructed events is to be persisted, creates an instance of `Reconstructor` and passes the store to the instance for future use. 
 
-Let's start the detailed description of the algoritm from the definition of what we reconstruct. Surprisingly, an order,  a limit order book,  the operations of a continous double auction are rather complicated things if one attempts to define them rigorously. Consider, for example,  a definition given in the recent book [@bouchaud_trades_2018]:
+Aftewards `Application` launches `S.2 Recive messages` and `S.1 Extract`. These activities run concurrently. `S.2 Recive messages` constinously receives messages from the exchange (note `{stream}` on the figure \@ref(fig:reconstruction-activity)) and sends them to `S.1 Extract` for a decoding (see figure \@ref(fig:reconstruction-use-case) for the list of decoders) and an accumulation to be processed later by `S.1 Cleanse`.
+
+The activity `S.1 Cleanse`, which is called periodically, performes so called *data cleansing*. According to [@rahm_data_2000]:
+
+> *Data cleaning*, also called *data cleansing* or *scrubbing*, deals with detecting and removing errors and inconsistencies from data in order to improve the quality of data.
+
+UML2 UseCase Diagram [@cook_omg_2017] shown on figure \@ref(fig:reconstruction-use-case) lists the kinds of cleansing performed by `S.1 Cleanse`. It should be clear from this list why `S.1 Cleanse` needs to be called periodically rather than processing each message as soon as the message has arrived.
+
+```{r reconstruction-use-case, echo=FALSE, fig.cap="UseCase diagram of Order Book Reconstructor package showing UseCases applied to Reconstructor class", fig.align="center"}
+knitr::include_graphics("reconstruction_use_case.png", dpi=80)
+```
+
+The output of `S.1 Cleanse` is a set of order events as defined by \@ref(def:order-event) which together compose Limit Order Book as defined by \@ref(def:lob)
+
+Surprisingly, an order, an order event, a limit order book,  the operations of a continous double auction are rather complicated things if one attempts to define them rigorously. Consider, for example,  a definition given in the recent book [@bouchaud_trades_2018]:
 
 
 > An order is a commitment, declared at a given submission time, to buy or sell a given volume of an asset at no worse than a given price. An order $x$ is thus described by four attributes:
@@ -183,7 +201,6 @@ $$ is called an *amended* volume at time $t$.
 
 ```
 
-Note that $\text{supp}(f_{v})$ is a set of càdlàg discontinuity points of $v(t)$ while $\text{supp}(a_{v})$ is a set of càglàd discontinuity points of $v(t)$.
 
 
 ```{r Sample Order Table Data, include=FALSE}
@@ -202,7 +219,8 @@ sot <- tribble( ~i, ~n,   ~t,   ~f, ~e,   ~p,   ~v,
                 5,   2,	  5.0,   1,	 1,	50,  -100,
                 5,   3,	  5.4,   1,	 0,	50,  -100,
                 6,   1,	  4.8,   0,	 1,	10,	500,
-                6,   2,	  5.4,   0,	 1,	60,	400,)
+                6,   2,	  5.4,   0,	 1,	60,	400,
+                6,   3,	  6.0,   1,	 1,	20,	100,)
 setDT(sot)
 sot[ ,"volume.decrease" := nafill(shift(v,1),fill=0) - nafill(xor(1,xor(e,1)*f)*v,fill=0), by=i]
 
@@ -256,22 +274,21 @@ The lot size $v_0$ and tick size $\vartheta$ are collectively called *resolution
 
 Hereafter is assumed that a single asset is traded and a single currency is used. 
 
-As it has already been mentioned above an order is a commitment at a given time, to buy or sell a given volume of an asset at no worse than a given price. Figure \@ref(fig:order-life-cycle) shows [the state diagram](https://en.wikipedia.org/wiki/State_diagram) of an order while the order is being processed by an exchange.  The possible states an order can be in are:
+As it has already been mentioned above an order is a commitment at a given time, to buy or sell a given volume of an asset at no worse than a given price. Figure \@ref(fig:order-life-cycle) shows UML2 State Machine of High-level Order Life Cycle while the order is being processed by an exchange.  The possible states an order can be in are:
 
- * *Received* - a valid order has been received by an exchange and is now active, i.e. it may be filled. This state is fleeting.
- * *Open* - the order is now open on the order book. Orders which are not fully filled or cancelled immediately enters this state. This state is lasting.
- * *Done* - the order is no longer on the order book. This state can result from an order being canceled or filled. This state is fleeting.
-
+ * *Active* - a valid order has been received by an exchange and is now active, i.e. it may be filled. This state is fleeting.
+ * *Opened* - the order is now open on the order book. Orders which are not fully filled or cancelled immediately enters this state. This state is lasting.
+ 
 
 ```{r order-life-cycle, echo=FALSE, fig.cap="States of an order while it being processed by an exchange", fig.align="center"}
-knitr::include_graphics("order-life-cycle.png")
+knitr::include_graphics("order-life-cycle.png", dpi=80)
 ```
 
 An order which has ever entered Open state is called a [limit order](https://www.investopedia.com/terms/l/limitorder.asp). 
 
 An order which has never entered Open state is called a [market order](https://www.investopedia.com/terms/m/marketorder.asp).
 
-If an order has been *Partially Filled* before entering *Open* state or it has been *Filled* or *Partially Filled* after *Price Amendment*, then the order is sometimes called a market limit order.  We always model market limit orders as a comibnation of an appropriate market order and a limit order that placed simultaneously. 
+If an order has been *matched* before entering *Opened* state or it has been *matched* after *price amendment*, then the order is sometimes called a market limit order.  We always model market limit orders as a comibnation of an appropriate market order and a limit order that placed simultaneously. 
 
 Market orders are always fleeting. To model an evolution of a limit order we use the following function:
 
@@ -292,11 +309,21 @@ The function $p^i(t)$ in definition \@ref(def:order) is called an *order price*.
 ```
 
 
-
 ```{definition Trade, name="Trade", label=trade}
 Suppose an order $o^i(t)$ is given and $\exists t_j : f_{v^i}(t_j) \neq 0$. Then a tuple $$(t_j, i,p^i(t_j), f_{v^i}(t_j))$$ is called a *trade*. If $f_{v^i}(t_j) < 0$ or, equivalently, $i$ is a sell order, then the trade is a buy trade. Otherwise it is a sell trade.
 
 ```
+
+
+Note that we follow [@bouchaud_trades_2018] while modelling the actions of an order owner:
+
+> ... we will consider the evolution of an LOB $\mathcal{L}(t)$ as a so-called *càglàd process (continu à gauche, limite à droite)*. Informally, this means that when a new order $x$ is submitted at time $t_x$ , we regard it to be present in the LOB immediately after its arrival, but not immediately upon its arrival.
+
+In other words, definition \@ref(def:amended-volume) means that when order $v$ is cancelled at time $t$, we regard the cancellation visible in the LOB immediately after its arrival, but not immeditely upon its arrival. 
+
+Trades are modelled as *càdlàg (continue à droite, limite à gauche)* occurences so they are visible immeditely upon arrival.  
+
+The consequence of the above is that $v(t)$ can be interpreted as a amount available for trade at time $t$ as it should and if a cancellation and a trade happen simultaneously, the trade is executed.
 
 
 An order can be conveniently represented in the form of a order table defined by \@ref(def:order-table).
@@ -323,8 +350,11 @@ An *order table* is a set of *order events* as defined by \@ref(def:order-event)
 
 b. $\forall i, \forall n: t^i_n < t^i_{n+1}$, 
 b. $\forall i : s^i_1 = 1$ and $\forall n \in \{2, \ldots, N^i\} : s^i_n = 0 \implies s^i_{n-1} = 1$,
+b. $\forall i$ and $\forall n \in \{2, \ldots, N^i\} : f^i_n = 1 \implies p^i_n = p^i_{n-1} \land |v^i_n| < |v^i_{n-1}|$,
 b. $\forall i, \forall n_1, n_2: \text{sgn}(v_{n_1}^i) = \text{sgn}(v_{n_2}^i)$,
 ```
+
+
 
 
 ```{theorem Order Table Equivalence,label=equivalence}
@@ -332,6 +362,7 @@ There is one-to-one correspondance between orders as defined by \@ref(def:order)
 
 ```
 
+TBD - more constraints to be added to the definition of Order Table. Otherwise the theorem can't be proved.
 
 ## Limit Order Book (LOB)
 
@@ -419,7 +450,7 @@ as_hux(sot[order(t),
   set_align(1, c(6:9), 'right') %>%
   set_right_border(everywhere,1, 1) %>%
   set_left_border(everywhere,9, 1) %>%
-  set_caption('(#tab:example-order-table) The sample order table contains information about six limit orders, three market orders and five trades.') %>%
+  set_caption('(#tab:example-order-table) The sample order table contains information about six limit orders, four market orders and six trades.') %>%
   set_caption_pos("topleft") %>%
   set_position("left")
 
@@ -455,7 +486,8 @@ v <- ggplot(mapping=aes(x=t, y=v, colour=as.character(i),  group=as.character(i)
   geom_point(data=rbind(sot.intervals[e==1 & v != p.v & f == 0,  .(t = t_1, v, e, i) ],
                         sot.intervals[f == 1,.(t = t_1, v=p.v, e, i)]),
              fill="white", size=4, show.legend=F, shape="circle filled") +
-  geom_point(data=rbind(sot.intervals[e==1 & v != p.v & f == 1,  .(t = t_1, v, e, i)],
+  geom_point(data=rbind(sot.intervals[e==0 & f == 0, .(t = t_1,  v, e, i)],
+                        sot.intervals[e==1 & v != p.v & f == 1,  .(t = t_1, v, e, i)],
                         sot.intervals[e==1 & v != p.v & f == 0 & n > 1,  .(t = t_1, v=p.v, e, i)]),
              fill="white", size=4, show.legend=F, shape="circle") + 
   scale_color_manual("", 
@@ -485,17 +517,13 @@ It can bee seen from figure \@ref(fig:example-order-book) that:
 * At `r format(time_0 + sort(unique(sot$t))[8], "%H:%M:%OS1")` order 6 to buy 500 units of the asset at price no worse than 10 per unit has been placed,
 * At `r format(time_0 + sort(unique(sot$t))[9], "%H:%M:%OS1")` a market order to buy the asset for 27500 units of the currency has been placed and two buy trades have been executed: $(\text{`r format(time_0 + sort(unique(sot$t))[9], "%H:%M:%OS1")`}, 4, 25, -500)$ and $(\text{`r format(time_0 + sort(unique(sot$t))[9], "%H:%M:%OS1")`}, 5, 50, -300)$. Alternatively, it could be a limit order to buy 800 units of the asset at price no worser than 50 that was fully executed. 
 * At `r format(time_0 + sort(unique(sot$t))[10], "%H:%M:%OS1")` volume and price of order 6 have been amended. Its volume has been reduced by 100 units of the asset and its price increased to 60. At the same time a market buy order has been placed for 5000 units of the currency and single trade has been executed: $(\text{`r format(time_0 + sort(unique(sot$t))[9], "%H:%M:%OS1")`}, 5, 50, -100)$. Most likely the change of price of order 6 has transformed it to a market limit order which was partially executed and the reminder was placed in the order book again. 
+* At `r format(time_0 + sort(unique(sot$t))[11], "%H:%M:%OS1")` a sell market order has been placed, single trade was executed: $(\text{`r format(time_0 + sort(unique(sot$t))[11], "%H:%M:%OS1")`}, 6, 60, 300)$ and, simultaneously, probably as a conseqence of the trade, the price of order 6 has been amended from 60 to 20. Note that trade has been executed at price 60.
 
-## Extraction
-
-TBD
-
-## Integration
-
+## Extract
 
 TBD
 
-## Cleansing
+## Cleanse
 
 
 TBD

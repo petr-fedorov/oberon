@@ -1,0 +1,50 @@
+format 222
+
+pseudostatecanvas 128134 pseudostate_ref 150790 // initial
+   xyz 220 43 2000
+end
+statecanvas 128262 state_ref 151046 // Pure
+  
+  xyzwh 235 135 2000 121 55
+end
+statecanvas 129542 state_ref 157574 // Stained
+   region_horizontally no
+  xyzwh 54 267 2000 529 341
+end
+statecanvas 129670 state_ref 157702 // OpenB
+  
+  xyzwh 367 365 2005 59 31
+end
+pseudostatecanvas 130566 pseudostate_ref 157446 // initial
+   xyz 482 316 2005
+end
+transitioncanvas 128390 transition_ref 161926 // <transition>
+  
+  from ref 128134 z 2001 to ref 128262
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 128646 transition_ref 162054 // Match
+  
+  from ref 128262 z 2001 to point 389 93
+  line 128774 z 2001 label "message [is_base_of(Match)]" xyz 324 79 2001 to point 324 73
+  line 128902 z 2001 to ref 128262
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129158 transition_ref 162182 // Deactivation
+  
+  from ref 128262 z 2001 label "message [is_base_of(Deactivation)]" xyz 142 113 2001 to point 216 102
+  line 129286 z 2001 to point 192 139
+  line 129414 z 2001 to ref 128262
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129798 transition_ref 168710 // <transition>
+  
+  from ref 128262 z 2006 label "message1 [is_base_of(Bid)]" xyz 275 223.5 3000 to ref 129670
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 130694 transition_ref 169094 // <transition>
+  
+  from ref 130566 z 2006 to ref 129670
+  write_horizontally default show_definition default drawing_language default
+end
+end

@@ -1,0 +1,109 @@
+format 222
+
+pseudostatecanvas 128134 pseudostate_ref 134534 // initial
+   xyz 78 305 2006
+end
+statecanvas 128262 state_ref 134790 // Active
+  
+  xyzwh 242 297 2012 73 31
+end
+statecanvas 128774 state_ref 134918 // Opened
+  
+  xyzwh 603 294 2024 73 31
+end
+pseudostatecanvas 131334 pseudostate_ref 134662 // final
+   xyz 743 295 2018
+end
+note 135558 "The order becomes open on the order book. This transition is enabled for orders which are not fully filled immediately."
+  xyzwh 305 205 2000 293 59
+note 135814 "A valid order has been received and is now active, i.e. can be filled immediately if there is a matching order of the opposite direction (either Active or Opened). 
+This  state should be the first state for every single valid order ."
+  xyzwh 19 134 2000 249 103
+note 136198 "A trade occurred between two orders. The aggressor or taker order in Active state is the one executing immediately after entering Active state and the maker order is typically a resting order on the book in Opened state"
+  xyzwh 341 343 2000 247 101
+note 136710 "The order is no longer on the exchange.  This transition results from an order being canceled or filled. 
+"
+  xyzwh 455 461 2000 269 59
+statecanvas 137350 state_ref 134662 // High-level Order Life Cycle
+  
+  xyzwh 15 12 0 817 591
+end
+note 137478 "The price amendment transition changes an Opened  order state to Active."
+  xyzwh 337 63 2000 183 61
+note 137734 "The volume amendment  transition leaves an order in Opened state"
+  xyzwh 611 62 2000 163 61
+transitioncanvas 129542 transition_ref 134918 // open
+  
+  from ref 128262 z 2025 label "open" xyz 446 318 2025 to ref 128774
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 131206 transition_ref 135558 // received
+  
+  from ref 128134 z 2013 label "received" xyz 142 318 2013 to ref 128262
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 131462 transition_ref 135686 // done
+  
+  from ref 128774 z 2025 label "done" xyz 694 313 2025 to ref 131334
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 132230 transition_ref 142342 // match
+  decenter_end 876
+  
+  from ref 128262 z 2013 label "match" xyz 276 390 2013 to point 275 380
+  line 132358 z 2013 to point 304 380
+  line 136070 z 2013 to ref 128262
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 132742 transition_ref 142470 // match
+  decenter_begin 191
+  decenter_end 876
+  
+  from ref 128774 z 2025 label "match" xyz 630 375 2025 to point 615 368
+  line 132870 z 2025 to point 666 368
+  line 132998 z 2025 to ref 128774
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 133126 transition_ref 142598 // done
+  decenter_begin 123
+  
+  from ref 128262 z 2019 label "done" xyz 486 562 2019 to point 249 554
+  line 133254 z 2019 to point 758 551
+  line 134150 z 2019 to ref 131334
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 133382 transition_ref 142726 // volume amended
+  decenter_begin 808
+  decenter_end 424
+  
+  from ref 128774 z 2025 label "volume amended" xyz 658 164 2025 to point 773 155
+  line 133510 z 2025 to point 626 155
+  line 133638 z 2025 to ref 128774
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 133766 transition_ref 142854 // price amended
+  decenter_begin 164
+  
+  from ref 128774 z 2025 to point 612 156
+  line 134278 z 2025 label "price amended" xyz 408 162 2025 to point 272 157
+  line 134022 z 2025 to ref 128262
+  write_horizontally default show_definition default drawing_language default
+end
+line 136326 -_-_
+  from ref 136198 z 2013 to ref 136070
+line 136454 -_-_
+  from ref 136198 z 2025 to ref 132742
+line 136966 -_-_
+  from ref 136710 z 2025 to point 703 384
+  line 138758 z 2025 to ref 131462
+line 137094 -_-_
+  from ref 136710 z 2019 to ref 133254
+line 137606 -_-_
+  from ref 137478 z 2026 to ref 134278
+line 137990 -_-_
+  from ref 137734 z 2026 to ref 133510
+line 138502 -_-_
+  from ref 135814 z 2013 to ref 128262
+line 138886 -_-_
+  from ref 135558 z 2026 to ref 129542
+end

@@ -1,6 +1,6 @@
 format 222
 "oberon"
-  revision 19
+  revision 35
   modified_by 6 "petr"
   cpp_root_dir "/home/petr/repos/oberon/"
 
@@ -48,10 +48,22 @@ format 222
   cpp_h_dir "src"
   cpp_src_dir "src"
   cpp_namespace "oberon"
-  ncouples 1
+  ncouples 13
   key "html dir" value "/home/petr/repos/oberon/docs/design/"
-  comment "Order Book Events ReconstructiON"
-  usecaseview 128006 "Overview"
+  key "gxmi path" value "/home/petr/repos/oberon/test.xmi"
+  key "gxmi no model" value "no"
+  key "gxmi gen views" value "no"
+  key "gxmi encoding" value "UTF-8"
+  key "gxmi umlversion" value "23"
+  key "gxmi pk prefix" value "no"
+  key "gxmi vis prefix" value "no"
+  key "gxmi primitive type" value "no"
+  key "gxmi gen extensions" value "no"
+  key "gxmi gen eclipse" value "no"
+  key "gxmi comment exporter" value "no"
+  key "gxmi linefeed" value "no"
+  comment "A top-level package for OBERON (Order Book Events ReconstructiON)"
+  usecaseview 141446 "Reconstruct Order Book"
     
     usecasediagramsettings end
     
@@ -72,192 +84,21 @@ format 222
     
     activitydiagramsettings
      end
-    activity 128006 "Overview"
-      activitydiagram 147718 "Overview Diagram"
-	activitydiagramsettings draw_all_relations no
-	 end
-	size A4
-      end
-
-      activitynode 161158 initial_node "Launch"
-	flow 163590 "0"
-	  on activitynode_ref 161030 // merge
-	end
-      end
-
-      activitynode 161030 merge "M1"
-	flow 170886 "1"
-	  on activityaction_ref 134534 // activity action Record Received
-	end
-      end
-
-      activityaction 134534 "Record Received"
-	accept_event_action
-	pin 155014 "record" type class_ref 174214 // Record
-	  unordered 
-	  out
-	  flow 182534 "2"
-	    on activitynode_ref 168198 // fork
-	  end
-	end
-      end
-
-      activitynode 168198 fork "A"
-	comment "Sends received record for further processsing and reactivate Record Received, so next record can be received"
-	flow 172294 "3b"
-	  on activitynode_ref 161030 // merge
-	end
-
-	flow 175110 "3a"
-	  on pin_ref 161798 // record
-	end
-      end
-
-      activityaction 148614 "Extract"
-	opaque_action
-	pin 161798 "record" type class_ref 174214 // Record
-	   multiplicity "1..*" unordered is_control
-	  in
-	end
-
-	pin 161926 "event" type class_ref 134534 // Event
-	   multiplicity "1..*" unordered 
-	  out
-	  flow 173830 "4"
-	    on activitynode_ref 168710 // fork
-	  end
-	end
-      end
-
-      activitynode 168710 fork "B"
-	flow 174214 "5b"
-	  on activityaction_ref 148614 // activity action Extract
-	end
-
-	flow 174470 "5a"
-	  on pin_ref 162054 // event
-	end
-      end
-
-      activityaction 148742 "Integrate"
-	opaque_action
-	pin 162054 "event" explicit_type ""
-	   multiplicity "1..*" unordered is_control
-	  in
-	end
-
-	pin 162182 "event" explicit_type ""
-	   multiplicity "*" unordered is_control
-	  out
-	  flow 174598 "6"
-	    on activitynode_ref 168966 // fork
-	  end
-	end
-      end
-
-      activitynode 168966 fork "C"
-	flow 174726 "7b"
-	  on activityaction_ref 148742 // activity action Integrate
-	end
-
-	flow 174854 "7a"
-	  on activitynode_ref 169094 // decision
-	end
-      end
-
-      activitynode 169094 decision ""
-	flow 174982 "8a"
-	  on activitynode_ref 169222 // flow_final
-	    uml_guard "null"
-	end
-
-	flow 175238 "8b"
-	  on pin_ref 162310 // event
-	    uml_guard "else"
-	end
-      end
-
-      activityaction 135046 "Cleanse"
-	opaque_action
-	pin 141830 "event" explicit_type ""
-	   multiplicity "*" fifo 
-	  out
-	  flow 175366 "<flow>"
-	    on activitynode_ref 169350 // merge
-	  end
-
-	  flow 175494 "9"
-	    on activitynode_ref 169606 // fork
-	  end
-	end
-
-	pin 162310 "event" explicit_type ""
-	   multiplicity "1..*" unordered is_control
-	  in
-	end
-      end
-
-      activitynode 169222 flow_final ""
-      end
-
-      activitynode 169350 merge ""
-      end
-
-      activitynode 169478 flow_final ""
-      end
-
-      activitynode 169606 fork "D"
-	flow 175622 "10b"
-	  on activityaction_ref 135046 // activity action Cleanse
-	end
-
-	flow 175750 "10a"
-	  on activitynode_ref 169734 // decision
-	end
-      end
-
-      activitynode 169734 decision ""
-	flow 175878 "11a"
-	  on activitynode_ref 169862 // flow_final
-	    uml_guard "null"
-	end
-
-	flow 176006 "11b"
-	  on pin_ref 162438 // event
-	    uml_guard "else"
-	end
-      end
-
-      activitynode 169862 flow_final ""
-      end
-
-      activityaction 148870 "Send Order Event"
-	send_signal_action
-	pin 162438 "event" explicit_type ""
-	   multiplicity "1..*" unordered is_control
-	  in
-	end
-      end
-
-      activityaction 148230 "Stop Request Received"
-	accept_event_action
-	flow 182662 "12"
-	  on activitynode_ref 167814 // activity_final
-	end
-      end
-
-      activitynode 167814 activity_final ""
-      end
-
-      interruptibleactivityregion 134534 ""
-      end
+    usecasediagram 208134 "Reconstruct Order Book"
+      usecasediagramsettings end
+      size A4
     end
-
   end
 
-  package_ref 141190 // everywhere
+  package_ref 147718 // Standalone application
 
-  package_ref 134662 // R
+  package_ref 134662 // R package
 
-  package_ref 134534 // postgres
+  package_ref 134534 // Postgres stored function
+
+  package_ref 141190 // Order Book Reconstructor
+
+  package_ref 147846 // std
+
+  package_ref 147974 // boost
 end

@@ -1,0 +1,105 @@
+format 222
+
+activitycanvas 128006 activity_ref 141446 // S.2 Subscribe
+  
+  xyzwh 40 58 0 695 491
+  params
+    parametercanvas 128134 parameter_ref 141702 // pair_name
+        xyzwh 226 46 1 119 25
+    end
+    parametercanvas 128262 parameter_ref 141830 // exchange_name
+        xyzwh 356 46 1 119 25
+    end
+    parametercanvas 138758 parameter_ref 148870 // websocket
+        xyzwh 516 536 2 119 25
+    end
+  end
+end
+activityactioncanvas 139270 activityaction_ref 220166 // activity action S.2 Create websocket
+  
+  show_opaque_action_definition default
+  xyzwh 307 147 2000 100 60
+  pins
+    pincanvas 139526 pin_ref 252550 // 
+      xyzwh 349 206 2002 11 11 label_xy 372 213
+    end
+    pincanvas 139654 pin_ref 252678 // exchange_name
+      xyzwh 377 137 2002 11 11 label_xy 400 134
+    end
+    pincanvas 139782 pin_ref 252806 // pair_name
+      xyzwh 321 137 2002 11 11 label_xy 258 128
+    end
+  end
+end
+activityobjectcanvas 140166 activityobject_ref 147846 // activity object S.2 websocket
+  
+  xyzwh 307 260 2000 99 57 label_xy 298 316
+end
+activityactioncanvas 140422 activityaction_ref 220294 // activity action S.2 Connect and subscribe
+  
+  show_opaque_action_definition default
+  xyzwh 308 379 2000 100 60
+  pins
+    pincanvas 142854 pin_ref 259590 // target
+      xyzwh 355 369 2002 11 11 label_xy 316 360
+    end
+    pincanvas 142982 pin_ref 259718 // isConnected
+      xyzwh 350 438 2002 11 11 label_xy 378 446
+    end
+  end
+end
+activitynodecanvas 141830 activitynode_ref 222726 // decision
+  xyz 346 478 2000
+end
+activitynodecanvas 142086 activitynode_ref 222854 // activity_final
+  xyz 435 485 2000
+end
+flowcanvas 139910 flow_ref 258310 // S.2.2
+  decenter_begin 226
+  
+  from ref 128262 z 2003 label "S.2.2" xyz 368 97 2003 to ref 139654
+   write_horizontally default
+end
+flowcanvas 140038 flow_ref 258438 // S.2.1
+  decenter_begin 848
+  
+  from ref 128134 z 2003 label "S.2.1" xyz 312 97 2003 to ref 139782
+   write_horizontally default
+end
+flowcanvas 140294 flow_ref 258566 // S.2.3
+  
+  from ref 139526 z 2003 label "S.2.3" xyz 340 231 2003 to ref 140166
+   write_horizontally default
+end
+flowcanvas 140934 flow_ref 258822 // S.2.4
+  geometry HV
+  
+  from ref 140166 z 2001 label "S.2.4" xyz 475 282 2001 to point 572 286
+  line 141190 z 2001 to ref 138758
+   write_horizontally default
+end
+flowcanvas 142214 flow_ref 265734 // S.2.7
+  
+  from ref 141830 z 2001 label "S.2.7
+[true]" xyz 388 483 2001 to ref 142086
+   write_horizontally default
+end
+flowcanvas 142342 flow_ref 265862 // S.2.8
+  
+  from ref 141830 z 2001 label "S.2.8
+[false]" xyz 282 481 2001 to point 250 493
+  line 142598 z 2001 to point 249 406
+  line 142470 z 2001 to ref 140422
+   write_horizontally default
+end
+flowcanvas 143110 flow_ref 265990 // S.2.5
+  
+  from ref 140166 z 2003 label "S.2.5" xyz 344 336 2003 to ref 142854
+   write_horizontally default
+end
+flowcanvas 143238 flow_ref 266118 // S.2.6
+  
+  from ref 142982 z 2003 label "S.2.6" xyz 341 456 2003 to ref 141830
+   write_horizontally default
+end
+end

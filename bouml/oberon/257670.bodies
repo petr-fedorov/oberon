@@ -1,0 +1,19 @@
+class AnyState
+!!!274694.cpp!!!	message(inout stm : R1) : void
+  AnyState * st = _upper(stm);
+
+  if (st != 0)
+    st->message(stm);
+#ifdef VERBOSE_STATE_MACHINE
+  else
+    puts("DEBUG : transition message not expected");
+#endif
+!!!275590.cpp!!!	message1(inout stm : R1) : void
+  AnyState * st = _upper(stm);
+
+  if (st != 0)
+    st->message1(stm);
+#ifdef VERBOSE_STATE_MACHINE
+  else
+    puts("DEBUG : transition message1 not expected");
+#endif

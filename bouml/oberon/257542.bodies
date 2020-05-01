@@ -1,0 +1,32 @@
+class R1
+!!!266118.cpp!!!	R1()
+  _current_state = 0;
+!!!266374.cpp!!!	create() : bool
+if (_current_state == 0)
+(_current_state = &(*this)._r1_state)->create(*this);
+return (_current_state != 0);
+!!!267782.cpp!!!	doActivity() : void
+  _current_state->_do(*this);
+!!!267910.cpp!!!	_set_currentState(inout st : R1::AnyState) : void
+  _current_state = &st;
+!!!268038.cpp!!!	_final() : void
+  _current_state = 0;
+#ifdef VERBOSE_STATE_MACHINE
+  puts("DEBUG : final state reached");
+#endif
+!!!274566.cpp!!!	message() : bool
+  if (_current_state != 0) {
+#ifdef VERBOSE_STATE_MACHINE
+    puts("DEBUG : fire trigger message");
+#endif
+    _current_state->message(*this);
+  }
+  return (_current_state != 0);
+!!!275462.cpp!!!	message1() : bool
+  if (_current_state != 0) {
+#ifdef VERBOSE_STATE_MACHINE
+    puts("DEBUG : fire trigger message1");
+#endif
+    _current_state->message1(*this);
+  }
+  return (_current_state != 0);

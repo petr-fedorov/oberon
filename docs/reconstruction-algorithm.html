@@ -24,7 +24,7 @@
 <meta name="author" content="Petr Fedorov" />
 
 
-<meta name="date" content="2020-04-20" />
+<meta name="date" content="2020-05-01" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -74,9 +74,8 @@
 <li class="chapter" data-level="2.2" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#basic-tools"><i class="fa fa-check"></i><b>2.2</b> Basic Tools</a></li>
 <li class="chapter" data-level="2.3" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#order-and-trade"><i class="fa fa-check"></i><b>2.3</b> Order and Trade</a></li>
 <li class="chapter" data-level="2.4" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#limit-order-book-lob"><i class="fa fa-check"></i><b>2.4</b> Limit Order Book (LOB)</a></li>
-<li class="chapter" data-level="2.5" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#extraction"><i class="fa fa-check"></i><b>2.5</b> Extraction</a></li>
-<li class="chapter" data-level="2.6" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#integration"><i class="fa fa-check"></i><b>2.6</b> Integration</a></li>
-<li class="chapter" data-level="2.7" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#cleansing"><i class="fa fa-check"></i><b>2.7</b> Cleansing</a></li>
+<li class="chapter" data-level="2.5" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#extract"><i class="fa fa-check"></i><b>2.5</b> Extract</a></li>
+<li class="chapter" data-level="2.6" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#cleanse"><i class="fa fa-check"></i><b>2.6</b> Cleanse</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>3</b> Results</a><ul>
 <li class="chapter" data-level="3.1" data-path="results.html"><a href="results.html#extracted-fragments-of-data-streams"><i class="fa fa-check"></i><b>3.1</b> Extracted fragments of data streams</a><ul>
@@ -109,15 +108,32 @@
 <h1><span class="header-section-number">2</span> Reconstruction algorithm</h1>
 <div id="overview" class="section level2">
 <h2><span class="header-section-number">2.1</span> Overview</h2>
-<p>Figure <a href="reconstruction-algorithm.html#fig:reconstruction-flowchart">2.1</a> shows UML2 Activity Diagram of the reconstruction algorithm (see <span class="citation">(Cook et al. 2017)</span> for the meaning of the shapes):</p>
-<div class="figure" style="text-align: center"><span id="fig:reconstruction-flowchart"></span>
-<img src="reconstruction.png" alt="An overview of the reconstruction algorithm" width="914" />
+<p>Reconstruction algorithm comprises extract and cleanse parts. Figure <a href="reconstruction-algorithm.html#fig:reconstruction-activity">2.1</a> shows UML2 Activity Diagram <span class="citation">(Cook et al. 2017)</span> of a standalone application where interaction of the algorithm’ parts can be seen. The application consists of two classes:</p>
+<ul>
+<li><code>Application</code>, that provides data for the algorithm, and,</li>
+<li><code>Reconstructor</code> shown in light green, that implements the algorithm</li>
+</ul>
+<div class="figure" style="text-align: center"><span id="fig:reconstruction-activity"></span>
+<img src="reconstruction.png" alt="UML2 Activity Diagram  of a standalone application using Reconstruction algorithm" width="979" />
 <p class="caption">
-Figure 2.1: An overview of the reconstruction algorithm
+Figure 2.1: UML2 Activity Diagram of a standalone application using Reconstruction algorithm
 </p>
 </div>
-<p>The content of <em>Records Received</em> depends on an exchange and type of a record, it may describe an order-related event or trade. From these records we <em>Extract</em> information in the standard format for an order event as defined by <a href="reconstruction-algorithm.html#def:order-event">2.11</a> and a trade as defined by <a href="reconstruction-algorithm.html#def:trade">2.10</a>. Then we <em>Integrate</em> these objects and in particular attempts to find for each trade a corresponding order event. The output event is Order Event as defiind by <a href="reconstruction-algorithm.html#def:order-event">2.11</a> and collectively at this stage the events satisfy constraints of Order Table as defined by <a href="reconstruction-algorithm.html#def:order-table">2.12</a>. Order Table may not satisfy constraints of Limit Order Book as defined by <a href="reconstruction-algorithm.html#def:lob">2.17</a> yet, so it is <em>Cleansed</em> <span class="citation">(Rahm and Do 2000)</span> and, in particular, we attempt to identify market orders as defined by <a href="reconstruction-algorithm.html#def:market-buy-order">2.18</a> and <a href="reconstruction-algorithm.html#def:market-sell-order">2.19</a>. See <a href="design/index.html">oberon Documentation</a> for additional info.</p>
-<p>Let’s start the detailed description of the algoritm from the definition of what we reconstruct. Surprisingly, an order, a limit order book, the operations of a continous double auction are rather complicated things if one attempts to define them rigorously. Consider, for example, a definition given in the recent book <span class="citation">(Bouchaud and Bonart 2018)</span>:</p>
+<p><code>Application</code> class starts from <code>S.1 Initialize</code> activity. The activity connects to a websocket of the exchange specified by <code>exchange_name</code> and subscribes for the channels sending messages about the pair specified by <code>pair_name</code>. Then <code>S.1 Initialize</code> creates a store (i.e. file) where reconstructed events is to be persisted, creates an instance of <code>Reconstructor</code> and passes the store to the instance for future use.</p>
+<p>Aftewards <code>Application</code> launches <code>S.2 Recive messages</code> and <code>S.1 Extract</code>. These activities run concurrently. <code>S.2 Recive messages</code> constinously receives messages from the exchange (note <code>{stream}</code> on the figure <a href="reconstruction-algorithm.html#fig:reconstruction-activity">2.1</a>) and sends them to <code>S.1 Extract</code> for a decoding (see figure <a href="reconstruction-algorithm.html#fig:reconstruction-use-case">2.2</a> for the list of decoders) and an accumulation to be processed later by <code>S.1 Cleanse</code>.</p>
+<p>The activity <code>S.1 Cleanse</code>, which is called periodically, performes so called <em>data cleansing</em>. According to <span class="citation">(Rahm and Do 2000)</span>:</p>
+<blockquote>
+<p><em>Data cleaning</em>, also called <em>data cleansing</em> or <em>scrubbing</em>, deals with detecting and removing errors and inconsistencies from data in order to improve the quality of data.</p>
+</blockquote>
+<p>UML2 UseCase Diagram <span class="citation">(Cook et al. 2017)</span> shown on figure <a href="reconstruction-algorithm.html#fig:reconstruction-use-case">2.2</a> lists the kinds of cleansing performed by <code>S.1 Cleanse</code>. It should be clear from this list why <code>S.1 Cleanse</code> needs to be called periodically rather than processing each message as soon as the message has arrived.</p>
+<div class="figure" style="text-align: center"><span id="fig:reconstruction-use-case"></span>
+<img src="reconstruction_use_case.png" alt="UseCase diagram of Order Book Reconstructor package showing UseCases applied to Reconstructor class" width="1019" />
+<p class="caption">
+Figure 2.2: UseCase diagram of Order Book Reconstructor package showing UseCases applied to Reconstructor class
+</p>
+</div>
+<p>The output of <code>S.1 Cleanse</code> is a set of order events as defined by <a href="reconstruction-algorithm.html#def:order-event">2.11</a> which together compose Limit Order Book as defined by <a href="reconstruction-algorithm.html#def:lob">2.17</a></p>
+<p>Surprisingly, an order, an order event, a limit order book, the operations of a continous double auction are rather complicated things if one attempts to define them rigorously. Consider, for example, a definition given in the recent book <span class="citation">(Bouchaud and Bonart 2018)</span>:</p>
 <blockquote>
 <p>An order is a commitment, declared at a given submission time, to buy or sell a given volume of an asset at no worse than a given price. An order <span class="math inline">\(x\)</span> is thus described by four attributes:</p>
 <ul>
@@ -193,7 +209,6 @@ is called a <em>volume function</em>.
 \]</span> is called an <em>amended</em> volume at time <span class="math inline">\(t\)</span>.</p>
 </div>
 
-<p>Note that <span class="math inline">\(\text{supp}(f_{v})\)</span> is a set of càdlàg discontinuity points of <span class="math inline">\(v(t)\)</span> while <span class="math inline">\(\text{supp}(a_{v})\)</span> is a set of càglàd discontinuity points of <span class="math inline">\(v(t)\)</span>.</p>
 
 <div class="definition">
 <p><span id="def:price-function" class="definition"><strong>Definition 2.6  (Price Function)  </strong></span>A function <span class="math inline">\(p : \mathbb{R} \mapsto \mathbb{R}_{\geq 0}\)</span> such that</p>
@@ -209,21 +224,20 @@ is called a <em>price function</em>.
 <div id="order-and-trade" class="section level2">
 <h2><span class="header-section-number">2.3</span> Order and Trade</h2>
 <p>Hereafter is assumed that a single asset is traded and a single currency is used.</p>
-<p>As it has already been mentioned above an order is a commitment at a given time, to buy or sell a given volume of an asset at no worse than a given price. Figure <a href="reconstruction-algorithm.html#fig:order-life-cycle">2.2</a> shows <a href="https://en.wikipedia.org/wiki/State_diagram">the state diagram</a> of an order while the order is being processed by an exchange. The possible states an order can be in are:</p>
+<p>As it has already been mentioned above an order is a commitment at a given time, to buy or sell a given volume of an asset at no worse than a given price. Figure <a href="reconstruction-algorithm.html#fig:order-life-cycle">2.3</a> shows UML2 State Machine of High-level Order Life Cycle while the order is being processed by an exchange. The possible states an order can be in are:</p>
 <ul>
-<li><em>Received</em> - a valid order has been received by an exchange and is now active, i.e. it may be filled. This state is fleeting.</li>
-<li><em>Open</em> - the order is now open on the order book. Orders which are not fully filled or cancelled immediately enters this state. This state is lasting.</li>
-<li><em>Done</em> - the order is no longer on the order book. This state can result from an order being canceled or filled. This state is fleeting.</li>
+<li><em>Active</em> - a valid order has been received by an exchange and is now active, i.e. it may be filled. This state is fleeting.</li>
+<li><em>Opened</em> - the order is now open on the order book. Orders which are not fully filled or cancelled immediately enters this state. This state is lasting.</li>
 </ul>
 <div class="figure" style="text-align: center"><span id="fig:order-life-cycle"></span>
-<img src="order-life-cycle.png" alt="States of an order while it being processed by an exchange" width="454" />
+<img src="order-life-cycle.png" alt="States of an order while it being processed by an exchange" width="1012" />
 <p class="caption">
-Figure 2.2: States of an order while it being processed by an exchange
+Figure 2.3: States of an order while it being processed by an exchange
 </p>
 </div>
 <p>An order which has ever entered Open state is called a <a href="https://www.investopedia.com/terms/l/limitorder.asp">limit order</a>.</p>
 <p>An order which has never entered Open state is called a <a href="https://www.investopedia.com/terms/m/marketorder.asp">market order</a>.</p>
-<p>If an order has been <em>Partially Filled</em> before entering <em>Open</em> state or it has been <em>Filled</em> or <em>Partially Filled</em> after <em>Price Amendment</em>, then the order is sometimes called a market limit order. We always model market limit orders as a comibnation of an appropriate market order and a limit order that placed simultaneously.</p>
+<p>If an order has been <em>matched</em> before entering <em>Opened</em> state or it has been <em>matched</em> after <em>price amendment</em>, then the order is sometimes called a market limit order. We always model market limit orders as a comibnation of an appropriate market order and a limit order that placed simultaneously.</p>
 <p>Market orders are always fleeting. To model an evolution of a limit order we use the following function:</p>
 
 <div class="definition">
@@ -246,6 +260,13 @@ Figure 2.2: States of an order while it being processed by an exchange
 <p><span id="def:trade" class="definition"><strong>Definition 2.10  (Trade)  </strong></span>Suppose an order <span class="math inline">\(o^i(t)\)</span> is given and <span class="math inline">\(\exists t_j : f_{v^i}(t_j) \neq 0\)</span>. Then a tuple <span class="math display">\[(t_j, i,p^i(t_j), f_{v^i}(t_j))\]</span> is called a <em>trade</em>. If <span class="math inline">\(f_{v^i}(t_j) &lt; 0\)</span> or, equivalently, <span class="math inline">\(i\)</span> is a sell order, then the trade is a buy trade. Otherwise it is a sell trade.</p>
 </div>
 
+<p>Note that we follow <span class="citation">(Bouchaud and Bonart 2018)</span> while modelling the actions of an order owner:</p>
+<blockquote>
+<p>… we will consider the evolution of an LOB <span class="math inline">\(\mathcal{L}(t)\)</span> as a so-called <em>càglàd process (continu à gauche, limite à droite)</em>. Informally, this means that when a new order <span class="math inline">\(x\)</span> is submitted at time <span class="math inline">\(t_x\)</span> , we regard it to be present in the LOB immediately after its arrival, but not immediately upon its arrival.</p>
+</blockquote>
+<p>In other words, definition <a href="reconstruction-algorithm.html#def:amended-volume">2.5</a> means that when order <span class="math inline">\(v\)</span> is cancelled at time <span class="math inline">\(t\)</span>, we regard the cancellation visible in the LOB immediately after its arrival, but not immeditely upon its arrival.</p>
+<p>Trades are modelled as <em>càdlàg (continue à droite, limite à gauche)</em> occurences so they are visible immeditely upon arrival.</p>
+<p>The consequence of the above is that <span class="math inline">\(v(t)\)</span> can be interpreted as a amount available for trade at time <span class="math inline">\(t\)</span> as it should and if a cancellation and a trade happen simultaneously, the trade is executed.</p>
 <p>An order can be conveniently represented in the form of a order table defined by <a href="reconstruction-algorithm.html#def:order-table">2.12</a>.</p>
 
 <div class="definition">
@@ -269,6 +290,7 @@ An <em>order table</em> is a set of <em>order events</em> as defined by <a href=
 <ol start="2" style="list-style-type: lower-alpha">
 <li><span class="math inline">\(\forall i, \forall n: t^i_n &lt; t^i_{n+1}\)</span>,</li>
 <li><span class="math inline">\(\forall i : s^i_1 = 1\)</span> and <span class="math inline">\(\forall n \in \{2, \ldots, N^i\} : s^i_n = 0 \implies s^i_{n-1} = 1\)</span>,</li>
+<li><span class="math inline">\(\forall i\)</span> and <span class="math inline">\(\forall n \in \{2, \ldots, N^i\} : f^i_n = 1 \implies p^i_n = p^i_{n-1} \land |v^i_n| &lt; |v^i_{n-1}|\)</span>,</li>
 <li><span class="math inline">\(\forall i, \forall n_1, n_2: \text{sgn}(v_{n_1}^i) = \text{sgn}(v_{n_2}^i)\)</span>,
 </div></li>
 </ol>
@@ -277,6 +299,7 @@ An <em>order table</em> is a set of <em>order events</em> as defined by <a href=
 <p><span id="thm:equivalence" class="theorem"><strong>Theorem 2.1  </strong></span>There is one-to-one correspondance between orders as defined by <a href="reconstruction-algorithm.html#def:order">2.7</a> and order tables as defined by <a href="reconstruction-algorithm.html#def:order-table">2.12</a>.</p>
 </div>
 
+<p>TBD - more constraints to be added to the definition of Order Table. Otherwise the theorem can’t be proved.</p>
 </div>
 <div id="limit-order-book-lob" class="section level2">
 <h2><span class="header-section-number">2.4</span> Limit Order Book (LOB)</h2>
@@ -333,7 +356,7 @@ A (possibly empty) subset <span class="math inline">\(\mathcal{A} =\{o^a(\cdot)\
 
 <p>To make the above definitions intuitively clear, let’s consider an example. Table <a href="reconstruction-algorithm.html#tab:example-order-table">2.1</a> contains a consolidated order table for six limit orders</p>
 <table class="huxtable" style="border-collapse: collapse; margin-bottom: 2em; margin-top: 2em; width: 90%; margin-left: 0%; margin-right: auto;  ">
-<caption style="caption-side: top; text-align: left;"><span id="tab:example-order-table">Table 2.1: </span> The sample order table contains information about six limit orders, three market orders and five trades.</caption><col><col><col><col><col><col><col><col><col><tr>
+<caption style="caption-side: top; text-align: left;"><span id="tab:example-order-table">Table 2.1: </span> The sample order table contains information about six limit orders, four market orders and six trades.</caption><col><col><col><col><col><col><col><col><col><tr>
 <td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">#</td>
 <td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">\(i\)</td>
 <td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">\(n\)</td>
@@ -498,16 +521,27 @@ A (possibly empty) subset <span class="math inline">\(\mathcal{A} =\{o^a(\cdot)\
 <td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
 <td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;">100</td>
 </tr>
+<tr>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">15</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0000000006</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">3</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">14:00:03.0</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">1</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">20</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">100</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">1</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;">300</td>
+</tr>
 </table>
 
-<p>Figure <a href="reconstruction-algorithm.html#fig:example-order-book">2.3</a> shows price and volume functions for six limit orders in table <a href="reconstruction-algorithm.html#tab:example-order-table">2.1</a>.</p>
+<p>Figure <a href="reconstruction-algorithm.html#fig:example-order-book">2.4</a> shows price and volume functions for six limit orders in table <a href="reconstruction-algorithm.html#tab:example-order-table">2.1</a>.</p>
 <div class="figure"><span id="fig:example-order-book"></span>
 <img src="oberon_files/figure-html/example-order-book-1.png" alt="Price and Volume functions for the limit orders in table \@ref(tab:example-order-table)" width="672" />
 <p class="caption">
-Figure 2.3: Price and Volume functions for the limit orders in table <a href="reconstruction-algorithm.html#tab:example-order-table">2.1</a>
+Figure 2.4: Price and Volume functions for the limit orders in table <a href="reconstruction-algorithm.html#tab:example-order-table">2.1</a>
 </p>
 </div>
-<p>It can bee seen from figure <a href="reconstruction-algorithm.html#fig:example-order-book">2.3</a> that:</p>
+<p>It can bee seen from figure <a href="reconstruction-algorithm.html#fig:example-order-book">2.4</a> that:</p>
 <ul>
 <li>At 13:59:57.2 order 1 to buy 200 units of the asset at price no worse than 50 per unit has been placed,</li>
 <li>At 13:59:58.0 order 2 to sell 200 units of the asset at price no worse than 80 per unit has been placed,</li>
@@ -520,18 +554,15 @@ Figure 2.3: Price and Volume functions for the limit orders in table <a href="re
 <li>At 14:00:01.7 order 6 to buy 500 units of the asset at price no worse than 10 per unit has been placed,</li>
 <li>At 14:00:02.0 a market order to buy the asset for 27500 units of the currency has been placed and two buy trades have been executed: <span class="math inline">\((\text{14:00:02.0}, 4, 25, -500)\)</span> and <span class="math inline">\((\text{14:00:02.0}, 5, 50, -300)\)</span>. Alternatively, it could be a limit order to buy 800 units of the asset at price no worser than 50 that was fully executed.</li>
 <li>At 14:00:02.4 volume and price of order 6 have been amended. Its volume has been reduced by 100 units of the asset and its price increased to 60. At the same time a market buy order has been placed for 5000 units of the currency and single trade has been executed: <span class="math inline">\((\text{14:00:02.0}, 5, 50, -100)\)</span>. Most likely the change of price of order 6 has transformed it to a market limit order which was partially executed and the reminder was placed in the order book again.</li>
+<li>At 14:00:03.0 a sell market order has been placed, single trade was executed: <span class="math inline">\((\text{14:00:03.0}, 6, 60, 300)\)</span> and, simultaneously, probably as a conseqence of the trade, the price of order 6 has been amended from 60 to 20. Note that trade has been executed at price 60.</li>
 </ul>
 </div>
-<div id="extraction" class="section level2">
-<h2><span class="header-section-number">2.5</span> Extraction</h2>
+<div id="extract" class="section level2">
+<h2><span class="header-section-number">2.5</span> Extract</h2>
 <p>TBD</p>
 </div>
-<div id="integration" class="section level2">
-<h2><span class="header-section-number">2.6</span> Integration</h2>
-<p>TBD</p>
-</div>
-<div id="cleansing" class="section level2">
-<h2><span class="header-section-number">2.7</span> Cleansing</h2>
+<div id="cleanse" class="section level2">
+<h2><span class="header-section-number">2.6</span> Cleanse</h2>
 <p>TBD</p>
 </div>
 </div>

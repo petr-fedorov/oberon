@@ -1,0 +1,50 @@
+format 222
+
+classcanvas 128006 class_ref 257542 // R1
+  classdiagramsettings member_max_width 0 end
+  xyz 187 82 2000
+end
+classcanvas 128134 class_ref 257670 // AnyState
+  classdiagramsettings member_max_width 0 end
+  xyz 539 215 3005
+end
+classcanvas 128518 class_ref 257798 // R1_State
+  classdiagramsettings member_max_width 0 end
+  xyz 92 497 3011
+end
+classcanvas 129030 class_ref 257926 // Pure_State
+  classdiagramsettings member_max_width 0 end
+  xyz 400 530 3017
+end
+line 128262 ---+
+  from ref 128134 z 3006 to ref 128006
+relationcanvas 128390 relation_ref 219014 // <directional aggregation>
+  from ref 128006 z 3006 to ref 128134
+  role_a_pos 451 247 3000 no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 128646 relation_ref 218502 // <generalisation>
+  from ref 128518 z 3012 to ref 128134
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+line 128774 ---+
+  from ref 128518 z 3012 to ref 128006
+relationcanvas 128902 relation_ref 218886 // <dependency>
+  from ref 128006 z 3012 stereotype "<<friend>>" xyz 155 368.5 3012 to ref 128518
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 129158 relation_ref 218630 // <generalisation>
+  from ref 129030 z 3018 to ref 128134
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 129286 relation_ref 218758 // <dependency>
+  from ref 128006 z 3018 stereotype "<<friend>>" xyz 320.5 385.5 3018 to ref 129030
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+line 129670 ---+
+  from ref 129030 z 3018 to ref 128518
+end

@@ -1,0 +1,266 @@
+format 222
+
+activityactioncanvas 128006 activityaction_ref 134534 // activity action Record Received
+  
+  show_opaque_action_definition default
+  xyzwh 150 225.2 3028 101 61
+  pins
+    pincanvas 128902 pin_ref 155014 // record
+      xyzwh 250.8 267.9 3029 11 11 label_xy 265 255
+    end
+  end
+end
+activitynodecanvas 128134 activitynode_ref 161030 // merge
+  xyz 417.9 219 3034
+end
+activitynodecanvas 128262 activitynode_ref 161158 // initial_node
+  xyz 420.5 50.8 3040
+end
+activitynodecanvas 131718 activitynode_ref 167814 // activity_final
+  xyz 388 803.2 3010
+end
+activityactioncanvas 131974 activityaction_ref 148230 // activity action Stop Request Received
+  
+  show_opaque_action_definition default
+  xyzwh 151.1 668.5 3022 101 61
+end
+activitynodecanvas 134278 activitynode_ref 168198 // fork
+   xyzwh 537.8 253.6 3022 15 45
+end
+activityactioncanvas 137862 activityaction_ref 148614 // activity action Extract
+  
+  show_opaque_action_definition default
+  xyzwh 520 370.3 3010 101 61
+  pins
+    pincanvas 150918 pin_ref 169222 // record
+      xyzwh 583 360 3012 11 11 label_xy 604 354
+    end
+    pincanvas 151046 pin_ref 169350 // exchange
+      xyzwh 620 400 3012 11 11 label_xy 628 418
+    end
+    pincanvas 151174 pin_ref 169478 // event
+      xyzwh 510 398 3012 11 11 label_xy 473 389
+    end
+  end
+end
+activitynodecanvas 138886 activitynode_ref 168710 // fork
+   xyzwh 389.2 375.4 3022 15 61
+end
+activityactioncanvas 140550 activityaction_ref 148742 // activity action Integrate
+  
+  show_opaque_action_definition default
+  xyzwh 159.5 372.9 3010 101 61
+  pins
+    pincanvas 140678 pin_ref 162054 // event
+      xyzwh 259.3 399.7 3011 11 11 label_xy 270 376
+    end
+    pincanvas 140934 pin_ref 162182 // event
+      xyzwh 222.6 432.4 3011 11 11 label_xy 235 455
+    end
+  end
+end
+activitynodecanvas 141062 activitynode_ref 168966 // fork
+  horizontal  xyzwh 179.4 488.4 3022 95 15
+end
+activitynodecanvas 141958 activitynode_ref 169094 // decision
+  xyz 224.6 562.3 3010
+end
+activitynodecanvas 142214 activitynode_ref 169222 // flow_final
+  xyz 112.1 572.4 3022
+end
+activityactioncanvas 142854 activityaction_ref 135046 // activity action Cleanse
+  
+  show_opaque_action_definition default
+  xyzwh 334.4 551.8 3010 101 61
+  pins
+    pincanvas 142982 pin_ref 141830 // event
+      xyzwh 434.9 570.2 3011 11 11 label_xy 451 554
+    end
+    pincanvas 143110 pin_ref 162310 // event
+      xyzwh 324 573.5 3011 11 11 label_xy 279 556
+    end
+  end
+end
+activitynodecanvas 143750 activitynode_ref 169606 // fork
+   xyzwh 503.8 526.6 3022 15 89
+end
+activitynodecanvas 144902 activitynode_ref 169734 // decision
+  xyz 579.5 562.3 3028
+end
+activitynodecanvas 145158 activitynode_ref 169862 // flow_final
+  xyz 581 486.2 3022
+end
+activityactioncanvas 145670 activityaction_ref 148870 // activity action Send Order Event
+  
+  show_opaque_action_definition default
+  xyzwh 549.9 662.9 3022 101 61
+  pins
+    pincanvas 145798 pin_ref 162438 // event
+      xyzwh 590.4 652.5 3023 11 11 label_xy 531 638
+    end
+  end
+end
+interruptibleactivityregioncanvas 146054 interruptibleactivityregion_ref 134534 // 
+  xyzwh 52.7 748.5 3016 691 51
+end
+activityactioncanvas 148230 activityaction_ref 155398 // activity action Connect
+  
+  show_opaque_action_definition default
+  xyzwh 380 108 2000 100 60
+  pins
+    pincanvas 152070 pin_ref 169990 // exchange
+      xyzwh 479 130 2002 11 11 label_xy 494 121
+    end
+  end
+end
+activityobjectcanvas 150022 activityobject_ref 128006 // activity object exchange
+  
+  xyzwh 607 109 2000 95 57 label_xy 607 166
+end
+flowcanvas 131590 flow_ref 170886 // 1
+  decenter_end 216
+  
+  from ref 128134 z 3035 label "1" xyz 330 226 3035 to ref 128006
+   write_horizontally default
+end
+flowcanvas 134534 flow_ref 172294 // 3b
+  decenter_begin 200
+  
+  from ref 134278 z 3035 label "3b" xyz 587 255 3035 to point 579 259
+  line 146822 z 3035 to point 579 233
+  line 147462 z 3035 to ref 128134
+   write_horizontally default
+end
+flowcanvas 139526 flow_ref 174214 // 5b
+  decenter_begin 213
+  decenter_end 130
+  
+  from ref 138886 z 3023 label "5b" xyz 350 345 3023 to point 366 386
+  line 139654 z 3023 to point 365 306
+  line 139782 z 3023 to point 532 305
+  line 139910 z 3023 to ref 137862
+   write_horizontally default
+end
+flowcanvas 140806 flow_ref 174470 // 5a
+  decenter_begin 459
+  
+  from ref 138886 z 3023 label "5a" xyz 321 405 3023 to ref 140678
+   write_horizontally default
+end
+flowcanvas 141190 flow_ref 174598 // 6
+  
+  from ref 140934 z 3023 label "6" xyz 216 460 3023 to ref 141062
+   write_horizontally default
+end
+flowcanvas 141318 flow_ref 174726 // 7b
+  decenter_begin 221
+  
+  from ref 141062 z 3023 label "7b" xyz 107 456 3023 to point 198 516
+  line 141574 z 3023 to point 125 518
+  line 141830 z 3023 to point 123 399
+  line 141702 z 3023 to ref 140550
+   write_horizontally default
+end
+flowcanvas 142086 flow_ref 174854 // 7a
+  decenter_begin 621
+  
+  from ref 141062 z 3023 label "7a" xyz 239 525 3023 to ref 141958
+   write_horizontally default
+end
+flowcanvas 142342 flow_ref 174982 // 8a
+  
+  from ref 141958 z 3023 label "8a
+[null]" xyz 163 567 3023 to ref 142214
+   write_horizontally default
+end
+flowcanvas 143238 flow_ref 175238 // 8b
+  
+  from ref 141958 z 3011 label "8b
+[else]" xyz 254 567 3011 to ref 143110
+   write_horizontally default
+end
+flowcanvas 143878 flow_ref 175494 // 9
+  decenter_begin 181
+  decenter_end 528
+  
+  from ref 142982 z 3023 label "9" xyz 469 573 3023 to ref 143750
+   write_horizontally default
+end
+flowcanvas 144006 flow_ref 175622 // 10b
+  decenter_begin 293
+  decenter_end 710
+  
+  from ref 143750 z 3023 label "10b" xyz 470 469 3023 to point 545 549
+  line 144518 z 3023 to point 545 483
+  line 144646 z 3023 to point 405 482
+  line 144390 z 3023 to ref 142854
+   write_horizontally default
+end
+flowcanvas 145030 flow_ref 175750 // 10a
+  decenter_begin 629
+  
+  from ref 143750 z 3029 label "10a" xyz 536 583 3029 to ref 144902
+   write_horizontally default
+end
+flowcanvas 145286 flow_ref 175878 // 11a
+  
+  from ref 144902 z 3029 label "11a
+[null]" xyz 592 518 3029 to ref 145158
+   write_horizontally default
+end
+flowcanvas 145926 flow_ref 176006 // 11b
+  
+  from ref 144902 z 3029 label "11b
+[else]" xyz 598 606 3029 to point 591 611
+  line 147974 z 3029 to ref 145798
+   write_horizontally default
+end
+flowcanvas 147334 flow_ref 182534 // 2
+  decenter_end 400
+  
+  from ref 128902 z 3023 label "2" xyz 394 260 3023 to ref 134278
+   write_horizontally default
+end
+flowcanvas 147590 flow_ref 182662 // 12
+  geometry HV
+  
+  from ref 131974 z 3023 label "12" xyz 330 680 3023 to point 398 695
+  line 147846 z 3023 to ref 131718
+   write_horizontally default
+end
+flowcanvas 148358 flow_ref 189190 // a
+  
+  from ref 128262 z 3041 label "a" xyz 425 81 3041 to ref 148230
+   write_horizontally default
+end
+flowcanvas 148486 flow_ref 189318 // b
+  decenter_begin 460
+  
+  from ref 148230 z 3035 label "b" xyz 422 186 3035 to ref 128134
+   write_horizontally default
+end
+flowcanvas 151302 flow_ref 189830 // <flow>
+  
+  from ref 151174 z 3023 to ref 138886
+   write_horizontally default
+end
+flowcanvas 151430 flow_ref 189958 // <flow>
+  geometry HV
+  
+  from ref 134278 z 3023 to point 586 273
+  line 151814 z 3023 to ref 150918
+   write_horizontally default
+end
+flowcanvas 151558 flow_ref 190086 // <flow>
+  geometry HVr
+  
+  from ref 150022 z 3013 to point 652 403
+  line 151942 z 3013 to ref 151046
+   write_horizontally default
+end
+flowcanvas 152198 flow_ref 190470 // <flow>
+  
+  from ref 152070 z 2003 to ref 150022
+   write_horizontally default
+end
+end

@@ -1,0 +1,1355 @@
+format 222
+"Standalone application" // Standalone application
+  revision 20
+  modified_by 6 "petr"
+  // class settings
+  
+  classdiagramsettings member_max_width 0 end
+  
+  classcompositediagramsettings end
+  
+  usecasediagramsettings end
+  
+  sequencediagramsettings end
+  
+  collaborationdiagramsettings end
+  
+  objectdiagramsettings end
+  
+  objectcompositediagramsettings end
+  
+  componentdiagramsettings
+   end
+  
+  deploymentdiagramsettings
+   end
+  
+  statediagramsettings
+   end
+  
+  activitydiagramsettings
+   end
+  
+  cpp_h_dir "cpp"
+  cpp_src_dir "cpp"
+  cpp_namespace "oberon::standalone"
+  usecaseview 134534 "Standalone application"
+    
+    usecasediagramsettings end
+    
+    sequencediagramsettings end
+    
+    collaborationdiagramsettings end
+    
+    classdiagramsettings member_max_width 0 end
+    
+    classcompositediagramsettings end
+    
+    objectdiagramsettings end
+    
+    objectcompositediagramsettings end
+    
+    statediagramsettings
+     end
+    
+    activitydiagramsettings
+     end
+    activity 148230 "S.1 Standalone application"
+      specification operation_ref 203142 // run
+      activitydiagram 181766 "S.1 Standalone application"
+	activitydiagramsettings
+	 end
+	size A4
+      end
+
+      parameter 148998 "exchange_name" explicit_type "string"
+	 multiplicity "1" unordered 
+	in
+	flow 243846 "S.1.4"
+	  on pin_ref 237830 // exchange_name
+	end
+      end
+
+      parameter 149126 "pair_name" explicit_type "string"
+	 multiplicity "1" unordered 
+	in
+	comment "S.1 Standalone Application"
+	flow 243718 "S.1.3"
+	  on pin_ref 237958 // pair_name
+	end
+      end
+
+      parameter 149254 "destination" explicit_type "string"
+	 multiplicity "1" unordered 
+	in
+	flow 243590 "S.1.10"
+	  on pin_ref 238470 // destination
+	end
+      end
+
+      activityaction 192390 "S.1 Receive messages"
+	call_behavior_action
+	activity_ref 155142 // S.5 Receive
+	pin 213126 "websocket" type class_ref 194054 // Websocket
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 213254 "message" type class_ref 174214 // ptree
+	   multiplicity "1" unordered 
+	  out stream
+	  flow 218374 "S.1.6"
+	    on pin_ref 213382 // message
+	  end
+	end
+      end
+
+      activityaction 192518 "S.1 Extract"
+	call_behavior_action
+	synchronous activity_ref 155270 // S.6 Extract
+	pin 213382 "message" type class_ref 174214 // ptree
+	   multiplicity "1" unordered 
+	  in stream
+	end
+
+	pin 213510 "target" type class_ref 202630 // Reconstructor
+	   multiplicity "1" unordered 
+	  in
+	end
+      end
+
+      activityobject 134662 "S.1 reconstructor"
+	stereotype "datastore"
+	 type class_ref 202630 // Reconstructor
+	 multiplicity "1" unordered 
+	flow 218630 "S.1.8"
+	  on pin_ref 213510 // target
+	end
+
+	flow 251398 "S.1.11"
+	  on pin_ref 245766 // target
+	end
+      end
+
+      activityaction 193158 "S.1 Every N seconds"
+	accept_event_action
+	timeevent
+	pin 214918 "result" explicit_type "double"
+	   multiplicity "1" unordered is_control
+	  out
+	  comment "Time value of when the occurrence  transpired"
+	  flow 251526 "S.1.12"
+	    on pin_ref 245894 // current_time
+	  end
+	end
+      end
+
+      activityaction 193286 "S.1 Cleanse"
+	call_operation_action
+	operation_ref 225414 // cleanse
+	pin 245766 "target" type class_ref 202630 // Reconstructor
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 245894 "current_time" explicit_type "double"
+	   multiplicity "1" unordered is_control
+	  in
+	end
+      end
+
+      activitynode 189958 initial_node ""
+	flow 244230 "S.1.1"
+	  on activityaction_ref 213638 // activity action S.1 Initialize
+	end
+      end
+
+      activityaction 193542 "S.1 Stop request"
+	accept_event_action
+	flow 219782 "S.1.13"
+	  on activitynode_ref 190086 // activity_final
+	end
+      end
+
+      activitynode 190086 activity_final ""
+      end
+
+      interruptibleactivityregion 141062 ""
+	activityaction 213638 "S.1 Initialize"
+	  call_behavior_action
+	  activity_ref 168710 // S.7 Initialize
+	  pin 237830 "exchange_name" explicit_type "string"
+	     multiplicity "1" unordered 
+	    in
+	  end
+
+	  pin 237958 "pair_name" explicit_type "string"
+	     multiplicity "1" unordered 
+	    in
+	  end
+
+	  pin 238086 "delay" explicit_type "double"
+	     multiplicity "1" unordered 
+	    in
+	  end
+
+	  pin 238214 "reconstructor" type class_ref 202630 // Reconstructor
+	     multiplicity "1" unordered 
+	    out
+	    flow 244102 "S.1.7"
+	      on activityobject_ref 134662 // activity object S.1 reconstructor
+	    end
+	  end
+
+	  pin 238342 "websocket" explicit_type ""
+	     multiplicity "1" unordered is_control
+	    out
+	    flow 243974 "S.1.5"
+	      on pin_ref 213126 // websocket
+	    end
+	  end
+
+	  pin 238470 "destination" explicit_type "string"
+	     multiplicity "1" unordered 
+	    in
+	  end
+	end
+      end
+
+      parameter 158086 "delay" explicit_type "double"
+	 multiplicity "1" unordered 
+	in
+	comment "S.1 Standalone Application "
+	flow 243462 "S.1.9"
+	  on pin_ref 238086 // delay
+	end
+      end
+
+      activitynode 209670 initial_node ""
+	flow 251654 "S.1.2"
+	  on activityaction_ref 192518 // activity action S.1 Extract
+	end
+      end
+
+      activitypartition 128006 "Reconstructor"
+      end
+
+      activitypartition 128134 "Application"
+      end
+    end
+
+    activity 141446 "S.2 Subscribe"
+      specification operation_ref 203014 // subscribe
+      activitydiagram 174854 "S.2 Subscribe"
+	activitydiagramsettings
+	 end
+	size A4
+      end
+
+      parameter 141702 "pair_name" explicit_type "string"
+	 multiplicity "1" unordered 
+	in
+	flow 258438 "S.2.1"
+	  on pin_ref 252806 // pair_name
+	end
+      end
+
+      parameter 141830 "exchange_name" explicit_type "string"
+	 multiplicity "1" unordered 
+	in
+	flow 258310 "S.2.2"
+	  on pin_ref 252678 // exchange_name
+	end
+      end
+
+      parameter 148870 "websocket" type class_ref 194054 // Websocket
+	 multiplicity "1" unordered 
+	out
+      end
+
+      activityaction 220166 "S.2 Create websocket"
+	call_operation_action
+	operation_ref 245510 // create
+	pin 252550 "" type class_ref 194054 // Websocket
+	  unordered 
+	  return
+	  flow 258566 "S.2.3"
+	    on activityobject_ref 147846 // activity object S.2 websocket
+	  end
+	end
+
+	pin 252678 "exchange_name" explicit_type "string"
+	  unordered 
+	  in
+	end
+
+	pin 252806 "pair_name" explicit_type "string"
+	  unordered 
+	  in
+	end
+      end
+
+      activityobject 147846 "S.2 websocket"
+	stereotype "datastore"
+	 type class_ref 194054 // Websocket
+	 multiplicity "1" unordered 
+	flow 258822 "S.2.4"
+	  on parameter_ref 148870 // websocket
+	end
+
+	flow 265990 "S.2.5"
+	  on pin_ref 259590 // target
+	end
+      end
+
+      activityaction 220294 "S.2 Connect and subscribe"
+	call_operation_action
+	operation_ref 216966 // connect
+	pin 259590 "target" type class_ref 194054 // Websocket
+	  unordered 
+	  in
+	end
+
+	pin 259718 "isConnected" explicit_type "bool"
+	  unordered is_control
+	  return
+	  flow 266118 "S.2.6"
+	    on activitynode_ref 222726 // decision
+	  end
+	end
+      end
+
+      activitynode 222726 decision ""
+	flow 265734 "S.2.7"
+	  on activitynode_ref 222854 // activity_final
+	    uml_guard "true"
+	end
+
+	flow 265862 "S.2.8"
+	  on activityaction_ref 220294 // activity action S.2 Connect and subscribe
+	    uml_guard "false"
+	end
+      end
+
+      activitynode 222854 activity_final ""
+      end
+    end
+
+    activity 155526 "S.4 Create store"
+      parameter 157062 "destination" explicit_type "string"
+	 multiplicity "1" unordered 
+	in
+      end
+
+      parameter 165638 "pair_name" explicit_type "string"
+	 multiplicity "1" unordered 
+	in
+      end
+
+      parameter 165510 "exchange_name" explicit_type "string"
+	 multiplicity "1" unordered 
+	in
+      end
+
+      parameter 157190 "store" type class_ref 231302 // Store
+	 multiplicity "1" unordered 
+	out
+      end
+    end
+
+    activity 155142 "S.5 Receive"
+      activitydiagram 188422 "S.5 Receive"
+	activitydiagramsettings
+	 end
+	size A4
+      end
+
+      parameter 156422 "websocket" type class_ref 194054 // Websocket
+	 multiplicity "1" unordered 
+	in
+	comment "S.5 Extract"
+	flow 217478 "S.5.1"
+	  on activityobject_ref 134534 // activity object S.5 websocket
+	end
+      end
+
+      parameter 156550 "message" type class_ref 174214 // ptree
+	 multiplicity "1" unordered 
+	out stream
+	comment "S.5 Receive"
+      end
+
+      activityaction 192134 "S.5 Wait for next message"
+	call_operation_action
+	synchronous operation_ref 210310 // waitForMessage
+	pin 221702 "target" type class_ref 194054 // Websocket
+	  unordered 
+	  in
+	end
+
+	pin 221830 "" type class_ref 174214 // ptree
+	  unordered 
+	  return
+	  flow 227974 "S.5.3"
+	    on parameter_ref 156550 // message
+	  end
+	end
+
+	pin 221958 "" type class_ref 222854 // ExceptionDisconnected
+	  unordered is_control
+	  out exception
+	  flow 228102 "S.5.5"
+	    on activityaction_ref 200198 // activity action S.5 Reconnect
+	  end
+	end
+
+	pin 222086 "" type class_ref 222982 // ExceptionExhausted
+	  unordered is_control
+	  out exception
+	  flow 227206 "S.5.4"
+	    on activityaction_ref 200070 // activity action S.5 Disconnect
+	  end
+	end
+      end
+
+      activityobject 134534 "S.5 websocket"
+	stereotype "datastore"
+	 type class_ref 194054 // Websocket
+	unordered 
+	flow 226950 "S.5.2"
+	  on pin_ref 221702 // target
+	end
+
+	flow 227078 "S.5.6"
+	  on pin_ref 222214 // target
+	end
+
+	flow 227334 "S.5.7"
+	  on pin_ref 222342 // target
+	end
+      end
+
+      activityaction 200070 "S.5 Disconnect"
+	call_operation_action
+	operation_ref 216838 // disconnect
+	pin 222214 "target" type class_ref 194054 // Websocket
+	  unordered 
+	  in
+	end
+
+	flow 227462 "S.5.8"
+	  on activityaction_ref 200198 // activity action S.5 Reconnect
+	end
+      end
+
+      activityaction 200198 "S.5 Reconnect"
+	call_operation_action
+	operation_ref 216966 // connect
+	comment "Re-establish websocket connection with an exchange , downloads initial order book snapshot, if necessary, synchronizes websocket content with a snapshot"
+	pin 222342 "target" type class_ref 194054 // Websocket
+	  unordered 
+	  in
+	end
+
+	pin 222470 "isConnected" explicit_type "bool"
+	  unordered is_control
+	  return
+	  flow 227590 "S.5.9"
+	    on activitynode_ref 196614 // decision
+	  end
+	end
+      end
+
+      activitynode 196614 decision ""
+	flow 227718 "S.5.11"
+	  on activityaction_ref 200198 // activity action S.5 Reconnect
+	    uml_guard "false"
+	end
+
+	flow 227846 "S.5.10"
+	  on activityaction_ref 192134 // activity action S.5 Wait for next message
+	    uml_guard "true"
+	end
+      end
+    end
+
+    activity 155270 "S.6 Extract"
+      activitydiagram 201478 "S.6 Extract"
+	activitydiagramsettings
+	 end
+	size A4
+      end
+
+      parameter 156678 "message" type class_ref 174214 // ptree
+	 multiplicity "1" unordered 
+	in stream
+	flow 234630 "<flow>"
+	  on pin_ref 229510 // message
+	end
+      end
+
+      parameter 156806 "reconstructor" type class_ref 202630 // Reconstructor
+	 multiplicity "1" unordered 
+	in
+	flow 234758 "<flow>"
+	  on pin_ref 229382 // target
+	end
+      end
+
+      activityaction 206726 "Extract order events"
+	call_operation_action
+	operation_ref 223622 // extract
+	pin 229382 "target" type class_ref 202630 // Reconstructor
+	  unordered 
+	  in
+	end
+
+	pin 229510 "message" type class_ref 174214 // ptree
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	flow 234886 "<flow>"
+	  on activityaction_ref 206726 // activity action Extract order events
+	end
+      end
+    end
+
+    activity 168710 "S.7 Initialize"
+      activitydiagram 221830 "S.7 Initialize"
+	activitydiagramsettings
+	 end
+	size A4
+      end
+
+      parameter 164742 "exchange_name" explicit_type "string"
+	 multiplicity "1" unordered 
+	in
+	flow 241670 "S.7.3"
+	  on activityobject_ref 141190 // activity object exchange_name
+	end
+      end
+
+      parameter 164870 "pair_name" explicit_type "string"
+	 multiplicity "1" unordered 
+	in
+	flow 241798 "S.7.4"
+	  on activityobject_ref 141318 // activity object pair_name
+	end
+      end
+
+      parameter 164998 "delay" explicit_type "double"
+	 multiplicity "1" unordered 
+	in
+	flow 244742 "S.7.5"
+	  on pin_ref 239238 // delay
+	end
+      end
+
+      parameter 165126 "reconstructor" type class_ref 202630 // Reconstructor
+	 multiplicity "1" unordered 
+	out
+      end
+
+      parameter 165254 "websocket" explicit_type ""
+	 multiplicity "1" unordered 
+	out
+      end
+
+      parameter 165382 "destination" explicit_type ""
+	unordered 
+	in
+	flow 242182 "S.7.2"
+	  on pin_ref 236294 // destination
+	end
+      end
+
+      activityobject 141190 "exchange_name"
+	stereotype "datastore"
+	 explicit_type "string"
+	 multiplicity "1" unordered 
+	flow 241926 "S.7.6"
+	  on pin_ref 236550 // exchange_name
+	end
+
+	flow 242950 "S.7.7"
+	  on pin_ref 237574 // exchange_name
+	end
+
+	flow 244358 "S.7.8"
+	  on pin_ref 238854 // exchange_name
+	end
+      end
+
+      activityobject 141318 "pair_name"
+	stereotype "datastore"
+	 explicit_type "string"
+	 multiplicity "1" unordered 
+	flow 242054 "S.7.10"
+	  on pin_ref 236422 // pair_name
+	end
+
+	flow 243078 "S.7.9"
+	  on pin_ref 237446 // pair_name
+	end
+
+	flow 244486 "S.7.14"
+	  on pin_ref 238982 // pair_name
+	end
+      end
+
+      activityaction 213254 "S.7 Create a store for Limit Order Book"
+	call_behavior_action
+	activity_ref 155526 // S.4 Create store
+	pin 236294 "destination" explicit_type "string"
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 236422 "pair_name" explicit_type "string"
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 236550 "exchange_name" explicit_type "string"
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 236678 "store" type class_ref 231302 // Store
+	   multiplicity "1" unordered is_control
+	  out
+	  flow 244614 "S.7.11"
+	    on pin_ref 239110 // store
+	  end
+	end
+      end
+
+      activityaction 213382 "S.7 Create Order Book Reconstructor"
+	call_operation_action
+	synchronous operation_ref 238982 // create
+	pin 238726 "" type class_ref 202630 // Reconstructor
+	   multiplicity "1" unordered 
+	  return
+	  flow 244870 "S.7.13"
+	    on parameter_ref 165126 // reconstructor
+	  end
+	end
+
+	pin 238854 "exchange_name" explicit_type "string"
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 238982 "pair_name" explicit_type "string"
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 239110 "store" type class_ref 231302 // Store
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 239238 "delay" explicit_type "double"
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	flow 251782 "S.7.15"
+	  on activityaction_ref 213510 // activity action S.7 Subscribe
+	end
+      end
+
+      activityaction 213510 "S.7 Subscribe"
+	call_behavior_action
+	activity_ref 141446 // S.2 Subscribe
+	pin 237446 "pair_name" explicit_type "string"
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 237574 "exchange_name" explicit_type "string"
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 237702 "websocket" type class_ref 194054 // Websocket
+	   multiplicity "1" unordered 
+	  out
+	  flow 243206 "S.7.12"
+	    on parameter_ref 165254 // websocket
+	  end
+	end
+      end
+
+      activitynode 203142 initial_node ""
+	flow 242310 "S.7.1"
+	  on activityaction_ref 213254 // activity action S.7 Create a store for Limit Order Book
+	end
+      end
+    end
+
+  end
+
+  classview 154246 "Standalone application"
+    
+    classdiagramsettings member_max_width 0 end
+    
+    classcompositediagramsettings end
+    
+    collaborationdiagramsettings end
+    
+    objectdiagramsettings end
+    
+    objectcompositediagramsettings end
+    
+    sequencediagramsettings end
+    
+    statediagramsettings
+     end
+    
+    
+    activitydiagramsettings
+     end
+    associated_deployment_view deploymentview_ref 160774 // Source files
+    classdiagram 194950 "Websocket"
+      classdiagramsettings draw_all_relations yes member_max_width 0 end
+      size A4
+    end
+
+    classdiagram 208774 "Store"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
+    class 209286 "Application"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      operation 202502 "Application"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 203014 "subscribe"
+	public return_type class_ref 194054 // Websocket
+	nparams 2
+	  param in name "pair_name" explicit_type "string"
+	  param in name "exchange_name" explicit_type "string"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 203142 "run"
+	public explicit_return_type "void"
+	nparams 4
+	  param in name "exchange_name" explicit_type "string"
+	  param in name "pair_name" explicit_type "string"
+	  param in name "destination" explicit_type "string"
+	  param in name "delay" explicit_type "double"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} ${p2}${v2}, ${t3} ${p3}${v3}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+    end
+
+    class 194054 "Websocket"
+      abstract visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      class 222982 "ExceptionExhausted"
+	visibility public 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 175878 // <generalisation>
+	  relation 175878 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 175878 // <generalisation>
+	    b parent class_ref 222726 // exception
+	end
+      end
+
+      class 222854 "ExceptionDisconnected"
+	visibility public 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 175750 // <generalisation>
+	  relation 175750 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 175750 // <generalisation>
+	    b parent class_ref 222726 // exception
+	end
+      end
+
+      attribute 148230 "pair_name_"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      operation 245510 "create"
+	class_operation public return_type class_ref 194054 // Websocket
+	nparams 2
+	  param in name "exchange_name" explicit_type "string"
+	  param in name "pair_name" explicit_type "string"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 210310 "waitForMessage"
+	abstract cpp_virtual public return_type class_ref 174214 // ptree
+	nparams 0
+	nexceptions 2
+	  exception class_ref 222854 // ExceptionDisconnected
+	  exception class_ref 222982 // ExceptionExhausted
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	
+	
+      end
+
+      operation 216966 "connect"
+	abstract cpp_virtual public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	
+	
+      end
+
+      operation 216838 "disconnect"
+	abstract cpp_virtual public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	
+	
+      end
+
+      classrelation 197382 // <generalisation>
+	relation 197254 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 197382 // <generalisation>
+	  b parent class_ref 237958 // Source
+      end
+    end
+
+    activity 162182 "Reconnect"
+    end
+
+    class 229510 "File"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      operation 232070 "transmit"
+	cpp_virtual public explicit_return_type "void"
+	nparams 1
+	  param in name "event" type class_ref 230406 // Event
+	multiplicity "1"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 190470 // <generalisation>
+	relation 190342 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 190470 // <generalisation>
+	  b parent class_ref 231302 // Store
+      end
+    end
+
+    class 229638 "Database"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      operation 231942 "transmit"
+	cpp_virtual public explicit_return_type "void"
+	nparams 1
+	  param in name "event" type class_ref 230406 // Event
+	multiplicity "1"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 190342 // <generalisation>
+	relation 190214 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 190342 // <generalisation>
+	  b parent class_ref 231302 // Store
+      end
+    end
+
+    class 237830 "Process"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 197254 // <generalisation>
+	relation 197126 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 197254 // <generalisation>
+	  b parent class_ref 231302 // Store
+      end
+
+      operation 252038 "transmit"
+	cpp_virtual public explicit_return_type "void"
+	nparams 1
+	  param in name "event" type class_ref 230406 // Event
+	multiplicity "1"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+    end
+  end
+
+  componentview 141190 "Standalone application"
+    //component diagram settings
+    componentdiagramsettings
+     end
+    componentdiagram 175110 "Standalone application"
+      componentdiagramsettings
+       show_component_rea yes end
+      size A4
+    end
+
+    component 141446 "Standalone application"
+      stereotype "subsystem"
+      provided_classes
+	class_ref 231302 // Store
+      end
+      required_classes
+	class_ref 202630 // Reconstructor
+      end
+    end
+  end
+
+  classview 147590 "bitfinex"
+    
+    classdiagramsettings member_max_width 0 end
+    
+    classcompositediagramsettings end
+    
+    collaborationdiagramsettings end
+    
+    objectdiagramsettings end
+    
+    objectcompositediagramsettings end
+    
+    sequencediagramsettings end
+    
+    statediagramsettings
+     end
+    
+    
+    activitydiagramsettings
+     end
+    associated_deployment_view deploymentview_ref 160774 // Source files
+    classdiagram 154246 "bitfinex"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
+    class 194182 "BitfinexWebsocket"
+      visibility protected 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 162182 // <generalisation>
+	relation 162182 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 162182 // <generalisation>
+	  b parent class_ref 194054 // Websocket
+      end
+
+      operation 195462 "BitfinexWebsocket"
+	cpp_inline public return_type class_ref 194182 // BitfinexWebsocket
+	nparams 1
+	  param in name "pair" explicit_type "string"
+	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(}${t0} ${p0}${v0}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+    end
+  end
+
+  classview 147718 "bitstamp"
+    
+    classdiagramsettings member_max_width 0 end
+    
+    classcompositediagramsettings end
+    
+    collaborationdiagramsettings end
+    
+    objectdiagramsettings end
+    
+    objectcompositediagramsettings end
+    
+    sequencediagramsettings end
+    
+    statediagramsettings
+     end
+    
+    
+    activitydiagramsettings
+     end
+    class 194310 "BitstampWebsocket"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 154758 // <generalisation>
+	relation 154758 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 154758 // <generalisation>
+	  b parent class_ref 194054 // Websocket
+      end
+
+      operation 195846 "BitstampWebsocket"
+	public return_type class_ref 194310 // BitstampWebsocket
+	nparams 1
+	  param in name "pair" explicit_type "string"
+	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(}${t0} ${p0}${v0}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+    end
+  end
+
+  classview 141062 "coinbase"
+    
+    classdiagramsettings member_max_width 0 end
+    
+    classcompositediagramsettings end
+    
+    collaborationdiagramsettings end
+    
+    objectdiagramsettings end
+    
+    objectcompositediagramsettings end
+    
+    sequencediagramsettings end
+    
+    statediagramsettings
+     end
+    
+    
+    activitydiagramsettings
+     end
+    class 194438 "CoinbaseWebsocket"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 154886 // <generalisation>
+	relation 154886 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 154886 // <generalisation>
+	  b parent class_ref 194054 // Websocket
+      end
+
+      operation 195974 "CoinbaseWebsocket"
+	public return_type class_ref 194438 // CoinbaseWebsocket
+	nparams 1
+	  param in name "pair" explicit_type "string"
+	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(}${t0} ${p0}${v0}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+    end
+  end
+
+  deploymentview 160774 "Source files"
+    //deployment diagram settings
+    deploymentdiagramsettings
+     end
+    artifact 173702 "general"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 194054 // Websocket
+	class_ref 209286 // Application
+      end
+    end
+
+    artifact 173830 "bitfinex"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 194182 // BitfinexWebsocket
+      end
+    end
+
+    artifact 173958 "bitstamp"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 194310 // BitstampWebsocket
+      end
+    end
+
+    artifact 174086 "coinbase"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 194438 // CoinbaseWebsocket
+      end
+    end
+
+    artifact 174214 "standalone"
+      stereotype "executable"
+      associated_artifacts
+	artifact_ref 173702 // general
+	artifact_ref 173830 // bitfinex
+	artifact_ref 173958 // bitstamp
+	artifact_ref 174086 // coinbase
+      end
+      ncouples 10
+      key "genpro pro" value "/home/petr/repos/oberon/cpp/oberon.pro"
+      key "genpro path" value "/home/petr/repos/oberon/cpp"
+      key "genpro target" value "/home/petr/repos/oberon/cpp/oberon"
+      key "genpro tmplt" value "app"
+      key "genpro config" value "debug warn_on qt"
+      key "genpro defines" value "WITHCPP WITHJAVA WITHPHP WITHPYTHON WITHIDL WITHMYSQL"
+      key "genpro includepath" value ""
+      key "genpro dependpath" value ""
+      key "genpro objectsdir" value ""
+      key "genpro footer" value "QT += network  qt3support"
+    end
+  end
+end

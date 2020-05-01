@@ -1,0 +1,57 @@
+format 222
+
+activitycanvas 128006 activity_ref 148358 // Reconstruct
+  
+  xyzwh 183 315 2007 400 400
+  params
+    parametercanvas 128134 parameter_ref 156294 // reconstructor
+        xyzwh 129 581 2008 109 25
+    end
+  end
+end
+activityactioncanvas 128262 activityaction_ref 191750 // activity action Integrate
+  
+  show_opaque_action_definition default
+  xyzwh 247 396 2012 100 60
+  pins
+    pincanvas 128390 pin_ref 211462 // event
+      xyzwh 237 402 2013 11 11 label_xy 188 393
+    end
+    pincanvas 128518 pin_ref 211590 // reconstructor
+      xyzwh 237 419 2013 11 11 label_xy 160 410
+    end
+    pincanvas 128646 pin_ref 211718 // reconstructor
+      xyzwh 346 402 2013 11 11 label_xy 361 393
+    end
+  end
+end
+activityactioncanvas 128774 activityaction_ref 191878 // activity action Cleanse
+  
+  show_opaque_action_definition default
+  xyzwh 430 475 2012 100 60
+  pins
+    pincanvas 128902 pin_ref 211846 // event
+      xyzwh 470 534 2013 11 11 label_xy 496 541
+    end
+    pincanvas 129030 pin_ref 211974 // reconstructor
+      xyzwh 451 465 2013 11 11 label_xy 374 456
+    end
+    pincanvas 129158 pin_ref 212102 // reconstructor
+      xyzwh 420 500 2013 11 11 label_xy 355 490
+    end
+  end
+end
+activitynodecanvas 129542 activitynode_ref 189574 // decision
+  xyz 381 565 2012
+end
+flowcanvas 129286 flow_ref 217094 // <flow>
+  
+  from ref 128134 z 2014 to ref 128518
+   write_horizontally default
+end
+flowcanvas 129414 flow_ref 217222 // <flow>
+  
+  from ref 129158 z 2014 to ref 128134
+   write_horizontally default
+end
+end

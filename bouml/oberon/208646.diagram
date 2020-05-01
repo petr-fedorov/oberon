@@ -1,0 +1,36 @@
+format 222
+
+usecasecanvas 128390 usecase_ref 134534 // Reconstruct Order Book
+  xyzwh 455 101 3005 229 91 label_xy 506 138
+end
+usecasecanvas 129030 usecase_ref 134662 // Output stable LOB events
+  xyzwh 569 300 3005 191 75 label_xy 601 329
+end
+usecasecanvas 129798 usecase_ref 134918 // Integrate order events and trades
+  xyzwh 350 268 3005 191 75 label_xy 356 298
+end
+usecasecanvas 130054 usecase_ref 135046 // Detect market orders
+  xyzwh 443 390 3005 191 75 label_xy 473 420
+end
+subject 131590 "Reconstructor"
+  xyzwh 332 38 0 463 481
+classcanvas 132870 class_ref 230150 // PostgresFunction
+  simpleclassdiagramsettings end
+  xyz 90 208 2000
+end
+simplerelationcanvas 129158 simplerelation_ref 134662
+  from ref 129030 z 3006 stereotype "<<include>>" xyz 585 244 3000 to ref 128390
+end
+simplerelationcanvas 129926 simplerelation_ref 134918
+  from ref 129798 z 3006 stereotype "<<include>>" xyz 469 228 3000 to ref 128390
+end
+simplerelationcanvas 130182 simplerelation_ref 135046
+  from ref 130054 z 3006 stereotype "<<include>>" xyz 518 290 3000 to ref 128390
+end
+line 132998 --->
+  from ref 132870 z 3006 label "sends data from table" max_width 255 xyz 135 133 3000 to point 226 84
+  line 133126 z 3006 to ref 128390
+line 133254 --->
+  from ref 128390 z 3006 label "receives and returns to caller" max_width 255 xyz 199 245 3000 to point 222 336
+  line 133382 z 3006 to ref 132870
+end

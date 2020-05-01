@@ -1,0 +1,143 @@
+format 222
+"R package" // R package
+  revision 12
+  modified_by 6 "petr"
+  // class settings
+  
+  classdiagramsettings member_max_width 0 end
+  
+  classcompositediagramsettings end
+  
+  usecasediagramsettings end
+  
+  sequencediagramsettings end
+  
+  collaborationdiagramsettings end
+  
+  objectdiagramsettings end
+  
+  objectcompositediagramsettings end
+  
+  componentdiagramsettings
+   end
+  
+  deploymentdiagramsettings
+   end
+  
+  statediagramsettings
+   end
+  
+  activitydiagramsettings
+   end
+  
+  cpp_h_dir "src"
+  cpp_src_dir "src"
+  cpp_namespace "oberon::R"
+  comment "Elements to be used only when run from R"
+  usecaseview 134790 "R Package"
+    
+    usecasediagramsettings end
+    
+    sequencediagramsettings end
+    
+    collaborationdiagramsettings end
+    
+    classdiagramsettings member_max_width 0 end
+    
+    classcompositediagramsettings end
+    
+    objectdiagramsettings end
+    
+    objectcompositediagramsettings end
+    
+    statediagramsettings
+     end
+    
+    activitydiagramsettings
+     end
+  end
+
+  classview 161158 "R Package"
+    
+    classdiagramsettings member_max_width 0 end
+    
+    classcompositediagramsettings end
+    
+    collaborationdiagramsettings end
+    
+    objectdiagramsettings end
+    
+    objectcompositediagramsettings end
+    
+    sequencediagramsettings end
+    
+    statediagramsettings
+     end
+    
+    
+    activitydiagramsettings
+     end
+    class 230022 "RFunction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 197510 // <generalisation>
+	relation 197382 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 197510 // <generalisation>
+	  b parent class_ref 237958 // Source
+      end
+
+      classrelation 197766 // <generalisation>
+	relation 197638 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 197766 // <generalisation>
+	  b parent class_ref 231302 // Store
+      end
+    end
+  end
+
+  deploymentview 147590 "Source files"
+    //deployment diagram settings
+    deploymentdiagramsettings
+     end
+    artifact 141062 "oberon"
+      stereotype "library"
+      associated_artifacts
+      end
+    end
+
+    deploymentdiagram 168070 "Deploying to shinnyapps.io"
+      deploymentdiagramsettings
+       end
+      size A4
+    end
+
+    deploymentnode 134662 "R"
+      stereotype "executionEnvironment"
+    end
+
+    deploymentnode 134790 "computer"
+      stereotype "device"
+    end
+  end
+
+  componentview 134534 "Components"
+    //component diagram settings
+    componentdiagramsettings
+     end
+    component 134534 "R function"
+    end
+  end
+end
