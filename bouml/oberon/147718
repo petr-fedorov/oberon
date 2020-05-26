@@ -1,6 +1,6 @@
 format 222
 "Standalone application" // Standalone application
-  revision 23
+  revision 25
   modified_by 6 "petr"
   // class settings
   
@@ -91,22 +91,22 @@ format 222
 	call_behavior_action
 	activity_ref 155142 // S.5 Receive
 	pin 213126 "websocket" type class_ref 194054 // Websocket
-	   multiplicity "1" unordered is_control
+	   multiplicity "1" unordered 
 	  in
 	end
 
 	pin 213254 "message" type class_ref 174214 // ptree
 	   multiplicity "1" unordered 
 	  out stream
-	  flow 218374 "S.1.6"
+	  flow 218374 "S.1.11"
 	    on pin_ref 213382 // message
 	  end
 	end
       end
 
-      activityaction 192518 "S.1 Extract"
+      activityaction 192518 "S.1 Reconstruct order book"
 	call_behavior_action
-	synchronous activity_ref 155270 // S.6 Extract
+	synchronous activity_ref 155270 // S.6 Reconstruct
 	pin 213382 "message" type class_ref 174214 // ptree
 	   multiplicity "1" unordered 
 	  in stream
@@ -116,45 +116,13 @@ format 222
 	   multiplicity "1" unordered 
 	  in
 	end
-      end
 
-      activityobject 134662 "S.1 reconstructor"
-	stereotype "datastore"
-	 type class_ref 202630 // Reconstructor
-	 multiplicity "1" unordered 
-	flow 218630 "S.1.8"
-	  on pin_ref 213510 // target
-	end
-
-	flow 251398 "S.1.11"
-	  on pin_ref 245766 // target
-	end
-      end
-
-      activityaction 193158 "S.1 Every N seconds"
-	accept_event_action
-	timeevent
-	pin 214918 "result" explicit_type "double"
-	   multiplicity "1" unordered is_control
-	  out
-	  comment "Time value of when the occurrence  transpired"
-	  flow 251526 "S.1.12"
-	    on pin_ref 245894 // current_time
+	pin 266630 "time_order_error" explicit_type ""
+	  unordered is_control
+	  out exception
+	  flow 273670 "S.1.12"
+	    on activitynode_ref 190086 // activity_final
 	  end
-	end
-      end
-
-      activityaction 193286 "S.1 Cleanse"
-	call_operation_action
-	no_operation
-	pin 245766 "target" type class_ref 202630 // Reconstructor
-	   multiplicity "1" unordered 
-	  in
-	end
-
-	pin 245894 "current_time" explicit_type "double"
-	   multiplicity "1" unordered is_control
-	  in
 	end
       end
 
@@ -196,13 +164,13 @@ format 222
 	  pin 238214 "reconstructor" type class_ref 202630 // Reconstructor
 	     multiplicity "1" unordered 
 	    out
-	    flow 244102 "S.1.7"
-	      on activityobject_ref 134662 // activity object S.1 reconstructor
+	    flow 272774 "<flow>"
+	      on pin_ref 213510 // target
 	    end
 	  end
 
 	  pin 238342 "websocket" explicit_type ""
-	     multiplicity "1" unordered is_control
+	     multiplicity "1" unordered 
 	    out
 	    flow 243974 "S.1.5"
 	      on pin_ref 213126 // websocket
@@ -213,6 +181,20 @@ format 222
 	     multiplicity "1" unordered 
 	    in
 	  end
+
+	  flow 272646 "S.1.6"
+	    on activitynode_ref 229382 // fork
+	  end
+	end
+
+	activitynode 229382 fork ""
+	  flow 272902 "S.1.7"
+	    on activityaction_ref 192390 // activity action S.1 Receive messages
+	  end
+
+	  flow 273030 "S.1.8"
+	    on activityaction_ref 192518 // activity action S.1 Reconstruct order book
+	  end
 	end
       end
 
@@ -222,12 +204,6 @@ format 222
 	comment "S.1 Standalone Application "
 	flow 243462 "S.1.9"
 	  on pin_ref 238086 // delay
-	end
-      end
-
-      activitynode 209670 initial_node ""
-	flow 251654 "S.1.2"
-	  on activityaction_ref 192518 // activity action S.1 Extract
 	end
       end
 
@@ -473,8 +449,8 @@ format 222
       end
     end
 
-    activity 155270 "S.6 Extract"
-      activitydiagram 201478 "S.6 Extract"
+    activity 155270 "S.6 Reconstruct"
+      activitydiagram 201478 "S.6 Reconstruct"
 	activitydiagramsettings
 	 end
 	size A4
@@ -483,33 +459,52 @@ format 222
       parameter 156678 "message" type class_ref 174214 // ptree
 	 multiplicity "1" unordered 
 	in stream
-	flow 234630 "<flow>"
-	  on pin_ref 229510 // message
+	flow 273286 "<flow>"
+	  on pin_ref 266374 // message
 	end
       end
 
       parameter 156806 "reconstructor" type class_ref 202630 // Reconstructor
 	 multiplicity "1" unordered 
 	in
-	flow 234758 "<flow>"
-	  on pin_ref 229382 // target
+	flow 273414 "<flow>"
+	  on pin_ref 266246 // target
 	end
       end
 
       activityaction 206726 "Extract order events"
 	call_operation_action
-	operation_ref 223622 // extract
-	pin 229382 "target" type class_ref 202630 // Reconstructor
+	operation_ref 188550 // process
+	flow 234886 "<flow>"
+	  on activityaction_ref 206726 // activity action Extract order events
+	end
+
+	pin 266246 "target" type class_ref 202630 // Reconstructor
 	  unordered 
 	  in
 	end
 
-	pin 229510 "message" type class_ref 174214 // ptree
+	pin 266374 "message" type class_ref 174214 // ptree
 	   multiplicity "1" unordered 
 	  in
 	end
 
-	flow 234886 "<flow>"
+	pin 266502 "time_order_error" type class_ref 472838 // time_order_error
+	  unordered 
+	  out exception
+	  flow 273158 "<flow>"
+	    on parameter_ref 172166 // time_order_error
+	  end
+	end
+      end
+
+      parameter 172166 "time_order_error" explicit_type ""
+	unordered 
+	out exception
+      end
+
+      activitynode 229510 initial_node ""
+	flow 273542 "<flow>"
 	  on activityaction_ref 206726 // activity action Extract order events
 	end
       end
@@ -904,7 +899,6 @@ ${inlines}
 	
 	
       end
-
     end
 
     activity 162182 "Reconnect"

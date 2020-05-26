@@ -4,5 +4,9 @@ using oberon::core::Reconstructor;
 
 Reconstructor &coinbase{
     Reconstructor::create(oberon::core::kCoinbase, "BTCUSD", *this, 2.0)};
-coinbase.elapsed();
+using boost::property_tree::ptree;
+ptree tree;
+tree.put("type", "elapsed");
+tree.put("time","2014-11-07T08:19:27.028459Z");
+coinbase.process(tree);
 return data; 
