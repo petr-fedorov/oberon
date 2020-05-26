@@ -1,5 +1,3 @@
 class Reconstructor
-!!!238982.cpp!!!	create(in exchange_name : string, in pair_name : string, in store : Store, in delay : double) : Reconstructor
-if (_current_state == 0)
-(_current_state = &(*this)._reconstructor_state)->create(*this);
-return (_current_state != 0);
+!!!238982.cpp!!!	create(in exchange : Exchanges, in pair_name : string, in store : Store, in delay : double) : Reconstructor
+return *new CoinbaseReconstructor(store);

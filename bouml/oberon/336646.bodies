@@ -1,0 +1,21 @@
+class Stable_State
+!!!349446.cpp!!!	volumeDecreased(inout stm : Price_Level) : void
+  {
+#ifdef VERBOSE_STATE_MACHINE
+    puts("DEBUG : execute activity of transition <transition>");
+#endif
+stm.deferMessage();    stm._set_currentState(stm._price_level_state._occupied_state._unstable_state);
+#ifdef VERBOSE_STATE_MACHINE
+    puts("DEBUG : current state is now .Price Level.Occupied.Unstable");
+#endif
+    stm._price_level_state._occupied_state._unstable_state.create(stm);
+  }
+!!!349574.cpp!!!	create(inout stm : Price_Level) : void
+	_doentry(stm);
+!!!349702.cpp!!!	_doentry(inout stm : Price_Level) : void
+#ifdef VERBOSE_STATE_MACHINE
+	puts("DEBUG : execute entry behavior of .Price Level.Occupied.Stable");
+#endif
+enter();
+!!!349830.cpp!!!	_upper(inout stm : Price_Level) : Price_Level::AnyState
+  return &stm._price_level_state._occupied_state;

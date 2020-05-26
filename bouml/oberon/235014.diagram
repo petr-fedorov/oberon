@@ -1,0 +1,193 @@
+format 222
+
+statecanvas 128006 state_ref 148998 // Received
+  
+  xyzwh 70 151 2000 73 31
+end
+statecanvas 128134 state_ref 149126 // Taker
+  
+  xyzwh 43 389 2000 255 229
+end
+statecanvas 128262 state_ref 149254 // Maker
+  
+  xyzwh 330 29 2000 477 251
+end
+pseudostatecanvas 128390 pseudostate_ref 154502 // choice
+   xyz 180 231 2000
+end
+pseudostatecanvas 128902 pseudostate_ref 154630 // initial
+   xyz 50 67 2000
+end
+pseudostatecanvas 130566 pseudostate_ref 154758 // final
+   xyz 475 447 2000
+end
+pseudostatecanvas 131206 pseudostate_ref 154886 // initial
+   xyz 354 71 2005
+end
+statecanvas 131334 state_ref 149382 // Frozen
+  
+  xyzwh 416 101 2008 59 31
+end
+statecanvas 131590 state_ref 149510 // Liquid
+  
+  xyzwh 583 72 2005 65 31
+end
+statecanvas 132998 state_ref 149894 // Finished
+  
+  xyzwh 607 375 2000 69 31
+end
+pseudostatecanvas 134790 pseudostate_ref 155142 // choice
+   xyz 627 162 2005
+end
+pseudostatecanvas 135430 pseudostate_ref 155270 // choice
+   xyz 501 794 2000
+end
+statecanvas 137478 state_ref 156422 // Liquid
+  
+  xyzwh 115 422 2005 57 31
+end
+statecanvas 137606 state_ref 156550 // Frozen
+  
+  xyzwh 115 564 2005 59 31
+end
+pseudostatecanvas 137862 pseudostate_ref 161798 // initial
+   xyz 60 495 2005
+end
+pseudostatecanvas 138118 pseudostate_ref 161926 // choice
+   xyz 131 489 2010
+end
+transitioncanvas 128518 transition_ref 179206 // <transition>
+  
+  from ref 128006 z 2001 label "timeout" xyz 129 203 2001 to ref 128390
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 128646 transition_ref 179334 // <transition>
+  decenter_begin 486
+  decenter_end 290
+  
+  from ref 128390 z 2001 label "timeout [!stm.isTaker()]" xyz 205 168 2001 to ref 128262
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 128774 transition_ref 179462 // <transition>
+  decenter_begin 675
+  
+  from ref 128390 z 2001 label "timeout [stm.isTaker()]" xyz 179 269 2001 to point 272 295
+  line 129798 z 2001 to ref 128134
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129030 transition_ref 179590 // <transition>
+  
+  from ref 128902 z 2001 label "created" xyz 60 111 3000 to ref 128006
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129286 transition_ref 179846 // <transition>
+  
+  from ref 128006 z 2001 label "opened" xyz 215 155 2001 to ref 128262
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129414 transition_ref 179974 // <transition>
+  decenter_end 221
+  
+  from ref 128134 z 2001 label "opened" xyz 244.5 283 2001 to ref 128262
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129926 transition_ref 180102 // <transition>
+  
+  from ref 128134 z 2001 label "timeout" xyz 162.5 321 2001 to ref 128390
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 131462 transition_ref 180614 // <transition>
+  
+  from ref 131206 z 2009 to ref 131334
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 133638 transition_ref 181510 // <transition>
+  
+  from ref 131334 z 2009 label "filled" xyz 498.5 130 2009 to point 524 141
+  line 133766 z 2009 to ref 131590
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 134022 transition_ref 181766 // <transition>
+  
+  from ref 132998 z 2001 label "freeze" xyz 535 421 2001 to ref 130566
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 134150 transition_ref 181894 // <transition>
+  
+  from ref 131334 z 2009 to point 463 60
+  line 134278 z 2009 label "volumeAugmented" xyz 396 55 2009 to point 426 59
+  line 134406 z 2009 to ref 131334
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 134662 transition_ref 182022 // <transition>
+  
+  from ref 131334 z 2009 label "cancelled" xyz 513.5 97 2009 to ref 131590
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 134918 transition_ref 182150 // <transition>
+  
+  from ref 131590 z 2006 label "freeze / stm.freezeOrder();" xyz 554 125 2006 to ref 134790
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 135046 transition_ref 182278 // <transition>
+  
+  from ref 134790 z 2009 label "[stm.remainingVolume()]" xyz 481 188 2009 to point 464 206
+  line 135174 z 2009 to ref 131334
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 135302 transition_ref 182406 // <transition>
+  
+  from ref 134790 z 2006 label "[!stm.remainingVolume()]" xyz 572 280 2006 to ref 132998
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 135558 transition_ref 182534 // <transition>
+  decenter_begin 741
+  
+  from ref 128134 z 2001 label "fills" xyz 288.5 655 2001 to ref 135430
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 135686 transition_ref 182662 // <transition>
+  
+  from ref 135430 z 2001 label "[stm.remainingVolume()]" xyz 154 726 2001 to point 111 638
+  line 136198 z 2001 to ref 128134
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 135942 transition_ref 182790 // <transition>
+  
+  from ref 135430 z 2001 label "[!stm.remainingVolume()]" xyz 363.5 582 2001 to ref 130566
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 136582 transition_ref 182918 // <transition>
+  decenter_begin 772
+  
+  from ref 128134 z 2001 label "cancelled" xyz 313 588.5 2001 to point 378 622
+  line 137350 z 2001 to ref 135430
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 136838 transition_ref 183046 // <transition>
+  
+  from ref 128134 z 2006 label "filled" xyz 237 374 2006 to point 435 400
+  line 136966 z 2006 to ref 131590
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 137734 transition_ref 189574 // <transition>
+  
+  from ref 128006 z 2001 label "fills / stm.meltOrder();" xyz 70 278 3000 to ref 128134
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 138246 transition_ref 189830 // <transition>
+  
+  from ref 137862 z 2011 to ref 138118
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 138374 transition_ref 189958 // <transition>
+  
+  from ref 138118 z 2011 label "[!stm.isFrozen()]" xyz 99 459 3000 to ref 137478
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 138502 transition_ref 190086 // <transition>
+  
+  from ref 138118 z 2011 label "[stm.isFrozen()]" xyz 101 537.5 3000 to ref 137606
+  write_horizontally default show_definition default drawing_language default
+end
+end

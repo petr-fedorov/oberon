@@ -1,0 +1,25 @@
+class Cleanse_State
+!!!538246.cpp!!!	_completion(inout stm : DedupOrchestrator) : bool
+  {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : execute activity of transition <transition>" << std::endl;
+#endif
+// output processed, if any    stm._set_currentState(stm._deduporchestrator_state._wait_state);
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : current state is now .DedupOrchestrator.Wait" << std::endl;
+#endif
+    return (bool) 1;
+  }
+!!!538374.cpp!!!	create(inout stm : DedupOrchestrator) : void
+	_do(stm);
+	_completion(stm);
+!!!538502.cpp!!!	_do(inout stm : DedupOrchestrator) : void
+#ifdef VERBOSE_STATE_MACHINE
+  std::cout << "DEBUG : execute do behavior of .DedupOrchestrator.Cleanse" << std::endl;
+#endif
+// Dedup *dedup = stm.contaminated_iter_->second;
+// dedup->timeElapsed(exchange_timestamp_);
+// if (!dedup->is_contaminated_)
+//  stm.contaminated_.erase(stm.contaminated_iter_);
+!!!538630.cpp!!!	_upper(inout stm : DedupOrchestrator) : DedupOrchestrator::AnyState
+  return &stm._deduporchestrator_state;

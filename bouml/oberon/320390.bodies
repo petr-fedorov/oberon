@@ -1,0 +1,72 @@
+class DedupOrchestrator
+!!!386950.cpp!!!	DedupOrchestrator()
+  _current_state = 0;
+!!!425734.cpp!!!	DedupOrchestrator(inout output : MessageHandler)
+
+output_ = output;
+!!!483974.cpp!!!	message() : bool
+  if (_current_state != 0) {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : fire trigger message" << std::endl;
+#endif
+    _current_state->message(*this);
+  }
+  return (_current_state != 0);
+!!!492934.cpp!!!	elapsed() : bool
+  if (_current_state != 0) {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : fire trigger elapsed" << std::endl;
+#endif
+    _current_state->elapsed(*this);
+  }
+  return (_current_state != 0);
+!!!536838.cpp!!!	stop() : bool
+  if (_current_state != 0) {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : fire trigger stop" << std::endl;
+#endif
+    _current_state->stop(*this);
+  }
+  return (_current_state != 0);
+!!!537862.cpp!!!	create() : bool
+if (_current_state == 0)
+  (_current_state = &(*this)._deduporchestrator_state)->create(*this);
+return (_current_state != 0);
+!!!539654.cpp!!!	doActivity() : void
+  _current_state->_do(*this);
+!!!539782.cpp!!!	_set_currentState(inout st : DedupOrchestrator::AnyState) : void
+  _current_state = &st;
+!!!539910.cpp!!!	_final() : void
+  _current_state = 0;
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : final state reached" << std::endl;
+#endif
+!!!546566.cpp!!!	elapsed(inout msg : Elapsed [1]) : bool
+received_ = msg;
+return elapsed();
+!!!546694.cpp!!!	received(inout msg : Received [1]) : bool
+received_ = msg;
+return message();
+!!!546822.cpp!!!	volumeIncremented(inout msg : VolumeIncremented [1]) : bool
+received_ = msg;
+return message();
+!!!546950.cpp!!!	priceAdvanced(inout msg : PriceAdvanced [1]) : bool
+received_ = msg;
+return message();
+
+!!!547078.cpp!!!	priceReceded(inout msg : PriceReceded [1]) : bool
+received_ = msg;
+return message();
+
+!!!547206.cpp!!!	filled(inout msg : Filled [1]) : bool
+received_ = msg;
+return message();
+
+!!!547334.cpp!!!	partiallyCancelled(inout msg : PartiallyCancelled [1]) : bool
+received_ = msg;
+return message();
+
+!!!547462.cpp!!!	fullyCancelled(inout msg : FullyCancelled [1]) : bool
+received_ = msg;
+return message();
+

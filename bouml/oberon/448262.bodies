@@ -1,0 +1,17 @@
+class Synchronize_State
+!!!493702.cpp!!!	_completion(inout stm : DedupOrchestrator) : bool
+  {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : execute activity of transition <transition>" << std::endl;
+#endif
+set current time    stm._set_currentState(stm._deduporchestrator_state._wait_state);
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : current state is now .DedupOrchestrator.Wait" << std::endl;
+#endif
+    stm._deduporchestrator_state._wait_state.create(stm);
+    return (bool) 1;
+  }
+!!!493830.cpp!!!	create(inout stm : DedupOrchestrator) : void
+	_completion(stm);
+!!!493958.cpp!!!	_upper(inout stm : DedupOrchestrator) : DedupOrchestrator::AnyState
+  return &stm._deduporchestrator_state;

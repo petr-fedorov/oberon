@@ -1,0 +1,20 @@
+class Output_State
+!!!467590.cpp!!!	_completion(inout stm : DedupOrchestrator) : bool
+  {
+    stm._set_currentState(stm._deduporchestrator_state._wait_state);
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : current state is now .DedupOrchestrator.Wait" << std::endl;
+#endif
+    stm._deduporchestrator_state._wait_state.create(stm);
+    return (bool) 1;
+  }
+!!!467718.cpp!!!	create(inout stm : DedupOrchestrator) : void
+	_do(stm);
+	_completion(stm);
+!!!467846.cpp!!!	_upper(inout stm : DedupOrchestrator) : DedupOrchestrator::AnyState
+  return &stm._deduporchestrator_state;
+!!!475014.cpp!!!	_do(inout stm : DedupOrchestrator) : void
+#ifdef VERBOSE_STATE_MACHINE
+  std::cout << "DEBUG : execute do behavior of .DedupOrchestrator.Output" << std::endl;
+#endif
+// TODO: Here will be the output code

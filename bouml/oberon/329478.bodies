@@ -1,0 +1,18 @@
+class Solid_State
+!!!336006.cpp!!!	_upper(inout stm : Price_Level) : Price_Level::AnyState
+  return &stm._price_level_state._exists_state;
+!!!338054.cpp!!!	volumeDecreased(inout stm : Price_Level) : void
+  {
+    stm._set_currentState(stm._price_level_state._exists_state._fluid_state);
+#ifdef VERBOSE_STATE_MACHINE
+    puts("DEBUG : current state is now .Price Level.Exists.Fluid");
+#endif
+    stm._price_level_state._exists_state._fluid_state.create(stm);
+  }
+!!!338182.cpp!!!	create(inout stm : Price_Level) : void
+	_doentry(stm);
+!!!338310.cpp!!!	_doentry(inout stm : Price_Level) : void
+#ifdef VERBOSE_STATE_MACHINE
+	puts("DEBUG : execute entry behavior of .Price Level.Exists.Solid");
+#endif
+enter();

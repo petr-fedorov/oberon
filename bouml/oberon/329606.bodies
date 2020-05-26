@@ -1,0 +1,20 @@
+class Fluid_State
+!!!336134.cpp!!!	_upper(inout stm : Price_Level) : Price_Level::AnyState
+  return &stm._price_level_state._exists_state;
+!!!338694.cpp!!!	timeout(inout stm : Price_Level) : void
+  {
+#ifdef VERBOSE_STATE_MACHINE
+    puts("DEBUG : execute activity of transition <transition>");
+#endif
+pruneMessages();    stm._set_currentState(stm._price_level_state._exists_state);
+#ifdef VERBOSE_STATE_MACHINE
+    puts("DEBUG : current state is now .Price Level.Exists");
+#endif
+  }
+!!!338822.cpp!!!	create(inout stm : Price_Level) : void
+	_doentry(stm);
+!!!338950.cpp!!!	_doentry(inout stm : Price_Level) : void
+#ifdef VERBOSE_STATE_MACHINE
+	puts("DEBUG : execute entry behavior of .Price Level.Exists.Fluid");
+#endif
+enter();

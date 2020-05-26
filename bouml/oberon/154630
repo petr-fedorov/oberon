@@ -1,6 +1,6 @@
 format 222
-"boost" // boost
-  revision 2
+"uuids" // boost::uuids
+  revision 1
   modified_by 6 "petr"
   // class settings
   
@@ -30,8 +30,8 @@ format 222
   activitydiagramsettings
    end
   
-  comment "Sub-packages for individual C++ Boost libraries."
-  classview 181126 "boost"
+  cpp_namespace "boost::uuids"
+  classview 181254 "uuids"
     
     classdiagramsettings member_max_width 0 end
     
@@ -51,18 +51,10 @@ format 222
     
     activitydiagramsettings
      end
-    classdiagram 267910 "boost"
-      classdiagramsettings member_max_width 0 end
-      size A4
-    end
-
-    class 472454 "lexical_cast"
+    class 472582 "uuid"
       visibility package 
-      nformals 1
-      formal name "Target" type "class" explicit_default_value ""
-        explicit_extends ""
       cpp_external cpp_decl "${name}
-#include <boost/lexical_cast.hpp>
+#include <boost/uuid/uuid.hpp>
 "
       java_decl ""
       php_decl ""
@@ -73,8 +65,4 @@ format 222
       
     end
   end
-
-  package_ref 148102 // property_tree
-
-  package_ref 154630 // uuids
 end

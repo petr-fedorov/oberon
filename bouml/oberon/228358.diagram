@@ -1,0 +1,119 @@
+format 222
+
+pseudostatecanvas 128006 pseudostate_ref 141190 // initial
+   xyz 402 22 2023
+end
+pseudostatecanvas 129030 pseudostate_ref 141318 // final
+   xyz 564 353 2011
+end
+pseudostatecanvas 130054 pseudostate_ref 141446 // choice
+   xyz 401 87 2011
+end
+statecanvas 130310 state_ref 141830 // DoubleOrderMessages
+  
+  xyzwh 618 234 2011 151 57
+end
+statecanvas 130566 state_ref 141958 // SingleOrderMessages
+  
+  xyzwh 182 251 2011 147 57
+end
+statecanvas 132870 state_ref 142214 // Last Is Match Message
+  
+  xyzwh 169 564 2000 175 57
+end
+statecanvas 132998 state_ref 142342 // Last is Order Message
+  
+  xyzwh 606 548 2000 165 99
+end
+pseudostatecanvas 135814 pseudostate_ref 147974 // choice
+   xyz 497 242 2017
+end
+transitioncanvas 130182 transition_ref 150150 // <transition>
+  
+  from ref 128006 z 2024 label "/ stm.initialize();" xyz 369 57 2024 to ref 130054
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 130438 transition_ref 150278 // <transition>
+  decenter_begin 243
+  
+  from ref 130054 z 2012 label "message [stm.isMatch()] / stm.accumulate();" xyz 376 189 2012 to ref 130310
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 130694 transition_ref 150406 // <transition>
+  
+  from ref 130054 z 2012 label "message [!stm.isMatch()] / stm.accumulate();" xyz 166 171 2012 to ref 130566
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 131206 transition_ref 150790 // <transition>
+  
+  from ref 130566 z 2012 to point 58 171
+  line 131334 z 2012 label "message [!stm.isMatch()] / stm.accumulate();" xyz -63 259 2012 to point 53 355
+  line 131462 z 2012 to ref 130566
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 132486 transition_ref 151302 // <transition>
+  
+  from ref 130310 z 2012 to point 672 128
+  line 132614 z 2012 label "message [stm.isMatch()] / stm.accumulate();" xyz 639 155 2012 to point 838 191
+  line 132742 z 2012 to ref 130310
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 133126 transition_ref 151430 // <transition>
+  
+  from ref 132870 z 2001 label "message [!stm.isMatch()] / stm.accumulate();" xyz 224 751 2001 to point 483 702
+  line 133382 z 2001 to ref 132998
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 133254 transition_ref 151558 // <transition>
+  
+  from ref 132998 z 2001 label "message [stm.isMatch()] / stm.accumulate();" xyz 455 551 2001 to point 483 422
+  line 133510 z 2001 to ref 132870
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 133638 transition_ref 151686 // <transition>
+  
+  from ref 132870 z 2001 to point 90 513
+  line 133766 z 2001 label "message [stm.isMatch()] / stm.accumulate();" xyz -26 568 2001 to point 90 631
+  line 133894 z 2001 to ref 132870
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 134022 transition_ref 151814 // <transition>
+  
+  from ref 132998 z 2001 to point 682 428
+  line 134150 z 2001 label "message [!stm.isMatch()] / stm.accumulate();" xyz 617 456 2001 to point 789 493
+  line 134278 z 2001 to ref 132998
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 134406 transition_ref 151942 // <transition>
+  
+  from ref 132998 z 2012 label "timeout / stm.removeDuplicate();" xyz 535 456 2012 to ref 129030
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 134534 transition_ref 152070 // <transition>
+  
+  from ref 132870 z 2012 label "timeout / stm.prune();" xyz 354 519 2012 to point 502 485
+  line 135558 z 2012 to ref 129030
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 134662 transition_ref 158598 // <transition>
+  
+  from ref 130566 z 2012 label "message [stm.isMatch()] / accumulate();" xyz 38 519 2012 to ref 132870
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 134790 transition_ref 158726 // <transition>
+  
+  from ref 130310 z 2012 label "message [!stm.isMatch()] / stm.accumulate();" xyz 649 523 2012 to ref 132998
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 135686 transition_ref 159110 // <transition>
+  
+  from ref 130566 z 2012 label "timeElapsed [stm.isConsolidated()] / unload();" xyz 323 322 2012 to ref 129030
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 136326 transition_ref 159494 // <transition>
+  decenter_end 567
+  
+  from ref 130310 z 2018 label "elapsed" xyz 548 255 2018 to ref 135814
+  write_horizontally default show_definition default drawing_language default
+end
+end

@@ -1,0 +1,29 @@
+class Last_is_Order_Message_State
+!!!272262.cpp!!!	message(inout stm : Remove_Duplicate_Events) : void
+  if (stm.isMatch()) {
+#ifdef VERBOSE_STATE_MACHINE
+    puts("DEBUG : execute activity of transition <transition>");
+#endif
+stm.accumulate();    stm._set_currentState(stm._remove_duplicate_events_state._last_is_match_message_state);
+#ifdef VERBOSE_STATE_MACHINE
+    puts("DEBUG : current state is now .Remove Duplicate Events.Last Is Match Message");
+#endif
+  }
+  else if (!stm.isMatch()) {
+#ifdef VERBOSE_STATE_MACHINE
+    puts("DEBUG : execute activity of transition <transition>");
+#endif
+stm.accumulate();  }
+!!!272390.cpp!!!	timeout(inout stm : Remove_Duplicate_Events) : void
+  {
+#ifdef VERBOSE_STATE_MACHINE
+    puts("DEBUG : execute activity of transition <transition>");
+#endif
+stm.removeDuplicate();    stm._set_currentState(stm._remove_duplicate_events_state);
+#ifdef VERBOSE_STATE_MACHINE
+    puts("DEBUG : current state is now .Remove Duplicate Events");
+#endif
+    stm._final();
+  }
+!!!272518.cpp!!!	_upper(inout stm : Remove_Duplicate_Events) : Remove_Duplicate_Events::AnyState
+  return &stm._remove_duplicate_events_state;

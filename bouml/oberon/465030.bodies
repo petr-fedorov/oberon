@@ -1,0 +1,28 @@
+class Fills_and_Cancellations_State
+!!!533510.cpp!!!	elapsed(inout stm : Dedup) : void
+  if (stm.received_->getTimestamp() > stm.contamination_period_[1] + stm.wait_duration_
+) {
+    stm._dedup_state._contaminated_state._doexit(stm);
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : execute activity of transition <transition>" << std::endl;
+#endif
+stm.cleanseMessages();    stm._set_currentState(stm._dedup_state._pristine_state);
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : current state is now .Dedup.Pristine" << std::endl;
+#endif
+    stm._dedup_state._pristine_state.create(stm);
+  }
+!!!533638.cpp!!!	filled(inout stm : Dedup) : void
+  {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : execute activity of transition <transition>" << std::endl;
+#endif
+stm.deferExchangeMessage(true);  }
+!!!533766.cpp!!!	cancelled(inout stm : Dedup) : void
+  {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : execute activity of transition <transition>" << std::endl;
+#endif
+stm.deferExchangeMessage(true);  }
+!!!533894.cpp!!!	_upper(inout stm : Dedup) : Dedup::AnyState
+  return &stm._dedup_state._contaminated_state;

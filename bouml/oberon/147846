@@ -1,6 +1,6 @@
 format 222
 "std" // std
-  revision 4
+  revision 8
   modified_by 6 "petr"
   // class settings
   
@@ -109,9 +109,9 @@ format 222
         explicit_extends ""
       formal name "T" type "class" explicit_default_value ""
         explicit_extends ""
-      formal name "Compare" type "class" default_value class_ref 195590 // less
+      formal name "Compare" type "class" explicit_default_value ""
         explicit_extends ""
-      formal name "Allocator" type "class" explicit_default_value "allocator_map"
+      formal name "Allocator" type "class" explicit_default_value ""
         explicit_extends ""
       cpp_external cpp_decl "${name}
 #include <${name}>
@@ -136,6 +136,15 @@ format 222
 	
 	
       end
+
+      classrelation 413574 // <directional aggregation>
+	relation 410630 o-->
+	  a role_name "" multiplicity "*" private
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type} *> ${name}${value};
+"
+	    classrelation_ref 413574 // <directional aggregation>
+	  b multiplicity "1" parent class_ref 195078 // pair
+      end
     end
 
     class 222726 "exception"
@@ -151,5 +160,20 @@ format 222
       mysql_decl ""
       
     end
+
+    class 448006 "logic_error"
+      visibility package 
+      cpp_external cpp_decl "${name}
+#include <stdexcept>
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+    end
+
   end
 end

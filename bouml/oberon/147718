@@ -1,6 +1,6 @@
 format 222
 "Standalone application" // Standalone application
-  revision 20
+  revision 23
   modified_by 6 "petr"
   // class settings
   
@@ -146,7 +146,7 @@ format 222
 
       activityaction 193286 "S.1 Cleanse"
 	call_operation_action
-	operation_ref 225414 // cleanse
+	no_operation
 	pin 245766 "target" type class_ref 202630 // Reconstructor
 	   multiplicity "1" unordered 
 	  in
@@ -689,7 +689,6 @@ format 222
 	end
       end
     end
-
   end
 
   classview 154246 "Standalone application"
@@ -906,13 +905,6 @@ ${inlines}
 	
       end
 
-      classrelation 197382 // <generalisation>
-	relation 197254 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 197382 // <generalisation>
-	  b parent class_ref 237958 // Source
-      end
     end
 
     activity 162182 "Reconnect"

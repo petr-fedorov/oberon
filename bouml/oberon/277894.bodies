@@ -1,0 +1,40 @@
+class Remove_Duplicate_Events
+!!!269958.cpp!!!	Remove_Duplicate_Events()
+  _current_state = 0;
+!!!270214.cpp!!!	create() : bool
+if (_current_state == 0)
+(_current_state = &(*this)._remove_duplicate_events_state)->create(*this);
+return (_current_state != 0);
+!!!270598.cpp!!!	timeout() : bool
+  if (_current_state != 0) {
+#ifdef VERBOSE_STATE_MACHINE
+    puts("DEBUG : fire trigger timeout");
+#endif
+    _current_state->timeout(*this);
+  }
+  return (_current_state != 0);
+!!!270982.cpp!!!	message() : bool
+  if (_current_state != 0) {
+#ifdef VERBOSE_STATE_MACHINE
+    puts("DEBUG : fire trigger message");
+#endif
+    _current_state->message(*this);
+  }
+  return (_current_state != 0);
+!!!272774.cpp!!!	doActivity() : void
+  _current_state->_do(*this);
+!!!272902.cpp!!!	_set_currentState(inout st : Remove_Duplicate_Events::AnyState) : void
+  _current_state = &st;
+!!!273030.cpp!!!	_final() : void
+  _current_state = 0;
+#ifdef VERBOSE_STATE_MACHINE
+  puts("DEBUG : final state reached");
+#endif
+!!!287366.cpp!!!	time() : bool
+  if (_current_state != 0) {
+#ifdef VERBOSE_STATE_MACHINE
+    puts("DEBUG : fire trigger time");
+#endif
+    _current_state->time(*this);
+  }
+  return (_current_state != 0);

@@ -1,0 +1,83 @@
+class Dedup
+!!!554374.cpp!!!	Dedup()
+  _current_state = 0;
+!!!506502.cpp!!!	Dedup(inout output : MessageHandler, inout orchestrator : DedupOrchestrator)
+orchestrator_ = orchestrator;
+output_ = output;
+!!!547590.cpp!!!	elapsed() : bool
+  if (_current_state != 0) {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : fire trigger elapsed" << std::endl;
+#endif
+    _current_state->elapsed(*this);
+  }
+  return (_current_state != 0);
+!!!506630.cpp!!!	elapsed(inout msg : Elapsed [1]) : bool
+received_ = msg;
+return elapsed();
+!!!506758.cpp!!!	received(inout msg : Received [1]) : bool
+received_ = msg;
+return message();
+!!!506886.cpp!!!	volumeIncremented(inout msg : VolumeIncremented [1]) : bool
+received_ = msg;
+return message();
+!!!507014.cpp!!!	priceAdvanced(inout msg : PriceAdvanced [1]) : bool
+received_ = msg;
+return message();
+!!!507142.cpp!!!	priceReceded(inout msg : PriceReceded [1]) : bool
+received_ = msg;
+return message();
+!!!507270.cpp!!!	filled() : bool
+  if (_current_state != 0) {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : fire trigger filled" << std::endl;
+#endif
+    _current_state->filled(*this);
+  }
+  return (_current_state != 0);
+!!!547718.cpp!!!	filled(inout msg : Filled [1]) : bool
+received_ = msg;
+return filled();
+!!!507398.cpp!!!	partiallyCancelled(inout msg : PartiallyCancelled [1]) : bool
+received_ = msg;
+return cancelled();
+!!!507526.cpp!!!	fullyCancelled(inout msg : FullyCancelled [1]) : bool
+received_ = msg;
+return cancelled();
+!!!531462.cpp!!!	cancelled() : bool
+  if (_current_state != 0) {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : fire trigger cancelled" << std::endl;
+#endif
+    _current_state->cancelled(*this);
+  }
+  return (_current_state != 0);
+!!!531846.cpp!!!	stop() : bool
+  if (_current_state != 0) {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : fire trigger stop" << std::endl;
+#endif
+    _current_state->stop(*this);
+  }
+  return (_current_state != 0);
+!!!532230.cpp!!!	message() : bool
+  if (_current_state != 0) {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : fire trigger message" << std::endl;
+#endif
+    _current_state->message(*this);
+  }
+  return (_current_state != 0);
+!!!532614.cpp!!!	create() : bool
+if (_current_state == 0)
+  (_current_state = &(*this)._dedup_state)->create(*this);
+return (_current_state != 0);
+!!!535558.cpp!!!	doActivity() : void
+  _current_state->_do(*this);
+!!!535686.cpp!!!	_set_currentState(inout st : Dedup::AnyState) : void
+  _current_state = &st;
+!!!535814.cpp!!!	_final() : void
+  _current_state = 0;
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : final state reached" << std::endl;
+#endif

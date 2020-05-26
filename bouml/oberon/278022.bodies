@@ -1,0 +1,28 @@
+class AnyState
+!!!270726.cpp!!!	timeout(inout stm : Remove_Duplicate_Events) : void
+  AnyState * st = _upper(stm);
+
+  if (st != 0)
+    st->timeout(stm);
+#ifdef VERBOSE_STATE_MACHINE
+  else
+    puts("DEBUG : transition timeout not expected");
+#endif
+!!!271110.cpp!!!	message(inout stm : Remove_Duplicate_Events) : void
+  AnyState * st = _upper(stm);
+
+  if (st != 0)
+    st->message(stm);
+#ifdef VERBOSE_STATE_MACHINE
+  else
+    puts("DEBUG : transition message not expected");
+#endif
+!!!287494.cpp!!!	time(inout stm : Remove_Duplicate_Events) : void
+  AnyState * st = _upper(stm);
+
+  if (st != 0)
+    st->time(stm);
+#ifdef VERBOSE_STATE_MACHINE
+  else
+    puts("DEBUG : transition time not expected");
+#endif

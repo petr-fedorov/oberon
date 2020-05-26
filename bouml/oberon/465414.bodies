@@ -1,0 +1,28 @@
+class AnyState
+!!!536966.cpp!!!	stop(inout stm : DedupOrchestrator) : void
+  AnyState * st = _upper(stm);
+
+  if (st != 0)
+    st->stop(stm);
+#ifdef VERBOSE_STATE_MACHINE
+  else
+    std::cout << "DEBUG : transition stop not expected" << std::endl;
+#endif
+!!!537222.cpp!!!	message(inout stm : DedupOrchestrator) : void
+  AnyState * st = _upper(stm);
+
+  if (st != 0)
+    st->message(stm);
+#ifdef VERBOSE_STATE_MACHINE
+  else
+    std::cout << "DEBUG : transition message not expected" << std::endl;
+#endif
+!!!537478.cpp!!!	elapsed(inout stm : DedupOrchestrator) : void
+  AnyState * st = _upper(stm);
+
+  if (st != 0)
+    st->elapsed(stm);
+#ifdef VERBOSE_STATE_MACHINE
+  else
+    std::cout << "DEBUG : transition elapsed not expected" << std::endl;
+#endif

@@ -1,0 +1,91 @@
+format 222
+
+classcanvas 128006 class_ref 472838 // time_order_error
+  classdiagramsettings member_max_width 0 end
+  xyz 150 259 2000
+end
+classcanvas 128134 class_ref 448006 // logic_error
+  classdiagramsettings member_max_width 0 end
+  xyz 166 136 2000
+end
+classcanvas 129030 class_ref 202630 // Reconstructor
+  classdiagramsettings member_max_width 0 end
+  xyz 316 190 2000
+end
+classcanvas 129670 class_ref 472966 // Exchanges
+  classdiagramsettings member_max_width 0 end
+  xyz 335 66 2000
+end
+classcanvas 129798 class_ref 215814 // CoinbaseReconstructor
+  classdiagramsettings member_max_width 0 end
+  xyz 343 440 2006
+end
+classcanvas 130438 class_ref 320390 // DedupOrchestrator
+  classdiagramsettings member_max_width 0 end
+  xyz 627 300 2000
+end
+classcanvas 130694 class_ref 231302 // Store
+  classdiagramsettings member_max_width 0 end
+  xyz 462 196 3005
+end
+classcanvas 131334 class_ref 441222 // MessageHandler
+  classdiagramsettings member_max_width 0 end
+  xyz 387 665 3005
+end
+classcanvas 131846 class_ref 441350 // MessageBuffer
+  classdiagramsettings member_max_width 0 end
+  xyz 137 578 3011
+end
+relationcanvas 128902 relation_ref 486534 // <generalisation>
+  from ref 128006 z 2001 to ref 128134
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 129926 relation_ref 190598 // <generalisation>
+  from ref 129798 z 2007 to ref 129030
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130054 relation_ref 434054 // <dependency>
+  from ref 129030 z 2007 to point 210 479
+  line 130310 z 2007 to ref 129798
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130566 relation_ref 486790 // <directional aggregation>
+  from ref 129798 z 2007 to ref 130438
+  role_a_pos 545 462 3000 no_role_b
+  multiplicity_a_pos 609 487 3000 no_multiplicity_b
+end
+relationcanvas 130822 relation_ref 190470 // <unidirectional association>
+  from ref 129798 z 3006 to ref 130694
+  role_a_pos 488 267 3000 no_role_b
+  multiplicity_a_pos 461 267 3000 no_multiplicity_b
+end
+relationcanvas 131462 relation_ref 442118 // <generalisation>
+  from ref 130438 z 3006 to point 702 740
+  line 131718 z 3006 to ref 131334
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131590 relation_ref 479878 // <directional aggregation>
+  from ref 130438 z 3006 to ref 131334
+  role_a_pos 527 659 3000 no_role_b
+  multiplicity_a_pos 500 659 3000 multiplicity_b_pos 590 565 3000
+end
+relationcanvas 131974 relation_ref 441734 // <generalisation>
+  from ref 131846 z 3012 to ref 131334
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 132102 relation_ref 441990 // <directional composition>
+  from ref 130438 z 3012 to ref 131846
+  role_a_pos 271 627 3000 no_role_b
+  multiplicity_a_pos 271 652 3000 multiplicity_b_pos 609 512 3000
+end
+relationcanvas 132230 relation_ref 486918 // <directional aggregation>
+  from ref 129798 z 3012 to ref 131846
+  role_a_pos 271 590 3000 no_role_b
+  multiplicity_a_pos 271 615 3000 no_multiplicity_b
+end
+end

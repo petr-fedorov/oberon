@@ -1,0 +1,17 @@
+class Exists_State
+!!!336518.cpp!!!	opened(inout stm : Price_Level) : void
+  {
+#ifdef VERBOSE_STATE_MACHINE
+    puts("DEBUG : execute activity of transition <transition>");
+#endif
+stm.deferMessage();  }
+!!!337030.cpp!!!	create(inout stm : Price_Level) : void
+  {
+    stm._set_currentState(stm._price_level_state._exists_state._solid_state);
+#ifdef VERBOSE_STATE_MACHINE
+    puts("DEBUG : current state is now .Price Level.Exists.Solid");
+#endif
+    stm._price_level_state._exists_state._solid_state.create(stm);
+  }
+!!!337158.cpp!!!	_upper(inout stm : Price_Level) : Price_Level::AnyState
+  return &stm._price_level_state;

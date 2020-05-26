@@ -1,0 +1,50 @@
+class Pristine_State
+!!!531334.cpp!!!	filled(inout stm : Dedup) : void
+  {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : execute activity of transition <transition>" << std::endl;
+#endif
+stm.deferExchangeMessage(true);
+    stm._dedup_state._contaminated_state._doentry(stm);
+    stm._set_currentState(stm._dedup_state._contaminated_state._fills_state);
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : current state is now .Dedup.Contaminated.Fills" << std::endl;
+#endif
+  }
+!!!531718.cpp!!!	cancelled(inout stm : Dedup) : void
+  {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : execute activity of transition <transition>" << std::endl;
+#endif
+stm.deferExchangeMessage(true);
+    stm._dedup_state._contaminated_state._doentry(stm);
+    stm._set_currentState(stm._dedup_state._contaminated_state._cancellations_state);
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : current state is now .Dedup.Contaminated.Cancellations" << std::endl;
+#endif
+  }
+!!!532102.cpp!!!	stop(inout stm : Dedup) : void
+  {
+    stm._set_currentState(stm._dedup_state);
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : current state is now .Dedup" << std::endl;
+#endif
+    stm._final();
+  }
+!!!532486.cpp!!!	message(inout stm : Dedup) : void
+  {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : execute activity of transition <transition>" << std::endl;
+#endif
+stm.received_->accept(stm.output_);
+  }
+!!!532870.cpp!!!	create(inout stm : Dedup) : void
+	_doentry(stm);
+!!!532998.cpp!!!	_doentry(inout stm : Dedup) : void
+#ifdef VERBOSE_STATE_MACHINE
+  std::cout << "DEBUG : execute entry behavior of .Dedup.Pristine" << std::endl;
+#endif
+stm.contamination_period_[0] = Timestamp{0};
+stm.contamination_period_[1] = Timestamp{0};
+!!!533126.cpp!!!	_upper(inout stm : Dedup) : Dedup::AnyState
+  return &stm._dedup_state;

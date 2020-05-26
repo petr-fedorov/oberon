@@ -1,0 +1,28 @@
+class Wait_State
+!!!537094.cpp!!!	stop(inout stm : DedupOrchestrator) : void
+  {
+    stm._set_currentState(stm._deduporchestrator_state);
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : current state is now .DedupOrchestrator" << std::endl;
+#endif
+    stm._final();
+  }
+!!!537350.cpp!!!	message(inout stm : DedupOrchestrator) : void
+  {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : execute activity of transition <transition>" << std::endl;
+#endif
+ExchangeMessage *msg = dynamic_cast<ExchangeMessage *>(stm.received_);
+stm.episode_.push_back(msg);
+
+  }
+!!!537606.cpp!!!	elapsed(inout stm : DedupOrchestrator) : void
+  {
+    stm._set_currentState(stm._deduporchestrator_state._dispatch_state);
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : current state is now .DedupOrchestrator.Dispatch" << std::endl;
+#endif
+    stm._deduporchestrator_state._dispatch_state.create(stm);
+  }
+!!!537734.cpp!!!	_upper(inout stm : DedupOrchestrator) : DedupOrchestrator::AnyState
+  return &stm._deduporchestrator_state;

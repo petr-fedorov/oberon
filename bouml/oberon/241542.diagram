@@ -1,0 +1,138 @@
+format 222
+
+pseudostatecanvas 128006 pseudostate_ref 162054 // initial
+   xyz 45.6 45.2 2000
+end
+statecanvas 129414 state_ref 157190 // Pristine
+  
+  xyzwh 131.3 85.8 2005 155 63
+end
+statecanvas 138758 state_ref 163846 // Fills
+  
+  xyzwh 214.4 351.7 2013 117 33
+end
+statecanvas 139014 state_ref 163974 // Cancellations
+  
+  xyzwh 201.7 498 2013 140 33
+end
+statecanvas 139270 state_ref 164102 // Fills and Cancellations
+  
+  xyzwh 451 421.2 2019 151 33
+end
+statecanvas 140422 state_ref 164230 // Contaminated
+  
+  xyzwh 177.9 258.3 2000 546 386
+end
+pseudostatecanvas 151430 pseudostate_ref 228230 // final
+   xyz 354 53 2000
+end
+pseudostatecanvas 152070 pseudostate_ref 234758 // shallow_history
+   xyz 462 342 2005
+end
+transitioncanvas 138886 transition_ref 206982 // <transition>
+  decenter_begin 116
+  
+  from ref 129414 z 2014 label "filled" xyz 135 251 2014 to point 145 367
+  line 149254 z 2014 to ref 138758
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 139142 transition_ref 207110 // <transition>
+  decenter_begin 539
+  
+  from ref 129414 z 2014 label "cancelled" xyz 64 111 2014 to point 47 116
+  line 149126 z 2014 to point 45 513
+  line 148998 z 2014 to ref 139014
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 139398 transition_ref 207238 // <transition>
+  
+  from ref 138758 z 2020 label "cancelled / update contaminated period" xyz 294 393 2020 to ref 139270
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 139526 transition_ref 207366 // <transition>
+  
+  from ref 139014 z 2020 label "filled / update contaminated period" xyz 300 468 2020 to ref 139270
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 144902 transition_ref 209542 // <transition>
+  decenter_begin 835
+  decenter_end 100
+  
+  from ref 139014 z 2014 to point 316 566
+  line 145030 z 2014 label "cancelled / update contaminated period" xyz 161 561 2014 to point 213 566
+  line 145158 z 2014 to ref 139014
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 145286 transition_ref 209670 // <transition>
+  decenter_begin 786
+  decenter_end 170
+  
+  from ref 138758 z 2014 to point 304 428
+  line 145414 z 2014 label "filled / update contaminated period" xyz 198 431 2014 to point 230 428
+  line 145542 z 2014 to ref 138758
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 146054 transition_ref 209926 // <transition>
+  
+  from ref 128006 z 2006 to ref 129414
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 146950 transition_ref 307974 // <transition>
+  decenter_end 539
+  
+  from ref 139270 z 2020 to point 798 429
+  line 151174 z 2020 to point 797 110
+  line 149510 z 2020 label "elapsed [wait duration exceeded]" xyz 454 108 2020 to ref 129414
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 147974 transition_ref 308230 // <transition>
+  
+  from ref 139270 z 2020 to point 471 585
+  line 148102 z 2020 label "filled / update contaminated period" xyz 347 550 2020 to point 404 526
+  line 148230 z 2020 to ref 139270
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 148614 transition_ref 308486 // <transition>
+  
+  from ref 139270 z 2020 to point 666 516
+  line 148742 z 2020 label "cancelled / update contaminated period" xyz 534 545 2020 to point 568 569
+  line 148870 z 2020 to ref 139270
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 149638 transition_ref 308614 // elapsed, leave state
+  decenter_begin 153
+  decenter_end 819
+  
+  from ref 140422 z 2006 label "elapsed [wait duration exceeded] / pass messages" xyz 124 193 2006 to ref 129414
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 151558 transition_ref 308998 // <transition>
+  decenter_begin 142
+  
+  from ref 129414 z 2006 label "stop" xyz 308 73 2006 to ref 151430
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 151686 transition_ref 315526 // <transition>
+  decenter_begin 877
+  decenter_end 135
+  
+  from ref 129414 z 2006 to point 264 32
+  line 151814 z 2006 label "message / pass" xyz 165 27 2006 to point 147 32
+  line 151942 z 2006 to ref 129414
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 152198 transition_ref 322054 // message
+  decenter_begin 736
+  
+  from ref 140422 z 2006 label "message / save message" xyz 499 285.5 3000 to point 555 326
+  line 152582 z 2006 to ref 152070
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 152326 transition_ref 322182 // elapsed, ignored
+  decenter_begin 158
+  
+  from ref 140422 z 2006 label "elapsed [wait duration NOT exceeded]" xyz 589.5 331 3000 to point 659 357
+  line 152454 z 2006 to ref 152070
+  write_horizontally default show_definition default drawing_language default
+end
+end
