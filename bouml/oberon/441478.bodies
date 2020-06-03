@@ -1,5 +1,7 @@
 class Elapsed
-!!!485638.cpp!!!	accept(inout mh : MessageHandler [1]) : bool
-return mh->elapsed(this);
+!!!485638.cpp!!!	accept(in mh : MessageHandler [1]) : bool
+return mh->elapsed();
 !!!561926.cpp!!!	Elapsed(in exchange_time : Timestamp)
 timestamp_ = exchange_time;
+!!!597254.cpp!!!	~Elapsed()
+std::cout << "Elapsed deleted\n";

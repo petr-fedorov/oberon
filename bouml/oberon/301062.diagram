@@ -1,0 +1,77 @@
+format 222
+
+activitycanvas 128134 activity_ref 182022 // R.4 Save
+  
+  xyzwh 64 50 2007 591 301
+  params
+    parametercanvas 128262 parameter_ref 192262 // messages
+        xyzwh 23 161 2008 83 25
+    end
+    parametercanvas 128390 parameter_ref 192390 // target
+        xyzwh 481 38 2008 83 25
+    end
+  end
+end
+activityobjectcanvas 128518 activityobject_ref 180742 // activity object messages
+  
+  xyzwh 161 151 2012 75 45 label_xy 161 196
+end
+activityactioncanvas 128774 activityaction_ref 247046 // activity action Save to Store
+  
+  show_opaque_action_definition default
+  xyzwh 461 142 2012 100 60
+  pins
+    pincanvas 129030 pin_ref 297350 // target
+      xyzwh 520 132 2014 11 11 label_xy 538 125
+    end
+    pincanvas 129158 pin_ref 297478 // event
+      xyzwh 451 165 2014 11 11 label_xy 401 144
+    end
+  end
+end
+activitynodecanvas 128902 activitynode_ref 263430 // decision
+  xyz 294 155 2012
+end
+activitynodecanvas 129542 activitynode_ref 263558 // activity_final
+  xyz 296 267 2012
+end
+flowcanvas 128646 flow_ref 313478 // <flow>
+  
+  from ref 128262 z 2013 to ref 128518
+   write_horizontally default
+end
+flowcanvas 129286 flow_ref 313606 // <flow>
+  
+  from ref 128902 z 2015 label "[not null]" xyz 360.5 164 3000 to ref 129158
+   write_horizontally default
+  transformation 
+  information 129798 "<<transformation>>
+Message to Event"
+    xyzwh 343 225 2015 125 48
+end
+flowcanvas 129414 flow_ref 313734 // <flow>
+  
+  from ref 128518 z 2013 to ref 128902
+   write_horizontally default
+end
+flowcanvas 129670 flow_ref 313862 // <flow>
+  
+  from ref 128902 z 2013 label "[null]" xyz 293 221 3000 to ref 129542
+   write_horizontally default
+end
+flowcanvas 130054 flow_ref 313990 // <flow>
+  
+  from ref 128390 z 2015 to ref 129030
+   write_horizontally default
+end
+flowcanvas 130182 flow_ref 314118 // <flow>
+  decenter_begin 200
+  
+  from ref 128774 z 2013 to point 478 104
+  line 130438 z 2013 to point 195 104
+  line 130566 z 2013 to ref 128518
+   write_horizontally default
+end
+line 129926 -_-_
+  from ref 129286 z 2016 to ref 129798
+end

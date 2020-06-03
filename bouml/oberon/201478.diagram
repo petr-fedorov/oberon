@@ -1,47 +1,56 @@
 format 222
 
-activitycanvas 128006 activity_ref 155270 // S.6 Reconstruct
+activitycanvas 128006 activity_ref 155270 // S.6 Reconstruct order book
   
   xyzwh 118 96 0 625 359
   params
     parametercanvas 128134 parameter_ref 156678 // message
-        xyzwh 71 224 1 95 25 label_xy 99 207
+        xyzwh 71 261 1 95 25 label_xy 99 244
     end
-    parametercanvas 128262 parameter_ref 156806 // reconstructor
-        xyzwh 71 259 1 95 25
+    parametercanvas 128262 parameter_ref 156806 // target
+        xyzwh 71 296 1 95 25
     end
     parametercanvas 130694 parameter_ref 172166 // time_order_error
-        xyzwh 695 220 2 95 25 label_xy 695 202
+        xyzwh 695 257 2 95 25 label_xy 695 239
     end
   end
 end
-activityactioncanvas 128390 activityaction_ref 206726 // activity action Extract order events
+activityactioncanvas 128390 activityaction_ref 206726 // activity action R.1 Process message
   
   show_opaque_action_definition default
-  xyzwh 319 222 3010 100 60
+  xyzwh 398 259 3010 100 60
   pins
     pincanvas 130182 pin_ref 266246 // target
-      xyzwh 309 264 3012 11 11 label_xy 272 255
+      xyzwh 388 301 3012 11 11 label_xy 351 292
     end
     pincanvas 130310 pin_ref 266374 // message
-      xyzwh 309 230 3012 11 11 label_xy 255 213
+      xyzwh 388 267 3012 11 11 label_xy 334 250
     end
-    pincanvas 130438 pin_ref 266502 // 
-      xyzwh 418 228 3012 11 11 label_xy 384 185
+    pincanvas 130438 pin_ref 266502 // time_order_error
+      xyzwh 497 265 3012 11 11 label_xy 467 235
     end
   end
 end
 note 129926 "message {stream} is handled by an indefinite loop ."
-  xyzwh 453 283 2000 197 49
-activitynodecanvas 131590 activitynode_ref 229510 // initial_node
-  xyz 358 130 2000
+  xyzwh 318 394 2000 197 49
+activityobjectcanvas 131846 activityobject_ref 161030 // activity object reconstructor
+  
+  xyzwh 219 308 2000 95 59 label_xy 219 367
 end
+activityobjectcanvas 132230 activityobject_ref 167558 // activity object buffer
+  
+  xyzwh 208 227 2000 51 45 label_xy 197 271
+end
+note 132742 "Messages are submitted for processing  sequentially, one by one. \"Elapsed\"-type messages report lapses of time. It is assumped that \"Elapsed\" message is generated before any other message with the same timestamp"
+  xyzwh 332 134 2000 321 91
+note 132870 "If the time order of messages is broken, i.e an earlier message  is received later, the reconstruction stops."
+  xyzwh 524 306 2000 191 73
 flowcanvas 129414 flow_ref 234886 // <flow>
   decenter_begin 790
   decenter_end 170
   
-  from ref 128390 z 3011 to point 397 330
-  line 129542 z 3011 to point 335 331
+  from ref 128390 z 3011 to point 476 367
+  line 129542 z 3011 to point 414 368
   line 129670 z 3011 to ref 128390
    write_horizontally default
 end
@@ -50,21 +59,30 @@ flowcanvas 130822 flow_ref 273158 // <flow>
   from ref 130438 z 3013 to ref 130694
    write_horizontally default
 end
-flowcanvas 131334 flow_ref 273286 // <flow>
+flowcanvas 131974 flow_ref 289414 // <flow>
   
-  from ref 128134 z 3013 to ref 130310
+  from ref 128262 z 2001 to ref 131846
    write_horizontally default
 end
-flowcanvas 131462 flow_ref 273414 // <flow>
+flowcanvas 132102 flow_ref 289542 // <flow>
   
-  from ref 128262 z 3013 to ref 130182
+  from ref 131846 z 3013 to ref 130182
    write_horizontally default
 end
-flowcanvas 131718 flow_ref 273542 // <flow>
+flowcanvas 132358 flow_ref 296966 // <flow>
   
-  from ref 131590 z 3011 to ref 128390
+  from ref 128134 z 2001 to ref 132230
    write_horizontally default
 end
-line 131206 -_-_
-  from ref 129926 z 3012 to ref 129414
+flowcanvas 132614 flow_ref 305542 // <flow>
+  
+  from ref 132230 z 3013 to ref 130310
+   write_horizontally default
+end
+line 132998 -_-_
+  from ref 132870 z 3014 to ref 130822
+line 133126 -_-_
+  from ref 129926 z 3012 to ref 129542
+line 133254 -_-_
+  from ref 132742 z 2001 to ref 132230
 end

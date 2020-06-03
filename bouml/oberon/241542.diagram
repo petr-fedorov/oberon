@@ -29,14 +29,14 @@ end
 pseudostatecanvas 152070 pseudostate_ref 234758 // shallow_history
    xyz 462 342 2005
 end
-transitioncanvas 138886 transition_ref 206982 // <transition>
+transitioncanvas 138886 transition_ref 206982 // elapsed
   decenter_begin 116
   
   from ref 129414 z 2014 label "filled" xyz 135 251 2014 to point 145 367
   line 149254 z 2014 to ref 138758
   write_horizontally default show_definition default drawing_language default
 end
-transitioncanvas 139142 transition_ref 207110 // <transition>
+transitioncanvas 139142 transition_ref 207110 // cancelled
   decenter_begin 539
   
   from ref 129414 z 2014 label "cancelled" xyz 64 111 2014 to point 47 116
@@ -44,12 +44,12 @@ transitioncanvas 139142 transition_ref 207110 // <transition>
   line 148998 z 2014 to ref 139014
   write_horizontally default show_definition default drawing_language default
 end
-transitioncanvas 139398 transition_ref 207238 // <transition>
+transitioncanvas 139398 transition_ref 207238 // cancelled
   
   from ref 138758 z 2020 label "cancelled / update contaminated period" xyz 294 393 2020 to ref 139270
   write_horizontally default show_definition default drawing_language default
 end
-transitioncanvas 139526 transition_ref 207366 // <transition>
+transitioncanvas 139526 transition_ref 207366 // filled
   
   from ref 139014 z 2020 label "filled / update contaminated period" xyz 300 468 2020 to ref 139270
   write_horizontally default show_definition default drawing_language default
@@ -77,7 +77,7 @@ transitioncanvas 146054 transition_ref 209926 // <transition>
   from ref 128006 z 2006 to ref 129414
   write_horizontally default show_definition default drawing_language default
 end
-transitioncanvas 146950 transition_ref 307974 // <transition>
+transitioncanvas 146950 transition_ref 307974 // elapsed, cleanse
   decenter_end 539
   
   from ref 139270 z 2020 to point 798 429
@@ -99,20 +99,20 @@ transitioncanvas 148614 transition_ref 308486 // <transition>
   line 148870 z 2020 to ref 139270
   write_horizontally default show_definition default drawing_language default
 end
-transitioncanvas 149638 transition_ref 308614 // elapsed, leave state
+transitioncanvas 149638 transition_ref 308614 // elapsed, pass
   decenter_begin 153
   decenter_end 819
   
   from ref 140422 z 2006 label "elapsed [wait duration exceeded] / pass messages" xyz 124 193 2006 to ref 129414
   write_horizontally default show_definition default drawing_language default
 end
-transitioncanvas 151558 transition_ref 308998 // <transition>
+transitioncanvas 151558 transition_ref 308998 // stop
   decenter_begin 142
   
   from ref 129414 z 2006 label "stop" xyz 308 73 2006 to ref 151430
   write_horizontally default show_definition default drawing_language default
 end
-transitioncanvas 151686 transition_ref 315526 // <transition>
+transitioncanvas 151686 transition_ref 315526 // message
   decenter_begin 877
   decenter_end 135
   
@@ -124,14 +124,14 @@ end
 transitioncanvas 152198 transition_ref 322054 // message
   decenter_begin 736
   
-  from ref 140422 z 2006 label "message / save message" xyz 499 285.5 3000 to point 555 326
+  from ref 140422 z 2006 label "message / save message" xyz 499 285 2006 to point 555 326
   line 152582 z 2006 to ref 152070
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 152326 transition_ref 322182 // elapsed, ignored
   decenter_begin 158
   
-  from ref 140422 z 2006 label "elapsed [wait duration NOT exceeded]" xyz 589.5 331 3000 to point 659 357
+  from ref 140422 z 2006 label "elapsed [wait duration NOT exceeded]" xyz 589 331 2006 to point 659 357
   line 152454 z 2006 to ref 152070
   write_horizontally default show_definition default drawing_language default
 end

@@ -2,177 +2,190 @@ format 222
 
 activitycanvas 142854 activity_ref 148230 // S.1 Standalone application
   
-  xyzwh 54 15 2000 751 539
+  xyzwh 54 28 0 723 551
   params
     parametercanvas 142982 parameter_ref 148998 // exchange_name
-        xyzwh 5 291 2001 99 25
+        xyzwh 5 214 1 99 25
     end
     parametercanvas 143238 parameter_ref 149126 // pair_name
-        xyzwh 5 260 2001 99 25
+        xyzwh 5 183 1 99 25
     end
     parametercanvas 143494 parameter_ref 149254 // destination
-        xyzwh 5 363 2001 99 25
+        xyzwh 5 286 1 99 25
     end
     parametercanvas 150790 parameter_ref 158086 // delay
-        xyzwh 5 329 2001 99 25
+        xyzwh 5 252 1 99 25
     end
   end
 end
-activityactioncanvas 143750 activityaction_ref 192390 // activity action S.1 Receive messages
+activityactioncanvas 143750 activityaction_ref 192390 // activity action S.5 Receive messages
   
   show_opaque_action_definition default
-  xyzwh 542 78 3038 100 60
+  xyzwh 512 94 3038 100 60
   pins
     pincanvas 143878 pin_ref 213126 // websocket
-      xyzwh 532 104 3039 11 11 label_xy 471 93
+      xyzwh 502 112 3039 11 11 label_xy 439 98
     end
     pincanvas 144006 pin_ref 213254 // message
-      xyzwh 603 137 3039 11 11 label_xy 615 146
-    end
-  end
-end
-activityactioncanvas 144518 activityaction_ref 192518 // activity action S.1 Reconstruct order book
-  
-  show_opaque_action_definition default
-  xyzwh 536 253 3033 100 60
-  pins
-    pincanvas 144646 pin_ref 213382 // message
-      xyzwh 602 243 3034 11 11 label_xy 542 217
-    end
-    pincanvas 144774 pin_ref 213510 // target
-      xyzwh 526 297 3034 11 11 label_xy 479 308
-    end
-    pincanvas 158214 pin_ref 266630 // time_order_error
-      xyzwh 590 312 3035 11 11 label_xy 608 319
+      xyzwh 553 153 3039 11 11 label_xy 569 162
     end
   end
 end
 activitynodecanvas 148486 activitynode_ref 189958 // initial_node
-  xyz 260 28 3027
+  xyz 298 51 3027
 end
-activityactioncanvas 148742 activityaction_ref 193542 // activity action S.1 Stop request
+activityactioncanvas 148742 activityaction_ref 193542 // activity action Stop request
   
   show_opaque_action_definition default
-  xyzwh 236 392 3019 100 60
+  xyzwh 180 380 3019 100 60
 end
 activitynodecanvas 148870 activitynode_ref 190086 // activity_final
-  xyz 276 522 2006
+  xyz 217 524 2006
 end
 interruptibleactivityregioncanvas 149126 interruptibleactivityregion_ref 141062 // 
-  xyzwh 110 57 2005 657 447
+  xyzwh 143 79 2000 583 410
 end
-activityactioncanvas 151686 activityaction_ref 213638 // activity action S.1 Initialize
+activityactioncanvas 151686 activityaction_ref 213638 // activity action S.7 Initialize
   
   show_opaque_action_definition default
-  xyzwh 223 258 4013 100 60
+  xyzwh 260 180 4013 100 60
   pins
     pincanvas 151814 pin_ref 237830 // exchange_name
-      xyzwh 213 298 4014 11 11 label_xy 115 284
+      xyzwh 250 220 4014 11 11 label_xy 152 206
     end
     pincanvas 151942 pin_ref 237958 // pair_name
-      xyzwh 213 267 4014 11 11 label_xy 149 250
+      xyzwh 250 189 4014 11 11 label_xy 186 172
     end
     pincanvas 152070 pin_ref 238086 // delay
-      xyzwh 232 317 4014 11 11 label_xy 186 330
+      xyzwh 269 239 4014 11 11 label_xy 223 247
     end
     pincanvas 152198 pin_ref 238214 // reconstructor
-      xyzwh 322 300 4014 11 11 label_xy 334 292
+      xyzwh 359 222 4014 11 11 label_xy 371 214
     end
     pincanvas 152326 pin_ref 238342 // websocket
-      xyzwh 291 248 4014 11 11 label_xy 300 236
+      xyzwh 328 170 4014 11 11 label_xy 337 158
     end
     pincanvas 152454 pin_ref 238470 // destination
-      xyzwh 250 317 4014 11 11 label_xy 263 335
+      xyzwh 287 239 4014 11 11 label_xy 301 253
     end
   end
 end
 activitynodecanvas 156166 activitynode_ref 229382 // fork
-   xyzwh 433 163 2010 15 75
+   xyzwh 455 162 2010 15 75
 end
-note 158726 "S.1 Receive messages should control ordering of messages so this exception should never happen. If it happened then it is a bug so the application terminates"
-  xyzwh 384 364 2010 171 111
-flowcanvas 144902 flow_ref 218374 // S.1.11
+activityobjectcanvas 166278 activityobject_ref 180870 // activity object buffer
   
-  from ref 144006 z 3022 label "S.1.11" xyz 590 187 3022 to ref 144646
-   write_horizontally default
+  xyzwh 534 239 2005 51 45 label_xy 565 285
+end
+activityactioncanvas 166534 activityaction_ref 247302 // activity action R.1 Reconstruct Order Book
+  
+  show_opaque_action_definition default
+  color green
+  xyzwh 504 381 2005 100 60
+  pins
+    pincanvas 166662 pin_ref 297990 // target
+      xyzwh 494 387 2007 11 11 label_xy 444 388
+    end
+    pincanvas 166790 pin_ref 298118 // 
+      xyzwh 555 371 2007 11 11 label_xy 569 367
+    end
+    pincanvas 166918 pin_ref 298246 // 
+      xyzwh 531 436 2007 11 11 label_xy 559 447
+    end
+  end
 end
 flowcanvas 148998 flow_ref 219782 // S.1.13
   
-  from ref 148742 z 2013 label "S.1.13" xyz 267 480 2013 to ref 148870
+  from ref 148742 z 2013 label "S.1.13" xyz 222 447 2013 to ref 148870
    write_horizontally default
 end
 flowcanvas 152582 flow_ref 243462 // S.1.9
   geometry HV
   
-  from ref 150790 z 2013 label "S.1.9" xyz 154 335 2013 to point 235 339
+  from ref 150790 z 2013 label "S.1.9" xyz 172 257 2013 to point 272 262
   line 154246 z 2013 to ref 152070
    write_horizontally default
 end
 flowcanvas 152710 flow_ref 243590 // S.1.10
   geometry HV
   
-  from ref 143494 z 2013 label "S.1.10" xyz 159 369 2013 to point 253 373
+  from ref 143494 z 2013 label "S.1.10" xyz 177 291 2013 to point 290 296
   line 154374 z 2013 to ref 152454
    write_horizontally default
 end
 flowcanvas 152838 flow_ref 243718 // S.1.3
   
-  from ref 143238 z 2013 label "S.1.3" xyz 142 266 2013 to ref 151942
+  from ref 143238 z 2013 label "S.1.3" xyz 160 188 2013 to ref 151942
    write_horizontally default
 end
 flowcanvas 152966 flow_ref 243846 // S.1.4
   
-  from ref 142982 z 2013 label "S.1.4" xyz 142 297 2013 to ref 151814
+  from ref 142982 z 2013 label "S.1.4" xyz 160 219 2013 to ref 151814
    write_horizontally default
 end
 flowcanvas 153350 flow_ref 243974 // S.1.5
   geometry VH
   
-  from ref 152326 z 3022 label "S.1.5" xyz 282 172 3022 to point 294 107
+  from ref 152326 z 3022 label "S.1.5" xyz 325 137 3022 to point 330 115
   line 155910 z 3022 to ref 143878
    write_horizontally default
 end
 flowcanvas 153606 flow_ref 244230 // S.1.1
   
-  from ref 148486 z 3039 label "S.1.1" xyz 255 145 3039 to ref 151686
+  from ref 148486 z 3039 label "S.1.1" xyz 288 117 3039 to ref 151686
    write_horizontally default
 end
 flowcanvas 156294 flow_ref 272646 // S.1.6
-  geometry HVH
+  decenter_begin 400
+  decenter_end 546
   
-  from ref 151686 z 4014 label "S.1.6" xyz 335 280 3000 to point 375 285
-  line 156934 z 4014 to point 375 197
-  line 157062 z 4014 to ref 156166
-   write_horizontally default
-end
-flowcanvas 156422 flow_ref 272774 // <flow>
-  
-  from ref 152198 z 4015 to ref 144774
+  from ref 151686 z 4014 label "S.1.6" xyz 392 196 4014 to ref 156166
    write_horizontally default
 end
 flowcanvas 156550 flow_ref 272902 // S.1.7
   decenter_begin 120
   decenter_end 180
   
-  from ref 156166 z 3039 label "S.1.7" xyz 489 165 3000 to point 558 170
-  line 158086 z 3039 to ref 143750
+  from ref 156166 z 3039 label "S.1.7" xyz 485 163 3039 to point 528 169
+  line 162822 z 3039 to ref 143750
    write_horizontally default
 end
-flowcanvas 156678 flow_ref 273030 // S.1.8
-  geometry HVH
+flowcanvas 166406 flow_ref 314502 // <flow>
+  
+  from ref 144006 z 3040 to ref 166278
+   write_horizontally default
+end
+flowcanvas 167046 flow_ref 314630 // <flow>
+  
+  from ref 166918 z 2008 to point 534 533
+  line 167174 z 2008 to ref 148870
+   write_horizontally default
+end
+flowcanvas 167302 flow_ref 314758 // <flow>
+  decenter_begin 150
+  decenter_end 850
+  
+  from ref 166534 z 2006 to point 688 388
+  line 167430 z 2006 to point 689 430
+  line 167558 z 2006 to ref 166534
+   write_horizontally default
+end
+flowcanvas 167686 flow_ref 314886 // <flow>
+  
+  from ref 166278 z 2008 to ref 166790
+   write_horizontally default
+end
+flowcanvas 167814 flow_ref 315014 // S.1.2
+  
+  from ref 152198 z 4015 label "S.1.2" xyz 416 302 3000 to ref 166662
+   write_horizontally default
+end
+flowcanvas 167942 flow_ref 315142 // S.1.8
   decenter_begin 880
+  decenter_end 160
   
-  from ref 156166 z 3034 label "S.1.8" xyz 455 222 3000 to point 489 227
-  line 157190 z 3034 to point 489 280
-  line 157318 z 3034 to ref 144518
+  from ref 156166 z 2011 label "S.1.8" xyz 480 221 3000 to point 517 226
+  line 168326 z 2011 to ref 166534
    write_horizontally default
 end
-flowcanvas 158470 flow_ref 273670 // S.1.12
-  
-  from ref 158214 z 3036 label "S.1.12" xyz 579 420 3000 to point 596 530
-  line 158598 z 3036 to ref 148870
-   write_horizontally default
-end
-line 158854 -_-_ decenter_end 336
-  from ref 158726 z 3037 to ref 158470
 end

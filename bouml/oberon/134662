@@ -1,6 +1,6 @@
 format 222
 "R package" // R package
-  revision 16
+  revision 22
   modified_by 6 "petr"
   // class settings
   
@@ -95,34 +95,11 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
-      classrelation 197766 // <generalisation>
-	relation 197638 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 197766 // <generalisation>
-	  b parent class_ref 231302 // Store
-      end
-
-      operation 561670 "transmit"
-	cpp_virtual public explicit_return_type "void"
-	nparams 1
-	  param in name "event" type class_ref 230406 // Event
-	multiplicity "1"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
       operation 561798 "run"
-	public return_type class_ref 473094 // DataFrame
+	public explicit_return_type "DataFrame"
 	nparams 1
 	  param in name "data" type class_ref 473094 // DataFrame
+	multiplicity "1"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -141,6 +118,136 @@ ${inlines}
 	    classrelation_ref 496774 // <dependency>
 	  b parent class_ref 202630 // Reconstructor
       end
+
+      operation 590598 "transmit"
+	cpp_virtual public explicit_return_type "void"
+	nparams 1
+	  param in name "event" type class_ref 230406 // Event
+	multiplicity "0..1"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(} std::unique_ptr<${t0}> && ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(} std::unique_ptr<${t0}> && ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 553478 // <realization>
+	relation 543366 -_-|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 553478 // <realization>
+	  b parent class_ref 231302 // Store
+      end
+
+      attribute 407046 "order_id_"
+	private explicit_type "string"
+	multiplicity "*"
+	stereotype "vector"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 407942 "timestamp_"
+	private explicit_type "double"
+	multiplicity "0..1"
+	stereotype "vector"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 407174 "event_no_"
+	private type class_ref 507142 // EventNo
+	multiplicity "*"
+	stereotype "vector"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 407302 "price_"
+	private type class_ref 305542 // Price
+	multiplicity "*"
+	stereotype "vector"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 407430 "volume_"
+	private type class_ref 305798 // Volume
+	multiplicity "*"
+	stereotype "vector"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 407558 "trade_id_"
+	private explicit_type "string"
+	multiplicity "*"
+	stereotype "vector"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 407686 "event_type_"
+	private type class_ref 507270 // EventType
+	multiplicity "*"
+	stereotype "vector"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      classrelation 554758 // <dependency>
+	relation 544646 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 554758 // <dependency>
+	  b parent class_ref 508166 // uuid_io.hpp
+      end
     end
   end
 
@@ -156,7 +263,7 @@ ${inlines}
 
 using namespace Rcpp;
 // [[Rcpp::export]]
-DataFrame deduplicate(DataFrame source) {
+DataFrame reconstructOrderBook(DataFrame source) {
 
   // std::streambuf *coutbuf = std::cout.rdbuf();
   std::cout.rdbuf(Rcpp::Rcout.rdbuf());
@@ -181,6 +288,7 @@ ${namespace_end}
 "
       cpp_src "${comment}
 ${includes}
+#include \"date.h\"
 ${namespace_start}
 ${members}
 ${namespace_end}"

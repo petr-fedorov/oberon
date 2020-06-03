@@ -1,0 +1,48 @@
+format 222
+
+statecanvas 128006 state_ref 204934 // Wait
+  
+  xyzwh 146 123 2000 103 63
+end
+pseudostatecanvas 128134 pseudostate_ref 247942 // initial
+   xyz 188 73 2000
+end
+statecanvas 128390 state_ref 205062 // Deduplicate
+  
+  xyzwh 132 237 2000 137 55
+end
+statecanvas 128774 state_ref 205190 // Detect takers
+  
+  xyzwh 130 357 2000 143 51
+end
+transitioncanvas 128262 transition_ref 336518 // <transition>
+  
+  from ref 128134 z 2001 to ref 128006
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 128518 transition_ref 336646 // <transition>
+  
+  from ref 128390 z 2001 label "wait" xyz 315.5 257 3000 to point 384 263
+  line 128646 z 2001 to point 386 150
+  line 130438 z 2001 to ref 128006
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 128902 transition_ref 336774 // <transition>
+  
+  from ref 128006 z 2001 label "process" xyz 176 203 3000 to ref 128390
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129030 transition_ref 336902 // <transition>
+  
+  from ref 128390 z 2001 label "output" xyz 183 316 3000 to ref 128774
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129158 transition_ref 337030 // <transition>
+  decenter_end 206
+  
+  from ref 128774 z 2001 label "wait" xyz 324.5 372 3000 to point 397 376
+  line 129286 z 2001 to point 399 130
+  line 130566 z 2001 to ref 128006
+  write_horizontally default show_definition default drawing_language default
+end
+end

@@ -92,30 +92,37 @@ It should be clear from the above that substantial effort is required to reconst
 
 ## Overview
 
-Reconstruction algorithm comprises extract and cleanse parts. Figure \@ref(fig:reconstruction-activity) shows UML2 Activity Diagram [@cook_omg_2017] of a standalone application where interaction of the algorithm' parts can be seen.  The application consists of two classes: 
+Figure \@ref(fig:standalone-application) shows UML2 Activity Diagram [@cook_omg_2017] of a standalone application that uses Order Book Reconstruction algorithm. 
 
-* `Application`, that provides data for the algorithm, and,
-* `Reconstructor` shown in light green, that implements the algorithm
-
-
-```{r reconstruction-activity, echo=FALSE, fig.cap="UML2 Activity Diagram  of a standalone application using Reconstruction algorithm", fig.align="center"}
-knitr::include_graphics("reconstruction.png", dpi=80)
+```{r standalone-application, echo=FALSE, fig.cap="UML2 Activity Diagram  of a standalone application using Reconstruction algorithm", fig.align="center"}
+knitr::include_graphics("S.1 Standalone application.png", dpi=80)
 ```
-`Application` class starts from `S.1 Initialize` activity.  The activity connects to a websocket of the exchange specified by `exchange_name` and subscribes for the channels sending messages about the pair specified by `pair_name`. Then `S.1 Initialize` creates a store (i.e. file) where reconstructed events is to be persisted, creates an instance of `Reconstructor` and passes the store to the instance for future use. 
+The application starts from `S.7 Initialize` activity.  The activity connects to a websocket of the exchange specified by `exchange_name` and subscribes for the channels sending messages about the pair specified by `pair_name`. Then `S.7 Initialize` creates a store (i.e. file) where reconstructed events is to be persisted, creates an instance of `Reconstructor` object and passes the store to the instance for the future use. 
 
-Aftewards `Application` launches `S.2 Recive messages` and `S.1 Extract`. These activities run concurrently. `S.2 Recive messages` constinously receives messages from the exchange (note `{stream}` on the figure \@ref(fig:reconstruction-activity)) and sends them to `S.1 Extract` for a decoding (see figure \@ref(fig:reconstruction-use-case) for the list of decoders) and an accumulation to be processed later by `S.1 Cleanse`.
+Aftewards the application launches `S.5 Receive messages` and `R.1 Reconstruct Order Book`. These activities run concurrently. `S.5 Receive messages` continously receives messages from the exchange (note `{stream}` on the figure \@ref(fig:reconstruction-activity)) and store them into `buffer`.  `R.1 Reconstruct Order Book` takes them from the `buffer` in FIFO order and processes as shown on figure \@ref(fig:reconstruction-activity)
 
-The activity `S.1 Cleanse`, which is called periodically, performes so called *data cleansing*. According to [@rahm_data_2000]:
+```{r reconstruction-activity, echo=FALSE, fig.cap="UML2 Activity Diagram  of Reconstruction algorithm", fig.align="center"}
+knitr::include_graphics("R.1 Reconstruct Order Book.png", dpi=80)
+```
+
+The activity `R.2 Extract` takes an exchange-specific data in [Boost.PropertyTree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) container and produces one *or more* internal exchange-independent messages shown on figure \@ref(fig:message-hierarchy). For example,  Bitstamp's trade `ptree` with a timestamp not seen before will originate *three* messages: `Elapsed` and two `Filled` - one for maker and another one for taker.
+
+
+```{r message-hierarchy, echo=FALSE, fig.cap="UML2 Class Diagram of internal exchange-independent message types used by Order Book Reconstruction algorithm", fig.align="center"}
+knitr::include_graphics("Message Hierarchy.png", dpi=80)
+```
+
+These messages are then taken by the activity `R.3 Cleanse` that performs so called *data cleansing*. According to [@rahm_data_2000]:
 
 > *Data cleaning*, also called *data cleansing* or *scrubbing*, deals with detecting and removing errors and inconsistencies from data in order to improve the quality of data.
 
-UML2 UseCase Diagram [@cook_omg_2017] shown on figure \@ref(fig:reconstruction-use-case) lists the kinds of cleansing performed by `S.1 Cleanse`. It should be clear from this list why `S.1 Cleanse` needs to be called periodically rather than processing each message as soon as the message has arrived.
+UML2 UseCase Diagram [@cook_omg_2017] shown on figure \@ref(fig:reconstruction-use-case) lists the kinds of cleansing performed by `R.3 Cleanse`. 
 
 ```{r reconstruction-use-case, echo=FALSE, fig.cap="UseCase diagram of Order Book Reconstructor package showing UseCases applied to Reconstructor class", fig.align="center"}
 knitr::include_graphics("reconstruction_use_case.png", dpi=80)
 ```
+The details of `R.3 Cleanse` activity are shown on figure \@ref(fig:cleanse-activity) below. The output of `R.3 Cleanse` is a set of zero or more messages each of which is then converted into zero or one events as defined by \@ref(def:order-event) which together compose Limit Order Book as defined by \@ref(def:lob). These events are persisted by `R.4 Save` activity. `R.3 Cleanse` will not produce output when subsequent messages are required for cleansing. In this case the messages will be accumulated within `R.3 Cleanse` between runs until enough messages are received.
 
-The output of `S.1 Cleanse` is a set of order events as defined by \@ref(def:order-event) which together compose Limit Order Book as defined by \@ref(def:lob)
 
 Surprisingly, an order, an order event, a limit order book,  the operations of a continous double auction are rather complicated things if one attempts to define them rigorously. Consider, for example,  a definition given in the recent book [@bouchaud_trades_2018]:
 
@@ -521,13 +528,34 @@ It can bee seen from figure \@ref(fig:example-order-book) that:
 
 ## Extract
 
-TBD
+TBDD
 
 ## Cleanse
 
 
-TBD
+```{r  cleanse-activity, echo=FALSE,fig.cap="UML2 Activity Diagram  of cleansing", fig.align="center"}
+knitr::include_graphics("R.3 Cleanse.png", dpi=80)
+```
 
+
+
+### Deduplicate
+
+
+```{r  redundant-base, echo=FALSE, fig.cap="States of an order while it being processed by an exchange", fig.align="center"}
+knitr::include_graphics("redundant0.png", dpi=80)
+```
+
+```{r  redundant-variant1, echo=FALSE, fig.cap="States of an order while it being processed by an exchange", fig.align="center"}
+knitr::include_graphics("redundant1.png", dpi=80)
+```
+
+
+```{r  redundant-variant2, echo=FALSE, fig.cap="States of an order while it being processed by an exchange", fig.align="center"}
+knitr::include_graphics("redundant2.png", dpi=80)
+```
+
+### Detect Makers
 
 # Results
 

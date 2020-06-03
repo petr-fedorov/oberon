@@ -1,6 +1,6 @@
 format 222
 "uuids" // boost::uuids
-  revision 1
+  revision 2
   modified_by 6 "petr"
   // class settings
   
@@ -55,6 +55,49 @@ format 222
       visibility package 
       cpp_external cpp_decl "${name}
 #include <boost/uuid/uuid.hpp>
+#include <boost/uuid/nil_generator.hpp>
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+    end
+
+    class 507910 "string_generator"
+      visibility package 
+      cpp_external cpp_decl "${name}
+#include <boost/uuid/string_generator.hpp>
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+    end
+
+    class 508038 "nil_generator"
+      visibility package 
+      cpp_external cpp_decl "${name}
+#include <boost/uuid/nil_generator.hpp>
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+    end
+
+    class 508166 "uuid_io.hpp"
+      visibility package 
+      cpp_external cpp_decl "${name}
+#include <boost/uuid/uuid_io.hpp>
 "
       java_decl ""
       php_decl ""

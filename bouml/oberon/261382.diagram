@@ -1,55 +1,50 @@
 format 222
 
 pseudostatecanvas 128006 pseudostate_ref 183430 // initial
-   xyz 142.6 63.8 2000
+   xyz 245.6 167.8 2000
 end
 statecanvas 140806 state_ref 184710 // Wait
   
-  xyzwh 316.9 133.2 2005 273 61
+  xyzwh 379.9 144.2 2005 273 61
 end
 pseudostatecanvas 148870 pseudostate_ref 198918 // final
-   xyz 733.9 57.1 2000
+   xyz 733.9 163.1 2000
 end
-statecanvas 159110 state_ref 191238 // Cleanse
+statecanvas 161414 state_ref 191366 // Deduplicate
   
-  xyzwh 538 281 2000 273 61
-end
-statecanvas 161414 state_ref 191366 // Dispatch
-  
-  xyzwh 96 279 2000 273 61
+  xyzwh 379 310 2000 273 75
 end
 transitioncanvas 148998 transition_ref 247942 // Stop
   
-  from ref 140806 z 2006 label "stop" xyz 558 96 2006 to ref 148870
+  from ref 140806 z 2006 label "stop" xyz 988 168 2006 to ref 148870
   write_horizontally default show_definition default drawing_language default
 end
-transitioncanvas 173958 transition_ref 299910 // <transition>
+transitioncanvas 173958 transition_ref 299910 // message
   decenter_begin 771
   decenter_end 196
   
-  from ref 140806 z 2006 to point 521 39
-  line 174086 z 2006 label "message / save message" xyz 377 38 2006 to point 367 38
+  from ref 140806 z 2006 to point 584 50
+  line 174086 z 2006 label "message / save message" xyz 440 49 2006 to point 430 49
   line 174214 z 2006 to ref 140806
-  write_horizontally default show_definition default drawing_language default
-end
-transitioncanvas 175750 transition_ref 307334 // <transition>
-  
-  from ref 140806 z 2006 label "elapsed" xyz 318 228 2006 to ref 161414
-  write_horizontally default show_definition default drawing_language default
-end
-transitioncanvas 175878 transition_ref 307462 // <transition>
-  
-  from ref 161414 z 2001 to ref 159110
-  write_horizontally default show_definition default drawing_language default
-end
-transitioncanvas 176262 transition_ref 307718 // <transition>
-  
-  from ref 159110 z 2006 label "/ output all before earliest contamination start" xyz 443 229 2006 to ref 140806
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 176518 transition_ref 307846 // <transition>
   
   from ref 128006 z 2006 to ref 140806
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 180230 transition_ref 307334 // elapsed
+  decenter_begin 274
+  decenter_end 282
+  
+  from ref 140806 z 2006 label "elapsed" xyz 433 242 2006 to ref 161414
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 180358 transition_ref 343558 // completed
+  decenter_begin 688
+  decenter_end 681
+  
+  from ref 161414 z 2006 to ref 140806
   write_horizontally default show_definition default drawing_language default
 end
 end

@@ -1,3 +1,4 @@
 class Reconstructor
-!!!238982.cpp!!!	create(in exchange : Exchanges, in pair_name : string, in store : Store, in delay : double) : Reconstructor
-return *new CoinbaseReconstructor(store);
+!!!238982.cpp!!!	create(in exchange : Exchanges, in pair_name : string, in store : Store, in delay : double) : ReconstructorPtr
+//if(exchange == kCoinbase)
+  return std::make_unique<CoinbaseReconstructor>(store);

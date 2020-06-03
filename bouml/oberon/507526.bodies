@@ -1,0 +1,14 @@
+class CoinbaseOpen
+!!!625926.cpp!!!	CoinbaseOpen(in order_id : Id, in timestamp : Timestamp, in price : Price, in remaining_size : Volume, in side : BookSide)
+order_id_ = order_id;
+timestamp_ = timestamp;
+price_side_.price_ = price;
+price_side_.side_ = side;
+remaining_size_ = remaining_size;
+std::cout << "CoinbaseOpen created\n";
+!!!627846.cpp!!!	toEvent() : Event [0..1]
+return std::make_unique<EventImp>(
+    order_id_, timestamp_, 1, price_side_.price_,
+    price_side_.side_ == kBid ? remaining_size_ : -remaining_size_, kActivation);
+!!!635142.cpp!!!	~CoinbaseOpen()
+std::cout << "CoinbaseOpen deleted\n";

@@ -1,191 +1,84 @@
 format 222
 
 classcanvas 128134 class_ref 320390 // DedupOrchestrator
-  classdiagramsettings member_max_width 0 end
-  xyzwh 665 256 2000 165 131
-end
-classcanvas 134150 class_ref 245766 // Message
-  classdiagramsettings member_max_width 0 end
-  xyzwh 312 173 2000 115 65
-end
-classcanvas 137094 class_ref 271366 // BookSide
-  classdiagramsettings member_max_width 0 end
-  xyz 427 624 3005
+  classdiagramsettings show_members_full_definition yes show_members_stereotype yes show_members_multiplicity yes member_max_width 0 end
+  hidden_attributes
+    attribute_ref 371462 // _deduporchestrator_state
+  xyzwh 605 456 2000 235 133
 end
 classcanvas 138630 class_ref 320518 // Dedup
-  classdiagramsettings member_max_width 0 end
-  xyzwh 75 273 3011 163 137
-end
-classcanvas 140166 class_ref 406662 // PriceSide
-  classdiagramsettings member_max_width 0 end
-  xyzwh 341 502 2000 141 69
-end
-classcanvas 140294 class_ref 305542 // Price
-  classdiagramsettings member_max_width 0 end
-  xyz 339 624 2000
-end
-classcanvas 154118 class_ref 441350 // MessageBuffer
-  classdiagramsettings member_max_width 0 end
-  xyz 319 67 3005
+  classdiagramsettings show_members_full_definition yes show_members_stereotype yes show_members_multiplicity yes member_max_width 0 end
+  hidden_attributes
+    attribute_ref 370694 // _dedup_state
+  xyzwh 17 460 3011 219 137
 end
 classcanvas 154502 class_ref 441222 // MessageHandler
-  classdiagramsettings hide_operations no member_max_width 0 end
-  xyzwh 91 30 3011 133 179
+  classdiagramsettings hide_operations no show_members_full_definition yes show_members_visibility yes show_members_multiplicity yes member_max_width 0 show_parameter_name yes end
+  xyzwh 234 28 3011 357 209
 end
-classcanvas 156166 class_ref 230278 // Timestamp
-  classdiagramsettings member_max_width 0 end
-  xyz 435 271 2000
-end
-classcanvas 156422 class_ref 448390 // ExchangeMessage
-  classdiagramsettings member_max_width 0 end
-  xyz 348 407 2006
-end
-classcanvas 158726 class_ref 448518 // Duration
-  classdiagramsettings member_max_width 0 end
-  xyz 62 547 2000
-end
-relationcanvas 140934 relation_ref 380678 // <directional composition>
-  decenter_begin 842
-  from ref 140166 z 3006 to ref 137094
-  role_a_pos 470 605 3000 no_role_b
-  multiplicity_a_pos 443 605 3000 multiplicity_b_pos 444 577 3000
-end
-relationcanvas 141062 relation_ref 380806 // <directional composition>
-  decenter_begin 245
-  from ref 140166 z 2001 to ref 140294
-  role_a_pos 386 605 3000 no_role_b
-  multiplicity_a_pos 359 605 3000 multiplicity_b_pos 360 577 3000
-end
-relationcanvas 151174 relation_ref 419334 // <directional composition>
-  decenter_begin 484
-  decenter_end 901
-  from ref 128134 z 2001 stereotype "<<map>>" xyz 719 472 3000 to point 744 558
-  line 153478 z 2001 to ref 140166
-  role_a_pos 491 546 3000 no_role_b
-  multiplicity_a_pos 491 571 3000 multiplicity_b_pos 714 393 3000
-end
-relationcanvas 151686 relation_ref 419590 // <composition>
-  decenter_begin 494
-  decenter_end 105
-  from ref 138630 z 3012 to point 154 508
-  line 157702 z 3012 to ref 140166
-  role_a_pos 269 491 3000 no_role_b
-  multiplicity_a_pos 323 516 3000 multiplicity_b_pos 125 416 3000
-end
-relationcanvas 152326 relation_ref 419846 // <directional composition>
-  decenter_begin 73
-  decenter_end 252
-  from ref 128134 z 2001 stereotype "<<map>>" xyz 652 452 3000 to point 677 516
-  line 155654 z 2001 to ref 140166
-  role_a_pos 491 501 3000 no_role_b
-  multiplicity_a_pos 491 526 3000 multiplicity_b_pos 647 393 3000
-end
-relationcanvas 154246 relation_ref 441862 // <directional aggregation>
-  from ref 154118 z 3006 stereotype "<<list>>" xyz 347 146 3006 to ref 134150
-  role_a_pos 378 154 3000 no_role_b
-  multiplicity_a_pos 353 154 3000 multiplicity_b_pos 351 130 3000
-end
-relationcanvas 154374 relation_ref 441990 // <directional composition>
-  decenter_begin 54
-  decenter_end 438
-  from ref 128134 z 3006 to point 667 85
-  line 155910 z 3006 to ref 154118
-  role_a_pos 427 73 3000 no_role_b
-  multiplicity_a_pos 427 98 3000 multiplicity_b_pos 656 237 3000
-end
-relationcanvas 154630 relation_ref 441734 // <generalisation>
-  decenter_end 402
-  from ref 154118 z 3012 to ref 154502
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
+classcanvas 160518 class_ref 245766 // Message
+  classdiagramsettings hide_operations no show_members_full_definition yes show_members_multiplicity yes show_attribute_modifiers yes member_max_width 0 end
+  xyz 315 314 0
 end
 relationcanvas 154758 relation_ref 442118 // <generalisation>
-  decenter_begin 139
+  decenter_begin 940
   decenter_end 201
-  from ref 128134 z 3012 to point 682 62
+  from ref 128134 z 3012 to point 822 62
   line 154886 z 3012 to ref 154502
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 155142 relation_ref 442246 // <generalisation>
-  from ref 138630 z 3012 to ref 154502
+  decenter_begin 187
+  decenter_end 178
+  from ref 138630 z 3012 to point 54 63
+  line 163590 z 3012 to ref 154502
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
-relationcanvas 155526 relation_ref 442502 // <directional aggregation>
-  from ref 154502 z 3012 to ref 134150
-  role_a_pos 249 167 3000 no_role_b
-  multiplicity_a_pos 294 192 3000 multiplicity_b_pos 233 156 3000
-end
-relationcanvas 156294 relation_ref 449158 // <directional aggregation>
-  decenter_begin 312
-  from ref 128134 z 2001 stereotype "<<map>>" xyz 563 297 3000 to ref 156166
-  role_a_pos 523 280 3000 no_role_b
-  multiplicity_a_pos 523 305 3000 no_multiplicity_b
-end
-relationcanvas 156550 relation_ref 449542 // <generalisation>
-  decenter_begin 521
-  decenter_end 826
-  from ref 156422 z 2007 to ref 134150
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
-end
-relationcanvas 156678 relation_ref 450566 // <directional aggregation>
-  decenter_begin 847
-  decenter_end 461
-  from ref 128134 z 2007 stereotype "<<vector>>" xyz 534 390 3000 to ref 156422
-  role_a_pos 476 404 3000 no_role_b
-  multiplicity_a_pos 476 429 3000 multiplicity_b_pos 634 371 3000
-end
-relationcanvas 156934 relation_ref 450822 // <directional composition>
-  from ref 156422 z 2007 to ref 140166
-  role_a_pos 419 483 3000 no_role_b
-  multiplicity_a_pos 392 483 3000 no_multiplicity_b
-end
-relationcanvas 157446 relation_ref 451078 // <directional aggregation>
-  decenter_begin 691
-  decenter_end 109
-  from ref 138630 z 3012 stereotype "<<vector>>" xyz 267 378 3000 to ref 156422
-  role_a_pos 299 391 3000 no_role_b
-  multiplicity_a_pos 345 416 3000 multiplicity_b_pos 247 377 3000
-end
-relationcanvas 157958 relation_ref 451206 // <directional composition>
-  decenter_begin 211
-  from ref 138630 z 3012 to ref 156166
-  role_a_pos 303 281 3000 no_role_b
-  multiplicity_a_pos 417 306 3000 multiplicity_b_pos 247 308 3000
-end
-relationcanvas 158086 relation_ref 451334 // <directional composition>
-  from ref 134150 z 2001 to point 469 200
-  line 158214 z 2001 to ref 156166
-  role_a_pos 482 252 3000 no_role_b
-  multiplicity_a_pos 455 252 3000 multiplicity_b_pos 436 209 3000
-end
-relationcanvas 158342 relation_ref 451462 // <directional aggregation>
-  from ref 138630 z 3012 to point 23 335
-  line 158470 z 3012 to point 23 117
-  line 158598 z 3012 to ref 154502
-  role_a_pos 40 101 3000 no_role_b
-  multiplicity_a_pos 73 126 3000 multiplicity_b_pos 59 345 3000
-end
-relationcanvas 158854 relation_ref 451590 // <directional composition>
-  decenter_begin 155
-  from ref 138630 z 3012 to ref 158726
-  role_a_pos 110 528 3000 no_role_b
-  multiplicity_a_pos 83 528 3000 multiplicity_b_pos 70 416 3000
-end
-relationcanvas 158982 relation_ref 451718 // <directional aggregation>
-  decenter_begin 496
+relationcanvas 158982 relation_ref 451718 // <unidirectional association>
+  decenter_begin 576
   decenter_end 610
   from ref 138630 z 3012 to ref 128134
-  role_a_pos 583 317 3000 no_role_b
-  multiplicity_a_pos 647 342 3000 multiplicity_b_pos 247 347 3000
+  role_a_pos 523 519 3000 no_role_b
+  multiplicity_a_pos 587 544 3000 multiplicity_b_pos 245 545 3000
 end
-relationcanvas 159110 relation_ref 479878 // <directional aggregation>
-  decenter_end 50
-  from ref 128134 z 3012 to point 739 34
-  line 159238 z 3012 to ref 154502
-  role_a_pos 233 20 3000 no_role_b
-  multiplicity_a_pos 233 45 3000 multiplicity_b_pos 715 237 3000
+relationcanvas 160774 relation_ref 515718 // <directional composition>
+  decenter_begin 736
+  decenter_end 774
+  from ref 154502 z 3018 to ref 160518
+  role_a_pos 506 295 3000 no_role_b
+  multiplicity_a_pos 479 295 3000 multiplicity_b_pos 466 243 3000
 end
+relationcanvas 161542 relation_ref 522502 // <directional composition>
+  decenter_begin 893
+  decenter_end 846
+  from ref 128134 z 3012 stereotype "<<map>>" xyz 394 574 3000 to ref 138630
+  role_a_pos 245 557 3000 no_role_b
+  multiplicity_a_pos 245 582 3000 multiplicity_b_pos 587 581 3000
+end
+relationcanvas 163974 relation_ref 529926 // <directional composition>
+  decenter_begin 375
+  decenter_end 229
+  from ref 154502 z 3018 stereotype "<<vector>>" xyz 337 274 3000 to ref 160518
+  role_a_pos 378 295 3000 no_role_b
+  multiplicity_a_pos 353 295 3000 multiplicity_b_pos 337 243 3000
+end
+relationcanvas 164102 relation_ref 530054 // <directional composition>
+  decenter_begin 38
+  from ref 128134 z 3018 stereotype "<<vector>>" xyz 581 408 3000 to point 610 360
+  line 164358 z 3018 to ref 160518
+  role_a_pos 559 345 3000 no_role_b
+  multiplicity_a_pos 559 370 3000 multiplicity_b_pos 583 437 3000
+end
+relationcanvas 165254 relation_ref 530182 // <directional composition>
+  decenter_begin 826
+  decenter_end 559
+  from ref 138630 z 3012 stereotype "<<vector>>" xyz 165 416 3000 to point 193 372
+  line 165382 z 3012 to ref 160518
+  role_a_pos 253 355 3000 no_role_b
+  multiplicity_a_pos 299 380 3000 multiplicity_b_pos 167 441 3000
+end
+line 165766 ---+
+  from ref 160518 z 3012 to ref 154502
 end

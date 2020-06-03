@@ -106,13 +106,13 @@ ${items}};
     "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} * ${name}${multiplicity}${value};
 " // multiplicity [..]
   cpp_aggregation_by_value_declaration
-    "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+    "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::unique_ptr<${type}> ${name}${value};
 " // multiplicity 1
-    "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+    "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<std::unique_ptr<${type}>> ${name}${value};
 " // multiplicity * a..b
     "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${multiplicity}${value};
 " // multiplicity [..]
-  cpp_get "get_${name}" inline const value_const public
+  cpp_get "get${name}" inline const value_const public
   cpp_set "set_${name}" public
   cpp_default_operation_declaration "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "

@@ -1,9 +1,6 @@
 class DedupOrchestrator
 !!!386950.cpp!!!	DedupOrchestrator()
   _current_state = 0;
-!!!425734.cpp!!!	DedupOrchestrator(inout output : MessageHandler)
-
-output_ = output;
 !!!483974.cpp!!!	message() : bool
   if (_current_state != 0) {
 #ifdef VERBOSE_STATE_MACHINE
@@ -41,32 +38,24 @@ return (_current_state != 0);
 #ifdef VERBOSE_STATE_MACHINE
     std::cout << "DEBUG : final state reached" << std::endl;
 #endif
-!!!546566.cpp!!!	elapsed(inout msg : Elapsed [1]) : bool
-received_ = msg;
-return elapsed();
-!!!546694.cpp!!!	received(inout msg : Received [1]) : bool
-received_ = msg;
+!!!546694.cpp!!!	received() : bool
 return message();
-!!!546822.cpp!!!	volumeIncremented(inout msg : VolumeIncremented [1]) : bool
-received_ = msg;
+!!!626054.cpp!!!	opened() : bool
 return message();
-!!!546950.cpp!!!	priceAdvanced(inout msg : PriceAdvanced [1]) : bool
-received_ = msg;
+!!!546822.cpp!!!	volumeIncremented() : bool
+return message();
+!!!546950.cpp!!!	priceAdvanced() : bool
 return message();
 
-!!!547078.cpp!!!	priceReceded(inout msg : PriceReceded [1]) : bool
-received_ = msg;
+!!!547078.cpp!!!	priceReceded() : bool
 return message();
 
-!!!547206.cpp!!!	filled(inout msg : Filled [1]) : bool
-received_ = msg;
+!!!547206.cpp!!!	filled() : bool
 return message();
 
-!!!547334.cpp!!!	partiallyCancelled(inout msg : PartiallyCancelled [1]) : bool
-received_ = msg;
+!!!547334.cpp!!!	partiallyCancelled() : bool
 return message();
 
-!!!547462.cpp!!!	fullyCancelled(inout msg : FullyCancelled [1]) : bool
-received_ = msg;
+!!!547462.cpp!!!	fullyCancelled() : bool
 return message();
 
