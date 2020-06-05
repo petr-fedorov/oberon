@@ -1,0 +1,104 @@
+format 222
+
+pseudostatecanvas 128006 pseudostate_ref 261126 // initial
+   xyz 469 27 2000
+end
+statecanvas 128134 state_ref 211590 // Wait
+  
+  xyzwh 298 84 2000 363 33
+end
+pseudostatecanvas 128262 pseudostate_ref 261254 // final
+   xyz 553 23 2000
+end
+statecanvas 128390 state_ref 211718 // Output
+  
+  xyzwh 298 262 2000 363 67
+end
+statecanvas 130054 state_ref 211846 // Fail
+  
+  xyzwh 20 74 2000 137 61
+end
+transitioncanvas 128518 transition_ref 379910 // <transition>
+  
+  from ref 128006 z 2001 to ref 128134
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 128646 transition_ref 380038 // received
+  decenter_begin 184
+  decenter_end 200
+  
+  from ref 128134 z 2001 label "received" xyz 344 181 3000 to ref 128390
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 128774 transition_ref 380166 // elapsed
+  decenter_begin 35
+  decenter_end 44
+  
+  from ref 128134 z 2001 label "elapsed" xyz 290 181 3000 to ref 128390
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129030 transition_ref 380294 // opened
+  decenter_begin 349
+  decenter_end 363
+  
+  from ref 128134 z 2001 label "opened" xyz 406 181 3000 to ref 128390
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129158 transition_ref 380422 // filled
+  decenter_begin 531
+  decenter_end 541
+  
+  from ref 128134 z 2001 label "filled" xyz 480 181 3000 to ref 128390
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129286 transition_ref 380550 // fullyCanceled
+  decenter_begin 702
+  decenter_end 713
+  
+  from ref 128134 z 2001 label "fullyCanceled" xyz 518 181 3000 to ref 128390
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129414 transition_ref 380678 // era
+  decenter_begin 873
+  decenter_end 887
+  
+  from ref 128134 z 2001 label "era" xyz 607 181 3000 to ref 128390
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129542 transition_ref 380806 // <transition>
+  
+  from ref 128390 z 2001 to point 739 288
+  line 129670 z 2001 to point 736 99
+  line 129798 z 2001 to ref 128134
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129926 transition_ref 380934 // <transition>
+  decenter_begin 743
+  
+  from ref 128134 z 2001 label "stop" xyz 555 57.5 3000 to ref 128262
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 130182 transition_ref 381062 // <transition>
+  
+  from ref 128134 z 2001 label "priceAdvanced" xyz 246 41.5 3000 to point 150 13
+  line 130310 z 2001 to ref 130054
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 130438 transition_ref 381190 // <transition>
+  
+  from ref 128134 z 2001 label "priceReceded" xyz 241.5 55.5 3000 to point 162 40
+  line 130566 z 2001 to ref 130054
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 130694 transition_ref 381318 // <transition>
+  
+  from ref 128134 z 2001 label "partiallyCanceled" xyz 208.5 68 3000 to point 173 65
+  line 130822 z 2001 to ref 130054
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 130950 transition_ref 381446 // <transition>
+  
+  from ref 128134 z 2001 label "volumeIncremented" xyz 173 94 3000 to ref 130054
+  write_horizontally default show_definition default drawing_language default
+end
+end

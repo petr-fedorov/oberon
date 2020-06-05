@@ -1,6 +1,6 @@
 
 #include "reconstructor.h"
-#include "reconstructor_impl.h"
+#include "coinbase.h"
 
 namespace oberon {
 

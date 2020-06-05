@@ -1,0 +1,106 @@
+class Coinbase_Deduplicator
+!!!694022.cpp!!!	Coinbase_Deduplicator()
+  _current_state = 0;
+!!!694278.cpp!!!	create() : bool
+if (_current_state == 0)
+  (_current_state = &(*this)._coinbase_deduplicator_state)->create(*this);
+return (_current_state != 0);
+!!!694662.cpp!!!	received() : bool
+  if (_current_state != 0) {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : fire trigger received" << std::endl;
+#endif
+    _current_state->received(*this);
+  }
+  return (_current_state != 0);
+!!!695046.cpp!!!	elapsed() : bool
+  if (_current_state != 0) {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : fire trigger elapsed" << std::endl;
+#endif
+    _current_state->elapsed(*this);
+  }
+  return (_current_state != 0);
+!!!695430.cpp!!!	opened() : bool
+  if (_current_state != 0) {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : fire trigger opened" << std::endl;
+#endif
+    _current_state->opened(*this);
+  }
+  return (_current_state != 0);
+!!!695814.cpp!!!	filled() : bool
+  if (_current_state != 0) {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : fire trigger filled" << std::endl;
+#endif
+    _current_state->filled(*this);
+  }
+  return (_current_state != 0);
+!!!696198.cpp!!!	fullyCanceled() : bool
+  if (_current_state != 0) {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : fire trigger fullyCanceled" << std::endl;
+#endif
+    _current_state->fullyCanceled(*this);
+  }
+  return (_current_state != 0);
+!!!696582.cpp!!!	era() : bool
+  if (_current_state != 0) {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : fire trigger era" << std::endl;
+#endif
+    _current_state->era(*this);
+  }
+  return (_current_state != 0);
+!!!696966.cpp!!!	stop() : bool
+  if (_current_state != 0) {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : fire trigger stop" << std::endl;
+#endif
+    _current_state->stop(*this);
+  }
+  return (_current_state != 0);
+!!!698118.cpp!!!	doActivity() : void
+  _current_state->_do(*this);
+!!!698246.cpp!!!	_set_currentState(inout st : Coinbase_Deduplicator::AnyState) : void
+  _current_state = &st;
+!!!698374.cpp!!!	_final() : void
+  _current_state = 0;
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : final state reached" << std::endl;
+#endif
+!!!698630.cpp!!!	priceAdvanced() : bool
+  if (_current_state != 0) {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : fire trigger priceAdvanced" << std::endl;
+#endif
+    _current_state->priceAdvanced(*this);
+  }
+  return (_current_state != 0);
+!!!699014.cpp!!!	priceReceded() : bool
+  if (_current_state != 0) {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : fire trigger priceReceded" << std::endl;
+#endif
+    _current_state->priceReceded(*this);
+  }
+  return (_current_state != 0);
+!!!699398.cpp!!!	partiallyCanceled() : bool
+  if (_current_state != 0) {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : fire trigger partiallyCanceled" << std::endl;
+#endif
+    _current_state->partiallyCanceled(*this);
+  }
+  return (_current_state != 0);
+!!!699782.cpp!!!	volumeIncremented() : bool
+  if (_current_state != 0) {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : fire trigger volumeIncremented" << std::endl;
+#endif
+    _current_state->volumeIncremented(*this);
+  }
+  return (_current_state != 0);
+!!!700550.cpp!!!	getHandlerName() : string
+return "CoinbaseDeduplicator";

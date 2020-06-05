@@ -1,12 +1,13 @@
 class MessageHandler
 !!!590214.cpp!!!	handle(in messages : MessageHandler::Message [*]) : MessageHandler::Message [*]
 for(auto& msg: messages) {
-  received_ = std::move(msg);
-  received_->accept(this);
+  if(msg) {
+    received_ = std::move(msg);
+#ifdef VERBOSE_STATE_MACHINE
+    // Here I produced the log record in BoUML style 
+    std::cout << "DEBUG : " << getHandlerName() << " received " << received_->toString() << "\n";
+#endif
+    received_->accept(this);
+  }
 }
 return std::move(output_);
-!!!590470.cpp!!!	handle(in message : MessageHandler::Message [1]) : MessageHandler::Message [*]
-received_ = std::move(message);
-received_->accept(this);
-return std::move(output_);
-

@@ -25,7 +25,9 @@ for (auto &msg : stm.episode_) {
     new_dedup->create();
     dedup = (stm.dedups_[emsg->getPriceSide()] = std::move(new_dedup)).get();
   }
-  auto output = dedup->handle(std::move(msg));
+  vector<std::unique_ptr<Message>> arg;
+  arg.push_back(std::move(msg));
+  auto output = dedup->handle(std::move(arg));
   std::move(output.begin(), output.end(), std::back_inserter(stm.output_));
 }
 stm.episode_.clear();

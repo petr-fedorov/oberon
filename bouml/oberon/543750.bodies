@@ -1,0 +1,35 @@
+class Remaining_size_State
+!!!690054.cpp!!!	_completion(inout stm : Deduce_Size_Coinbase) : bool
+  if (stm.previousSize_) {
+    stm._deduce_size_coinbase_state._deduce_state._doexit(stm);
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : execute activity of transition success" << std::endl;
+#endif
+// set remaining size
+    stm._set_currentState(stm._deduce_size_coinbase_state._save_state);
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : current state is now .Deduce Size Coinbase.Save" << std::endl;
+#endif
+    stm._deduce_size_coinbase_state._save_state.create(stm);
+    return (bool) 1;
+  }
+  else if (!stm.previousSize_) {
+    stm._set_currentState(stm._deduce_size_coinbase_state._deduce_state);
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : current state is now .Deduce Size Coinbase.Deduce" << std::endl;
+#endif
+    stm._deduce_size_coinbase_state._deduce_state._exit1(stm);
+    return (bool) 1;
+  }
+  return (bool) 0;
+!!!690182.cpp!!!	create(inout stm : Deduce_Size_Coinbase) : void
+	_doentry(stm);
+	_completion(stm);
+!!!690310.cpp!!!	_doentry(inout stm : Deduce_Size_Coinbase) : void
+#ifdef VERBOSE_STATE_MACHINE
+  std::cout << "DEBUG : execute entry behavior of .Deduce Size Coinbase.Deduce.Remaining size" << std::endl;
+#endif
+if(stm.previousSize_) 
+  stm.em_->setRemainingSize(stm.previousSize_ - stm.em_->getChangeSize());
+!!!690438.cpp!!!	_upper(inout stm : Deduce_Size_Coinbase) : Deduce_Size_Coinbase::AnyState
+  return &stm._deduce_size_coinbase_state._deduce_state;

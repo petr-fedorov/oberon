@@ -1,0 +1,10 @@
+class Fail_State
+!!!700166.cpp!!!	create(inout stm : Coinbase_Deduplicator) : void
+	_do(stm);
+!!!700294.cpp!!!	_do(inout stm : Coinbase_Deduplicator) : void
+#ifdef VERBOSE_STATE_MACHINE
+  std::cout << "DEBUG : execute do behavior of .Coinbase Deduplicator.Fail" << std::endl;
+#endif
+assert(false);
+!!!700422.cpp!!!	_upper(inout stm : Coinbase_Deduplicator) : Coinbase_Deduplicator::AnyState
+  return &stm._coinbase_deduplicator_state;

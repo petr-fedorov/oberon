@@ -3,7 +3,8 @@ class ReconstructorImplementation
 save(cleanse(extract(message)));
 
 !!!641798.cpp!!!	cleanse(in messages : MessageHandler::Message [1..*]) : MessageHandler::Message [*]
-return deduplicator_->handle(std::move(messages));
+auto output = std::move(size_deducer_->handle(std::move(messages)));
+return deduplicator_->handle(std::move(output));
 !!!641926.cpp!!!	save(in messages : MessageHandler::Message [*]) : void
 for(auto &msg : messages) store_->transmit(msg->toEvent());
 

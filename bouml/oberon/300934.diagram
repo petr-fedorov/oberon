@@ -2,85 +2,86 @@ format 222
 
 activitycanvas 128134 activity_ref 181766 // R.3 Cleanse
   
-  xyzwh 45 66 2007 783 285
+  xyzwh 64 33 2007 693 651
   params
     parametercanvas 128262 parameter_ref 191878 // message
-        xyzwh 7 253 2008 77 25
+        xyzwh 190 21 2008 77 25
     end
     parametercanvas 128390 parameter_ref 192006 // target
-        xyzwh 496 54 2008 77 25
+        xyzwh 718 353 2008 77 25
     end
     parametercanvas 128518 parameter_ref 192134 // output
-        xyzwh 649 338 2008 77 25
+        xyzwh 188 671 2008 77 25
     end
   end
 end
 activityactioncanvas 128646 activityaction_ref 246662 // activity action Deduplicate
   
   show_opaque_action_definition default
-  xyzwh 290 235 2012 100 60
+  xyzwh 183 250 2012 100 60
   pins
-    pincanvas 128774 pin_ref 296198 // target
-      xyzwh 342 225 2014 11 11 label_xy 305 216
+    pincanvas 136838 pin_ref 305414 // target
+      xyzwh 282 262 2014 11 11 label_xy 296 249
     end
-    pincanvas 128902 pin_ref 296326 // output
-      xyzwh 389 260 2014 11 11 label_xy 395 247
+    pincanvas 136966 pin_ref 305542 // output
+      xyzwh 225 309 2014 11 11 label_xy 165 310
     end
-    pincanvas 129030 pin_ref 296454 // message
-      xyzwh 280 260 2014 11 11 label_xy 227 273
+    pincanvas 137094 pin_ref 305670 // messages
+      xyzwh 229 240 2014 11 11 label_xy 159 231
     end
   end
 end
 activityactioncanvas 129414 activityaction_ref 246790 // activity action Detect Makers
   
   show_opaque_action_definition default
-  xyzwh 463 235 2012 100 60
+  xyzwh 182 392 2012 100 60
   pins
     pincanvas 129542 pin_ref 296582 // target
-      xyzwh 533 225 2014 11 11 label_xy 496 216
+      xyzwh 281 416 2014 11 11 label_xy 287 429
     end
     pincanvas 129670 pin_ref 296710 // output
-      xyzwh 562 258 2014 11 11 label_xy 577 249
+      xyzwh 228 451 2014 11 11 label_xy 245 456
     end
     pincanvas 129798 pin_ref 296838 // messages
-      xyzwh 453 259 2014 11 11 label_xy 398 276
+      xyzwh 225 382 2014 11 11 label_xy 158 377
     end
   end
 end
 activityactioncanvas 130054 activityaction_ref 246918 // activity action Other
   
   show_opaque_action_definition default
-  xyzwh 639 235 2012 100 60
+  xyzwh 183 540 2012 100 60
   pins
     pincanvas 130182 pin_ref 296966 // target
-      xyzwh 672 225 2014 11 11 label_xy 686 216
+      xyzwh 282 567 2014 11 11 label_xy 296 558
     end
     pincanvas 130310 pin_ref 297094 // output
-      xyzwh 683 294 2014 11 11 label_xy 701 298
+      xyzwh 227 599 2014 11 11 label_xy 245 603
     end
     pincanvas 130438 pin_ref 297222 // messages
-      xyzwh 629 258 2014 11 11 label_xy 570 270
+      xyzwh 229 530 2014 11 11 label_xy 159 519
     end
   end
 end
 activityobjectcanvas 132230 activityobject_ref 180614 // activity object this
   
-  xyzwh 450 98 2012 173 59
+  xyzwh 490 343 2012 173 59
 end
-activityobjectcanvas 134022 activityobject_ref 180998 // activity object messages
+activityactioncanvas 135942 activityaction_ref 253958 // activity action Deduce Size
   
-  xyzwh 102 246 2012 75 45 label_xy 54 230
-end
-activitynodecanvas 134918 activitynode_ref 263686 // decision
-  xyz 197 248 3005
-end
-activitynodecanvas 135302 activitynode_ref 263814 // activity_final
-  xyz 196 167 2020
-end
-flowcanvas 129926 flow_ref 312326 // <flow>
-  
-  from ref 128902 z 2015 to ref 129798
-   write_horizontally default
+  show_opaque_action_definition default
+  xyzwh 183 109 2012 100 60
+  pins
+    pincanvas 136070 pin_ref 305030 // target
+      xyzwh 282 136 2014 11 11 label_xy 293 117
+    end
+    pincanvas 136198 pin_ref 305158 // output
+      xyzwh 230 168 2014 11 11 label_xy 182 173
+    end
+    pincanvas 136326 pin_ref 305286 // messages
+      xyzwh 226 99 2014 11 11 label_xy 243 94
+    end
+  end
 end
 flowcanvas 130566 flow_ref 312454 // <flow>
   
@@ -88,19 +89,10 @@ flowcanvas 130566 flow_ref 312454 // <flow>
    write_horizontally default
 end
 flowcanvas 130950 flow_ref 312838 // <flow>
+  decenter_end 571
   
   from ref 130310 z 2015 to ref 128518
    write_horizontally default
-end
-flowcanvas 132358 flow_ref 312966 // <flow>
-  
-  from ref 132230 z 2015 to point 342 122
-  line 132870 z 2015 to ref 128774
-   write_horizontally default
-  transformation 
-  information 133126 "<<transformation>>
-Deduplicator"
-    xyzwh 216 74 2015 125 48
 end
 flowcanvas 132486 flow_ref 313094 // <flow>
   
@@ -109,55 +101,65 @@ flowcanvas 132486 flow_ref 313094 // <flow>
   transformation 
   information 133382 "<<transformation>>
 Detector"
-    xyzwh 372 164 2015 125 48
+    xyzwh 366 430 2015 125 48
 end
 flowcanvas 132614 flow_ref 313222 // <flow>
   
-  from ref 132230 z 2015 to point 673 124
-  line 132998 z 2015 to ref 130182
+  from ref 132230 z 2015 to point 577 567
+  line 138118 z 2015 to ref 130182
    write_horizontally default
   transformation 
   information 133638 "<<transformation>>
 Other (TBD)"
-    xyzwh 696 81 2015 125 48
+    xyzwh 601 470 2015 125 48
 end
 flowcanvas 132742 flow_ref 313350 // <flow>
+  decenter_begin 560
   
   from ref 128390 z 2013 to ref 132230
    write_horizontally default
 end
-flowcanvas 134150 flow_ref 315526 // <flow>
+flowcanvas 136582 flow_ref 322694 // <flow>
+  decenter_begin 558
   
-  from ref 128262 z 2013 to ref 134022
+  from ref 128262 z 2015 to ref 136326
    write_horizontally default
 end
-flowcanvas 134406 flow_ref 315782 // <flow>
-  decenter_begin 230
+flowcanvas 137222 flow_ref 322950 // <flow>
   
-  from ref 130054 z 2013 to point 660 308
-  line 134662 z 2013 to point 137 310
-  line 134790 z 2013 to ref 134022
+  from ref 132230 z 2015 to ref 136838
+   write_horizontally default
+  transformation 
+  information 137862 "<<transformation>>
+Deduplicator"
+    xyzwh 399 234 2015 125 48
+end
+flowcanvas 137350 flow_ref 323078 // <flow>
+  
+  from ref 132230 z 2015 to point 571 136
+  line 137734 z 2015 to ref 136070
+   write_horizontally default
+  transformation 
+  information 138246 "<<transformation>>
+Size Deducer"
+    xyzwh 594 164 2015 125 48
+end
+flowcanvas 137478 flow_ref 323206 // <flow>
+  
+  from ref 136198 z 2015 to ref 137094
    write_horizontally default
 end
-flowcanvas 135046 flow_ref 315910 // <flow>
+flowcanvas 137606 flow_ref 323334 // <flow>
   
-  from ref 134022 z 3006 to ref 134918
+  from ref 136966 z 2015 to ref 129798
    write_horizontally default
 end
-flowcanvas 135174 flow_ref 316038 // <flow>
-  
-  from ref 134918 z 3006 label "[not null]" xyz 227 258 3000 to ref 129030
-   write_horizontally default
-end
-flowcanvas 135430 flow_ref 316166 // <flow>
-  
-  from ref 134918 z 3006 label "[null]" xyz 195 211.5 3000 to ref 135302
-   write_horizontally default
-end
-line 133254 -_-_
-  from ref 132358 z 2016 to ref 133126
 line 133510 -_-_
   from ref 132486 z 2016 to ref 133382
 line 133766 -_-_
   from ref 132614 z 2016 to ref 133638
+line 137990 -_-_
+  from ref 137222 z 2016 to ref 137862
+line 138374 -_-_
+  from ref 137350 z 2016 to ref 138246
 end

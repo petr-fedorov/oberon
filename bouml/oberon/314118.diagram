@@ -1,0 +1,116 @@
+format 222
+
+statecanvas 128006 state_ref 198022 // Wait
+  
+  xyzwh 367 98 2000 271 61
+end
+statecanvas 128134 state_ref 198150 // Deduce
+  
+  xyzwh 287 316 2000 485 253
+end
+statecanvas 128262 state_ref 198278 // Save
+  
+  xyzwh 24 251 2000 281 61
+end
+statecanvas 133894 state_ref 204806 // Remaining size
+  
+  xyzwh 555 471 2005 139 43
+end
+statecanvas 134406 state_ref 204934 // Size change
+  
+  xyzwh 333 423 2005 139 43
+end
+pseudostatecanvas 136198 pseudostate_ref 260870 // exit_point
+   xyz 566 381 3005 label_xy 566 400
+end
+pseudostatecanvas 136838 pseudostate_ref 260998 // initial
+   xyz 794 120 2000
+end
+transitioncanvas 128774 transition_ref 357254 // received
+  decenter_end 173
+  
+  from ref 128006 z 2001 label "received" xyz 196 120.5 2001 to point 70 126
+  line 128902 z 2001 to ref 128262
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129030 transition_ref 357382 // output
+  decenter_end 55
+  
+  from ref 128262 z 2001 label "/ output message" xyz 243.5 203 2001 to ref 128006
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 131590 transition_ref 358534 // elapsed
+  decenter_begin 745
+  decenter_end 188
+  
+  from ref 128006 z 2001 to point 565 37
+  line 131718 z 2001 label "elapsed / output message" xyz 423 31.5 2001 to point 415 38
+  line 131846 z 2001 to ref 128006
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 132102 transition_ref 358662 // era
+  decenter_begin 73
+  decenter_end 918
+  
+  from ref 128006 z 2011 to point 379 90
+  line 137094 z 2011 to point 379 7
+  line 132230 z 2011 label "era / reset order sizes" xyz 439.5 2.5 2011 to point 613 9
+  line 132358 z 2011 to ref 128006
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 134534 transition_ref 365574 // filled
+  decenter_begin 966
+  decenter_end 935
+  
+  from ref 128006 z 2006 label "filled" xyz 646.5 148.5 2006 to point 678 154
+  line 137350 z 2006 to ref 133894
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 134662 transition_ref 365702 // message
+  decenter_begin 258
+  decenter_end 790
+  
+  from ref 128006 z 2006 label "message" xyz 408 285.5 2006 to ref 134406
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 134918 transition_ref 365830 // success
+  decenter_begin 115
+  
+  from ref 134406 z 2006 label "[success] / set size change" xyz 225.5 381.5 2006 to ref 128262
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 135046 transition_ref 365958 // success
+  
+  from ref 133894 z 2006 label "[success] / set remaining size" xyz 244.5 486 2006 to point 161 493
+  line 135174 z 2006 to ref 128262
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 136326 transition_ref 379398 // failure
+  decenter_begin 438
+  decenter_end 526
+  
+  from ref 133894 z 3006 label "[failure]" xyz 596.5 429 3006 to point 611 388
+  line 136710 z 3006 to ref 136198
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 136454 transition_ref 379526 // failure
+  
+  from ref 134406 z 3006 label "[failure]" xyz 476.5 434 3006 to point 520 439
+  line 137606 z 3006 to point 519 387
+  line 137478 z 3006 to ref 136198
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 136582 transition_ref 379654 // drop
+  decenter_begin 473
+  decenter_end 749
+  
+  from ref 136198 z 3006 label "/ drop message" xyz 530 261.5 3006 to ref 128006
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 136966 transition_ref 379782 // <transition>
+  decenter_end 524
+  
+  from ref 136838 z 2001 to ref 128006
+  write_horizontally default show_definition default drawing_language default
+end
+end

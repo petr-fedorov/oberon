@@ -24,7 +24,7 @@
 <meta name="author" content="Petr Fedorov" />
 
 
-<meta name="date" content="2020-06-03" />
+<meta name="date" content="2020-06-05" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -144,7 +144,7 @@ Figure 2.3: UML2 Class Diagram of internal exchange-independent message types us
 Figure 2.4: UseCase diagram of Order Book Reconstructor package showing UseCases applied to Reconstructor class
 </p>
 </div>
-<p>The details of <code>R.3 Cleanse</code> activity are shown on figure <a href="reconstruction-algorithm.html#fig:cleanse-activity">2.7</a> below. The output of <code>R.3 Cleanse</code> is a set of messages each of which is then converted into zero or one events as defined by <a href="reconstruction-algorithm.html#def:order-event">2.11</a> which together compose Limit Order Book as defined by <a href="reconstruction-algorithm.html#def:lob">2.17</a>. These events are persisted by <code>R.4 Save</code> activity.</p>
+<p>The details of <code>R.3 Cleanse</code> activity are shown on figure <a href="reconstruction-algorithm.html#fig:cleanse-activity">2.7</a> below. The output of <code>R.3 Cleanse</code> is a set of zero or more messages each of which is then converted into zero or one events as defined by <a href="reconstruction-algorithm.html#def:order-event">2.11</a> which together compose Limit Order Book as defined by <a href="reconstruction-algorithm.html#def:lob">2.17</a>. These events are persisted by <code>R.4 Save</code> activity. <code>R.3 Cleanse</code> will not produce output when subsequent messages are required for cleansing. In this case the messages will be accumulated within <code>R.3 Cleanse</code> between runs until enough messages are received.</p>
 <p>Surprisingly, an order, an order event, a limit order book, the operations of a continous double auction are rather complicated things if one attempts to define them rigorously. Consider, for example, a definition given in the recent book <span class="citation">(Bouchaud and Bonart 2018)</span>:</p>
 <blockquote>
 <p>An order is a commitment, declared at a given submission time, to buy or sell a given volume of an asset at no worse than a given price. An order <span class="math inline">\(x\)</span> is thus described by four attributes:</p>

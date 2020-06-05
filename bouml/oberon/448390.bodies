@@ -1,3 +1,10 @@
 class ExchangeMessage
 !!!506246.cpp!!!	getPriceSide() : PriceSide
-return price_side_;
+return PriceSide {price_, side_};
+!!!650374.cpp!!!	toString() : string
+std::stringstream buf;
+buf << Message::toString() << " " << order_id_ << " " << (side_ ==
+        kBid
+    ? 'B'
+    : 'A') << price_ << " " << remaining_size_;
+return buf.str();
