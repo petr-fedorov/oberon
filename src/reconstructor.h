@@ -24,7 +24,8 @@ typedef std::chrono::time_point<std::chrono::system_clock, std::chrono::microsec
 typedef unsigned long EventNo;
 typedef double Volume;
 typedef double Price;
-typedef boost::uuids::uuid Id;
+typedef boost::uuids::uuid OrderId;
+typedef long TradeId;
 enum EventType {
   kActivation = 1,
   kDeactivation = 0
@@ -41,15 +42,17 @@ class Event {
   public:
     virtual const Timestamp getTimestamp() const = 0;
 
-    virtual const Id getOrderId() const = 0;
+    virtual const OrderId getOrderId() const = 0;
 
     virtual const EventNo getEventNo() const = 0;
 
     virtual const Price getPrice() const = 0;
 
-    virtual const Volume getVolume() const = 0;
+    virtual const Volume getRemainingSize() const = 0;
 
-    virtual const Id getTradeId() const = 0;
+    virtual const Volume getChangeSize() const = 0;
+
+    virtual const TradeId getTradeId() const = 0;
 
     virtual const EventType getEventType() const = 0;
 

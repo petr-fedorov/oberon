@@ -1,10 +1,15 @@
 class ExchangeMessage
 !!!506246.cpp!!!	getPriceSide() : PriceSide
 return PriceSide {price_, side_};
+!!!715142.cpp!!!	setRemainingSize(in value : Volume) : void
+if(std::abs(value) > getBaseMinSize())
+  remaining_size_ = value;
+else
+  remaining_size_ = 0;
 !!!650374.cpp!!!	toString() : string
 std::stringstream buf;
 buf << Message::toString() << " " << order_id_ << " " << (side_ ==
         kBid
     ? 'B'
-    : 'A') << price_ << " " << remaining_size_;
+    : 'A') << price_ << " " << remaining_size_ << " " << trade_id_;
 return buf.str();

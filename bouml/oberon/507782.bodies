@@ -1,10 +1,19 @@
-class EventImp
-!!!627718.cpp!!!	EventImp(in order_id : Id [1], in timestamp_ : Timestamp [1], in event_no : EventNo [1], in price : Price [1], in volume : Volume [1], in event_type : EventType [1])
+class EventImpl
+!!!627718.cpp!!!	EventImpl(in order_id : OrderId [1], in timestamp : Timestamp [1], in event_no : EventNo [1], in price : Price [1], in remaining_size : Volume [1], in change_size : Volume, in event_type : EventType [1])
 order_id_ = order_id;
 timestamp_ = timestamp;
 event_no_ = event_no;
 price_ = price;
-volume_ = volume;
+remaining_size_ = remaining_size;
+change_size_ = change_size;
 event_type_ = event_type;
-boost::uuids::nil_generator gen;
-trade_id_ = gen();
+trade_id_ = 0;
+!!!707846.cpp!!!	EventImpl(in order_id : OrderId [1], in timestamp : Timestamp [1], in event_no : EventNo [1], in price : Price [1], in remaining_size : Volume [1], in change_size : Volume, in event_type : EventType [1], in trade_id : TradeId)
+order_id_ = order_id;
+timestamp_ = timestamp;
+event_no_ = event_no;
+price_ = price;
+remaining_size_ = remaining_size;
+change_size_ = change_size;
+event_type_ = event_type;
+trade_id_ = trade_id;

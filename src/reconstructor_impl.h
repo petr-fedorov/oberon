@@ -44,7 +44,7 @@ enum TradeRole {
 };
 class EventImpl : public Event {
   private:
-    Id order_id_;
+    OrderId order_id_;
 
     Timestamp timestamp_;
 
@@ -52,15 +52,17 @@ class EventImpl : public Event {
 
     Price price_;
 
-    Volume volume_;
+    Volume remaining_size_;
 
-    Id trade_id_;
+    Volume change_size_;
+
+    TradeId trade_id_;
 
     EventType event_type_;
 
 
   public:
-    inline const Id getOrderId() const;
+    inline const OrderId getOrderId() const;
 
     inline const Timestamp getTimestamp() const;
 
@@ -68,16 +70,20 @@ class EventImpl : public Event {
 
     inline const Price getPrice() const;
 
-    inline const Volume getVolume() const;
+    inline const Volume getRemainingSize() const;
 
-    inline const Id getTradeId() const;
+    inline const Volume getChangeSize() const;
+
+    inline const TradeId getTradeId() const;
 
     inline const EventType getEventType() const;
 
-    EventImpl(const Id & order_id, const Timestamp & timestamp, const EventNo & event_no, const Price & price, const Volume & volume, EventType event_type);
+    EventImpl(const OrderId & order_id, const Timestamp & timestamp, const EventNo & event_no, const Price & price, const Volume & remaining_size, const Volume & change_size, EventType event_type);
+
+    EventImpl(const OrderId & order_id, const Timestamp & timestamp, const EventNo & event_no, const Price & price, const Volume & remaining_size, const Volume & change_size, EventType event_type, const TradeId & trade_id);
 
 };
-inline const Id EventImpl::getOrderId() const {
+inline const OrderId EventImpl::getOrderId() const {
   return order_id_;
 }
 
@@ -93,11 +99,15 @@ inline const Price EventImpl::getPrice() const {
   return price_;
 }
 
-inline const Volume EventImpl::getVolume() const {
-  return volume_;
+inline const Volume EventImpl::getRemainingSize() const {
+  return remaining_size_;
 }
 
-inline const Id EventImpl::getTradeId() const {
+inline const Volume EventImpl::getChangeSize() const {
+  return change_size_;
+}
+
+inline const TradeId EventImpl::getTradeId() const {
   return trade_id_;
 }
 
@@ -132,11 +142,11 @@ class MessageHandler {
 
 
       protected:
-        Id order_id_;
+        OrderId order_id_;
 
 
       public:
-        inline const Id getOrderId() const;
+        inline const OrderId getOrderId() const;
 
 
       protected:
@@ -146,7 +156,7 @@ class MessageHandler {
       public:
         inline const Volume getRemainingSize() const;
 
-        void setRemainingSize(Volume value);
+        void setRemainingSize(const Volume & value);
 
 
       protected:
@@ -182,13 +192,25 @@ class MessageHandler {
       public:
         inline const BookSide getSide() const;
 
+
+      protected:
+        TradeId trade_id_;
+
+
+      public:
+        inline const TradeId getTradeId() const;
+
         virtual string toString();
+
+
+      protected:
+        virtual const Volume getBaseMinSize() const = 0;
 
     };
     
     //match or trade with or without order_ids
     class Filled : public ExchangeMessage {
-      private:
+      protected:
         TradeRole role_;
 
 
@@ -196,6 +218,9 @@ class MessageHandler {
         virtual bool accept(MessageHandler* mh);
 
         virtual string toString();
+
+        //By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event
+        virtual std::unique_ptr<Event> toEvent();
 
     };
     
@@ -246,6 +271,9 @@ class MessageHandler {
 
         virtual string toString();
 
+        //By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event
+        virtual std::unique_ptr<Event> toEvent();
+
     };
     
     //order_created on Bitstamp, Bitfinex received on Coinbase
@@ -262,8 +290,6 @@ class MessageHandler {
         bool accept( MessageHandler * mh) override final;
 
         Elapsed(const Timestamp & exchange_time);
-
-        ~Elapsed();
 
         virtual string toString();
 
@@ -324,7 +350,7 @@ inline const Timestamp MessageHandler::Message::getTimestamp() const {
   return timestamp_;
 }
 
-inline const Id MessageHandler::ExchangeMessage::getOrderId() const {
+inline const OrderId MessageHandler::ExchangeMessage::getOrderId() const {
   return order_id_;
 }
 
@@ -346,6 +372,10 @@ inline const Price MessageHandler::ExchangeMessage::getPrice() const {
 
 inline const BookSide MessageHandler::ExchangeMessage::getSide() const {
   return side_;
+}
+
+inline const TradeId MessageHandler::ExchangeMessage::getTradeId() const {
+  return trade_id_;
 }
 
 class ReconstructorImplementation : public Reconstructor {

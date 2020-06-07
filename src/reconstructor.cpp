@@ -15,7 +15,7 @@ Store::~Store() {
 std::unique_ptr<Reconstructor> Reconstructor::create(Exchanges exchange, string pair_name, Store * store, double delay)
 {
   //if(exchange == kCoinbase)
-    return std::make_unique<CoinbaseReconstructor>(store);
+    return std::make_unique<CoinbaseReconstructor>(store, 0.001);
 }
 
 Reconstructor::~Reconstructor() {

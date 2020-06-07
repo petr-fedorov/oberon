@@ -11,7 +11,10 @@ Rcpp::NumericVector timestamp = data["_time"];
 Rcpp::NumericVector price = data["_price"];
 Rcpp::NumericVector remaining_size = data["_remaining_size"];
 Rcpp::NumericVector size = data["_size"];
+Rcpp::NumericVector trade_id = data["_trade_id"];
 Rcpp::CharacterVector order_id = data["_order_id"];
+Rcpp::CharacterVector maker_order_id = data["_maker_order_id"];
+Rcpp::CharacterVector taker_order_id = data["_taker_order_id"];
 auto coinbase =
     Reconstructor::create(oberon::core::kCoinbase, "BTCUSD", this, 2.0);
 oberon::core::Timestamp current_timestamp = Timestamp();
@@ -53,23 +56,38 @@ for (size_t i = 0; i < type.size(); ++i) {
     tree.put("side", side[i]);
     coinbase->process(tree);
   } else if (type[i] == "match") {
+    tree.put("type", "match");
+    tree.put("maker_order_id", maker_order_id[i]);
+    tree.put("taker_order_id", taker_order_id[i]);
+    tree.put("price", price[i]);
+    tree.put("size", size[i]);
+    tree.put("side", side[i]);
+    tree.put("trade_id", trade_id[i]);
+    coinbase->process(tree);
   }
 }
 // Final elapsed for cleanup
 using boost::property_tree::ptree;
 ptree tree;
 tree.put("type", "elapsed");
-tree.put("time", format("%FT%TZ\n", current_timestamp + std::chrono::seconds {2} ));
+tree.put("time",
+         format("%FT%TZ\n", current_timestamp + std::chrono::seconds{2}));
 coinbase->process(tree);
-return Rcpp::DataFrame::create(Rcpp::Named("order_id") = order_id_,
-                               Rcpp::Named("timestamp") = timestamp_);
+return Rcpp::DataFrame::create(
+    Rcpp::Named("order_id") = order_id_, Rcpp::Named("event_no") = event_no_,
+    Rcpp::Named("timestamp") = timestamp_,
+    Rcpp::Named("event_type") = event_type_, Rcpp::Named("price") = price_,
+    Rcpp::Named("remaining_size") = remaining_size_,
+    Rcpp::Named("change_size") = change_size_,
+    Rcpp::Named("trade_id") = trade_id_);
 !!!590598.cpp!!!	transmit(in event : Event [0..1]) : void
 if(event) {
   order_id_.push_back(to_string(event->getOrderId()));
   timestamp_.push_back(event->getTimestamp().time_since_epoch().count()/1000000.0);
   event_no_.push_back(event->getEventNo());
   price_.push_back(event->getPrice());
-  volume_.push_back(event->getVolume());
-  trade_id_.push_back(to_string(event->getTradeId()));
+  remaining_size_.push_back(event->getRemainingSize());
+  change_size_.push_back(event->getChangeSize());
+  trade_id_.push_back(event->getTradeId());
   event_type_.push_back(event->getEventType());
 }

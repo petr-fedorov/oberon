@@ -4,6 +4,22 @@ return mh->filled();
 
 !!!649734.cpp!!!	toString() : string
 std::stringstream buf;
-buf << ExchangeMessage::toString() << " Filled";
+buf << ExchangeMessage::toString()  << " Filled(" << (role_ == kMaker ? "maker)" : "taker)");
 return buf.str();
 
+!!!707590.cpp!!!	toEvent() : Event [0..1]
+if(role_ == kMaker) {
+int sign = getSide() == kAsk ? -1 : 1;
+if (getRemainingSize())
+  return make_unique<EventImpl>(getOrderId(), getTimestamp(), getEventNo(),
+                                getPrice(), getRemainingSize() * sign,
+                                getChangeSize() * sign, kActivation,
+                                getTradeId());
+else
+  return make_unique<EventImpl>(
+      getOrderId(), getTimestamp(), getEventNo(), getPrice(),
+      (getRemainingSize() + getChangeSize()) * sign, getChangeSize() * sign,
+      kDeactivation, getTradeId());
+}
+else
+ return std::unique_ptr<Event>();

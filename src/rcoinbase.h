@@ -34,11 +34,13 @@ class RCoinbase : public oberon::core::Store {
 
     vector<oberon::core::Price> price_;
 
-    vector<oberon::core::Volume> volume_;
+    vector<oberon::core::Volume> remaining_size_;
 
-    vector<string> trade_id_;
+    vector<oberon::core::Volume> change_size_;
 
-    vector<oberon::core::EventType> event_type_;
+    vector<long> trade_id_;
+
+    vector<int> event_type_;
 
 };
 

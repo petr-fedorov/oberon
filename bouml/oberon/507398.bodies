@@ -1,5 +1,5 @@
 class CoinbaseReceived
-!!!685574.cpp!!!	CoinbaseReceived(in tree : ptree [1])
+!!!685574.cpp!!!	CoinbaseReceived(in tree : ptree [1], in reconstructor : CoinbaseReconstructor [1])
 using namespace date;
 using namespace std;
 boost::uuids::string_generator gen;
@@ -10,3 +10,5 @@ price_ = stod(tree.get<string>("price"));
 remaining_size_ = stod(tree.get<string>("size"));
 side_ = tree.get<string>("side") == "buy" ? kBid : kAsk;
 
+!!!714630.cpp!!!	getBaseMinSize() : Volume
+return reconstructor_.base_min_size_;

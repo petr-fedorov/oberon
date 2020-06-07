@@ -1,5 +1,5 @@
 class CoinbaseDone
-!!!651526.cpp!!!	CoinbaseDone(in tree : ptree [1])
+!!!651526.cpp!!!	CoinbaseDone(in tree : ptree [1], in reconstructor : CoinbaseReconstructor [1])
 using namespace date;
 using namespace std;
 boost::uuids::string_generator gen;
@@ -8,5 +8,9 @@ ss >> parse("%FT%TZ", timestamp_);
 order_id_ = gen(tree.get<string>("order_id"));
 price_ = stod(tree.get<string>("price"));
 remaining_size_ = stod(tree.get<string>("remaining_size"));
+change_size_ = 0; // we don't know change_size yet
+event_no_ = 0; // we don't know event_no either
 side_ = tree.get<string>("side") == "buy" ? kBid : kAsk;
 
+!!!714886.cpp!!!	getBaseMinSize() : Volume
+return 0.001;

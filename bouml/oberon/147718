@@ -1,6 +1,6 @@
 format 222
 "Standalone application" // Standalone application
-  revision 34
+  revision 35
   modified_by 6 "petr"
   // class settings
   
@@ -142,8 +142,8 @@ format 222
 	  pin 238214 "reconstructor" type class_ref 202630 // Reconstructor
 	     multiplicity "1" unordered 
 	    out
-	    flow 315014 "S.1.2"
-	      on pin_ref 297990 // target
+	    flow 329862 "<flow>"
+	      on activityobject_ref 187398 // activity object reconstructor
 	    end
 	  end
 
@@ -206,6 +206,15 @@ format 222
 
 	  flow 314758 "<flow>"
 	    on activityaction_ref 247302 // activity action R.1 Reconstruct Order Book
+	  end
+	end
+
+	activityobject 187398 "reconstructor"
+	  stereotype "datastore"
+	   explicit_type ""
+	   multiplicity "1" unordered 
+	  flow 329990 "<flow>"
+	    on pin_ref 297990 // target
 	  end
 	end
       end

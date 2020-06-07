@@ -2,7 +2,6 @@
 #include "coinbase.h"
 #include <vector>
 
-#include "reconstructor.h"
 #include <boost/uuid/string_generator.hpp>
 
 
@@ -12,7 +11,10 @@ namespace oberon {
 
 namespace core {
 
-CoinbaseReconstructor::CoinbaseReceived::CoinbaseReceived(const boost::property_tree::ptree & tree) {
+CoinbaseReconstructor::CoinbaseMessage::CoinbaseMessage(const CoinbaseReconstructor & reconstructor): reconstructor_ {reconstructor} {
+}
+
+CoinbaseReconstructor::CoinbaseReceived::CoinbaseReceived(const boost::property_tree::ptree & tree, const CoinbaseReconstructor & reconstructor): CoinbaseMessage{reconstructor} {
   using namespace date;
   using namespace std;
   boost::uuids::string_generator gen;
@@ -25,7 +27,37 @@ CoinbaseReconstructor::CoinbaseReceived::CoinbaseReceived(const boost::property_
   
 }
 
-CoinbaseReconstructor::CoinbaseDone::CoinbaseDone(const boost::property_tree::ptree & tree) {
+const Volume CoinbaseReconstructor::CoinbaseReceived::getBaseMinSize() const {
+  return reconstructor_.base_min_size_;
+}
+
+CoinbaseReconstructor::CoinbaseMatch::CoinbaseMatch(const boost::property_tree::ptree & tree, TradeRole role, const CoinbaseReconstructor & reconstructor) : CoinbaseMessage{reconstructor} {
+  using namespace date;
+  using namespace std;
+  boost::uuids::string_generator gen;
+  std::istringstream ss{tree.get<string>("time")};
+  ss >> parse("%FT%TZ", timestamp_);
+  price_ = stod(tree.get<string>("price"));
+  change_size_ = stod(tree.get<string>("size"));
+  trade_id_ = stol(tree.get<string>("trade_id"));
+  remaining_size_ = 0;
+  event_no_ = 1;
+  role_ = role;
+  if(role == kMaker) {
+    side_ = (tree.get<string>("side") == "buy" ? kBid : kAsk);
+    order_id_ = gen(tree.get<string>("maker_order_id"));
+  }
+  else {
+    side_ = (tree.get<string>("side") == "buy" ? kAsk : kBid);
+    order_id_ = gen(tree.get<string>("taker_order_id"));
+  }
+}
+
+const Volume CoinbaseReconstructor::CoinbaseMatch::getBaseMinSize() const {
+  return reconstructor_.base_min_size_;
+}
+
+CoinbaseReconstructor::CoinbaseDone::CoinbaseDone(const boost::property_tree::ptree & tree, const CoinbaseReconstructor & reconstructor): CoinbaseMessage{reconstructor}{
   using namespace date;
   using namespace std;
   boost::uuids::string_generator gen;
@@ -34,11 +66,17 @@ CoinbaseReconstructor::CoinbaseDone::CoinbaseDone(const boost::property_tree::pt
   order_id_ = gen(tree.get<string>("order_id"));
   price_ = stod(tree.get<string>("price"));
   remaining_size_ = stod(tree.get<string>("remaining_size"));
+  change_size_ = 0; // we don't know change_size yet
+  event_no_ = 0; // we don't know event_no either
   side_ = tree.get<string>("side") == "buy" ? kBid : kAsk;
   
 }
 
-CoinbaseReconstructor::CoinbaseOpen::CoinbaseOpen(const boost::property_tree::ptree & tree) {
+const Volume CoinbaseReconstructor::CoinbaseDone::getBaseMinSize() const {
+  return 0.001;
+}
+
+CoinbaseReconstructor::CoinbaseOpen::CoinbaseOpen(const boost::property_tree::ptree & tree, const CoinbaseReconstructor & reconstructor): CoinbaseMessage{reconstructor} {
   using namespace date;
   using namespace std;
   boost::uuids::string_generator gen;
@@ -47,11 +85,13 @@ CoinbaseReconstructor::CoinbaseOpen::CoinbaseOpen(const boost::property_tree::pt
   order_id_ = gen(tree.get<string>("order_id"));
   price_ = stod(tree.get<string>("price"));
   remaining_size_ = stod(tree.get<string>("remaining_size"));
+  change_size_ = 0;
+  event_no_ = 1;
   side_ = tree.get<string>("side") == "buy" ? kBid : kAsk;
 }
 
-CoinbaseReconstructor::CoinbaseOpen::~CoinbaseOpen() {
-  std::cout << "CoinbaseOpen deleted\n";
+const Volume CoinbaseReconstructor::CoinbaseOpen::getBaseMinSize() const {
+  return 0.001;
 }
 
 vector<std::unique_ptr<MessageHandler::Message>> CoinbaseReconstructor::extract(const boost::property_tree::ptree & tree) {
@@ -65,16 +105,21 @@ vector<std::unique_ptr<MessageHandler::Message>> CoinbaseReconstructor::extract(
   if (type == "elapsed")
     output.push_back(make_unique<Elapsed>(timestamp));
   else if (type == "received")
-    output.push_back(make_unique<CoinbaseReceived>(tree));
+    output.push_back(make_unique<CoinbaseReceived>(tree, *this));
   else if (type == "open")
-    output.push_back(make_unique<CoinbaseOpen>(tree));
+    output.push_back(make_unique<CoinbaseOpen>(tree, *this));
   else if (type == "done" && tree.get<string>("reason") == "canceled")
-    output.push_back(make_unique<CoinbaseDone>(tree));
+    output.push_back(make_unique<CoinbaseDone>(tree, *this));
+  else if (type == "match") {
+    output.push_back(make_unique<CoinbaseMatch>(tree, kMaker, *this));
+    output.push_back(make_unique<CoinbaseMatch>(tree, kTaker, *this));
+  }
   return output;
 }
 
-CoinbaseReconstructor::CoinbaseReconstructor( Store * store) {
+CoinbaseReconstructor::CoinbaseReconstructor( Store * store, const Volume & base_min_size) {
   store_ = store;
+  base_min_size_ = base_min_size;
   deduplicator_ = std::make_unique<Coinbase_Deduplicator>();
   deduplicator_->create();
   size_deducer_ = std::make_unique<Deduce_Size_Coinbase>();

@@ -1,6 +1,6 @@
 format 222
 "Order Book Reconstructor" // Order Book Reconstructor
-  revision 107
+  revision 111
   modified_by 6 "petr"
   // class settings
   
@@ -221,8 +221,22 @@ format 222
       
     end
 
-    class 306822 "Id"
+    class 306822 "OrderId"
       visibility package stereotype "typedef" base_type class_ref 472582 // uuid
+      cpp_decl "${comment}typedef ${type} ${name};
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl "${comment}typedef ${type} ${name};
+"
+      explicit_switch_type ""
+      mysql_decl ""
+      
+    end
+
+    class 551174 "TradeId"
+      visibility package stereotype "typedef" explicit_base_type "long"
       cpp_decl "${comment}typedef ${type} ${name};
 "
       java_decl ""
@@ -299,7 +313,6 @@ ${members}};
       
       operation 635014 "getTimestamp"
 	abstract const constvalue cpp_virtual public return_type class_ref 230278 // Timestamp
-	multiplicity "1"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -310,7 +323,7 @@ ${members}};
       end
 
       operation 623750 "getOrderId"
-	abstract const constvalue cpp_virtual public return_type class_ref 306822 // Id
+	abstract const constvalue cpp_virtual public return_type class_ref 306822 // OrderId
 	multiplicity "1"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
@@ -343,7 +356,18 @@ ${members}};
 	
       end
 
-      operation 624134 "getVolume"
+      operation 624134 "getRemainingSize"
+	abstract const constvalue cpp_virtual public return_type class_ref 305798 // Volume
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	
+	
+      end
+
+      operation 707078 "getChangeSize"
 	abstract const constvalue cpp_virtual public return_type class_ref 305798 // Volume
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
@@ -355,7 +379,7 @@ ${members}};
       end
 
       operation 624262 "getTradeId"
-	abstract const constvalue cpp_virtual public return_type class_ref 306822 // Id
+	abstract const constvalue cpp_virtual public return_type class_ref 551174 // TradeId
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -1429,7 +1453,7 @@ ${body}}
 	end
 
 	attribute 405894 "order_id_"
-	  protected type class_ref 306822 // Id
+	  protected type class_ref 306822 // OrderId
 	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	  java_decl ""
@@ -1442,7 +1466,7 @@ ${body}}
 	end
 
 	operation 625030 "getOrderId"
-	  force_body_gen const cpp_inline public return_type class_ref 306822 // Id
+	  force_body_gen const cpp_inline public return_type class_ref 306822 // OrderId
 	  nparams 0
 	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}const ${type} ${name}${(}${)}${const}${volatile}${throw};
 "
@@ -1473,7 +1497,6 @@ ${body}}
 	  mysql_decl ""
 	  MysqlColumn
 	  get_oper operation_ref 625158 // getRemainingSize
-	  set_oper operation_ref 692614 // setRemainingSize
 	end
 
 	operation 625158 "getRemainingSize"
@@ -1497,26 +1520,19 @@ ${body}}
 	  get_of_attribute attribute_ref 406022 // remaining_size_
 	end
 
-	operation 692614 "setRemainingSize"
-	  force_body_gen public explicit_return_type "void"
+	operation 715142 "setRemainingSize"
+	  public explicit_return_type "void"
 	  nparams 1
 	    param in name "value" type class_ref 305798 // Volume
-	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw};
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
 "
-	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  remaining_size_ = ${p0};
-}
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
 "
-	  cpp_name_spec "setRemainingSize"
 	  
-	  java_name_spec "set${Name}"
 	  
-	  php_name_spec "set${Name}"
 	  
-	  python_name_spec "set${Name}"
 	  
-	  idl_name_spec "set_${name}"
-	  set_of_attribute attribute_ref 406022 // remaining_size_
 	end
 
 	attribute 437382 "change_size_"
@@ -1686,6 +1702,40 @@ ${body}}
 	  get_of_attribute attribute_ref 414726 // side_
 	end
 
+	attribute 444678 "trade_id_"
+	  protected type class_ref 551174 // TradeId
+	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	  get_oper operation_ref 707718 // get_trade_id_
+	end
+
+	operation 707718 "get_trade_id_"
+	  force_body_gen const cpp_inline public return_type class_ref 551174 // TradeId
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}const ${type} ${name}${(}${)}${const}${volatile}${throw};
+"
+	  cpp_def "${comment}${inline}${typeprefix}const ${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return trade_id_;
+}
+"
+	  cpp_name_spec "getTradeId"
+	  final 
+	  java_name_spec "get${Name}"
+	  php_final 
+	  php_name_spec "get${Name}"
+	  
+	  python_name_spec "get${Name}"
+	  
+	  idl_name_spec "get_${name}"
+	  get_of_attribute attribute_ref 444678 // trade_id_
+	end
+
 	operation 650374 "toString"
 	  cpp_virtual public explicit_return_type "string"
 	  nparams 0
@@ -1693,6 +1743,17 @@ ${body}}
 "
 	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 714374 "getBaseMinSize"
+	  abstract const constvalue cpp_virtual protected return_type class_ref 305798 // Volume
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
 	  
 	  
@@ -1725,7 +1786,7 @@ ${inlines}
 
 	classrelation 367494 // role_ (<directional composition>)
 	  relation 365830 *-->
-	    a role_name "role_" multiplicity "1" private
+	    a role_name "role_" multiplicity "1" protected
 	      cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	      classrelation_ref 367494 // role_ (<directional composition>)
@@ -1760,6 +1821,22 @@ ${inlines}
 	  
 	  
 	  
+	end
+
+	operation 707590 "toEvent"
+	  cpp_virtual public return_type class_ref 230406 // Event
+	  multiplicity "0..1"
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}std::unique_ptr<${type}> ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}std::unique_ptr<${type}> ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  comment "By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event"
 	end
       end
 
@@ -2031,6 +2108,22 @@ ${inlines}
 	  
 	  
 	end
+
+	operation 707462 "toEvent"
+	  cpp_virtual public return_type class_ref 230406 // Event
+	  multiplicity "0..1"
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}std::unique_ptr<${type}> ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}std::unique_ptr<${type}> ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  comment "By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event"
+	end
       end
 
       class 246790 "Received"
@@ -2130,20 +2223,6 @@ ${inlines}
 	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw};
 "
 	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} {
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	end
-
-	operation 597254 "~Elapsed"
-	  public explicit_return_type ""
-	  nparams 0
-	  cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
   ${body}}
 "
 	  
@@ -2577,7 +2656,7 @@ ${members}};
       end
 
       attribute 406278 "order_id_"
-	private type class_ref 306822 // Id
+	private type class_ref 306822 // OrderId
 	multiplicity "1"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -2629,7 +2708,7 @@ ${members}};
 	get_oper operation_ref 626822 // getPrice
       end
 
-      attribute 406662 "volume_"
+      attribute 406662 "remaining_size_"
 	private type class_ref 305798 // Volume
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -2639,11 +2718,11 @@ ${members}};
 	idl_decl ""
 	mysql_decl ""
 	MysqlColumn
-	get_oper operation_ref 627078 // getVolume
+	get_oper operation_ref 627078 // getRemainingSize
       end
 
-      attribute 406790 "trade_id_"
-	private type class_ref 306822 // Id
+      attribute 444550 "change_size_"
+	private type class_ref 305798 // Volume
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -2652,7 +2731,20 @@ ${members}};
 	idl_decl ""
 	mysql_decl ""
 	MysqlColumn
-	get_oper operation_ref 627334 // getTradeId
+	get_oper operation_ref 707206 // getChangeSize
+      end
+
+      attribute 406790 "trade_id_"
+	private type class_ref 551174 // TradeId
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	get_oper operation_ref 627334 // get_trade_id_
       end
 
       attribute 406918 "event_type_"
@@ -2669,7 +2761,7 @@ ${members}};
       end
 
       operation 626310 "getOrderId"
-	force_body_gen const cpp_inline public return_type class_ref 306822 // Id
+	force_body_gen const cpp_inline public return_type class_ref 306822 // OrderId
 	multiplicity "1"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}const ${type} ${name}${(}${)}${const}${volatile}${throw};
@@ -2753,16 +2845,16 @@ ${members}};
 	get_of_attribute attribute_ref 406534 // price_
       end
 
-      operation 627078 "getVolume"
+      operation 627078 "getRemainingSize"
 	force_body_gen const cpp_inline public return_type class_ref 305798 // Volume
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}const ${type} ${name}${(}${)}${const}${volatile}${throw};
 "
 	cpp_def "${comment}${inline}${typeprefix}const ${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  return volume_;
+  return remaining_size_;
 }
 "
-	cpp_name_spec "getVolume"
+	cpp_name_spec "getRemainingSize"
 	final 
 	java_name_spec "get${Name}"
 	php_final 
@@ -2771,11 +2863,32 @@ ${members}};
 	python_name_spec "get${Name}"
 	
 	idl_name_spec "get_${name}"
-	get_of_attribute attribute_ref 406662 // volume_
+	get_of_attribute attribute_ref 406662 // remaining_size_
       end
 
-      operation 627334 "getTradeId"
-	force_body_gen const cpp_inline public return_type class_ref 306822 // Id
+      operation 707206 "getChangeSize"
+	force_body_gen const cpp_inline public return_type class_ref 305798 // Volume
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}const ${type} ${name}${(}${)}${const}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}const ${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return change_size_;
+}
+"
+	cpp_name_spec "getChangeSize"
+	final 
+	java_name_spec "get${Name}"
+	php_final 
+	php_name_spec "get${Name}"
+	
+	python_name_spec "get${Name}"
+	
+	idl_name_spec "get_${name}"
+	get_of_attribute attribute_ref 444550 // change_size_
+      end
+
+      operation 627334 "get_trade_id_"
+	force_body_gen const cpp_inline public return_type class_ref 551174 // TradeId
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}const ${type} ${name}${(}${)}${const}${volatile}${throw};
 "
@@ -2818,8 +2931,8 @@ ${members}};
 
       operation 627718 "EventImpl"
 	public explicit_return_type ""
-	nparams 6
-	  param in name "order_id" type class_ref 306822 // Id
+	nparams 7
+	  param in name "order_id" type class_ref 306822 // OrderId
 	multiplicity "1"
 	  param in name "timestamp" type class_ref 230278 // Timestamp
 	multiplicity "1"
@@ -2827,13 +2940,42 @@ ${members}};
 	multiplicity "1"
 	  param in name "price" type class_ref 305542 // Price
 	multiplicity "1"
-	  param in name "volume" type class_ref 305798 // Volume
+	  param in name "remaining_size" type class_ref 305798 // Volume
 	multiplicity "1"
+	  param in name "change_size" type class_ref 305798 // Volume
 	  param in name "event_type" type class_ref 507270 // EventType
 	multiplicity "1"
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}, const ${t4} & ${p4}${v4}, ${t5} ${p5}${v5}${)}${volatile}${throw};
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}, const ${t4} & ${p4}${v4}, const ${t5} & ${p5}${v5}, ${t6} ${p6}${v6}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, const ${t4} & ${p4}, ${t5} ${p5}${)}${volatile}${throw} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, const ${t4} & ${p4}, const ${t5} & ${p5}, ${t6} ${p6}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 707846 "EventImpl"
+	public explicit_return_type ""
+	nparams 8
+	  param in name "order_id" type class_ref 306822 // OrderId
+	multiplicity "1"
+	  param in name "timestamp" type class_ref 230278 // Timestamp
+	multiplicity "1"
+	  param in name "event_no" type class_ref 507142 // EventNo
+	multiplicity "1"
+	  param in name "price" type class_ref 305542 // Price
+	multiplicity "1"
+	  param in name "remaining_size" type class_ref 305798 // Volume
+	multiplicity "1"
+	  param in name "change_size" type class_ref 305798 // Volume
+	  param in name "event_type" type class_ref 507270 // EventType
+	multiplicity "1"
+	  param in name "trade_id" type class_ref 551174 // TradeId
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}, const ${t4} & ${p4}${v4}, const ${t5} & ${p5}${v5}, ${t6} ${p6}${v6}, const ${t7} & ${p7}${v7}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, const ${t4} & ${p4}, const ${t5} & ${p5}, ${t6} ${p6}, const ${t7} & ${p7}${)}${volatile}${throw} {
   ${body}}
 "
 	
@@ -3132,6 +3274,47 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
+      class 557702 "CoinbaseMessage"
+	visibility package 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	attribute 451846 "reconstructor_"
+	  const_attribute protected type class_ref 486406 // CoinbaseReconstructor
+	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} &${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	end
+
+	operation 715270 "CoinbaseMessage"
+	  public explicit_return_type ""
+	  nparams 1
+	    param in name "reconstructor" type class_ref 486406 // CoinbaseReconstructor
+	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw}: reconstructor_ {reconstructor} {
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+      end
+
       class 507398 "CoinbaseReceived"
 	visibility private 
 	cpp_decl "${comment}${template}class ${name}${inherit} {
@@ -3155,18 +3338,42 @@ ${inlines}
 
 	operation 685574 "CoinbaseReceived"
 	  public explicit_return_type ""
-	  nparams 1
+	  nparams 2
 	    param in name "tree" type class_ref 174214 // ptree
 	  multiplicity "1"
-	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw};
+	    param in name "reconstructor" type class_ref 486406 // CoinbaseReconstructor
+	  multiplicity "1"
+	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${volatile}${throw};
 "
-	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} {
+	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw}: CoinbaseMessage{reconstructor} {
   ${body}}
 "
 	  
 	  
 	  
 	  
+	end
+
+	operation 714630 "getBaseMinSize"
+	  const constvalue cpp_virtual protected return_type class_ref 305798 // Volume
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	classrelation 608518 // <generalisation>
+	  relation 598406 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 608518 // <generalisation>
+	    b parent class_ref 557702 // CoinbaseMessage
 	end
       end
 
@@ -3189,6 +3396,45 @@ ${inlines}
 	      cpp default "${type}"
 	      classrelation_ref 554246 // <generalisation>
 	    b parent class_ref 246022 // Filled
+	end
+
+	operation 707334 "CoinbaseMatch"
+	  public explicit_return_type ""
+	  nparams 3
+	    param in name "tree" type class_ref 174214 // ptree
+	    param in name "role" type class_ref 392966 // TradeRole
+	    param in name "reconstructor" type class_ref 486406 // CoinbaseReconstructor
+	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, ${t1} ${p1}${v1}, const ${t2} & ${p2}${v2}${)}${volatile}${throw};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, const ${t2} & ${p2}${)}${volatile}${throw} : CoinbaseMessage{reconstructor} {
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 714758 "getBaseMinSize"
+	  const constvalue cpp_virtual protected return_type class_ref 305798 // Volume
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	classrelation 608774 // <generalisation>
+	  relation 598662 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 608774 // <generalisation>
+	    b parent class_ref 557702 // CoinbaseMessage
 	end
       end
 
@@ -3215,18 +3461,42 @@ ${inlines}
 
 	operation 651526 "CoinbaseDone"
 	  public explicit_return_type ""
-	  nparams 1
+	  nparams 2
 	    param in name "tree" type class_ref 174214 // ptree
 	  multiplicity "1"
-	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw};
+	    param in name "reconstructor" type class_ref 486406 // CoinbaseReconstructor
+	  multiplicity "1"
+	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${volatile}${throw};
 "
-	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} {
+	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw}: CoinbaseMessage{reconstructor}{
   ${body}}
 "
 	  
 	  
 	  
 	  
+	end
+
+	operation 714886 "getBaseMinSize"
+	  const constvalue cpp_virtual protected return_type class_ref 305798 // Volume
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	classrelation 608902 // <generalisation>
+	  relation 598790 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 608902 // <generalisation>
+	    b parent class_ref 557702 // CoinbaseMessage
 	end
       end
 
@@ -3253,12 +3523,13 @@ ${inlines}
 
 	operation 625926 "CoinbaseOpen"
 	  public explicit_return_type ""
-	  nparams 1
+	  nparams 2
 	    param in name "tree" type class_ref 174214 // ptree
 	  multiplicity "1"
-	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw};
+	    param in name "reconstructor" type class_ref 486406 // CoinbaseReconstructor
+	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${volatile}${throw};
 "
-	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} {
+	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw}: CoinbaseMessage{reconstructor} {
   ${body}}
 "
 	  
@@ -3267,18 +3538,26 @@ ${inlines}
 	  
 	end
 
-	operation 635142 "~CoinbaseOpen"
-	  public explicit_return_type ""
+	operation 715014 "getBaseMinSize"
+	  const constvalue cpp_virtual protected return_type class_ref 305798 // Volume
 	  nparams 0
-	  cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
-	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	  
 	  
 	  
 	  
+	end
+
+	classrelation 608646 // <generalisation>
+	  relation 598534 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 608646 // <generalisation>
+	    b parent class_ref 557702 // CoinbaseMessage
 	end
       end
 
@@ -3288,6 +3567,20 @@ ${inlines}
 	    cpp default "${type}"
 	    classrelation_ref 510598 // <generalisation>
 	  b parent class_ref 486278 // ReconstructorImplementation
+      end
+
+      attribute 451206 "base_min_size_"
+	private type class_ref 305798 // Volume
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "The base_min_size and base_max_size fields define the min and max order size. The quote_increment field specifies the min order price as well as the price increment.
+The order price must be a multiple of this increment (i.e. if the increment is 0.01, order prices of 0.001 or 0.021 would be rejected)."
       end
 
       operation 576134 "extract"
@@ -3310,11 +3603,12 @@ ${inlines}
 
       operation 582918 "CoinbaseReconstructor"
 	public explicit_return_type ""
-	nparams 1
+	nparams 2
 	  param in name "store" type class_ref 231302 // Store
-	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(} ${t0} * ${p0}${v0}${)}${volatile}${throw};
+	  param in name "base_min_size" type class_ref 305798 // Volume
+	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(} ${t0} * ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(} ${t0} * ${p0}${)}${throw} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(} ${t0} * ${p0}, const ${t1} & ${p1}${)}${throw} {
   ${body}}
 "
 	
@@ -3327,7 +3621,7 @@ ${inlines}
 	relation 543750 *-->
 	  stereotype "map"
 	  a role_name "remaining_size_" multiplicity "*" private
-	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<Id, ${type}> ${name}${value};
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<OrderId, ${type}> ${name}${value};
 "
 	    classrelation_ref 553862 // remaining_size_ (<directional composition>)
 	  b parent class_ref 305798 // Volume
@@ -3387,7 +3681,7 @@ ${inlines}
 	protected type class_ref 305798 // Volume
 	multiplicity "*"
 	stereotype "map"
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<Id, ${type}> ${name}${value};
+	cpp_decl "   ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<OrderId, ${type}> ${name}${value};
 "
 	java_decl ""
 	php_decl ""
@@ -4620,7 +4914,7 @@ ${inlines}
 	relation 588422 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 598534 // <dependency>
 	  b parent class_ref 543366 // Wait_State
       end
@@ -4646,7 +4940,7 @@ ${inlines}
 	relation 588806 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 598918 // <dependency>
 	  b parent class_ref 543622 // Size_change_State
       end
@@ -4655,7 +4949,7 @@ ${inlines}
 	relation 589062 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 599174 // <dependency>
 	  b parent class_ref 543750 // Remaining_size_State
       end
@@ -4664,7 +4958,7 @@ ${inlines}
 	relation 589190 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 599302 // <dependency>
 	  b parent class_ref 543494 // Deduce_State
       end
@@ -4673,7 +4967,7 @@ ${inlines}
 	relation 589446 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 599558 // <dependency>
 	  b parent class_ref 543878 // Save_State
       end
@@ -4682,7 +4976,7 @@ ${inlines}
 	relation 589574 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 599686 // <dependency>
 	  b parent class_ref 543238 // Deduce_Size_Coinbase_State
       end
@@ -5828,7 +6122,7 @@ ${inlines}
 	relation 590726 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 600838 // <dependency>
 	  b parent class_ref 544390 // Wait_State
       end
@@ -5837,7 +6131,7 @@ ${inlines}
 	relation 590982 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 601094 // <dependency>
 	  b parent class_ref 544518 // Output_State
       end
@@ -5846,7 +6140,7 @@ ${inlines}
 	relation 591110 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 601222 // <dependency>
 	  b parent class_ref 544262 // Coinbase_Deduplicator_State
       end
@@ -5985,7 +6279,7 @@ ${inlines}
 	relation 591750 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 601862 // <dependency>
 	  b parent class_ref 544646 // Fail_State
       end
@@ -8685,22 +8979,13 @@ ${includes}
 ${namespace_start}
 ${members}
 ${namespace_end}"
-      idl_src "#ifndef ${MODULE}_${NAME}_H
-#define ${MODULE}_${NAME}_H
-
-${comment}
-${includes}
-${module_start}
-${definition}
-${module_end}
-#endif
-"
       associated_elems
 	class_ref 230278 // Timestamp
 	class_ref 507142 // EventNo
 	class_ref 305798 // Volume
 	class_ref 305542 // Price
-	class_ref 306822 // Id
+	class_ref 306822 // OrderId
+	class_ref 551174 // TradeId
 	class_ref 507270 // EventType
 	class_ref 472966 // Exchanges
 	class_ref 472838 // time_order_error
@@ -8740,32 +9025,6 @@ ${namespace_end}"
 	class_ref 507782 // EventImpl
 	class_ref 441222 // MessageHandler
 	class_ref 486278 // ReconstructorImplementation
-      end
-    end
-
-    artifact 200582 "deduplication"
-      stereotype "source"
-      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
-#define ${NAMESPACE}_${NAME}_H
-
-${comment}
-${includes}
-${declarations}
-${namespace_start}
-class DedupOrchestrator;
-${definition}
-${namespace_end}
-#endif
-"
-      cpp_src "${comment}
-${includes}
-#ifdef VERBOSE_STATE_MACHINE 
-#include <iostream>
-#endif
-${namespace_start}
-${members}
-${namespace_end}"
-      associated_elems
       end
     end
 

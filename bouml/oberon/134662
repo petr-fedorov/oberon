@@ -1,6 +1,6 @@
 format 222
 "R package" // R package
-  revision 24
+  revision 26
   modified_by 6 "petr"
   // class settings
   
@@ -199,7 +199,21 @@ ${inlines}
 	MysqlColumn
       end
 
-      attribute 407430 "volume_"
+      attribute 407430 "remaining_size_"
+	private type class_ref 305798 // Volume
+	multiplicity "*"
+	stereotype "vector"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 444422 "change_size_"
 	private type class_ref 305798 // Volume
 	multiplicity "*"
 	stereotype "vector"
@@ -214,7 +228,7 @@ ${inlines}
       end
 
       attribute 407558 "trade_id_"
-	private explicit_type "string"
+	private explicit_type "long"
 	multiplicity "*"
 	stereotype "vector"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
@@ -228,7 +242,7 @@ ${inlines}
       end
 
       attribute 407686 "event_type_"
-	private type class_ref 507270 // EventType
+	private explicit_type "int"
 	multiplicity "*"
 	stereotype "vector"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};

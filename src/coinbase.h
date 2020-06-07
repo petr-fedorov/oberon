@@ -5,9 +5,9 @@
 #include "reconstructor_impl.h"
 #include <boost/property_tree/ptree.hpp>
 
+#include "reconstructor.h"
 #include <map>
 
-#include "reconstructor.h"
 #include <string>
 using namespace std;
 
@@ -18,48 +18,81 @@ namespace oberon {
 namespace core {
 
 class CoinbaseReconstructor : public ReconstructorImplementation {
+  public:
+    class CoinbaseMessage {
+      protected:
+        const CoinbaseReconstructor &reconstructor_;
+
+
+      public:
+        CoinbaseMessage(const CoinbaseReconstructor & reconstructor);
+
+    };
+    
+
   private:
-    class CoinbaseReceived : public MessageHandler::Received {
+    class CoinbaseReceived : public MessageHandler::Received, public CoinbaseMessage {
       public:
-        CoinbaseReceived(const boost::property_tree::ptree & tree);
+        CoinbaseReceived(const boost::property_tree::ptree & tree, const CoinbaseReconstructor & reconstructor);
+
+
+      protected:
+        virtual const Volume getBaseMinSize() const;
 
     };
     
-    class CoinbaseMatch : public MessageHandler::Filled {
-    };
-    
-    class CoinbaseDone : public MessageHandler::FullyCanceled {
+    class CoinbaseMatch : public MessageHandler::Filled, public CoinbaseMessage {
       public:
-        CoinbaseDone(const boost::property_tree::ptree & tree);
+        CoinbaseMatch(const boost::property_tree::ptree & tree, TradeRole role, const CoinbaseReconstructor & reconstructor);
+
+
+      protected:
+        virtual const Volume getBaseMinSize() const;
 
     };
     
-    class CoinbaseOpen : public MessageHandler::Opened {
+    class CoinbaseDone : public MessageHandler::FullyCanceled, public CoinbaseMessage {
       public:
-        CoinbaseOpen(const boost::property_tree::ptree & tree);
+        CoinbaseDone(const boost::property_tree::ptree & tree, const CoinbaseReconstructor & reconstructor);
 
-        ~CoinbaseOpen();
+
+      protected:
+        virtual const Volume getBaseMinSize() const;
 
     };
     
+    class CoinbaseOpen : public MessageHandler::Opened, public CoinbaseMessage {
+      public:
+        CoinbaseOpen(const boost::property_tree::ptree & tree, const CoinbaseReconstructor & reconstructor);
+
+
+      protected:
+        virtual const Volume getBaseMinSize() const;
+
+    };
+    
+    //The base_min_size and base_max_size fields define the min and max order size. The quote_increment field specifies the min order price as well as the price increment.
+    //The order price must be a multiple of this increment (i.e. if the increment is 0.01, order prices of 0.001 or 0.021 would be rejected).
+    Volume base_min_size_;
+
 
   protected:
     virtual vector<std::unique_ptr<MessageHandler::Message>> extract(const boost::property_tree::ptree & tree) override final;
 
 
   public:
-    explicit CoinbaseReconstructor( Store * store);
+    explicit CoinbaseReconstructor( Store * store, const Volume & base_min_size);
 
 
   private:
-    map<Id, Volume> remaining_size_;
+    map<OrderId, Volume> remaining_size_;
 
 };
 class Deduce_Size_Coinbase_Extensions : public MessageHandler {
   protected:
     Volume previousSize_;
 
-    map<Id, Volume> previousSizes_;
+   map<OrderId, Volume> previousSizes_;
 
     std::unique_ptr<MessageHandler::ExchangeMessage> em_;
 

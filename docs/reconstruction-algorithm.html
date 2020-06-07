@@ -24,7 +24,7 @@
 <meta name="author" content="Petr Fedorov" />
 
 
-<meta name="date" content="2020-06-05" />
+<meta name="date" content="2020-06-07" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -126,7 +126,7 @@ Figure 2.1: UML2 Activity Diagram of a standalone application using Reconstructi
 Figure 2.2: UML2 Activity Diagram of Reconstruction algorithm
 </p>
 </div>
-<p>The activity <code>R.2 Extract</code> takes an exchange-specific data in <a href="https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html">Boost.PropertyTree</a> container and produces one <em>or more</em> internal exchange-independent messages shown on figure <a href="reconstruction-algorithm.html#fig:message-hierarchy">2.3</a>. For example, Bitstamp’s trade <code>ptree</code> with a timestamp not seen before will originate <em>three</em> messages: <code>Elapsed</code> and two <code>Filled</code> - one for maker and another one for taker.</p>
+<p>The activity <code>R.2 Extract</code> takes an exchange-specific data in <a href="https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html">Boost.PropertyTree</a> container and produces one <em>or more</em> internal <code>exchange-independent messages shown on figure \@ref(fig:message-hierarchy). For example,  Bitstamp's trade</code>ptree<code>will originate *two*</code>Filled` messages - one for maker and another one for taker.</p>
 <div class="figure" style="text-align: center"><span id="fig:message-hierarchy"></span>
 <img src="Message%20Hierarchy.png" alt="UML2 Class Diagram of internal exchange-independent message types used by Order Book Reconstruction algorithm"  />
 <p class="caption">

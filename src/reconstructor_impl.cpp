@@ -32,15 +32,26 @@ PriceSide::PriceSide() {
   side_ = kBid;
 }
 
-EventImpl::EventImpl(const Id & order_id, const Timestamp & timestamp, const EventNo & event_no, const Price & price, const Volume & volume, EventType event_type) {
+EventImpl::EventImpl(const OrderId & order_id, const Timestamp & timestamp, const EventNo & event_no, const Price & price, const Volume & remaining_size, const Volume & change_size, EventType event_type) {
   order_id_ = order_id;
   timestamp_ = timestamp;
   event_no_ = event_no;
   price_ = price;
-  volume_ = volume;
+  remaining_size_ = remaining_size;
+  change_size_ = change_size;
   event_type_ = event_type;
-  boost::uuids::nil_generator gen;
-  trade_id_ = gen();
+  trade_id_ = 0;
+}
+
+EventImpl::EventImpl(const OrderId & order_id, const Timestamp & timestamp, const EventNo & event_no, const Price & price, const Volume & remaining_size, const Volume & change_size, EventType event_type, const TradeId & trade_id) {
+  order_id_ = order_id;
+  timestamp_ = timestamp;
+  event_no_ = event_no;
+  price_ = price;
+  remaining_size_ = remaining_size;
+  change_size_ = change_size;
+  event_type_ = event_type;
+  trade_id_ = trade_id;
 }
 
 //By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event
@@ -59,8 +70,11 @@ PriceSide MessageHandler::ExchangeMessage::getPriceSide() {
 return PriceSide {price_, side_};
 }
 
-void MessageHandler::ExchangeMessage::setRemainingSize(Volume value) {
-  remaining_size_ = value;
+void MessageHandler::ExchangeMessage::setRemainingSize(const Volume & value) {
+  if(std::abs(value) > getBaseMinSize())
+    remaining_size_ = value;
+  else
+    remaining_size_ = 0;
 }
 
 void MessageHandler::ExchangeMessage::setChangeSize(Volume value) {
@@ -72,7 +86,7 @@ string MessageHandler::ExchangeMessage::toString() {
   buf << Message::toString() << " " << order_id_ << " " << (side_ ==
           kBid
       ? 'B'
-      : 'A') << price_ << " " << remaining_size_;
+      : 'A') << price_ << " " << remaining_size_ << " " << trade_id_;
   return buf.str();
 }
 
@@ -83,9 +97,28 @@ bool MessageHandler::Filled::accept(MessageHandler* mh) {
 
 string MessageHandler::Filled::toString() {
   std::stringstream buf;
-  buf << ExchangeMessage::toString() << " Filled";
+  buf << ExchangeMessage::toString()  << " Filled(" << (role_ == kMaker ? "maker)" : "taker)");
   return buf.str();
   
+}
+
+//By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event
+std::unique_ptr<Event> MessageHandler::Filled::toEvent() {
+  if(role_ == kMaker) {
+  int sign = getSide() == kAsk ? -1 : 1;
+  if (getRemainingSize())
+    return make_unique<EventImpl>(getOrderId(), getTimestamp(), getEventNo(),
+                                  getPrice(), getRemainingSize() * sign,
+                                  getChangeSize() * sign, kActivation,
+                                  getTradeId());
+  else
+    return make_unique<EventImpl>(
+        getOrderId(), getTimestamp(), getEventNo(), getPrice(),
+        (getRemainingSize() + getChangeSize()) * sign, getChangeSize() * sign,
+        kDeactivation, getTradeId());
+  }
+  else
+   return std::unique_ptr<Event>();
 }
 
 bool MessageHandler::Opened::accept(MessageHandler* mh) {
@@ -102,8 +135,9 @@ string MessageHandler::Opened::toString() {
 
 //By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event
 std::unique_ptr<Event> MessageHandler::Opened::toEvent() {
+  int sign = getSide() == kAsk ? -1 : 1;
   return make_unique<EventImpl>(getOrderId(), getTimestamp(), getEventNo(), 
-      getPrice(), getRemainingSize(), kActivation);
+      getPrice(), getRemainingSize()*sign, getChangeSize()*sign, kActivation);
 }
 
 string MessageHandler::VolumeIncremented::toString() {
@@ -140,6 +174,14 @@ string MessageHandler::FullyCanceled::toString() {
   return buf.str();
 }
 
+//By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event
+std::unique_ptr<Event> MessageHandler::FullyCanceled::toEvent() {
+  int sign = getSide() == kAsk ? -1 : 1;
+  return make_unique<EventImpl>(getOrderId(), getTimestamp(), getEventNo(), 
+      getPrice(), getRemainingSize()*sign, getChangeSize()*sign, kDeactivation);
+  
+}
+
 bool MessageHandler::Received::accept(MessageHandler * mh) {
   return mh->received();
 }
@@ -156,10 +198,6 @@ bool MessageHandler::Elapsed::accept( MessageHandler * mh) {
 
 MessageHandler::Elapsed::Elapsed(const Timestamp & exchange_time) {
   timestamp_ = exchange_time;
-}
-
-MessageHandler::Elapsed::~Elapsed() {
-  std::cout << "Elapsed deleted\n";
 }
 
 string MessageHandler::Elapsed::toString() {
@@ -208,8 +246,7 @@ void ReconstructorImplementation::process(const boost::property_tree::ptree & me
 }
 
 vector<std::unique_ptr<MessageHandler::Message>> ReconstructorImplementation::cleanse( vector<std::unique_ptr<MessageHandler::Message>> && messages) {
-  auto output = std::move(size_deducer_->handle(std::move(messages)));
-  return deduplicator_->handle(std::move(output));
+  return deduplicator_->handle(size_deducer_->handle(move(messages)));
 }
 
 

@@ -105,7 +105,7 @@ Aftewards the application launches `S.5 Receive messages` and `R.1 Reconstruct O
 knitr::include_graphics("R.1 Reconstruct Order Book.png", dpi=80)
 ```
 
-The activity `R.2 Extract` takes an exchange-specific data in [Boost.PropertyTree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) container and produces one *or more* internal exchange-independent messages shown on figure \@ref(fig:message-hierarchy). For example,  Bitstamp's trade `ptree` with a timestamp not seen before will originate *three* messages: `Elapsed` and two `Filled` - one for maker and another one for taker.
+The activity `R.2 Extract` takes an exchange-specific data in [Boost.PropertyTree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) container and produces one *or more* internal `exchange-independent messages shown on figure \@ref(fig:message-hierarchy). For example,  Bitstamp's trade `ptree`  will originate *two*  `Filled` messages - one for maker and another one for taker.
 
 
 ```{r message-hierarchy, echo=FALSE, fig.cap="UML2 Class Diagram of internal exchange-independent message types used by Order Book Reconstruction algorithm", fig.align="center"}

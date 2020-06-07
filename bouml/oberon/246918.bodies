@@ -8,5 +8,6 @@ buf << ExchangeMessage::toString() << " Opened";
 return buf.str();
 
 !!!650630.cpp!!!	toEvent() : Event [0..1]
+int sign = getSide() == kAsk ? -1 : 1;
 return make_unique<EventImpl>(getOrderId(), getTimestamp(), getEventNo(), 
-    getPrice(), getRemainingSize(), kActivation);
+    getPrice(), getRemainingSize()*sign, getChangeSize()*sign, kActivation);

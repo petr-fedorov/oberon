@@ -2,7 +2,7 @@ format 222
 
 classcanvas 128006 class_ref 486406 // CoinbaseReconstructor
   classdiagramsettings member_max_width 0 end
-  xyz 241 864 2000
+  xyz 225 1083 2000
 end
 classcanvas 128134 class_ref 472710 // CoinbaseDone
   classdiagramsettings member_max_width 0 end
@@ -60,6 +60,10 @@ classcanvas 132102 class_ref 271366 // BookSide
   classdiagramsettings member_max_width 0 end
   xyz 674 394 3005
 end
+classcanvas 132358 class_ref 557702 // CoinbaseMessage
+  classdiagramsettings member_max_width 0 end
+  xyz 245 850 2029
+end
 line 128262 ---+
   from ref 128134 z 2007 to ref 128006
 relationcanvas 128518 relation_ref 486406 // <generalisation>
@@ -88,9 +92,9 @@ relationcanvas 129542 relation_ref 543622 // <generalisation>
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 129926 relation_ref 543750 // <directional composition>
-  from ref 128006 z 2001 stereotype "<<map>>" xyz 482 896 3000 to ref 129798
-  role_a_pos 529 878 3000 no_role_b
-  multiplicity_a_pos 611 903 3000 no_multiplicity_b
+  from ref 128006 z 2001 stereotype "<<map>>" xyz 466.5 999 3000 to ref 129798
+  role_a_pos 529 895 3000 no_role_b
+  multiplicity_a_pos 611 920 3000 no_multiplicity_b
 end
 line 130182 ---+
   from ref 130054 z 2007 to ref 128006
@@ -128,5 +132,27 @@ relationcanvas 132230 relation_ref 380678 // <directional composition>
   from ref 131590 z 3006 to ref 132102
   role_a_pos 634 408 3000 no_role_b
   multiplicity_a_pos 656 433 3000 multiplicity_b_pos 598 410 3000
+end
+line 132486 ---+
+  from ref 132358 z 2030 to ref 128006
+relationcanvas 132614 relation_ref 598406 // <generalisation>
+  from ref 130054 z 2030 to ref 132358
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 132742 relation_ref 598534 // <generalisation>
+  from ref 130438 z 2030 to ref 132358
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 132870 relation_ref 598662 // <generalisation>
+  from ref 130822 z 2030 to ref 132358
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 132998 relation_ref 598790 // <generalisation>
+  from ref 128134 z 2030 to ref 132358
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
 end
 end
