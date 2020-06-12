@@ -3,9 +3,9 @@ class Deduce_State
   _doexit(stm);
   {
 #ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : execute activity of transition drop" << std::endl;
+    std::cout << "DEBUG : execute activity of transition output message" << std::endl;
 #endif
-stm.em_.reset(nullptr);    stm._set_currentState(stm._deduce_size_coinbase_state._wait_state);
+stm.output_.push_back(std::move(stm.em_));    stm._set_currentState(stm._deduce_size_coinbase_state._wait_state);
 #ifdef VERBOSE_STATE_MACHINE
     std::cout << "DEBUG : current state is now .Deduce Size Coinbase.Wait" << std::endl;
 #endif
@@ -14,10 +14,10 @@ stm.em_.reset(nullptr);    stm._set_currentState(stm._deduce_size_coinbase_state
 #ifdef VERBOSE_STATE_MACHINE
   std::cout << "DEBUG : execute entry behavior of .Deduce Size Coinbase.Deduce" << std::endl;
 #endif
-stm.previousSize_ = 0;
+stm.previous_size_ = Event::kNaVolume;
 
 try {
-  stm.previousSize_ = stm.previousSizes_.at(stm.em_->getOrderId());
+  stm.previous_size_ = stm.previous_sizes_.at(stm.em_->getOrderId());
 }
 catch (...) {};
 !!!690822.cpp!!!	_doexit(inout stm : Deduce_Size_Coinbase) : void

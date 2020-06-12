@@ -1,23 +1,15 @@
 class CoinbaseMatch
-!!!707334.cpp!!!	CoinbaseMatch(in tree : ptree, in role : TradeRole, in reconstructor : CoinbaseReconstructor)
+!!!707334.cpp!!!	CoinbaseMatch(in tree : ptree, in reconstructor : CoinbaseReconstructor)
 using namespace date;
 using namespace std;
 boost::uuids::string_generator gen;
 std::istringstream ss{tree.get<string>("time")};
 ss >> parse("%FT%TZ", timestamp_);
+ss.str(tree.get<string>("local_timestamp"));
+ss >> parse("%FT%TZ", local_timestamp_);
 price_ = stod(tree.get<string>("price"));
 change_size_ = stod(tree.get<string>("size"));
 trade_id_ = stol(tree.get<string>("trade_id"));
-remaining_size_ = 0;
-event_no_ = 1;
-role_ = role;
-if(role == kMaker) {
-  side_ = (tree.get<string>("side") == "buy" ? kBid : kAsk);
-  order_id_ = gen(tree.get<string>("maker_order_id"));
-}
-else {
-  side_ = (tree.get<string>("side") == "buy" ? kAsk : kBid);
-  order_id_ = gen(tree.get<string>("taker_order_id"));
-}
-!!!714758.cpp!!!	getBaseMinSize() : Volume
-return reconstructor_.base_min_size_;
+side_ = (tree.get<string>("side") == "buy" ? kBid : kAsk);
+order_id_ = gen(tree.get<string>("maker_order_id"));
+taker_order_id_ = gen(tree.get<string>("taker_order_id"));

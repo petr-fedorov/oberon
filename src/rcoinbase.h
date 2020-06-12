@@ -20,7 +20,7 @@ namespace R {
 
 class RCoinbase : public oberon::core::Store {
   public:
-    DataFrame run(const Rcpp::DataFrame & data);
+    DataFrame run(const Rcpp::DataFrame & data, bool extract_only = false);
 
     virtual void transmit( std::unique_ptr<oberon::core::Event> && event);
 
@@ -30,17 +30,21 @@ class RCoinbase : public oberon::core::Store {
 
     vector<double> timestamp_;
 
-    vector<oberon::core::EventNo> event_no_;
+    vector<int32_t> event_no_;
+
+    vector<int32_t> state_;
 
     vector<oberon::core::Price> price_;
 
-    vector<oberon::core::Volume> remaining_size_;
+    vector<oberon::core::Volume> volume_;
 
-    vector<oberon::core::Volume> change_size_;
+    vector<oberon::core::Volume> delta_volume_;
 
-    vector<long> trade_id_;
+    vector<int32_t> trade_id_;
 
-    vector<int> event_type_;
+    vector<string> taker_order_id_;
+
+    vector<double> local_timestamp_;
 
 };
 

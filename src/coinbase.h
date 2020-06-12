@@ -3,9 +3,9 @@
 
 
 #include "reconstructor_impl.h"
+#include "reconstructor.h"
 #include <boost/property_tree/ptree.hpp>
 
-#include "reconstructor.h"
 #include <map>
 
 #include <string>
@@ -19,13 +19,19 @@ namespace core {
 
 class CoinbaseReconstructor : public ReconstructorImplementation {
   public:
-    class CoinbaseMessage {
+    class CoinbaseMessage : virtual public MessageHandler::ExchangeMessage {
       protected:
         const CoinbaseReconstructor &reconstructor_;
 
 
       public:
         CoinbaseMessage(const CoinbaseReconstructor & reconstructor);
+
+
+      protected:
+        virtual const Volume getBaseMinSize() const;
+
+        virtual const Volume getBaseIncrement() const;
 
     };
     
@@ -35,29 +41,17 @@ class CoinbaseReconstructor : public ReconstructorImplementation {
       public:
         CoinbaseReceived(const boost::property_tree::ptree & tree, const CoinbaseReconstructor & reconstructor);
 
-
-      protected:
-        virtual const Volume getBaseMinSize() const;
-
     };
     
     class CoinbaseMatch : public MessageHandler::Filled, public CoinbaseMessage {
       public:
-        CoinbaseMatch(const boost::property_tree::ptree & tree, TradeRole role, const CoinbaseReconstructor & reconstructor);
-
-
-      protected:
-        virtual const Volume getBaseMinSize() const;
+        CoinbaseMatch(const boost::property_tree::ptree & tree, const CoinbaseReconstructor & reconstructor);
 
     };
     
-    class CoinbaseDone : public MessageHandler::FullyCanceled, public CoinbaseMessage {
+    class CoinbaseDoneCanceled : public MessageHandler::FullyCanceled, public CoinbaseMessage {
       public:
-        CoinbaseDone(const boost::property_tree::ptree & tree, const CoinbaseReconstructor & reconstructor);
-
-
-      protected:
-        virtual const Volume getBaseMinSize() const;
+        CoinbaseDoneCanceled(const boost::property_tree::ptree & tree, const CoinbaseReconstructor & reconstructor);
 
     };
     
@@ -65,15 +59,13 @@ class CoinbaseReconstructor : public ReconstructorImplementation {
       public:
         CoinbaseOpen(const boost::property_tree::ptree & tree, const CoinbaseReconstructor & reconstructor);
 
-
-      protected:
-        virtual const Volume getBaseMinSize() const;
-
     };
     
     //The base_min_size and base_max_size fields define the min and max order size. The quote_increment field specifies the min order price as well as the price increment.
     //The order price must be a multiple of this increment (i.e. if the increment is 0.01, order prices of 0.001 or 0.021 would be rejected).
     Volume base_min_size_;
+
+    Volume base_increment_;
 
 
   protected:
@@ -81,7 +73,7 @@ class CoinbaseReconstructor : public ReconstructorImplementation {
 
 
   public:
-    explicit CoinbaseReconstructor( Store * store, const Volume & base_min_size);
+    explicit CoinbaseReconstructor( Store * store, const Volume & base_min_size, const Volume & base_increment, bool extract_only);
 
 
   private:
@@ -90,9 +82,9 @@ class CoinbaseReconstructor : public ReconstructorImplementation {
 };
 class Deduce_Size_Coinbase_Extensions : public MessageHandler {
   protected:
-    Volume previousSize_;
+    Volume previous_size_;
 
-   map<OrderId, Volume> previousSizes_;
+   map<OrderId, Volume> previous_sizes_;
 
     std::unique_ptr<MessageHandler::ExchangeMessage> em_;
 
@@ -212,9 +204,6 @@ class Deduce_Size_Coinbase : public Deduce_Size_Coinbase_Extensions {
                 // to manage the event create
                 virtual void create(Deduce_Size_Coinbase & stm);
 
-                // perform the 'entry behavior'
-                void _doentry(Deduce_Size_Coinbase & stm);
-
                 // returns the state containing the current
                 virtual AnyState * _upper(Deduce_Size_Coinbase & stm);
 
@@ -329,231 +318,6 @@ class Deduce_Size_Coinbase : public Deduce_Size_Coinbase_Extensions {
 };
 // change the current state, internal
 inline void Deduce_Size_Coinbase::_set_currentState(Deduce_Size_Coinbase::AnyState & st) {
-    _current_state = &st;
-}
-
-// implement the state machine Coinbase Deduplicator
-class Coinbase_Deduplicator : public MessageHandler {
-  protected:
-    // Mother class of all the classes representing states
-    class AnyState {
-      public:
-        virtual ~AnyState();
-
-        // return the upper state
-        virtual AnyState * _upper(Coinbase_Deduplicator &) = 0;
-
-        // perform the 'do activity'
-        virtual void _do(Coinbase_Deduplicator &);
-
-        virtual void create(Coinbase_Deduplicator &);
-
-        // the current state doesn't manage the event received, give it to the upper state
-        virtual void received(Coinbase_Deduplicator & stm);
-
-        // the current state doesn't manage the event elapsed, give it to the upper state
-        virtual void elapsed(Coinbase_Deduplicator & stm);
-
-        // the current state doesn't manage the event opened, give it to the upper state
-        virtual void opened(Coinbase_Deduplicator & stm);
-
-        // the current state doesn't manage the event filled, give it to the upper state
-        virtual void filled(Coinbase_Deduplicator & stm);
-
-        // the current state doesn't manage the event fullyCanceled, give it to the upper state
-        virtual void fullyCanceled(Coinbase_Deduplicator & stm);
-
-        // the current state doesn't manage the event era, give it to the upper state
-        virtual void era(Coinbase_Deduplicator & stm);
-
-        // the current state doesn't manage the event stop, give it to the upper state
-        virtual void stop(Coinbase_Deduplicator & stm);
-
-        // the current state doesn't manage the event priceAdvanced, give it to the upper state
-        virtual void priceAdvanced(Coinbase_Deduplicator & stm);
-
-        // the current state doesn't manage the event priceReceded, give it to the upper state
-        virtual void priceReceded(Coinbase_Deduplicator & stm);
-
-        // the current state doesn't manage the event partiallyCanceled, give it to the upper state
-        virtual void partiallyCanceled(Coinbase_Deduplicator & stm);
-
-        // the current state doesn't manage the event volumeIncremented, give it to the upper state
-        virtual void volumeIncremented(Coinbase_Deduplicator & stm);
-
-    };
-    
-    // implement the state Coinbase Deduplicator
-    class Coinbase_Deduplicator_State : public AnyState {
-      public:
-        // implement the state Wait
-        class Wait_State : public AnyState {
-          public:
-            virtual ~Wait_State();
-
-            // to manage the event received
-            virtual void received(Coinbase_Deduplicator & stm);
-
-            // to manage the event elapsed
-            virtual void elapsed(Coinbase_Deduplicator & stm);
-
-            // to manage the event opened
-            virtual void opened(Coinbase_Deduplicator & stm);
-
-            // to manage the event filled
-            virtual void filled(Coinbase_Deduplicator & stm);
-
-            // to manage the event fullyCanceled
-            virtual void fullyCanceled(Coinbase_Deduplicator & stm);
-
-            // to manage the event era
-            virtual void era(Coinbase_Deduplicator & stm);
-
-            // to manage the event stop
-            virtual void stop(Coinbase_Deduplicator & stm);
-
-            // returns the state containing the current
-            virtual AnyState * _upper(Coinbase_Deduplicator & stm);
-
-            // to manage the event priceAdvanced
-            virtual void priceAdvanced(Coinbase_Deduplicator & stm);
-
-            // to manage the event priceReceded
-            virtual void priceReceded(Coinbase_Deduplicator & stm);
-
-            // to manage the event partiallyCanceled
-            virtual void partiallyCanceled(Coinbase_Deduplicator & stm);
-
-            // to manage the event volumeIncremented
-            virtual void volumeIncremented(Coinbase_Deduplicator & stm);
-
-        };
-        
-        // implement the state Fail
-        class Fail_State : public AnyState {
-          public:
-            virtual ~Fail_State();
-
-            // to manage the event create
-            virtual void create(Coinbase_Deduplicator & stm);
-
-            // perform the 'do activity'
-            virtual void _do(Coinbase_Deduplicator & stm);
-
-            // returns the state containing the current
-            virtual AnyState * _upper(Coinbase_Deduplicator & stm);
-
-        };
-        
-        // implement the state Output
-        class Output_State : public AnyState {
-          public:
-            virtual ~Output_State();
-
-            virtual bool _completion(Coinbase_Deduplicator & stm);
-
-            // to manage the event create
-            virtual void create(Coinbase_Deduplicator & stm);
-
-            // perform the 'do activity'
-            virtual void _do(Coinbase_Deduplicator & stm);
-
-            // returns the state containing the current
-            virtual AnyState * _upper(Coinbase_Deduplicator & stm);
-
-        };
-        
-        virtual ~Coinbase_Deduplicator_State();
-
-        // memorize the instance of the state Wait, internal
-        Wait_State _wait_state;
-
-        // memorize the instance of the state Output, internal
-        Output_State _output_state;
-
-        // to manage the event create
-        virtual void create(Coinbase_Deduplicator & stm);
-
-        // returns the state containing the current
-        virtual AnyState * _upper(Coinbase_Deduplicator &);
-
-        // memorize the instance of the state Fail, internal
-        Fail_State _fail_state;
-
-    };
-    
-    // memorize the instance of the state Coinbase Deduplicator, internal
-    Coinbase_Deduplicator_State _coinbase_deduplicator_state;
-
-
-  public:
-    Coinbase_Deduplicator();
-
-    virtual ~Coinbase_Deduplicator();
-
-    // the operation you call to signal the event create
-    bool create();
-
-    // the operation you call to signal the event received
-    bool received();
-
-    // the operation you call to signal the event elapsed
-    bool elapsed();
-
-    // the operation you call to signal the event opened
-    bool opened();
-
-    // the operation you call to signal the event filled
-    bool filled();
-
-    // the operation you call to signal the event fullyCanceled
-    bool fullyCanceled();
-
-    // the operation you call to signal the event era
-    bool era();
-
-    // the operation you call to signal the event stop
-    bool stop();
-
-  friend class Coinbase_Deduplicator_State::Wait_State;
-  friend class Coinbase_Deduplicator_State::Output_State;
-  friend class Coinbase_Deduplicator_State;
-    // to execute the current state 'do activity'
-    void doActivity();
-
-
-  protected:
-    // change the current state, internal
-    inline void _set_currentState(AnyState & st);
-
-    // execution done, internal
-    void _final();
-
-    // contains the current state, internal
-    AnyState * _current_state;
-
-
-  public:
-    // the operation you call to signal the event priceAdvanced
-    bool priceAdvanced();
-
-    // the operation you call to signal the event priceReceded
-    bool priceReceded();
-
-    // the operation you call to signal the event partiallyCanceled
-    bool partiallyCanceled();
-
-    // the operation you call to signal the event volumeIncremented
-    bool volumeIncremented();
-
-  friend class Coinbase_Deduplicator_State::Fail_State;
-
-  protected:
-    virtual string getHandlerName();
-
-};
-// change the current state, internal
-inline void Coinbase_Deduplicator::_set_currentState(Coinbase_Deduplicator::AnyState & st) {
     _current_state = &st;
 }
 

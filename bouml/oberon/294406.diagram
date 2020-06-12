@@ -2,67 +2,55 @@ format 222
 
 classcanvas 128006 class_ref 486406 // CoinbaseReconstructor
   classdiagramsettings member_max_width 0 end
-  xyz 225 1083 2000
+  xyz 302 836 2000
 end
-classcanvas 128134 class_ref 472710 // CoinbaseDone
+classcanvas 128134 class_ref 472710 // CoinbaseDoneCanceled
   classdiagramsettings member_max_width 0 end
-  xyz 473 707 2006
+  xyz 624 703 2006
 end
 classcanvas 128390 class_ref 328710 // FullyCanceled
   classdiagramsettings member_max_width 0 end
-  xyz 473 584 2012
+  xyz 683 562 2012
 end
 classcanvas 128646 class_ref 246790 // Received
   classdiagramsettings member_max_width 0 end
-  xyz 70 582 2017
+  xyz 73 568 2017
 end
 classcanvas 128774 class_ref 246918 // Opened
   classdiagramsettings member_max_width 0 end
-  xyz 214 584 2000
+  xyz 189 571 2000
 end
 classcanvas 128902 class_ref 246022 // Filled
   classdiagramsettings member_max_width 0 end
-  xyz 348 583 2000
+  xyz 520 558 2000
 end
 classcanvas 129030 class_ref 448390 // ExchangeMessage
   classdiagramsettings member_max_width 0 end
-  xyz 317 171 2023
+  xyz 311 125 2023
 end
 classcanvas 129798 class_ref 305798 // Volume
   classdiagramsettings member_max_width 0 end
-  xyz 627 868 2000
+  xyz 596 852 2000
 end
 classcanvas 130054 class_ref 507398 // CoinbaseReceived
   classdiagramsettings member_max_width 0 end
-  xyz 43 714 2006
+  xyz 46 707 2006
 end
 classcanvas 130438 class_ref 507526 // CoinbaseOpen
   classdiagramsettings member_max_width 0 end
-  xyz 193 712 2006
+  xyz 195 707 2006
 end
 classcanvas 130822 class_ref 507654 // CoinbaseMatch
   classdiagramsettings member_max_width 0 end
-  xyz 327 710 2012
+  xyz 431 707 2012
 end
 classcanvas 131334 class_ref 245766 // Message
   classdiagramsettings member_max_width 0 end
-  xyz 122 194 2029
-end
-classcanvas 131590 class_ref 406662 // PriceSide
-  classdiagramsettings hide_attributes no member_max_width 0 end
-  xyz 514 342 2029
-end
-classcanvas 131846 class_ref 305542 // Price
-  classdiagramsettings member_max_width 0 end
-  xyz 667 305 3005
-end
-classcanvas 132102 class_ref 271366 // BookSide
-  classdiagramsettings member_max_width 0 end
-  xyz 674 394 3005
+  xyz 153 20 2029
 end
 classcanvas 132358 class_ref 557702 // CoinbaseMessage
   classdiagramsettings member_max_width 0 end
-  xyz 245 850 2029
+  xyz 323 554 2029
 end
 line 128262 ---+
   from ref 128134 z 2007 to ref 128006
@@ -71,30 +59,15 @@ relationcanvas 128518 relation_ref 486406 // <generalisation>
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
-relationcanvas 129158 relation_ref 450310 // <generalisation>
-  from ref 128774 z 2024 to ref 129030
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
-end
 relationcanvas 129286 relation_ref 449798 // <generalisation>
   from ref 128902 z 2024 to ref 129030
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
-relationcanvas 129414 relation_ref 450438 // <generalisation>
-  from ref 128646 z 2024 to ref 129030
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
-end
-relationcanvas 129542 relation_ref 543622 // <generalisation>
-  from ref 128390 z 2024 to ref 129030
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
-end
 relationcanvas 129926 relation_ref 543750 // <directional composition>
-  from ref 128006 z 2001 stereotype "<<map>>" xyz 466.5 999 3000 to ref 129798
-  role_a_pos 529 895 3000 no_role_b
-  multiplicity_a_pos 611 920 3000 no_multiplicity_b
+  from ref 128006 z 2001 stereotype "<<map>>" xyz 491 878 3000 to ref 129798
+  role_a_pos 498 862 3000 no_role_b
+  multiplicity_a_pos 580 887 3000 no_multiplicity_b
 end
 line 130182 ---+
   from ref 130054 z 2007 to ref 128006
@@ -123,16 +96,6 @@ relationcanvas 131462 relation_ref 449542 // <generalisation>
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
-relationcanvas 131974 relation_ref 380806 // <directional composition>
-  from ref 131590 z 3006 to ref 131846
-  role_a_pos 623 322 3000 no_role_b
-  multiplicity_a_pos 649 347 3000 multiplicity_b_pos 598 369 3000
-end
-relationcanvas 132230 relation_ref 380678 // <directional composition>
-  from ref 131590 z 3006 to ref 132102
-  role_a_pos 634 408 3000 no_role_b
-  multiplicity_a_pos 656 433 3000 multiplicity_b_pos 598 410 3000
-end
 line 132486 ---+
   from ref 132358 z 2030 to ref 128006
 relationcanvas 132614 relation_ref 598406 // <generalisation>
@@ -152,6 +115,11 @@ relationcanvas 132870 relation_ref 598662 // <generalisation>
 end
 relationcanvas 132998 relation_ref 598790 // <generalisation>
   from ref 128134 z 2030 to ref 132358
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 133126 relation_ref 605574 // <generalisation>
+  from ref 132358 z 2030 to ref 129030
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end

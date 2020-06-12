@@ -21,14 +21,15 @@ namespace oberon {
 namespace core {
 
 typedef std::chrono::time_point<std::chrono::system_clock, std::chrono::microseconds> Timestamp;
-typedef unsigned long EventNo;
+typedef int32_t EventNo;
 typedef double Volume;
 typedef double Price;
 typedef boost::uuids::uuid OrderId;
-typedef long TradeId;
-enum EventType {
-  kActivation = 1,
-  kDeactivation = 0
+typedef int32_t TradeId;
+enum OrderState {
+  kActive = 1,
+  kFinished = 0,
+  kNA = std::numeric_limits<std::int32_t>::min()
 };
 enum Exchanges {
   kCoinbase,
@@ -40,21 +41,35 @@ class time_order_error : public std::logic_error {
 };
 class Event {
   public:
-    virtual const Timestamp getTimestamp() const = 0;
+    static const Volume kNaVolume;
 
-    virtual const OrderId getOrderId() const = 0;
+    static const TradeId kNaTradeId;
 
-    virtual const EventNo getEventNo() const = 0;
+    static const Volume kNaPrice;
 
-    virtual const Price getPrice() const = 0;
+    static const OrderId kNaOrderId;
 
-    virtual const Volume getRemainingSize() const = 0;
+    static const EventNo kNaEventNo;
 
-    virtual const Volume getChangeSize() const = 0;
+    virtual const Timestamp timestamp() const = 0;
 
-    virtual const TradeId getTradeId() const = 0;
+    virtual const OrderId orderId() const = 0;
 
-    virtual const EventType getEventType() const = 0;
+    virtual const EventNo eventNo() const = 0;
+
+    virtual const OrderState state() const = 0;
+
+    virtual const Price price() const = 0;
+
+    virtual const Volume volume() const = 0;
+
+    virtual const TradeId tradeId() const = 0;
+
+    virtual const Volume deltaVolume() const = 0;
+
+    virtual OrderId takerOrderId() = 0;
+
+    virtual const Timestamp localTimestamp() const = 0;
 
     virtual ~Event();
 
@@ -69,7 +84,7 @@ class Store {
 // implement the state machine Reconstructor
 class Reconstructor {
   public:
-    static std::unique_ptr<Reconstructor> create(Exchanges exchange, string pair_name, Store * store, double delay);
+    static std::unique_ptr<Reconstructor> create(Exchanges exchange, string pair_name, Store * store, double delay, bool extract_only = false);
 
     virtual void process(const boost::property_tree::ptree & message) = 0;
 

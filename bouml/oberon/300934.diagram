@@ -18,32 +18,32 @@ end
 activityactioncanvas 128646 activityaction_ref 246662 // activity action Deduplicate
   
   show_opaque_action_definition default
-  xyzwh 183 250 2012 100 60
+  xyzwh 184 277 2012 100 60
   pins
     pincanvas 136838 pin_ref 305414 // target
-      xyzwh 282 262 2014 11 11 label_xy 296 249
+      xyzwh 283 289 2014 11 11 label_xy 308 284
     end
     pincanvas 136966 pin_ref 305542 // output
-      xyzwh 225 309 2014 11 11 label_xy 165 310
+      xyzwh 226 336 2014 11 11 label_xy 166 337
     end
     pincanvas 137094 pin_ref 305670 // messages
-      xyzwh 229 240 2014 11 11 label_xy 159 231
+      xyzwh 230 267 2014 11 11 label_xy 160 258
     end
   end
 end
-activityactioncanvas 129414 activityaction_ref 246790 // activity action Detect Makers
+activityactioncanvas 129414 activityaction_ref 246790 // activity action Generate event numbers
   
   show_opaque_action_definition default
-  xyzwh 182 392 2012 100 60
+  xyzwh 183 428 2012 100 60
   pins
     pincanvas 129542 pin_ref 296582 // target
-      xyzwh 281 416 2014 11 11 label_xy 287 429
+      xyzwh 282 452 2014 11 11 label_xy 288 465
     end
     pincanvas 129670 pin_ref 296710 // output
-      xyzwh 228 451 2014 11 11 label_xy 245 456
+      xyzwh 229 487 2014 11 11 label_xy 246 492
     end
     pincanvas 129798 pin_ref 296838 // messages
-      xyzwh 225 382 2014 11 11 label_xy 158 377
+      xyzwh 226 418 2014 11 11 label_xy 159 413
     end
   end
 end
@@ -83,6 +83,16 @@ activityactioncanvas 135942 activityaction_ref 253958 // activity action Deduce 
     end
   end
 end
+activitynodecanvas 138502 activitynode_ref 270086 // decision
+  xyz 225 201 3005
+end
+activityobjectcanvas 139910 activityobject_ref 193926 // activity object deduplicator_
+  
+  xyzwh 296 200 2012 95 45
+end
+activitynodecanvas 140678 activitynode_ref 270214 // merge
+  xyz 220 368 3005
+end
 flowcanvas 130566 flow_ref 312454 // <flow>
   
   from ref 129670 z 2015 to ref 130438
@@ -100,8 +110,8 @@ flowcanvas 132486 flow_ref 313094 // <flow>
    write_horizontally default
   transformation 
   information 133382 "<<transformation>>
-Detector"
-    xyzwh 366 430 2015 125 48
+Event Number Generator"
+    xyzwh 295 345 2015 173 53
 end
 flowcanvas 132614 flow_ref 313222 // <flow>
   
@@ -125,15 +135,6 @@ flowcanvas 136582 flow_ref 322694 // <flow>
   from ref 128262 z 2015 to ref 136326
    write_horizontally default
 end
-flowcanvas 137222 flow_ref 322950 // <flow>
-  
-  from ref 132230 z 2015 to ref 136838
-   write_horizontally default
-  transformation 
-  information 137862 "<<transformation>>
-Deduplicator"
-    xyzwh 399 234 2015 125 48
-end
 flowcanvas 137350 flow_ref 323078 // <flow>
   
   from ref 132230 z 2015 to point 571 136
@@ -144,22 +145,59 @@ flowcanvas 137350 flow_ref 323078 // <flow>
 Size Deducer"
     xyzwh 594 164 2015 125 48
 end
-flowcanvas 137478 flow_ref 323206 // <flow>
+flowcanvas 138758 flow_ref 336646 // <flow>
   
-  from ref 136198 z 2015 to ref 137094
+  from ref 136198 z 3006 to ref 138502
    write_horizontally default
 end
-flowcanvas 137606 flow_ref 323334 // <flow>
+flowcanvas 139014 flow_ref 336774 // <flow>
+  decenter_begin 360
   
-  from ref 136966 z 2015 to ref 129798
+  from ref 138502 z 3006 label "[else]" xyz 220 244 3000 to ref 137094
+   write_horizontally default
+end
+flowcanvas 140038 flow_ref 337030 // <flow>
+  
+  from ref 132230 z 2013 to ref 139910
+   write_horizontally default
+  transformation 
+  information 140166 "<<transformation>>
+Deduplicator"
+    xyzwh 427 214 2013 125 48
+end
+flowcanvas 140422 flow_ref 337158 // <flow>
+  
+  from ref 139910 z 3006 to ref 138502
+   write_horizontally default
+end
+flowcanvas 140550 flow_ref 337286 // <flow>
+  
+  from ref 139910 z 2015 to ref 136838
+   write_horizontally default
+end
+flowcanvas 140806 flow_ref 337414 // <flow>
+  
+  from ref 138502 z 3006 label "[deduplicator is null]" xyz 113 212 3000 to point 107 217
+  line 141062 z 3006 to point 108 383
+  line 140934 z 3006 to ref 140678
+   write_horizontally default
+end
+flowcanvas 141190 flow_ref 337542 // <flow>
+  
+  from ref 136966 z 3006 to ref 140678
+   write_horizontally default
+end
+flowcanvas 141318 flow_ref 337670 // <flow>
+  
+  from ref 140678 z 3006 to ref 129798
    write_horizontally default
 end
 line 133510 -_-_
   from ref 132486 z 2016 to ref 133382
 line 133766 -_-_
   from ref 132614 z 2016 to ref 133638
-line 137990 -_-_
-  from ref 137222 z 2016 to ref 137862
 line 138374 -_-_
   from ref 137350 z 2016 to ref 138246
+line 140294 -_-_
+  from ref 140038 z 2014 to ref 140166
 end

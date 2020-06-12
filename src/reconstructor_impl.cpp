@@ -4,6 +4,8 @@
 
 #include <boost/uuid/uuid_io.hpp>
 
+#include <cmath>
+
 
 #include <iostream>
 #include "date.h"
@@ -32,26 +34,70 @@ PriceSide::PriceSide() {
   side_ = kBid;
 }
 
-EventImpl::EventImpl(const OrderId & order_id, const Timestamp & timestamp, const EventNo & event_no, const Price & price, const Volume & remaining_size, const Volume & change_size, EventType event_type) {
+EventImpl::EventImpl(const OrderId & order_id, const Timestamp & timestamp, const Timestamp & local_timestamp, const EventNo & event_no, const Price & price, const Volume & volume, const Volume & delta_volume, OrderState state) {
   order_id_ = order_id;
   timestamp_ = timestamp;
+  local_timestamp_ = local_timestamp;
   event_no_ = event_no;
   price_ = price;
-  remaining_size_ = remaining_size;
-  change_size_ = change_size;
-  event_type_ = event_type;
+  volume_ = volume;
+  delta_volume_ = delta_volume;
+  state_ = state;
   trade_id_ = 0;
+  taker_order_id_ = boost::uuids::nil_uuid();
 }
 
-EventImpl::EventImpl(const OrderId & order_id, const Timestamp & timestamp, const EventNo & event_no, const Price & price, const Volume & remaining_size, const Volume & change_size, EventType event_type, const TradeId & trade_id) {
+EventImpl::EventImpl(const OrderId & order_id, const Timestamp & timestamp, const Timestamp & local_timestamp, const EventNo & event_no, const Price & price, const Volume & volume, const Volume & delta_volume, OrderState state, const TradeId & trade_id, const OrderId & taker_order_id) {
   order_id_ = order_id;
   timestamp_ = timestamp;
+  local_timestamp_ = local_timestamp;
   event_no_ = event_no;
   price_ = price;
-  remaining_size_ = remaining_size;
-  change_size_ = change_size;
-  event_type_ = event_type;
+  volume_ = volume;
+  delta_volume_ = delta_volume;
+  state_ = state;
   trade_id_ = trade_id;
+  taker_order_id_ = taker_order_id;
+}
+
+const Timestamp EventImpl::timestamp() const {
+  return timestamp_;
+}
+
+const OrderId EventImpl::orderId() const {
+  return order_id_;
+}
+
+const EventNo EventImpl::eventNo() const {
+  return event_no_;
+}
+
+const OrderState EventImpl::state() const {
+  return state_;
+}
+
+const Price EventImpl::price() const {
+  return price_;
+}
+
+const Volume EventImpl::volume() const {
+  return volume_;
+}
+
+const TradeId EventImpl::tradeId() const {
+  return trade_id_;
+}
+
+const Volume EventImpl::deltaVolume() const {
+  return delta_volume_;
+}
+
+OrderId EventImpl::takerOrderId() {
+  return taker_order_id_;
+}
+
+const Timestamp EventImpl::localTimestamp() const {
+  return local_timestamp_;
 }
 
 //By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event
@@ -81,13 +127,20 @@ void MessageHandler::ExchangeMessage::setChangeSize(Volume value) {
   change_size_ = value;
 }
 
+void MessageHandler::ExchangeMessage::setEventNo(EventNo value) {
+  event_no_ = value;
+}
+
 string MessageHandler::ExchangeMessage::toString() {
   std::stringstream buf;
-  buf << Message::toString() << " " << order_id_ << " " << (side_ ==
-          kBid
-      ? 'B'
-      : 'A') << price_ << " " << remaining_size_ << " " << trade_id_;
+  buf << Message::toString() << " " << order_id_ << " " << event_no_ << " "
+      << (side_ == kBid ? 'B' : 'A') << price_ << " " << remaining_size_ << " "
+      << change_size_; 
   return buf.str();
+}
+
+const Volume MessageHandler::ExchangeMessage::roundToBaseIncrement(const Volume & volume) const {
+  return std::round(volume/getBaseIncrement())*getBaseIncrement();
 }
 
 bool MessageHandler::Filled::accept(MessageHandler* mh) {
@@ -97,28 +150,25 @@ bool MessageHandler::Filled::accept(MessageHandler* mh) {
 
 string MessageHandler::Filled::toString() {
   std::stringstream buf;
-  buf << ExchangeMessage::toString()  << " Filled(" << (role_ == kMaker ? "maker)" : "taker)");
+  buf << ExchangeMessage::toString() << " " << trade_id_ << " Filled";
   return buf.str();
-  
 }
 
 //By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event
 std::unique_ptr<Event> MessageHandler::Filled::toEvent() {
-  if(role_ == kMaker) {
   int sign = getSide() == kAsk ? -1 : 1;
-  if (getRemainingSize())
-    return make_unique<EventImpl>(getOrderId(), getTimestamp(), getEventNo(),
-                                  getPrice(), getRemainingSize() * sign,
-                                  getChangeSize() * sign, kActivation,
-                                  getTradeId());
+  OrderState state;
+  if (std::isnan(getRemainingSize()))
+    state = kNA;
+  else if (getRemainingSize())
+    state = kActive;
   else
-    return make_unique<EventImpl>(
-        getOrderId(), getTimestamp(), getEventNo(), getPrice(),
-        (getRemainingSize() + getChangeSize()) * sign, getChangeSize() * sign,
-        kDeactivation, getTradeId());
-  }
-  else
-   return std::unique_ptr<Event>();
+    state = kFinished;
+  return make_unique<EventImpl>(getOrderId(), getTimestamp(), getLocalTimestamp(), getEventNo(),
+                                getPrice(),
+                                roundToBaseIncrement(getRemainingSize()) * sign,
+                                roundToBaseIncrement(getChangeSize()) * sign,
+                                state, trade_id_, taker_order_id_);
 }
 
 bool MessageHandler::Opened::accept(MessageHandler* mh) {
@@ -136,8 +186,10 @@ string MessageHandler::Opened::toString() {
 //By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event
 std::unique_ptr<Event> MessageHandler::Opened::toEvent() {
   int sign = getSide() == kAsk ? -1 : 1;
-  return make_unique<EventImpl>(getOrderId(), getTimestamp(), getEventNo(), 
-      getPrice(), getRemainingSize()*sign, getChangeSize()*sign, kActivation);
+  return make_unique<EventImpl>(
+      getOrderId(), getTimestamp(), getLocalTimestamp(), getEventNo(), getPrice(),
+      roundToBaseIncrement(getRemainingSize()) * sign,
+      roundToBaseIncrement(getChangeSize()) * sign, kActive);
 }
 
 string MessageHandler::VolumeIncremented::toString() {
@@ -177,9 +229,10 @@ string MessageHandler::FullyCanceled::toString() {
 //By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event
 std::unique_ptr<Event> MessageHandler::FullyCanceled::toEvent() {
   int sign = getSide() == kAsk ? -1 : 1;
-  return make_unique<EventImpl>(getOrderId(), getTimestamp(), getEventNo(), 
-      getPrice(), getRemainingSize()*sign, getChangeSize()*sign, kDeactivation);
-  
+  return make_unique<EventImpl>(
+      getOrderId(), getTimestamp(), getLocalTimestamp(), getEventNo(), getPrice(),
+      roundToBaseIncrement(getRemainingSize()) * sign,
+      roundToBaseIncrement(getChangeSize()) * sign, kFinished);
 }
 
 bool MessageHandler::Received::accept(MessageHandler * mh) {
@@ -223,6 +276,10 @@ string MessageHandler::Era::toString() {
   
 }
 
+bool MessageHandler::create() {
+  return true;
+}
+
 vector<std::unique_ptr<MessageHandler::Message>> MessageHandler::handle(vector<std::unique_ptr<MessageHandler::Message>> && messages) {
   for(auto& msg: messages) {
     if(msg) {
@@ -237,16 +294,127 @@ vector<std::unique_ptr<MessageHandler::Message>> MessageHandler::handle(vector<s
   return std::move(output_);
 }
 
-bool MessageHandler::create() {
+string MessageHandler::getHandlerName() {
+  return "Default MessageHandler";
 }
 
-void ReconstructorImplementation::process(const boost::property_tree::ptree & message) {
-  save(cleanse(extract(message)));
+bool MessageHandler::message() {
+  output_.push_back(std::move(received_));
+  return true;
+}
+
+bool MessageHandler::exchangeMessage() {
+  return message();
+}
+
+bool MessageHandler::orderBookUpdated() {
+  return exchangeMessage();
   
 }
 
+bool MessageHandler::elapsed() {
+  return message();
+}
+
+bool MessageHandler::received() {
+  return orderBookUpdated();
+}
+
+bool MessageHandler::opened() {
+  return orderBookUpdated();
+}
+
+bool MessageHandler::volumeIncremented() {
+  return orderBookUpdated();
+}
+
+bool MessageHandler::priceAdvanced() {
+  return orderBookUpdated();
+}
+
+bool MessageHandler::priceReceded() {
+  return orderBookUpdated();
+}
+
+bool MessageHandler::filled() {
+  return exchangeMessage();
+}
+
+bool MessageHandler::partiallyCanceled() {
+  return orderBookUpdated();
+}
+
+bool MessageHandler::fullyCanceled() {
+  return orderBookUpdated();
+}
+
+MessageHandler::MessageHandler() {
+}
+
+MessageHandler::~MessageHandler() {
+}
+
+bool EventNumberGenerator::exchangeMessage() {
+  ExchangeMessage *em = dynamic_cast<ExchangeMessage *>(received_.get());
+  try {
+    em->setEventNo(eventNumbers_.at(em->getOrderId()) + 1);
+    eventNumbers_[em->getOrderId()] = em->getEventNo();
+  } catch (const std::out_of_range &) {
+  }
+  output_.push_back(std::move(received_));
+  return true;
+}
+
+bool EventNumberGenerator::received() {
+  ExchangeMessage *em = dynamic_cast<ExchangeMessage *>(received_.get());
+  eventNumbers_[em->getOrderId()] = 0;
+  em->setEventNo(0);
+  output_.push_back(std::move(received_));
+  return true;
+}
+
+bool EventNumberGenerator::fullyCanceled() {
+  ExchangeMessage *em = dynamic_cast<ExchangeMessage *>(received_.get());
+  try {
+    em->setEventNo(eventNumbers_.at(em->getOrderId()) + 1);
+    eventNumbers_.erase(em->getOrderId());
+  } catch (const std::out_of_range &) {
+  }
+  output_.push_back(std::move(received_));
+  return true;
+}
+
+bool EventNumberGenerator::filled() {
+  ExchangeMessage *em = dynamic_cast<ExchangeMessage *>(received_.get());
+  try {
+    em->setEventNo(eventNumbers_.at(em->getOrderId()) + 1);
+    if (!em->getRemainingSize())
+      eventNumbers_.erase(em->getOrderId());
+    else
+      eventNumbers_[em->getOrderId()] = em->getEventNo();
+  } catch (const std::out_of_range &) {
+  }
+  output_.push_back(std::move(received_));
+  return true;
+}
+
+string EventNumberGenerator::getHandlerName() {
+  return "EventNumberGenerator";
+}
+
+void ReconstructorImplementation::process(const boost::property_tree::ptree & message) {
+  if (extract_only_)
+    transmit(extract(message));
+  else
+    transmit(cleanse(extract(message)));
+}
+
 vector<std::unique_ptr<MessageHandler::Message>> ReconstructorImplementation::cleanse( vector<std::unique_ptr<MessageHandler::Message>> && messages) {
-  return deduplicator_->handle(size_deducer_->handle(move(messages)));
+  auto output = size_deducer_->handle(move(messages));
+  if(deduplicator_)
+    output = deduplicator_->handle(std::move(output));
+  output = event_number_generator_->handle(std::move(output));
+  return output;
 }
 
 

@@ -6,19 +6,20 @@
 using namespace Rcpp;
 
 // reconstructOrderBook
-DataFrame reconstructOrderBook(DataFrame source);
-RcppExport SEXP _oberon_reconstructOrderBook(SEXP sourceSEXP) {
+DataFrame reconstructOrderBook(DataFrame source, LogicalVector extract_only);
+RcppExport SEXP _oberon_reconstructOrderBook(SEXP sourceSEXP, SEXP extract_onlySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< DataFrame >::type source(sourceSEXP);
-    rcpp_result_gen = Rcpp::wrap(reconstructOrderBook(source));
+    Rcpp::traits::input_parameter< LogicalVector >::type extract_only(extract_onlySEXP);
+    rcpp_result_gen = Rcpp::wrap(reconstructOrderBook(source, extract_only));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_oberon_reconstructOrderBook", (DL_FUNC) &_oberon_reconstructOrderBook, 1},
+    {"_oberon_reconstructOrderBook", (DL_FUNC) &_oberon_reconstructOrderBook, 2},
     {NULL, NULL, 0}
 };
 

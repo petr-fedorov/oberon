@@ -2,7 +2,7 @@ class Save_State
 !!!691078.cpp!!!	_completion(inout stm : Deduce_Size_Coinbase) : bool
   {
 #ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : execute activity of transition output" << std::endl;
+    std::cout << "DEBUG : execute activity of transition output saved" << std::endl;
 #endif
 stm.output_.push_back(std::move(stm.em_));
     stm._set_currentState(stm._deduce_size_coinbase_state._wait_state);
@@ -19,8 +19,8 @@ stm.output_.push_back(std::move(stm.em_));
   std::cout << "DEBUG : execute entry behavior of .Deduce Size Coinbase.Save" << std::endl;
 #endif
 if(stm.em_->getRemainingSize())
-  stm.previousSizes_[stm.em_->getOrderId()] = stm.em_->getRemainingSize();
+  stm.previous_sizes_[stm.em_->getOrderId()] = stm.em_->getRemainingSize();
 else
-  stm.previousSizes_.erase(stm.em_->getOrderId());
+  stm.previous_sizes_.erase(stm.em_->getOrderId());
 !!!691462.cpp!!!	_upper(inout stm : Deduce_Size_Coinbase) : Deduce_Size_Coinbase::AnyState
   return &stm._deduce_size_coinbase_state;

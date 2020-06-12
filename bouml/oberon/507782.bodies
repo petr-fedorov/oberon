@@ -1,19 +1,43 @@
 class EventImpl
-!!!627718.cpp!!!	EventImpl(in order_id : OrderId [1], in timestamp : Timestamp [1], in event_no : EventNo [1], in price : Price [1], in remaining_size : Volume [1], in change_size : Volume, in event_type : EventType [1])
+!!!627718.cpp!!!	EventImpl(in order_id : OrderId [1], in timestamp : Timestamp [1], in local_timestamp : Timestamp, in event_no : EventNo [1], in price : Price [1], in volume : Volume [1], in delta_volume : Volume, in state : OrderState [1])
 order_id_ = order_id;
 timestamp_ = timestamp;
+local_timestamp_ = local_timestamp;
 event_no_ = event_no;
 price_ = price;
-remaining_size_ = remaining_size;
-change_size_ = change_size;
-event_type_ = event_type;
+volume_ = volume;
+delta_volume_ = delta_volume;
+state_ = state;
 trade_id_ = 0;
-!!!707846.cpp!!!	EventImpl(in order_id : OrderId [1], in timestamp : Timestamp [1], in event_no : EventNo [1], in price : Price [1], in remaining_size : Volume [1], in change_size : Volume, in event_type : EventType [1], in trade_id : TradeId)
+taker_order_id_ = boost::uuids::nil_uuid();
+!!!707846.cpp!!!	EventImpl(in order_id : OrderId [1], in timestamp : Timestamp [1], in local_timestamp : Timestamp, in event_no : EventNo [1], in price : Price [1], in volume : Volume [1], in delta_volume : Volume, in state : OrderState [1], in trade_id : TradeId, in taker_order_id : OrderId)
 order_id_ = order_id;
 timestamp_ = timestamp;
+local_timestamp_ = local_timestamp;
 event_no_ = event_no;
 price_ = price;
-remaining_size_ = remaining_size;
-change_size_ = change_size;
-event_type_ = event_type;
+volume_ = volume;
+delta_volume_ = delta_volume;
+state_ = state;
 trade_id_ = trade_id;
+taker_order_id_ = taker_order_id;
+!!!744070.cpp!!!	timestamp() : Timestamp
+return timestamp_;
+!!!744198.cpp!!!	orderId() : OrderId [1]
+return order_id_;
+!!!744326.cpp!!!	eventNo() : EventNo
+return event_no_;
+!!!744454.cpp!!!	state() : OrderState
+return state_;
+!!!744582.cpp!!!	price() : Price
+return price_;
+!!!744710.cpp!!!	volume() : Volume
+return volume_;
+!!!744838.cpp!!!	tradeId() : TradeId
+return trade_id_;
+!!!744966.cpp!!!	deltaVolume() : Volume
+return delta_volume_;
+!!!745094.cpp!!!	takerOrderId() : OrderId
+return taker_order_id_;
+!!!745734.cpp!!!	localTimestamp() : Timestamp
+return local_timestamp_;

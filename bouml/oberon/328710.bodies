@@ -7,6 +7,7 @@ buf << ExchangeMessage::toString() << " FullyCancelled";
 return buf.str();
 !!!707462.cpp!!!	toEvent() : Event [0..1]
 int sign = getSide() == kAsk ? -1 : 1;
-return make_unique<EventImpl>(getOrderId(), getTimestamp(), getEventNo(), 
-    getPrice(), getRemainingSize()*sign, getChangeSize()*sign, kDeactivation);
-
+return make_unique<EventImpl>(
+    getOrderId(), getTimestamp(), getLocalTimestamp(), getEventNo(), getPrice(),
+    roundToBaseIncrement(getRemainingSize()) * sign,
+    roundToBaseIncrement(getChangeSize()) * sign, kFinished);

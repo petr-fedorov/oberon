@@ -24,7 +24,7 @@
 <meta name="author" content="Petr Fedorov" />
 
 
-<meta name="date" content="2020-06-07" />
+<meta name="date" content="2020-06-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -81,11 +81,12 @@
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>3</b> Results</a><ul>
-<li class="chapter" data-level="3.1" data-path="results.html"><a href="results.html#extracted-fragments-of-data-streams"><i class="fa fa-check"></i><b>3.1</b> Extracted fragments of data streams</a><ul>
-<li class="chapter" data-level="3.1.1" data-path="results.html"><a href="results.html#bitstamp-orders"><i class="fa fa-check"></i><b>3.1.1</b> Bitstamp Orders</a></li>
-<li class="chapter" data-level="3.1.2" data-path="results.html"><a href="results.html#bitstamp-trades"><i class="fa fa-check"></i><b>3.1.2</b> Bitstamp Trades</a></li>
-<li class="chapter" data-level="3.1.3" data-path="results.html"><a href="results.html#bitfinex-orders"><i class="fa fa-check"></i><b>3.1.3</b> Bitfinex Orders</a></li>
-<li class="chapter" data-level="3.1.4" data-path="results.html"><a href="results.html#bitfinex-trades"><i class="fa fa-check"></i><b>3.1.4</b> Bitfinex Trades</a></li>
+<li class="chapter" data-level="3.1" data-path="results.html"><a href="results.html#fragments-of-extracted-events"><i class="fa fa-check"></i><b>3.1</b> Fragments of extracted events</a><ul>
+<li class="chapter" data-level="3.1.1" data-path="results.html"><a href="results.html#coinbase"><i class="fa fa-check"></i><b>3.1.1</b> Coinbase</a></li>
+<li class="chapter" data-level="3.1.2" data-path="results.html"><a href="results.html#bitstamp-orders"><i class="fa fa-check"></i><b>3.1.2</b> Bitstamp Orders</a></li>
+<li class="chapter" data-level="3.1.3" data-path="results.html"><a href="results.html#bitstamp-trades"><i class="fa fa-check"></i><b>3.1.3</b> Bitstamp Trades</a></li>
+<li class="chapter" data-level="3.1.4" data-path="results.html"><a href="results.html#bitfinex-orders"><i class="fa fa-check"></i><b>3.1.4</b> Bitfinex Orders</a></li>
+<li class="chapter" data-level="3.1.5" data-path="results.html"><a href="results.html#bitfinex-trades"><i class="fa fa-check"></i><b>3.1.5</b> Bitfinex Trades</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="discussion.html"><a href="discussion.html"><i class="fa fa-check"></i><b>4</b> Discussion</a></li>
@@ -126,7 +127,7 @@ Figure 2.1: UML2 Activity Diagram of a standalone application using Reconstructi
 Figure 2.2: UML2 Activity Diagram of Reconstruction algorithm
 </p>
 </div>
-<p>The activity <code>R.2 Extract</code> takes an exchange-specific data in <a href="https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html">Boost.PropertyTree</a> container and produces one <em>or more</em> internal <code>exchange-independent messages shown on figure \@ref(fig:message-hierarchy). For example,  Bitstamp's trade</code>ptree<code>will originate *two*</code>Filled` messages - one for maker and another one for taker.</p>
+<p>The activity <code>R.2 Extract</code> takes an exchange-specific data in <a href="https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html">Boost.PropertyTree</a> container and produces one or more internal exchange-independent messages shown on figure <a href="reconstruction-algorithm.html#fig:message-hierarchy">2.3</a>.</p>
 <div class="figure" style="text-align: center"><span id="fig:message-hierarchy"></span>
 <img src="Message%20Hierarchy.png" alt="UML2 Class Diagram of internal exchange-independent message types used by Order Book Reconstruction algorithm"  />
 <p class="caption">
@@ -238,8 +239,8 @@ is called a <em>price function</em>.
 <p>Hereafter is assumed that a single asset is traded and a single currency is used.</p>
 <p>As it has already been mentioned above an order is a commitment at a given time, to buy or sell a given volume of an asset at no worse than a given price. Figure <a href="reconstruction-algorithm.html#fig:order-life-cycle">2.5</a> shows UML2 State Machine of High-level Order Life Cycle while the order is being processed by an exchange. The possible states an order can be in are:</p>
 <ul>
-<li><em>Active</em> - a valid order has been received by an exchange and is now active, i.e. it may be filled. This state is fleeting.</li>
-<li><em>Opened</em> - the order is now open on the order book. Orders which are not fully filled or cancelled immediately enters this state. This state is lasting.</li>
+<li><em>Taker</em> - a valid order has just been received by an exchange or its price has been changed in such a way that it may be filled immediately. This state is fleeting.</li>
+<li><em>Maker</em> - the order is open on the order book. Orders which are not fully filled or cancelled immediately enters this state. This state is lasting.</li>
 </ul>
 <div class="figure" style="text-align: center"><span id="fig:order-life-cycle"></span>
 <img src="order-life-cycle.png" alt="States of an order while it being processed by an exchange"  />
@@ -247,9 +248,9 @@ is called a <em>price function</em>.
 Figure 2.5: States of an order while it being processed by an exchange
 </p>
 </div>
-<p>An order which has ever entered Open state is called a <a href="https://www.investopedia.com/terms/l/limitorder.asp">limit order</a>.</p>
-<p>An order which has never entered Open state is called a <a href="https://www.investopedia.com/terms/m/marketorder.asp">market order</a>.</p>
-<p>If an order has been <em>matched</em> before entering <em>Opened</em> state or it has been <em>matched</em> after <em>price amendment</em>, then the order is sometimes called a market limit order. We always model market limit orders as a comibnation of an appropriate market order and a limit order that placed simultaneously.</p>
+<p>An order which has ever entered Maker state is called a <a href="https://www.investopedia.com/terms/l/limitorder.asp">limit order</a>.</p>
+<p>An order which has never entered Maker state is called a <a href="https://www.investopedia.com/terms/m/marketorder.asp">market order</a>.</p>
+<p>If an order has been <em>matched</em> before entering <em>Maker</em> state or it has been <em>matched</em> after <em>price amendment</em>, then the order is sometimes called a market limit order. We always model market limit orders as a comibnation of an appropriate market order and a limit order that placed simultaneously.</p>
 <p>Market orders are always fleeting. To model an evolution of a limit order we use the following function:</p>
 
 <div class="definition">
@@ -288,13 +289,12 @@ An <em>order event</em> is a tuple <span class="math inline">\((i, n, t^i_n,s^i_
 <li><span class="math inline">\(i \in \mathbb{N}\)</span> is an <em>unique order identification</em> of the order,</li>
 <li><span class="math inline">\(n \in \{1, \ldots, N^i\}\)</span> is an <em>order event number</em>,</li>
 <li><span class="math inline">\(t^i_n \in \mathbb{R}_{&gt;0}\)</span> is an <em>event timestamp</em></li>
-<li><span class="math inline">\(s^i_n \in \{0, 1\}\)</span> is the <em>state</em> of the order; <span class="math inline">\(s^i_n = 1\)</span> means <em>Open</em>, <span class="math inline">\(s^i_n = 0\)</span> means <em>Done</em> state,</li>
+<li><span class="math inline">\(s^i_n \in \{0, 1\}\)</span> is the <em>state</em> of the order after the event; <span class="math inline">\(s^i_n = 1\)</span> means <em>Active</em>, <span class="math inline">\(s^i_n = 0\)</span> means that order is done (finished) i.e. not active,</li>
 <li><span class="math inline">\(p_n^i \in \mathbb{R}_{&gt;0}\)</span> is the <em>order price</em>,</li>
 <li><span class="math inline">\(v_n^i \in \mathbb{R}\)</span> is the <em>order volume</em>,</li>
-<li><span class="math inline">\(f^i_n \in \{0, 1\}\)</span> is a <em>fill indicator</em>; <span class="math inline">\(f^i_n = 1\)</span> indicates that the event is originated by a trade.
+<li><span class="math inline">\(f^i_n \in \mathbb{Z}_{\geq 0}\)</span> is a <em>trade identification number</em>; <span class="math inline">\(f^i_n &gt; 0\)</span> indicates that the event is originated by a trade. <span class="math inline">\(f^i_n = 0\)</span> means that the event is not originated by a trade.
 </div></li>
 </ol>
-<p>Note that we do not need to capture an event for Received state.</p>
 
 <div class="definition">
 <p><span id="def:order-table" class="definition"><strong>Definition 2.12  (Order Table)  </strong></span>

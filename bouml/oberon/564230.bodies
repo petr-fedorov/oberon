@@ -1,0 +1,39 @@
+class EventNumberGenerator
+!!!722438.cpp!!!	exchangeMessage() : bool
+ExchangeMessage *em = dynamic_cast<ExchangeMessage *>(received_.get());
+try {
+  em->setEventNo(eventNumbers_.at(em->getOrderId()) + 1);
+  eventNumbers_[em->getOrderId()] = em->getEventNo();
+} catch (const std::out_of_range &) {
+}
+output_.push_back(std::move(received_));
+return true;
+!!!722566.cpp!!!	received() : bool
+ExchangeMessage *em = dynamic_cast<ExchangeMessage *>(received_.get());
+eventNumbers_[em->getOrderId()] = 0;
+em->setEventNo(0);
+output_.push_back(std::move(received_));
+return true;
+!!!722694.cpp!!!	fullyCanceled() : bool
+ExchangeMessage *em = dynamic_cast<ExchangeMessage *>(received_.get());
+try {
+  em->setEventNo(eventNumbers_.at(em->getOrderId()) + 1);
+  eventNumbers_.erase(em->getOrderId());
+} catch (const std::out_of_range &) {
+}
+output_.push_back(std::move(received_));
+return true;
+!!!722822.cpp!!!	filled() : bool
+ExchangeMessage *em = dynamic_cast<ExchangeMessage *>(received_.get());
+try {
+  em->setEventNo(eventNumbers_.at(em->getOrderId()) + 1);
+  if (!em->getRemainingSize())
+    eventNumbers_.erase(em->getOrderId());
+  else
+    eventNumbers_[em->getOrderId()] = em->getEventNo();
+} catch (const std::out_of_range &) {
+}
+output_.push_back(std::move(received_));
+return true;
+!!!723078.cpp!!!	getHandlerName() : string
+return "EventNumberGenerator";

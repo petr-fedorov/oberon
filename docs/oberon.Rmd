@@ -8,6 +8,7 @@ output:
   bookdown::gitbook:
     number_sections: TRUE
     figure_captions: TRUE
+
 bibliography: oberon.bib    
 ---
 
@@ -105,7 +106,7 @@ Aftewards the application launches `S.5 Receive messages` and `R.1 Reconstruct O
 knitr::include_graphics("R.1 Reconstruct Order Book.png", dpi=80)
 ```
 
-The activity `R.2 Extract` takes an exchange-specific data in [Boost.PropertyTree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) container and produces one *or more* internal `exchange-independent messages shown on figure \@ref(fig:message-hierarchy). For example,  Bitstamp's trade `ptree`  will originate *two*  `Filled` messages - one for maker and another one for taker.
+The activity `R.2 Extract` takes an exchange-specific data in [Boost.PropertyTree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) container and  produces one or more internal exchange-independent messages shown on figure \@ref(fig:message-hierarchy). 
 
 
 ```{r message-hierarchy, echo=FALSE, fig.cap="UML2 Class Diagram of internal exchange-independent message types used by Order Book Reconstruction algorithm", fig.align="center"}
@@ -283,19 +284,19 @@ Hereafter is assumed that a single asset is traded and a single currency is used
 
 As it has already been mentioned above an order is a commitment at a given time, to buy or sell a given volume of an asset at no worse than a given price. Figure \@ref(fig:order-life-cycle) shows UML2 State Machine of High-level Order Life Cycle while the order is being processed by an exchange.  The possible states an order can be in are:
 
- * *Active* - a valid order has been received by an exchange and is now active, i.e. it may be filled. This state is fleeting.
- * *Opened* - the order is now open on the order book. Orders which are not fully filled or cancelled immediately enters this state. This state is lasting.
+ * *Taker* - a valid order has just been received by an exchange or its price has been changed in such a way that it may be filled immediately. This state is fleeting.
+ * *Maker* - the order is open on the order book. Orders which are not fully filled or cancelled immediately enters this state. This state is lasting.
  
 
 ```{r order-life-cycle, echo=FALSE, fig.cap="States of an order while it being processed by an exchange", fig.align="center"}
 knitr::include_graphics("order-life-cycle.png", dpi=80)
 ```
 
-An order which has ever entered Open state is called a [limit order](https://www.investopedia.com/terms/l/limitorder.asp). 
+An order which has ever entered Maker state is called a [limit order](https://www.investopedia.com/terms/l/limitorder.asp). 
 
-An order which has never entered Open state is called a [market order](https://www.investopedia.com/terms/m/marketorder.asp).
+An order which has never entered Maker state is called a [market order](https://www.investopedia.com/terms/m/marketorder.asp).
 
-If an order has been *matched* before entering *Opened* state or it has been *matched* after *price amendment*, then the order is sometimes called a market limit order.  We always model market limit orders as a comibnation of an appropriate market order and a limit order that placed simultaneously. 
+If an order has been *matched* before entering *Maker* state or it has been *matched* after *price amendment*, then the order is sometimes called a market limit order.  We always model market limit orders as a comibnation of an appropriate market order and a limit order that placed simultaneously. 
 
 Market orders are always fleeting. To model an evolution of a limit order we use the following function:
 
@@ -343,13 +344,13 @@ An *order event* is a tuple $(i, n, t^i_n,s^i_n, p^i_n, v^i_n,f^i_n)$ where
 a. $i \in \mathbb{N}$ is an *unique order identification* of the order,
 a. $n \in \{1, \ldots, N^i\}$ is an *order event number*, 
 b. $t^i_n \in \mathbb{R}_{>0}$ is an *event timestamp*
-b. $s^i_n \in \{0, 1\}$ is the *state* of the order; $s^i_n = 1$ means *Open*, $s^i_n = 0$ means *Done* state,
+b. $s^i_n \in \{0, 1\}$ is the *state* of the order after the event; $s^i_n = 1$ means *Active*, $s^i_n = 0$ means that order is done (finished) i.e. not active,
 b. $p_n^i \in \mathbb{R}_{>0}$ is the *order price*,
 b. $v_n^i \in \mathbb{R}$ is the *order volume*,
-b. $f^i_n \in \{0, 1\}$ is a *fill indicator*; $f^i_n = 1$ indicates that the event is originated by a trade.
+b. $f^i_n \in \mathbb{Z}_{\geq 0}$ is a *trade identification number*; $f^i_n > 0$ indicates that the event is originated by a trade. $f^i_n = 0$ means that the event is not originated by a trade.
 ```
 
-Note that we do not need to capture an event for Received state.
+
 
 ```{definition Order Table, name="Order Table", label=order-table}
 
@@ -559,9 +560,45 @@ knitr::include_graphics("redundant2.png", dpi=80)
 
 # Results
 
-## Extracted fragments of data streams
+## Fragments of extracted events
 
-In the tables below all order events and trades are shown in the order in which they were received from an exchange. 
+``In the tables below the output of `R.2 Extract` is immediately, i.e. without cleansing, converted to events by `R.4 Save`. 
+
+### Coinbase
+
+
+```{r Sample Coinbase Extracted Events, eval=TRUE, echo=FALSE}
+
+as_hux(coinbase.extracted[order(local_timestamp), 
+                    .(`#`=.I,
+                    `\\(i\\)(maker)`=substr(maker_order_id,25, 36),
+                    `\\(n\\)`=event_no,
+                    `\\(t^i_n\\)`=format(timestamp,format="%H:%M:%OS3"),
+                    `\\(s^i_n\\)`=state,
+                    `\\(p^i_n\\)`=price,
+                    `\\(v^i_n\\)`=volume,
+                    `\\(f^i_n\\)`=trade_id,
+                    `\\(\\Delta v^i_n \\)`=delta_volume,
+                    `taker`=substr(taker_order_id, 25,36)
+                    )
+                    ], 
+       scientific=F) %>%
+  add_colnames() %>%
+  set_align(1, c(2,4,5,10), 'center') %>%
+  set_align(everywhere, c(1,3, 6:9), 'right') %>%
+  set_number_format(row=everywhere, col=6:7,value="%.2f") %>%
+  set_number_format(row=everywhere, col=9,value="%.3f") %>%
+  set_left_border(everywhere,9, 1) %>%
+  set_right_border(everywhere,1, 1) %>%
+  set_na_string(everywhere, everywhere, "NA") %>%
+  set_caption('(#tab:stamp-quote-frag) A fragment of ETHUSD stream extracted from data generated by Coinbase during 1 second. Event numbers \\(n\\) and volume \\(v^i_n\\) need to be deduced.') %>%
+  set_caption_pos("topleft")
+  
+
+```
+
+
+
 
 ### Bitstamp Orders
 
@@ -779,6 +816,8 @@ dcast(coinbase.full[`_type` != 'match', .N, by=ceiling_date(`_time`)][coinbase.f
 ```
 
 
+
+
 ```{r, eval=FALSE, echo=FALSE}
 coinbase.full[order(`_time`), `_order_type` := `_order_type`[1], by=`_order_id` ]
 coinbase.o <- coinbase.full[ceiling_date(`_time`) == '2020-04-01 16:51:57',]
@@ -808,6 +847,8 @@ finex.q.1 <- bitfinex.quotes[between(exchange_timestamp,'2020-03-26 07:01:33+03'
 finex.t.1 <- bitfinex.trades[between(exchange_timestamp,'2020-03-26 07:01:33+03','2020-03-26 07:01:34+03')][order(local_timestamp), .(id, qty, price=round(price, finex.digits), exchange_timestamp, trade_id, local_timestamp, n=.I)]
 finex.t.1[, c("qty", "d") := .(round(abs(qty), finex.digits), ifelse(qty > 0, -1, 1))]
 
-save(stamp.q.1, stamp.t.1, finex.q.1, finex.t.1, file="oberon.Rdata", compress=TRUE)
+coinbase.extracted <- reconstruct(coinbase.full, TRUE)[ceiling_date(timestamp) == '2020-04-01 16:51:57',]
+
+save(stamp.q.1, stamp.t.1, finex.q.1, finex.t.1, coinbase.extracted, file="oberon.Rdata", compress=TRUE)
 
 ```

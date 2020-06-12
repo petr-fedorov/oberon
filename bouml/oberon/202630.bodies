@@ -1,4 +1,4 @@
 class Reconstructor
-!!!238982.cpp!!!	create(in exchange : Exchanges, in pair_name : string, in store : Store, in delay : double) : Reconstructor
+!!!238982.cpp!!!	create(in exchange : Exchanges, in pair_name : string, in store : Store, in delay : double, in extract_only : bool = false) : Reconstructor
 //if(exchange == kCoinbase)
-  return std::make_unique<CoinbaseReconstructor>(store, 0.001);
+  return std::make_unique<CoinbaseReconstructor>(store, 0.001, 0.00000001, extract_only);

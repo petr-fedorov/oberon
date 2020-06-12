@@ -4,10 +4,10 @@
 .dummy <- function() {}
 
 #' @export
-reconstruct <- function(source) {
-  output <- reconstructOrderBook(source)
+reconstruct <- function(source, extract.only=FALSE) {
+  output <- reconstructOrderBook(source, extract.only)
   setDT(output)
-  output[, timestamp := as.POSIXct(timestamp, origin="1970-01-01")]
+  output[, c("timestamp", "local_timestamp") := .(as.POSIXct(timestamp, origin="1970-01-01"), as.POSIXct(local_timestamp, origin="1970-01-01"))]
   output
 }
 

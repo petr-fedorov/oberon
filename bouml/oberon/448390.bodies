@@ -8,8 +8,9 @@ else
   remaining_size_ = 0;
 !!!650374.cpp!!!	toString() : string
 std::stringstream buf;
-buf << Message::toString() << " " << order_id_ << " " << (side_ ==
-        kBid
-    ? 'B'
-    : 'A') << price_ << " " << remaining_size_ << " " << trade_id_;
+buf << Message::toString() << " " << order_id_ << " " << event_no_ << " "
+    << (side_ == kBid ? 'B' : 'A') << price_ << " " << remaining_size_ << " "
+    << change_size_; 
 return buf.str();
+!!!723590.cpp!!!	roundToBaseIncrement(in volume : Volume) : Volume
+return std::round(volume/getBaseIncrement())*getBaseIncrement();

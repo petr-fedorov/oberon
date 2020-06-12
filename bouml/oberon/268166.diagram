@@ -18,11 +18,17 @@ classcanvas 129670 class_ref 472966 // Exchanges
 end
 classcanvas 130694 class_ref 231302 // Store
   classdiagramsettings member_max_width 0 end
-  xyz 424 488 3005
+  xyz 453 483 3005
 end
 classcanvas 133766 class_ref 230406 // Event
   classdiagramsettings member_max_width 0 end
-  xyz 201 342 2000
+  hidden_attributes
+    attribute_ref 465030 // kNaVolume
+    attribute_ref 465158 // kNaTradeId
+    attribute_ref 465286 // kNaPrice
+    attribute_ref 465414 // kNaOrderId
+    attribute_ref 465542 // kNaEventNo
+  xyz 180 328 2000
 end
 classcanvas 134406 class_ref 230278 // Timestamp
   classdiagramsettings member_max_width 0 end
@@ -38,15 +44,11 @@ classcanvas 134662 class_ref 305798 // Volume
 end
 classcanvas 134790 class_ref 305542 // Price
   classdiagramsettings member_max_width 0 end
-  xyz 168 115 2015
+  xyz 173 115 2015
 end
 classcanvas 134918 class_ref 507142 // EventNo
   classdiagramsettings member_max_width 0 end
-  xyz 53 358 2000
-end
-classcanvas 135174 class_ref 507270 // EventType
-  classdiagramsettings member_max_width 0 end
-  xyz 616 96 2000
+  xyz 51 313 2000
 end
 classcanvas 135430 class_ref 514822 // time_point
   classdiagramsettings member_max_width 0 end
@@ -56,6 +58,14 @@ classcanvas 135686 class_ref 551174 // TradeId
   classdiagramsettings member_max_width 0 end
   xyz 179 221 2000
 end
+classcanvas 135942 class_ref 583942 // random_generator
+  classdiagramsettings member_max_width 0 end
+  xyz 173 599 3010
+end
+classcanvas 136198 class_ref 299014 // OrderState
+  classdiagramsettings member_max_width 0 end
+  xyz 47 408 2020
+end
 relationcanvas 128902 relation_ref 486534 // <generalisation>
   from ref 128006 z 2001 to ref 128134
   no_role_a no_role_b
@@ -63,6 +73,11 @@ relationcanvas 128902 relation_ref 486534 // <generalisation>
 end
 relationcanvas 135558 relation_ref 551174 // <realization>
   from ref 134406 z 3006 label "<Clock->system_clock, Duration->microseconds>" max_width 255 xyz 561 358 3006 stereotype "<<bind>>" xyz 668 372 3006 to ref 135430
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 136070 relation_ref 626694 // <dependency>
+  from ref 133766 z 3011 to ref 135942
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end

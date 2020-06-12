@@ -1,9 +1,15 @@
 class ReconstructorImplementation
 !!!575878.cpp!!!	process(in message : ptree [1]) : void
-save(cleanse(extract(message)));
-
+if (extract_only_)
+  transmit(extract(message));
+else
+  transmit(cleanse(extract(message)));
 !!!641798.cpp!!!	cleanse(in messages : MessageHandler::Message [1..*]) : MessageHandler::Message [*]
-return deduplicator_->handle(size_deducer_->handle(move(messages)));
-!!!641926.cpp!!!	save(in messages : MessageHandler::Message [*]) : void
+auto output = size_deducer_->handle(move(messages));
+if(deduplicator_)
+  output = deduplicator_->handle(std::move(output));
+output = event_number_generator_->handle(std::move(output));
+return output;
+!!!641926.cpp!!!	transmit(in messages : MessageHandler::Message [*]) : void
 for(auto &msg : messages) store_->transmit(msg->toEvent());
 

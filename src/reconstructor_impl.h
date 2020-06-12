@@ -7,6 +7,8 @@
 using namespace std;
 #include <vector>
 
+#include <map>
+
 #include <boost/property_tree/ptree.hpp>
 
 
@@ -19,12 +21,8 @@ namespace core {
 class MessageHandler;
 enum BookSide {
   kBid,
-  kAsk
-};
-enum OrderState {
-  kActive,
-  kOpen,
-  kFinished
+  kAsk,
+  kBookSideNA
 };
 struct PriceSide {
     BookSide side_;
@@ -38,83 +36,55 @@ struct PriceSide {
     PriceSide();
 
 };
-enum TradeRole {
-  kMaker,
-  kTaker
-};
 class EventImpl : public Event {
   private:
     OrderId order_id_;
 
     Timestamp timestamp_;
 
-    EventNo event_no_;
+    EventNo event_no_ = Event::kNaEventNo;
+
+    OrderState state_;
 
     Price price_;
 
-    Volume remaining_size_;
+    Volume volume_;
 
-    Volume change_size_;
+    Volume delta_volume_;
 
     TradeId trade_id_;
 
-    EventType event_type_;
+    OrderId taker_order_id_ = Event::kNaOrderId;
+
+    Timestamp local_timestamp_;
 
 
   public:
-    inline const OrderId getOrderId() const;
+    EventImpl(const OrderId & order_id, const Timestamp & timestamp, const Timestamp & local_timestamp, const EventNo & event_no, const Price & price, const Volume & volume, const Volume & delta_volume, OrderState state);
 
-    inline const Timestamp getTimestamp() const;
+    EventImpl(const OrderId & order_id, const Timestamp & timestamp, const Timestamp & local_timestamp, const EventNo & event_no, const Price & price, const Volume & volume, const Volume & delta_volume, OrderState state, const TradeId & trade_id, const OrderId & taker_order_id);
 
-    inline const EventNo getEventNo() const;
+    virtual const Timestamp timestamp() const;
 
-    inline const Price getPrice() const;
+    virtual const OrderId orderId() const;
 
-    inline const Volume getRemainingSize() const;
+    virtual const EventNo eventNo() const;
 
-    inline const Volume getChangeSize() const;
+    virtual const OrderState state() const;
 
-    inline const TradeId getTradeId() const;
+    virtual const Price price() const;
 
-    inline const EventType getEventType() const;
+    virtual const Volume volume() const;
 
-    EventImpl(const OrderId & order_id, const Timestamp & timestamp, const EventNo & event_no, const Price & price, const Volume & remaining_size, const Volume & change_size, EventType event_type);
+    virtual const TradeId tradeId() const;
 
-    EventImpl(const OrderId & order_id, const Timestamp & timestamp, const EventNo & event_no, const Price & price, const Volume & remaining_size, const Volume & change_size, EventType event_type, const TradeId & trade_id);
+    virtual const Volume deltaVolume() const;
+
+    virtual OrderId takerOrderId();
+
+    virtual const Timestamp localTimestamp() const;
 
 };
-inline const OrderId EventImpl::getOrderId() const {
-  return order_id_;
-}
-
-inline const Timestamp EventImpl::getTimestamp() const {
-  return timestamp_;
-}
-
-inline const EventNo EventImpl::getEventNo() const {
-  return event_no_;
-}
-
-inline const Price EventImpl::getPrice() const {
-  return price_;
-}
-
-inline const Volume EventImpl::getRemainingSize() const {
-  return remaining_size_;
-}
-
-inline const Volume EventImpl::getChangeSize() const {
-  return change_size_;
-}
-
-inline const TradeId EventImpl::getTradeId() const {
-  return trade_id_;
-}
-
-inline const EventType EventImpl::getEventType() const {
-  return event_type_;
-}
-
 class MessageHandler {
   public:
     class Message {
@@ -142,7 +112,7 @@ class MessageHandler {
 
 
       protected:
-        OrderId order_id_;
+        OrderId order_id_ = Event::kNaOrderId;
 
 
       public:
@@ -150,7 +120,7 @@ class MessageHandler {
 
 
       protected:
-        Volume remaining_size_;
+        Volume remaining_size_ = Event::kNaVolume;
 
 
       public:
@@ -160,7 +130,7 @@ class MessageHandler {
 
 
       protected:
-        Volume change_size_;
+        Volume change_size_ = Event::kNaVolume;
 
 
       public:
@@ -170,15 +140,17 @@ class MessageHandler {
 
 
       protected:
-        EventNo event_no_;
+        EventNo event_no_ = Event::kNaEventNo;
 
 
       public:
         inline const EventNo getEventNo() const;
 
+        void setEventNo(EventNo value);
+
 
       protected:
-        Price price_;
+        Price price_ = Event::kNaPrice;
 
 
       public:
@@ -186,7 +158,7 @@ class MessageHandler {
 
 
       protected:
-        BookSide side_;
+        BookSide side_ = kBookSideNA;
 
 
       public:
@@ -194,11 +166,11 @@ class MessageHandler {
 
 
       protected:
-        TradeId trade_id_;
+        Timestamp local_timestamp_;
 
 
       public:
-        inline const TradeId getTradeId() const;
+        inline const Timestamp getLocalTimestamp() const;
 
         virtual string toString();
 
@@ -206,16 +178,27 @@ class MessageHandler {
       protected:
         virtual const Volume getBaseMinSize() const = 0;
 
+        virtual const Volume getBaseIncrement() const = 0;
+
+        const Volume roundToBaseIncrement(const Volume & volume) const;
+
+    };
+    
+    class Updated : virtual public ExchangeMessage {
     };
     
     //match or trade with or without order_ids
-    class Filled : public ExchangeMessage {
+    class Filled : virtual public ExchangeMessage {
       protected:
-        TradeRole role_;
+        OrderId taker_order_id_ = Event::kNaOrderId;
+
+        TradeId trade_id_ = Event::kNaTradeId;
 
 
       public:
         virtual bool accept(MessageHandler* mh);
+
+        inline const TradeId getTradeId() const;
 
         virtual string toString();
 
@@ -225,7 +208,7 @@ class MessageHandler {
     };
     
     //opened on Coinbase. Bitstamp, Bitfinex do not send
-    class Opened : public ExchangeMessage {
+    class Opened : public Updated {
       public:
         virtual bool accept(MessageHandler* mh);
 
@@ -237,35 +220,35 @@ class MessageHandler {
     };
     
     //order change on Bitstamp with increased volume and the same price
-    class VolumeIncremented : public ExchangeMessage {
+    class VolumeIncremented : public Updated {
       public:
         virtual string toString();
 
     };
     
     //order_changed on Bitstamp
-    class PartiallyCanceled : public ExchangeMessage {
+    class PartiallyCanceled : public Updated {
       public:
         virtual string toString();
 
     };
     
     //order_change on Bitstamp or Bitfinex with increased price for bid or decreased price for ask.  Coinbase or MOEX does not generate such messages
-    class PriceAdvanced : public ExchangeMessage {
+    class PriceAdvanced : public Updated {
       public:
         virtual string toString();
 
     };
     
     //order_change on Bitstamp or Bitfinex with decremented price for bid or incremented price for ask.  Coinbase or MOEX does not generate such messages
-    class PriceReceded : public ExchangeMessage {
+    class PriceReceded : public Updated {
       public:
         virtual string toString();
 
     };
     
     //order_deleted on Bitstamp, done on Coinbase, price =0 on Bitfinex
-    class FullyCanceled : public ExchangeMessage {
+    class FullyCanceled : public Updated {
       public:
         virtual bool accept(MessageHandler * mh) override final;
 
@@ -277,7 +260,7 @@ class MessageHandler {
     };
     
     //order_created on Bitstamp, Bitfinex received on Coinbase
-    class Received : public ExchangeMessage {
+    class Received : public Updated {
       public:
         virtual bool accept(MessageHandler * mh) override final;
 
@@ -307,43 +290,47 @@ class MessageHandler {
 
     };
     
+    virtual bool create();
 
-  protected:
-    virtual bool elapsed() = 0;
-
-    virtual bool received() = 0;
-
-    virtual bool opened() = 0;
-
-    virtual bool volumeIncremented() = 0;
-
-    virtual bool priceAdvanced() = 0;
-
-    virtual bool priceReceded() = 0;
-
-    virtual bool filled() = 0;
-
-    virtual bool partiallyCanceled() = 0;
-
-    virtual bool fullyCanceled() = 0;
-
-    std::unique_ptr<Message> received_;
-
-
-  public:
 vector<std::unique_ptr<Message>> handle(vector<std::unique_ptr<Message>> && messages);
 
 
   protected:
+    virtual string getHandlerName();
+
+    virtual bool message();
+
+    virtual bool exchangeMessage();
+
+    virtual bool orderBookUpdated();
+
+    virtual bool elapsed();
+
+    virtual bool received();
+
+    virtual bool opened();
+
+    virtual bool volumeIncremented();
+
+    virtual bool priceAdvanced();
+
+    virtual bool priceReceded();
+
+    virtual bool filled();
+
+    virtual bool partiallyCanceled();
+
+    virtual bool fullyCanceled();
+
+    std::unique_ptr<Message> received_;
+
     vector<std::unique_ptr<Message>> output_;
 
 
   public:
-    virtual bool create();
+    MessageHandler();
 
-
-  protected:
-    virtual string getHandlerName() = 0;
+    virtual ~MessageHandler();
 
 };
 inline const Timestamp MessageHandler::Message::getTimestamp() const {
@@ -374,12 +361,35 @@ inline const BookSide MessageHandler::ExchangeMessage::getSide() const {
   return side_;
 }
 
-inline const TradeId MessageHandler::ExchangeMessage::getTradeId() const {
+inline const Timestamp MessageHandler::ExchangeMessage::getLocalTimestamp() const {
+  return local_timestamp_;
+}
+
+inline const TradeId MessageHandler::Filled::getTradeId() const {
   return trade_id_;
 }
 
+class EventNumberGenerator : public MessageHandler {
+  private:
+    map<OrderId, EventNo> eventNumbers_;
+
+
+  protected:
+    virtual bool exchangeMessage();
+
+    virtual bool received();
+
+    virtual bool fullyCanceled();
+
+    virtual bool filled();
+
+    virtual string getHandlerName();
+
+};
 class ReconstructorImplementation : public Reconstructor {
   protected:
+    bool extract_only_;
+
     typedef MessageHandler::Message Message;
 
     typedef MessageHandler::Elapsed Elapsed;
@@ -396,7 +406,7 @@ class ReconstructorImplementation : public Reconstructor {
   private:
     virtual vector<std::unique_ptr<MessageHandler::Message>> cleanse( vector<std::unique_ptr<MessageHandler::Message>> && messages);
 
-    inline virtual void save( vector<std::unique_ptr<MessageHandler::Message>> &&  messages);
+    inline virtual void transmit( vector<std::unique_ptr<MessageHandler::Message>> &&  messages);
 
 
   protected:
@@ -406,8 +416,10 @@ class ReconstructorImplementation : public Reconstructor {
 
     std::unique_ptr<MessageHandler> size_deducer_;
 
+    std::unique_ptr<MessageHandler> event_number_generator_;
+
 };
-inline void ReconstructorImplementation::save( vector<std::unique_ptr<MessageHandler::Message>> &&  messages) {
+inline void ReconstructorImplementation::transmit( vector<std::unique_ptr<MessageHandler::Message>> &&  messages) {
   for(auto &msg : messages) store_->transmit(msg->toEvent());
   
 }
