@@ -15,6 +15,7 @@ using namespace std;
 
 
 namespace oberon { namespace core { class CoinbaseReconstructor; }  } 
+namespace oberon { namespace core { class BitstampReconstructor; }  } 
 
 namespace oberon {
 

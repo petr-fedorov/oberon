@@ -10,6 +10,13 @@
 using namespace std;
 #include <map>
 
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/nil_generator.hpp>
+
+#include <boost/property_tree/ptree.hpp>
+
+
+namespace oberon { namespace core { class Store; }  } 
 
 namespace oberon {
 
@@ -416,22 +423,6 @@ class DedupOrchestrator : public MessageHandler {
     // contains the current state, internal
     AnyState * _current_state;
 
-    virtual bool received() override;
-
-    virtual bool opened();
-
-    virtual bool volumeIncremented() override;
-
-    virtual bool priceAdvanced() override;
-
-    virtual bool priceReceded() override;
-
-    virtual bool filled() override;
-
-    virtual bool partiallyCanceled() override;
-
-    virtual bool fullyCanceled() override;
-
   friend class DedupOrchestrator_State::Deduplicate_State;
 
   private:
@@ -460,6 +451,63 @@ inline void DedupOrchestrator::_set_currentState(DedupOrchestrator::AnyState & s
     _current_state = &st;
 }
 
+class BitstampReconstructor : public ReconstructorImplementation {
+  public:
+    class BitstampMessage : virtual public MessageHandler::ExchangeMessage {
+      protected:
+        virtual const Volume getBaseMinSize() const;
+
+        virtual const Volume getBaseIncrement() const;
+
+        const BitstampReconstructor &reconstructor_;
+
+
+      public:
+        BitstampMessage(const BitstampReconstructor & reconstructor);
+
+        static const boost::uuids::uuid toUuid(string id);
+
+        static const Timestamp toTimestamp(string timestamp);
+
+    };
+    
+    class BitstampCreated : public MessageHandler::Created, public BitstampMessage {
+      public:
+        BitstampCreated(const boost::property_tree::ptree & tree, const BitstampReconstructor & reconstructor);
+
+    };
+    
+    class BitstampReceived : public MessageHandler::Received {
+    };
+    
+    class BitstampOpened : public MessageHandler::Opened {
+    };
+    
+    class BitstampCanceled : public MessageHandler::Canceled, public BitstampMessage {
+      public:
+        BitstampCanceled(const boost::property_tree::ptree & tree, const BitstampReconstructor & reconstructor);
+
+    };
+    
+    class BitstampFilled : public MessageHandler::Filled, public BitstampMessage {
+      public:
+        BitstampFilled(const boost::property_tree::ptree & tree, const BitstampReconstructor & reconstructor);
+
+    };
+    
+    class BitstampChanged : public MessageHandler::Changed, public BitstampMessage {
+      public:
+        BitstampChanged(const boost::property_tree::ptree & tree, const BitstampReconstructor & reconstructor);
+
+    };
+    
+    BitstampReconstructor(Store * store, const Volume & base_min_size, const Volume & base_increment, bool extract_only);
+
+
+  protected:
+    virtual vector<std::unique_ptr<MessageHandler::Message>> extract(const boost::property_tree::ptree & tree);
+
+};
 
 } // namespace oberon::core
 

@@ -1,5 +1,5 @@
 class Remaining_size_State
-!!!690054.cpp!!!	_completion(inout stm : Deduce_Size_Coinbase) : bool
+!!!777606.cpp!!!	_completion(inout stm : Deduce_Size_Coinbase) : bool
   if (!std::isnan(stm.previous_size_)) {
     stm._deduce_size_coinbase_state._deduce_state._doexit(stm);
 #ifdef VERBOSE_STATE_MACHINE
@@ -22,13 +22,13 @@ stm.em_->setRemainingSize(stm.previous_size_ - stm.em_->getChangeSize());
     return (bool) 1;
   }
   return (bool) 0;
-!!!690182.cpp!!!	create(inout stm : Deduce_Size_Coinbase) : void
+!!!777734.cpp!!!	create(inout stm : Deduce_Size_Coinbase) : void
 	_doentry(stm);
 	_completion(stm);
-!!!690310.cpp!!!	_doentry(inout stm : Deduce_Size_Coinbase) : void
+!!!777862.cpp!!!	_doentry(inout stm : Deduce_Size_Coinbase) : void
 #ifdef VERBOSE_STATE_MACHINE
   std::cout << "DEBUG : execute entry behavior of .Deduce Size Coinbase.Deduce.Remaining size" << std::endl;
 #endif
 
-!!!690438.cpp!!!	_upper(inout stm : Deduce_Size_Coinbase) : Deduce_Size_Coinbase::AnyState
+!!!777990.cpp!!!	_upper(inout stm : Deduce_Size_Coinbase) : Deduce_Size_Coinbase::AnyState
   return &stm._deduce_size_coinbase_state._deduce_state;

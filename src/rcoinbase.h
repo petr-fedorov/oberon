@@ -2,26 +2,24 @@
 #define OBERON_R_RCOINBASE_H
 
 
-#include <Rcpp.h>
-using Rcpp::DataFrame;
-
-#include "reconstructor.h"
 #include <vector>
 
 #include <string>
 using namespace std;
+#include "reconstructor.h"
+#include <Rcpp.h>
+using Rcpp::DataFrame;
 
-namespace oberon { namespace core { class Reconstructor; }  } 
+
 namespace oberon { namespace core { class Event; }  } 
+namespace oberon { namespace core { class Reconstructor; }  } 
 
 namespace oberon {
 
 namespace R {
 
-class RCoinbase : public oberon::core::Store {
+class RStore : public oberon::core::Store {
   public:
-    DataFrame run(const Rcpp::DataFrame & data, bool extract_only = false);
-
     virtual void transmit( std::unique_ptr<oberon::core::Event> && event);
 
 
@@ -45,6 +43,15 @@ class RCoinbase : public oberon::core::Store {
     vector<string> taker_order_id_;
 
     vector<double> local_timestamp_;
+
+
+  public:
+    Rcpp::DataFrame toDataframe();
+
+};
+class RCoinbase : public RStore {
+  public:
+    DataFrame run(const Rcpp::DataFrame & data, bool extract_only = false);
 
 };
 

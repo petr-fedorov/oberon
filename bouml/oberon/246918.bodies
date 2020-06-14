@@ -7,9 +7,3 @@ std::stringstream buf;
 buf << ExchangeMessage::toString() << " Opened";
 return buf.str();
 
-!!!650630.cpp!!!	toEvent() : Event [0..1]
-int sign = getSide() == kAsk ? -1 : 1;
-return make_unique<EventImpl>(
-    getOrderId(), getTimestamp(), getLocalTimestamp(), getEventNo(), getPrice(),
-    roundToBaseIncrement(getRemainingSize()) * sign,
-    roundToBaseIncrement(getChangeSize()) * sign, kActive);

@@ -49,7 +49,7 @@ class CoinbaseReconstructor : public ReconstructorImplementation {
 
     };
     
-    class CoinbaseDoneCanceled : public MessageHandler::FullyCanceled, public CoinbaseMessage {
+    class CoinbaseDoneCanceled : public MessageHandler::Canceled, public CoinbaseMessage {
       public:
         CoinbaseDoneCanceled(const boost::property_tree::ptree & tree, const CoinbaseReconstructor & reconstructor);
 
@@ -61,12 +61,6 @@ class CoinbaseReconstructor : public ReconstructorImplementation {
 
     };
     
-    //The base_min_size and base_max_size fields define the min and max order size. The quote_increment field specifies the min order price as well as the price increment.
-    //The order price must be a multiple of this increment (i.e. if the increment is 0.01, order prices of 0.001 or 0.021 would be rejected).
-    Volume base_min_size_;
-
-    Volume base_increment_;
-
 
   protected:
     virtual vector<std::unique_ptr<MessageHandler::Message>> extract(const boost::property_tree::ptree & tree) override final;
@@ -123,8 +117,8 @@ class Deduce_Size_Coinbase : public Deduce_Size_Coinbase_Extensions {
         // perform the 'do activity'
         virtual void _do(Deduce_Size_Coinbase &);
 
-        // the current state doesn't manage the event received, give it to the upper state
-        virtual void received(Deduce_Size_Coinbase & stm);
+        // the current state doesn't manage the event opened, give it to the upper state
+        virtual void opened(Deduce_Size_Coinbase & stm);
 
         // the current state doesn't manage the event elapsed, give it to the upper state
         virtual void elapsed(Deduce_Size_Coinbase & stm);
@@ -138,6 +132,9 @@ class Deduce_Size_Coinbase : public Deduce_Size_Coinbase_Extensions {
         // the current state doesn't manage the event message, give it to the upper state
         virtual void message(Deduce_Size_Coinbase & stm);
 
+        // the current state doesn't manage the event received, give it to the upper state
+        virtual void received(Deduce_Size_Coinbase & stm);
+
         virtual void create(Deduce_Size_Coinbase &);
 
     };
@@ -150,8 +147,8 @@ class Deduce_Size_Coinbase : public Deduce_Size_Coinbase_Extensions {
           public:
             virtual ~Wait_State();
 
-            // to manage the event received
-            virtual void received(Deduce_Size_Coinbase & stm);
+            // to manage the event opened
+            virtual void opened(Deduce_Size_Coinbase & stm);
 
             // to manage the event elapsed
             virtual void elapsed(Deduce_Size_Coinbase & stm);
@@ -164,6 +161,9 @@ class Deduce_Size_Coinbase : public Deduce_Size_Coinbase_Extensions {
 
             // to manage the event message
             virtual void message(Deduce_Size_Coinbase & stm);
+
+            // to manage the event received
+            virtual void received(Deduce_Size_Coinbase & stm);
 
             // perform the 'exit behavior'
             void _doexit(Deduce_Size_Coinbase & stm);
@@ -277,9 +277,6 @@ class Deduce_Size_Coinbase : public Deduce_Size_Coinbase_Extensions {
 
     virtual ~Deduce_Size_Coinbase();
 
-    // the operation you call to signal the event received
-    bool received();
-
     // the operation you call to signal the event elapsed
     bool elapsed();
 
@@ -292,15 +289,9 @@ class Deduce_Size_Coinbase : public Deduce_Size_Coinbase_Extensions {
     // the operation you call to signal the event message
     bool message();
 
-  friend class Deduce_Size_Coinbase_State::Wait_State;
     // the operation you call to signal the event create
     bool create();
 
-  friend class Deduce_Size_Coinbase_State::Deduce_State::Size_change_State;
-  friend class Deduce_Size_Coinbase_State::Deduce_State::Remaining_size_State;
-  friend class Deduce_Size_Coinbase_State::Deduce_State;
-  friend class Deduce_Size_Coinbase_State::Save_State;
-  friend class Deduce_Size_Coinbase_State;
     // to execute the current state 'do activity'
     void doActivity();
 
@@ -312,12 +303,28 @@ class Deduce_Size_Coinbase : public Deduce_Size_Coinbase_Extensions {
     // execution done, internal
     void _final();
 
+
+  public:
+    // the operation you call to signal the event opened
+    bool opened();
+
+    // the operation you call to signal the event received
+    bool received();
+
+  friend class Deduce_Size_Coinbase_State::Wait_State;
+  friend class Deduce_Size_Coinbase_State::Deduce_State::Size_change_State;
+  friend class Deduce_Size_Coinbase_State::Deduce_State::Remaining_size_State;
+  friend class Deduce_Size_Coinbase_State::Deduce_State;
+  friend class Deduce_Size_Coinbase_State::Save_State;
+  friend class Deduce_Size_Coinbase_State;
+
+  protected:
     // contains the current state, internal
     AnyState * _current_state;
 
 };
 // change the current state, internal
-inline void Deduce_Size_Coinbase::_set_currentState(Deduce_Size_Coinbase::AnyState & st) {
+inline void Deduce_Size_Coinbase::_set_currentState(AnyState & st) {
     _current_state = &st;
 }
 

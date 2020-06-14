@@ -1,5 +1,5 @@
 class Deduce_State
-!!!690566.cpp!!!	_exit1(inout stm : Deduce_Size_Coinbase) : void
+!!!778118.cpp!!!	_exit1(inout stm : Deduce_Size_Coinbase) : void
   _doexit(stm);
   {
 #ifdef VERBOSE_STATE_MACHINE
@@ -10,7 +10,7 @@ stm.output_.push_back(std::move(stm.em_));    stm._set_currentState(stm._deduce_
     std::cout << "DEBUG : current state is now .Deduce Size Coinbase.Wait" << std::endl;
 #endif
   }
-!!!690694.cpp!!!	_doentry(inout stm : Deduce_Size_Coinbase) : void
+!!!778246.cpp!!!	_doentry(inout stm : Deduce_Size_Coinbase) : void
 #ifdef VERBOSE_STATE_MACHINE
   std::cout << "DEBUG : execute entry behavior of .Deduce Size Coinbase.Deduce" << std::endl;
 #endif
@@ -20,10 +20,10 @@ try {
   stm.previous_size_ = stm.previous_sizes_.at(stm.em_->getOrderId());
 }
 catch (...) {};
-!!!690822.cpp!!!	_doexit(inout stm : Deduce_Size_Coinbase) : void
+!!!778374.cpp!!!	_doexit(inout stm : Deduce_Size_Coinbase) : void
 #ifdef VERBOSE_STATE_MACHINE
   std::cout << "DEBUG : execute exit behavior of .Deduce Size Coinbase.Deduce" << std::endl;
 #endif
 
-!!!690950.cpp!!!	_upper(inout stm : Deduce_Size_Coinbase) : Deduce_Size_Coinbase::AnyState
+!!!778502.cpp!!!	_upper(inout stm : Deduce_Size_Coinbase) : Deduce_Size_Coinbase::AnyState
   return &stm._deduce_size_coinbase_state;

@@ -1,7 +1,12 @@
 
 #include "bitstamp.h"
+#include <boost/uuid/string_generator.hpp>
+
+#include <iomanip>
+
 
 #include <iostream>
+#include "date.h"
 namespace oberon {
 
 namespace core {
@@ -686,45 +691,128 @@ void DedupOrchestrator::_final() {
 #endif
 }
 
-bool DedupOrchestrator::received() {
-  return message();
-}
-
-bool DedupOrchestrator::opened() {
-  return message();
-}
-
-bool DedupOrchestrator::volumeIncremented() {
-  return message();
-}
-
-bool DedupOrchestrator::priceAdvanced() {
-  return message();
-  
-}
-
-bool DedupOrchestrator::priceReceded() {
-  return message();
-  
-}
-
-bool DedupOrchestrator::filled() {
-  return message();
-  
-}
-
-bool DedupOrchestrator::partiallyCanceled() {
-  return message();
-  
-}
-
-bool DedupOrchestrator::fullyCanceled() {
-  return message();
-  
-}
-
 string DedupOrchestrator::getHandlerName() {
   return "DedupOrch";
+}
+
+const Volume BitstampReconstructor::BitstampMessage::getBaseMinSize() const {
+  return reconstructor_.base_min_size_;
+  
+}
+
+const Volume BitstampReconstructor::BitstampMessage::getBaseIncrement() const {
+  return reconstructor_.base_increment_;
+  
+}
+
+BitstampReconstructor::BitstampMessage::BitstampMessage(const BitstampReconstructor & reconstructor): reconstructor_{reconstructor} {
+}
+
+const boost::uuids::uuid BitstampReconstructor::BitstampMessage::toUuid(string id)
+{
+  std::stringstream buf;
+  buf << std::setw(32) << std::setfill('0') << std::right << std::stol(id);
+  return boost::uuids::string_generator{}(buf.str());
+  
+}
+
+const Timestamp BitstampReconstructor::BitstampMessage::toTimestamp(string timestamp)
+{
+  using namespace date;
+  boost::uuids::string_generator gen;
+  std::istringstream ss{timestamp};
+  Timestamp output;
+  ss >> parse("%FT%TZ", output);
+  return output;
+}
+
+BitstampReconstructor::BitstampCreated::BitstampCreated(const boost::property_tree::ptree & tree, const BitstampReconstructor & reconstructor): BitstampMessage{reconstructor} {
+  order_id_ = toUuid(tree.get<string>("id"));
+  timestamp_ = toTimestamp(tree.get<string>("microtimestamp"));
+  local_timestamp_ = toTimestamp(tree.get<string>("local_timestamp"));
+  price_ = std::strtod(tree.get<string>("price").c_str(), nullptr);
+  remaining_size_ = std::strtod(tree.get<string>("amount").c_str(), nullptr);
+  change_size_ = 0;
+  event_no_ = 1;
+  if(tree.get<string>("order_type") == "buy")
+  side_ = kBid;
+  else
+  side_ = kAsk;
+  
+}
+
+BitstampReconstructor::BitstampCanceled::BitstampCanceled(const boost::property_tree::ptree & tree, const BitstampReconstructor & reconstructor): BitstampMessage{reconstructor} {
+  order_id_ = toUuid(tree.get<string>("id"));
+  timestamp_ = toTimestamp(tree.get<string>("microtimestamp"));
+  local_timestamp_ = toTimestamp(tree.get<string>("local_timestamp"));
+  price_ = std::strtod(tree.get<string>("price").c_str(), nullptr);
+  remaining_size_ = std::strtod(tree.get<string>("amount").c_str(), nullptr);
+  if (tree.get<string>("order_type") == "buy")
+    side_ = kBid;
+  else
+    side_ = kAsk;
+}
+
+BitstampReconstructor::BitstampFilled::BitstampFilled(const boost::property_tree::ptree & tree, const BitstampReconstructor & reconstructor): BitstampMessage{reconstructor} {
+  order_id_ = toUuid(tree.get<string>("maker_order_id"));
+  taker_order_id_ = toUuid(tree.get<string>("taker_order_id"));
+  timestamp_ = toTimestamp(tree.get<string>("trade_timestamp"));
+  local_timestamp_ = toTimestamp(tree.get<string>("local_timestamp"));
+  price_ = std::strtod(tree.get<string>("price").c_str(), nullptr);
+  change_size_ = std::strtod(tree.get<string>("amount").c_str(), nullptr);
+  trade_id_ = std::stol(tree.get<string>("trade_id")); 
+  if (tree.get<string>("order_type") == "buy")
+    side_ = kBid;
+  else
+    side_ = kAsk;
+}
+
+BitstampReconstructor::BitstampChanged::BitstampChanged(const boost::property_tree::ptree & tree, const BitstampReconstructor & reconstructor): BitstampMessage{reconstructor} {
+  order_id_ = toUuid(tree.get<string>("id"));
+  timestamp_ = toTimestamp(tree.get<string>("microtimestamp"));
+  local_timestamp_ = toTimestamp(tree.get<string>("local_timestamp"));
+  price_ = std::strtod(tree.get<string>("price").c_str(), nullptr);
+  remaining_size_ = std::strtod(tree.get<string>("amount").c_str(), nullptr);
+  if (tree.get<string>("order_type") == "buy")
+    side_ = kBid;
+  else
+    side_ = kAsk;
+}
+
+BitstampReconstructor::BitstampReconstructor( Store * store, const Volume & base_min_size, const Volume & base_increment, bool extract_only) {
+  store_ = store;
+  base_min_size_ = base_min_size;
+  base_increment_ = base_increment;
+  extract_only_ = extract_only;
+  size_deducer_ =std::make_unique<MessageHandler>();
+  size_deducer_->create();
+  // Deduplication is not needed for CoinBase
+  deduplicator_ = std::unique_ptr<MessageHandler>();
+  event_number_generator_ = std::make_unique<EventNumberGenerator>();
+  
+}
+
+vector<std::unique_ptr<MessageHandler::Message>> BitstampReconstructor::extract(const boost::property_tree::ptree & tree) {
+  using namespace date;
+  using namespace std;
+  string type = tree.get<string>("event");
+  vector<unique_ptr<Message>> output;
+  if (type == "elapsed") {
+    Timestamp timestamp;
+    std::istringstream ss{tree.get<string>("timestamp")};
+    ss >> parse("%FT%TZ", timestamp);
+    output.push_back(make_unique<Elapsed>(timestamp));
+  } else if (type == "order_created")
+    output.push_back(make_unique<BitstampCreated>(tree, *this));
+  else if (type == "order_changed")
+    output.push_back(make_unique<BitstampChanged>(tree, *this));
+  else if (type == "order_deleted") {
+      output.push_back(make_unique<BitstampCanceled>(tree, *this));
+  } else if (type == "match") {
+    output.push_back(make_unique<BitstampFilled>(tree, *this));
+  }
+  return output;
+  
 }
 
 

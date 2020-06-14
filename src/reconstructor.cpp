@@ -3,6 +3,7 @@
 #include <boost/uuid/random_generator.hpp>
 
 #include "coinbase.h"
+#include "bitstamp.h"
 
 #include <cmath>
 #include <limits>
@@ -28,8 +29,11 @@ Store::~Store() {
 
 std::unique_ptr<Reconstructor> Reconstructor::create(Exchanges exchange, string pair_name, Store * store, double delay, bool extract_only)
 {
-  //if(exchange == kCoinbase)
+  if(exchange == kCoinbase)
     return std::make_unique<CoinbaseReconstructor>(store, 0.001, 0.00000001, extract_only);
+  else if(exchange == kBitstamp)
+    return std::make_unique<BitstampReconstructor>(store, 0.001, 0.00000001, extract_only);
+  return std::unique_ptr<Reconstructor>();
 }
 
 Reconstructor::~Reconstructor() {

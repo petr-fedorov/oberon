@@ -10,5 +10,7 @@ ss >> parse("%FT%TZ", local_timestamp_);
 order_id_ = gen(tree.get<string>("order_id"));
 price_ = stod(tree.get<string>("price"));
 remaining_size_ = stod(tree.get<string>("size"));
+change_size_ = 0;
+event_no_ = 0;
 side_ = tree.get<string>("side") == "buy" ? kBid : kAsk;
 

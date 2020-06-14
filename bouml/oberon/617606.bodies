@@ -1,14 +1,14 @@
 class AnyState
-!!!687238.cpp!!!	received(inout stm : Deduce_Size_Coinbase) : void
+!!!775174.cpp!!!	opened(inout stm : Deduce_Size_Coinbase) : void
   AnyState * st = _upper(stm);
 
   if (st != 0)
-    st->received(stm);
+    st->opened(stm);
 #ifdef VERBOSE_STATE_MACHINE
   else
-    std::cout << "DEBUG : transition received not expected" << std::endl;
+    std::cout << "DEBUG : transition opened not expected" << std::endl;
 #endif
-!!!687622.cpp!!!	elapsed(inout stm : Deduce_Size_Coinbase) : void
+!!!775430.cpp!!!	elapsed(inout stm : Deduce_Size_Coinbase) : void
   AnyState * st = _upper(stm);
 
   if (st != 0)
@@ -17,7 +17,7 @@ class AnyState
   else
     std::cout << "DEBUG : transition elapsed not expected" << std::endl;
 #endif
-!!!688006.cpp!!!	era(inout stm : Deduce_Size_Coinbase) : void
+!!!775686.cpp!!!	era(inout stm : Deduce_Size_Coinbase) : void
   AnyState * st = _upper(stm);
 
   if (st != 0)
@@ -26,7 +26,7 @@ class AnyState
   else
     std::cout << "DEBUG : transition era not expected" << std::endl;
 #endif
-!!!688390.cpp!!!	filled(inout stm : Deduce_Size_Coinbase) : void
+!!!775942.cpp!!!	filled(inout stm : Deduce_Size_Coinbase) : void
   AnyState * st = _upper(stm);
 
   if (st != 0)
@@ -35,7 +35,7 @@ class AnyState
   else
     std::cout << "DEBUG : transition filled not expected" << std::endl;
 #endif
-!!!688774.cpp!!!	message(inout stm : Deduce_Size_Coinbase) : void
+!!!776198.cpp!!!	message(inout stm : Deduce_Size_Coinbase) : void
   AnyState * st = _upper(stm);
 
   if (st != 0)
@@ -43,4 +43,13 @@ class AnyState
 #ifdef VERBOSE_STATE_MACHINE
   else
     std::cout << "DEBUG : transition message not expected" << std::endl;
+#endif
+!!!776582.cpp!!!	received(inout stm : Deduce_Size_Coinbase) : void
+  AnyState * st = _upper(stm);
+
+  if (st != 0)
+    st->received(stm);
+#ifdef VERBOSE_STATE_MACHINE
+  else
+    std::cout << "DEBUG : transition received not expected" << std::endl;
 #endif

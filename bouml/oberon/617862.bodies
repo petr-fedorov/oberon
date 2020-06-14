@@ -1,5 +1,5 @@
 class Wait_State
-!!!687366.cpp!!!	received(inout stm : Deduce_Size_Coinbase) : void
+!!!775302.cpp!!!	opened(inout stm : Deduce_Size_Coinbase) : void
   {
     stm._deduce_size_coinbase_state._wait_state._doexit(stm);
     stm._set_currentState(stm._deduce_size_coinbase_state._save_state);
@@ -8,21 +8,21 @@ class Wait_State
 #endif
     stm._deduce_size_coinbase_state._save_state.create(stm);
   }
-!!!687750.cpp!!!	elapsed(inout stm : Deduce_Size_Coinbase) : void
+!!!775558.cpp!!!	elapsed(inout stm : Deduce_Size_Coinbase) : void
   {
 #ifdef VERBOSE_STATE_MACHINE
     std::cout << "DEBUG : execute activity of transition elapsed" << std::endl;
 #endif
 stm.output_.push_back(std::move(stm.received_));
   }
-!!!688134.cpp!!!	era(inout stm : Deduce_Size_Coinbase) : void
+!!!775814.cpp!!!	era(inout stm : Deduce_Size_Coinbase) : void
   {
 #ifdef VERBOSE_STATE_MACHINE
     std::cout << "DEBUG : execute activity of transition era" << std::endl;
 #endif
 // TBD reset order sizes 
 stm.output_.push_back(std::move(stm.received_));  }
-!!!688518.cpp!!!	filled(inout stm : Deduce_Size_Coinbase) : void
+!!!776070.cpp!!!	filled(inout stm : Deduce_Size_Coinbase) : void
   {
     stm._deduce_size_coinbase_state._wait_state._doexit(stm);
     stm._deduce_size_coinbase_state._deduce_state._doentry(stm);
@@ -32,7 +32,7 @@ stm.output_.push_back(std::move(stm.received_));  }
 #endif
     stm._deduce_size_coinbase_state._deduce_state._remaining_size_state.create(stm);
   }
-!!!688902.cpp!!!	message(inout stm : Deduce_Size_Coinbase) : void
+!!!776326.cpp!!!	message(inout stm : Deduce_Size_Coinbase) : void
   {
     stm._deduce_size_coinbase_state._wait_state._doexit(stm);
     stm._deduce_size_coinbase_state._deduce_state._doentry(stm);
@@ -42,11 +42,17 @@ stm.output_.push_back(std::move(stm.received_));  }
 #endif
     stm._deduce_size_coinbase_state._deduce_state._size_change_state.create(stm);
   }
-!!!689030.cpp!!!	_doexit(inout stm : Deduce_Size_Coinbase) : void
+!!!776710.cpp!!!	received(inout stm : Deduce_Size_Coinbase) : void
+  {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : execute activity of transition received" << std::endl;
+#endif
+stm.received_.reset(nullptr);  }
+!!!776838.cpp!!!	_doexit(inout stm : Deduce_Size_Coinbase) : void
 #ifdef VERBOSE_STATE_MACHINE
   std::cout << "DEBUG : execute exit behavior of .Deduce Size Coinbase.Wait" << std::endl;
 #endif
 stm.em_ = std::unique_ptr<ExchangeMessage>(
     dynamic_cast<ExchangeMessage *>(stm.received_.release()));
-!!!689158.cpp!!!	_upper(inout stm : Deduce_Size_Coinbase) : Deduce_Size_Coinbase::AnyState
+!!!776966.cpp!!!	_upper(inout stm : Deduce_Size_Coinbase) : Deduce_Size_Coinbase::AnyState
   return &stm._deduce_size_coinbase_state;

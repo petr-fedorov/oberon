@@ -1,6 +1,6 @@
 format 222
 "Order Book Reconstructor" // Order Book Reconstructor
-  revision 116
+  revision 122
   modified_by 6 "petr"
   // class settings
   
@@ -657,6 +657,14 @@ ${members}};
 	    cpp default "#include in source"
 	    classrelation_ref 517382 // <dependency>
 	  b parent class_ref 486406 // CoinbaseReconstructor
+      end
+
+      classrelation 658054 // <dependency>
+	relation 647942 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 658054 // <dependency>
+	  b parent class_ref 603654 // BitstampReconstructor
       end
     end
 
@@ -1900,7 +1908,7 @@ ${body}}
 	end
       end
 
-      class 570886 "Updated"
+      class 597126 "Created"
 	abstract visibility public 
 	cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -1913,12 +1921,98 @@ ${inlines}
 	explicit_switch_type ""
 	mysql_decl ""
 	
+	operation 650630 "toEvent"
+	  cpp_virtual public return_type class_ref 230406 // Event
+	  multiplicity "0..1"
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}std::unique_ptr<${type}> ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}std::unique_ptr<${type}> ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  comment "By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event"
+	end
+
+	classrelation 650374 // <generalisation>
+	  relation 640262 ---|>
+	    a public
+	      cpp virtual default "${type}"
+	      classrelation_ref 650374 // <generalisation>
+	    b parent class_ref 448390 // ExchangeMessage
+	end
+
+	operation 760198 "accept"
+	  cpp_virtual public explicit_return_type "bool"
+	  nparams 1
+	    param in name "mh" type class_ref 441222 // MessageHandler
+	  multiplicity "1"
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0}* ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0}* ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+      end
+
+      class 570886 "Changed"
+	abstract visibility public 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	operation 779398 "toEvent"
+	  cpp_virtual public return_type class_ref 230406 // Event
+	  multiplicity "0..1"
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}std::unique_ptr<${type}> ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}std::unique_ptr<${type}> ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  comment "By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event"
+	end
+
 	classrelation 622470 // <generalisation>
 	  relation 612358 ---|>
 	    a public
 	      cpp virtual default "${type}"
 	      classrelation_ref 622470 // <generalisation>
 	    b parent class_ref 448390 // ExchangeMessage
+	end
+
+	operation 760326 "accept"
+	  cpp_virtual public explicit_return_type "bool"
+	  nparams 1
+	    param in name "mh" type class_ref 441222 // MessageHandler
+	  multiplicity "1"
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0}* ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0}* ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
 	end
       end
 
@@ -2083,28 +2177,12 @@ ${inlines}
 	  
 	end
 
-	operation 650630 "toEvent"
-	  cpp_virtual public return_type class_ref 230406 // Event
-	  multiplicity "0..1"
-	  nparams 0
-	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}std::unique_ptr<${type}> ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	  cpp_def "${comment}${inline}${typeprefix}std::unique_ptr<${type}> ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	  comment "By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event"
-	end
-
-	classrelation 622726 // <generalisation>
-	  relation 612614 ---|>
+	classrelation 650758 // <generalisation>
+	  relation 640646 ---|>
 	    a public
 	      cpp default "${type}"
-	      classrelation_ref 622726 // <generalisation>
-	    b parent class_ref 570886 // Updated
+	      classrelation_ref 650758 // <generalisation>
+	    b parent class_ref 597126 // Created
 	end
       end
 
@@ -2141,11 +2219,11 @@ ${inlines}
 	    a public
 	      cpp default "${type}"
 	      classrelation_ref 622854 // <generalisation>
-	    b parent class_ref 570886 // Updated
+	    b parent class_ref 570886 // Changed
 	end
       end
 
-      class 328582 "PartiallyCanceled"
+      class 328582 "VolumeDecremented"
 	abstract visibility public 
 	cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -2178,7 +2256,7 @@ ${inlines}
 	    a public
 	      cpp default "${type}"
 	      classrelation_ref 623238 // <generalisation>
-	    b parent class_ref 570886 // Updated
+	    b parent class_ref 570886 // Changed
 	end
       end
 
@@ -2215,7 +2293,7 @@ ${inlines}
 	    a public
 	      cpp default "${type}"
 	      classrelation_ref 622982 // <generalisation>
-	    b parent class_ref 570886 // Updated
+	    b parent class_ref 570886 // Changed
 	end
       end
 
@@ -2252,11 +2330,11 @@ ${inlines}
 	    a public
 	      cpp default "${type}"
 	      classrelation_ref 623110 // <generalisation>
-	    b parent class_ref 570886 // Updated
+	    b parent class_ref 570886 // Changed
 	end
       end
 
-      class 328710 "FullyCanceled"
+      class 328710 "Canceled"
 	abstract visibility public 
 	cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -2316,12 +2394,12 @@ ${inlines}
 	  comment "By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event"
 	end
 
-	classrelation 623366 // <generalisation>
-	  relation 613254 ---|>
+	classrelation 650502 // <generalisation>
+	  relation 640390 ---|>
 	    a public
-	      cpp default "${type}"
-	      classrelation_ref 623366 // <generalisation>
-	    b parent class_ref 570886 // Updated
+	      cpp virtual default "${type}"
+	      classrelation_ref 650502 // <generalisation>
+	    b parent class_ref 448390 // ExchangeMessage
 	end
       end
 
@@ -2369,12 +2447,12 @@ ${inlines}
 	  
 	end
 
-	classrelation 622598 // <generalisation>
-	  relation 612486 ---|>
+	classrelation 650630 // <generalisation>
+	  relation 640518 ---|>
 	    a public
 	      cpp default "${type}"
-	      classrelation_ref 622598 // <generalisation>
-	    b parent class_ref 570886 // Updated
+	      classrelation_ref 650630 // <generalisation>
+	    b parent class_ref 597126 // Created
 	end
       end
 
@@ -2585,6 +2663,20 @@ ${inlines}
 	
       end
 
+      operation 483590 "elapsed"
+	cpp_virtual protected explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
       operation 721798 "exchangeMessage"
 	cpp_virtual protected explicit_return_type "bool"
 	nparams 0
@@ -2599,21 +2691,7 @@ ${inlines}
 	
       end
 
-      operation 730118 "orderBookUpdated"
-	cpp_virtual protected explicit_return_type "bool"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 483590 "elapsed"
+      operation 752646 "created"
 	cpp_virtual protected explicit_return_type "bool"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
@@ -2655,7 +2733,35 @@ ${inlines}
 	
       end
 
+      operation 730118 "changed"
+	cpp_virtual protected explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
       operation 484742 "volumeIncremented"
+	cpp_virtual protected explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 485254 "volumeDecremented"
 	cpp_virtual protected explicit_return_type "bool"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
@@ -2711,21 +2817,7 @@ ${inlines}
 	
       end
 
-      operation 485254 "partiallyCanceled"
-	cpp_virtual protected explicit_return_type "bool"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 485382 "fullyCanceled"
+      operation 485382 "canceled"
 	cpp_virtual protected explicit_return_type "bool"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
@@ -2800,6 +2892,32 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
+      attribute 451206 "base_min_size_"
+	protected type class_ref 305798 // Volume
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "The base_min_size and base_max_size fields define the min and max order size. The quote_increment field specifies the min order price as well as the price increment.
+The order price must be a multiple of this increment (i.e. if the increment is 0.01, order prices of 0.001 or 0.021 would be rejected)."
+      end
+
+      attribute 458502 "base_increment_"
+	protected type class_ref 305798 // Volume
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
       attribute 472326 "extract_only_"
 	protected explicit_type "bool"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
@@ -3411,6 +3529,7 @@ ${inlines}
 	
       end
     end
+
   end
 
   classview 200966 "Implementation - Coinbase"
@@ -3456,10 +3575,10 @@ ${inlines}
 	  cpp_on_exit "stm.em_ = std::unique_ptr<ExchangeMessage>(
     dynamic_cast<ExchangeMessage *>(stm.received_.release()));
 "
-	transition 357254 "received"
+	transition 357254 "opened"
 	  on state_ref 198278 // Save
-	    uml_trigger "received"
-	    cpp_trigger "received"
+	    uml_trigger "opened"
+	    cpp_trigger "opened"
 	  external 
 	end
 
@@ -3493,6 +3612,14 @@ stm.output_.push_back(std::move(stm.received_));"
 	    uml_trigger "message"
 	    cpp_trigger "message"
 	  external 
+	end
+
+	transition 386310 "received"
+	  on state_ref 198022 // Wait
+	    uml_trigger "received"
+	    uml_expr "drop message"
+	    cpp_trigger "received"
+	    cpp_expr "stm.received_.reset(nullptr);"
 	end
       end
 
@@ -3783,7 +3910,7 @@ ${inlines}
 	    a public
 	      cpp default "${type}"
 	      classrelation_ref 496518 // <generalisation>
-	    b parent class_ref 328710 // FullyCanceled
+	    b parent class_ref 328710 // Canceled
 	end
 
 	operation 651526 "CoinbaseDoneCanceled"
@@ -3866,32 +3993,6 @@ ${inlines}
 	    cpp default "${type}"
 	    classrelation_ref 510598 // <generalisation>
 	  b parent class_ref 486278 // ReconstructorImplementation
-      end
-
-      attribute 451206 "base_min_size_"
-	private type class_ref 305798 // Volume
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-	comment "The base_min_size and base_max_size fields define the min and max order size. The quote_increment field specifies the min order price as well as the price increment.
-The order price must be a multiple of this increment (i.e. if the increment is 0.01, order prices of 0.001 or 0.021 would be rejected)."
-      end
-
-      attribute 458502 "base_increment_"
-	private type class_ref 305798 // Volume
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
       end
 
       operation 576134 "extract"
@@ -4142,7 +4243,7 @@ ${inlines}
       ncouples 1
       key "STM generated" value ""
       comment " implement the state machine Deduce Size Coinbase"
-      class 543110 "AnyState"
+      class 617606 "AnyState"
 	abstract visibility protected 
 	cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -4158,7 +4259,7 @@ ${inlines}
 	ncouples 1
 	key "STM generated" value ""
 	comment " Mother class of all the classes representing states"
-	operation 685702 "~AnyState"
+	operation 774022 "~AnyState"
 	  force_body_gen cpp_virtual public explicit_return_type ""
 	  nparams 0
 	  cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
@@ -4174,8 +4275,8 @@ ${inlines}
 	  key "STM generated" value ""
 	end
 
-	operation 685830 "_upper"
-	  abstract force_body_gen cpp_virtual public return_type class_ref 543110 // AnyState
+	operation 774150 "_upper"
+	  abstract force_body_gen cpp_virtual public return_type class_ref 617606 // AnyState
 	  nparams 1
 	    param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
 	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} &${)}${const}${volatile}${throw}${abstract};
@@ -4189,7 +4290,7 @@ ${inlines}
 	  comment " return the upper state"
 	end
 
-	operation 685958 "_do"
+	operation 774278 "_do"
 	  force_body_gen cpp_virtual public explicit_return_type "void"
 	  nparams 1
 	    param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
@@ -4207,7 +4308,7 @@ ${inlines}
 	  comment " perform the 'do activity'"
 	end
 
-	operation 687238 "received"
+	operation 775174 "opened"
 	  force_body_gen cpp_virtual public explicit_return_type "void"
 	  nparams 1
 	    param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
@@ -4222,10 +4323,10 @@ ${inlines}
 	  
 	  ncouples 1
 	  key "STM generated" value ""
-	  comment " the current state doesn't manage the event received, give it to the upper state"
+	  comment " the current state doesn't manage the event opened, give it to the upper state"
 	end
 
-	operation 687622 "elapsed"
+	operation 775430 "elapsed"
 	  force_body_gen cpp_virtual public explicit_return_type "void"
 	  nparams 1
 	    param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
@@ -4243,7 +4344,7 @@ ${inlines}
 	  comment " the current state doesn't manage the event elapsed, give it to the upper state"
 	end
 
-	operation 688006 "era"
+	operation 775686 "era"
 	  force_body_gen cpp_virtual public explicit_return_type "void"
 	  nparams 1
 	    param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
@@ -4261,7 +4362,7 @@ ${inlines}
 	  comment " the current state doesn't manage the event era, give it to the upper state"
 	end
 
-	operation 688390 "filled"
+	operation 775942 "filled"
 	  force_body_gen cpp_virtual public explicit_return_type "void"
 	  nparams 1
 	    param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
@@ -4279,7 +4380,7 @@ ${inlines}
 	  comment " the current state doesn't manage the event filled, give it to the upper state"
 	end
 
-	operation 688774 "message"
+	operation 776198 "message"
 	  force_body_gen cpp_virtual public explicit_return_type "void"
 	  nparams 1
 	    param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
@@ -4297,7 +4398,25 @@ ${inlines}
 	  comment " the current state doesn't manage the event message, give it to the upper state"
 	end
 
-	operation 689542 "create"
+	operation 776582 "received"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " the current state doesn't manage the event received, give it to the upper state"
+	end
+
+	operation 777222 "create"
 	  force_body_gen cpp_virtual public explicit_return_type "void"
 	  nparams 1
 	    param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
@@ -4315,7 +4434,7 @@ ${inlines}
 	end
       end
 
-      class 543238 "Deduce_Size_Coinbase_State"
+      class 617734 "Deduce_Size_Coinbase_State"
 	visibility protected 
 	cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -4331,7 +4450,7 @@ ${inlines}
 	ncouples 1
 	key "STM generated" value ""
 	comment " implement the state Deduce Size Coinbase"
-	class 543366 "Wait_State"
+	class 617862 "Wait_State"
 	  visibility public 
 	  cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -4347,7 +4466,7 @@ ${inlines}
 	  ncouples 1
 	  key "STM generated" value ""
 	  comment " implement the state Wait"
-	  operation 686214 "~Wait_State"
+	  operation 774534 "~Wait_State"
 	    force_body_gen cpp_virtual public explicit_return_type ""
 	    nparams 0
 	    cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
@@ -4363,15 +4482,15 @@ ${inlines}
 	    key "STM generated" value ""
 	  end
 
-	  classrelation 598406 // <generalisation>
-	    relation 588294 ---|>
+	  classrelation 672134 // <generalisation>
+	    relation 662022 ---|>
 	      a public
 		cpp default "${type}"
-		classrelation_ref 598406 // <generalisation>
-	      b parent class_ref 543110 // AnyState
+		classrelation_ref 672134 // <generalisation>
+	      b parent class_ref 617606 // AnyState
 	  end
 
-	  operation 687366 "received"
+	  operation 775302 "opened"
 	    force_body_gen cpp_virtual public explicit_return_type "void"
 	    nparams 1
 	      param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
@@ -4386,10 +4505,10 @@ ${inlines}
 	    
 	    ncouples 1
 	    key "STM generated" value ""
-	    comment " to manage the event received"
+	    comment " to manage the event opened"
 	  end
 
-	  operation 687750 "elapsed"
+	  operation 775558 "elapsed"
 	    force_body_gen cpp_virtual public explicit_return_type "void"
 	    nparams 1
 	      param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
@@ -4407,7 +4526,7 @@ ${inlines}
 	    comment " to manage the event elapsed"
 	  end
 
-	  operation 688134 "era"
+	  operation 775814 "era"
 	    force_body_gen cpp_virtual public explicit_return_type "void"
 	    nparams 1
 	      param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
@@ -4425,7 +4544,7 @@ ${inlines}
 	    comment " to manage the event era"
 	  end
 
-	  operation 688518 "filled"
+	  operation 776070 "filled"
 	    force_body_gen cpp_virtual public explicit_return_type "void"
 	    nparams 1
 	      param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
@@ -4443,7 +4562,7 @@ ${inlines}
 	    comment " to manage the event filled"
 	  end
 
-	  operation 688902 "message"
+	  operation 776326 "message"
 	    force_body_gen cpp_virtual public explicit_return_type "void"
 	    nparams 1
 	      param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
@@ -4461,7 +4580,25 @@ ${inlines}
 	    comment " to manage the event message"
 	  end
 
-	  operation 689030 "_doexit"
+	  operation 776710 "received"
+	    force_body_gen cpp_virtual public explicit_return_type "void"
+	    nparams 1
+	      param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
+	    cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	    cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	    
+	    
+	    
+	    
+	    ncouples 1
+	    key "STM generated" value ""
+	    comment " to manage the event received"
+	  end
+
+	  operation 776838 "_doexit"
 	    force_body_gen public explicit_return_type "void"
 	    nparams 1
 	      param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
@@ -4479,8 +4616,8 @@ ${inlines}
 	    comment " perform the 'exit behavior'"
 	  end
 
-	  operation 689158 "_upper"
-	    force_body_gen cpp_virtual public return_type class_ref 543110 // AnyState
+	  operation 776966 "_upper"
+	    force_body_gen cpp_virtual public return_type class_ref 617606 // AnyState
 	    nparams 1
 	      param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
 	    cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -4498,7 +4635,7 @@ ${inlines}
 	  end
 	end
 
-	class 543878 "Save_State"
+	class 618374 "Save_State"
 	  visibility public 
 	  cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -4514,7 +4651,7 @@ ${inlines}
 	  ncouples 1
 	  key "STM generated" value ""
 	  comment " implement the state Save"
-	  operation 686726 "~Save_State"
+	  operation 775046 "~Save_State"
 	    force_body_gen cpp_virtual public explicit_return_type ""
 	    nparams 0
 	    cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
@@ -4530,15 +4667,15 @@ ${inlines}
 	    key "STM generated" value ""
 	  end
 
-	  classrelation 599430 // <generalisation>
-	    relation 589318 ---|>
+	  classrelation 673158 // <generalisation>
+	    relation 663046 ---|>
 	      a public
 		cpp default "${type}"
-		classrelation_ref 599430 // <generalisation>
-	      b parent class_ref 543110 // AnyState
+		classrelation_ref 673158 // <generalisation>
+	      b parent class_ref 617606 // AnyState
 	  end
 
-	  operation 691078 "_completion"
+	  operation 778630 "_completion"
 	    force_body_gen cpp_virtual public explicit_return_type "bool"
 	    nparams 1
 	      param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
@@ -4555,7 +4692,7 @@ ${inlines}
 	    key "STM generated" value ""
 	  end
 
-	  operation 691206 "create"
+	  operation 778758 "create"
 	    force_body_gen cpp_virtual public explicit_return_type "void"
 	    nparams 1
 	      param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
@@ -4573,7 +4710,7 @@ ${inlines}
 	    comment " to manage the event create"
 	  end
 
-	  operation 691334 "_doentry"
+	  operation 778886 "_doentry"
 	    force_body_gen public explicit_return_type "void"
 	    nparams 1
 	      param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
@@ -4591,8 +4728,8 @@ ${inlines}
 	    comment " perform the 'entry behavior'"
 	  end
 
-	  operation 691462 "_upper"
-	    force_body_gen cpp_virtual public return_type class_ref 543110 // AnyState
+	  operation 779014 "_upper"
+	    force_body_gen cpp_virtual public return_type class_ref 617606 // AnyState
 	    nparams 1
 	      param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
 	    cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -4610,7 +4747,7 @@ ${inlines}
 	  end
 	end
 
-	class 543494 "Deduce_State"
+	class 617990 "Deduce_State"
 	  visibility public 
 	  cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -4626,7 +4763,7 @@ ${inlines}
 	  ncouples 1
 	  key "STM generated" value ""
 	  comment " implement the state Deduce"
-	  class 543622 "Size_change_State"
+	  class 618118 "Size_change_State"
 	    visibility public 
 	    cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -4642,7 +4779,7 @@ ${inlines}
 	    ncouples 1
 	    key "STM generated" value ""
 	    comment " implement the state Size change"
-	    operation 686470 "~Size_change_State"
+	    operation 774790 "~Size_change_State"
 	      force_body_gen cpp_virtual public explicit_return_type ""
 	      nparams 0
 	      cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
@@ -4658,15 +4795,15 @@ ${inlines}
 	      key "STM generated" value ""
 	    end
 
-	    classrelation 598790 // <generalisation>
-	      relation 588678 ---|>
+	    classrelation 672518 // <generalisation>
+	      relation 662406 ---|>
 		a public
 		  cpp default "${type}"
-		  classrelation_ref 598790 // <generalisation>
-		b parent class_ref 543110 // AnyState
+		  classrelation_ref 672518 // <generalisation>
+		b parent class_ref 617606 // AnyState
 	    end
 
-	    operation 689286 "_completion"
+	    operation 777094 "_completion"
 	      force_body_gen cpp_virtual public explicit_return_type "bool"
 	      nparams 1
 	        param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
@@ -4683,7 +4820,7 @@ ${inlines}
 	      key "STM generated" value ""
 	    end
 
-	    operation 689670 "create"
+	    operation 777350 "create"
 	      force_body_gen cpp_virtual public explicit_return_type "void"
 	      nparams 1
 	        param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
@@ -4701,8 +4838,8 @@ ${inlines}
 	      comment " to manage the event create"
 	    end
 
-	    operation 689926 "_upper"
-	      force_body_gen cpp_virtual public return_type class_ref 543110 // AnyState
+	    operation 777478 "_upper"
+	      force_body_gen cpp_virtual public return_type class_ref 617606 // AnyState
 	      nparams 1
 	        param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
 	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -4720,7 +4857,7 @@ ${inlines}
 	    end
 	  end
 
-	  class 543750 "Remaining_size_State"
+	  class 618246 "Remaining_size_State"
 	    visibility public 
 	    cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -4736,7 +4873,7 @@ ${inlines}
 	    ncouples 1
 	    key "STM generated" value ""
 	    comment " implement the state Remaining size"
-	    operation 686598 "~Remaining_size_State"
+	    operation 774918 "~Remaining_size_State"
 	      force_body_gen cpp_virtual public explicit_return_type ""
 	      nparams 0
 	      cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
@@ -4752,15 +4889,15 @@ ${inlines}
 	      key "STM generated" value ""
 	    end
 
-	    classrelation 599046 // <generalisation>
-	      relation 588934 ---|>
+	    classrelation 672774 // <generalisation>
+	      relation 662662 ---|>
 		a public
 		  cpp default "${type}"
-		  classrelation_ref 599046 // <generalisation>
-		b parent class_ref 543110 // AnyState
+		  classrelation_ref 672774 // <generalisation>
+		b parent class_ref 617606 // AnyState
 	    end
 
-	    operation 690054 "_completion"
+	    operation 777606 "_completion"
 	      force_body_gen cpp_virtual public explicit_return_type "bool"
 	      nparams 1
 	        param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
@@ -4777,7 +4914,7 @@ ${inlines}
 	      key "STM generated" value ""
 	    end
 
-	    operation 690182 "create"
+	    operation 777734 "create"
 	      force_body_gen cpp_virtual public explicit_return_type "void"
 	      nparams 1
 	        param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
@@ -4795,7 +4932,7 @@ ${inlines}
 	      comment " to manage the event create"
 	    end
 
-	    operation 690310 "_doentry"
+	    operation 777862 "_doentry"
 	      force_body_gen public explicit_return_type "void"
 	      nparams 1
 	        param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
@@ -4813,8 +4950,8 @@ ${inlines}
 	      comment " perform the 'entry behavior'"
 	    end
 
-	    operation 690438 "_upper"
-	      force_body_gen cpp_virtual public return_type class_ref 543110 // AnyState
+	    operation 777990 "_upper"
+	      force_body_gen cpp_virtual public return_type class_ref 617606 // AnyState
 	      nparams 1
 	        param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
 	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -4832,7 +4969,7 @@ ${inlines}
 	    end
 	  end
 
-	  operation 686342 "~Deduce_State"
+	  operation 774662 "~Deduce_State"
 	    force_body_gen cpp_virtual public explicit_return_type ""
 	    nparams 0
 	    cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
@@ -4848,8 +4985,8 @@ ${inlines}
 	    key "STM generated" value ""
 	  end
 
-	  attribute 436998 "_size_change_state"
-	    public type class_ref 543622 // Size_change_State
+	  attribute 487302 "_size_change_state"
+	    public type class_ref 618118 // Size_change_State
 	    cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	    java_decl ""
@@ -4863,8 +5000,8 @@ ${inlines}
 	    comment " memorize the instance of the state Size change, internal"
 	  end
 
-	  attribute 437126 "_remaining_size_state"
-	    public type class_ref 543750 // Remaining_size_State
+	  attribute 487430 "_remaining_size_state"
+	    public type class_ref 618246 // Remaining_size_State
 	    cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	    java_decl ""
@@ -4878,15 +5015,15 @@ ${inlines}
 	    comment " memorize the instance of the state Remaining size, internal"
 	  end
 
-	  classrelation 598662 // <generalisation>
-	    relation 588550 ---|>
+	  classrelation 672390 // <generalisation>
+	    relation 662278 ---|>
 	      a public
 		cpp default "${type}"
-		classrelation_ref 598662 // <generalisation>
-	      b parent class_ref 543110 // AnyState
+		classrelation_ref 672390 // <generalisation>
+	      b parent class_ref 617606 // AnyState
 	  end
 
-	  operation 690566 "_exit1"
+	  operation 778118 "_exit1"
 	    force_body_gen public explicit_return_type "void"
 	    nparams 1
 	      param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
@@ -4904,7 +5041,7 @@ ${inlines}
 	    comment " to manage the exit point 'exit', defined because probably shared"
 	  end
 
-	  operation 690694 "_doentry"
+	  operation 778246 "_doentry"
 	    force_body_gen public explicit_return_type "void"
 	    nparams 1
 	      param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
@@ -4922,7 +5059,7 @@ ${inlines}
 	    comment " perform the 'entry behavior'"
 	  end
 
-	  operation 690822 "_doexit"
+	  operation 778374 "_doexit"
 	    force_body_gen public explicit_return_type "void"
 	    nparams 1
 	      param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
@@ -4940,8 +5077,8 @@ ${inlines}
 	    comment " perform the 'exit behavior'"
 	  end
 
-	  operation 690950 "_upper"
-	    force_body_gen cpp_virtual public return_type class_ref 543110 // AnyState
+	  operation 778502 "_upper"
+	    force_body_gen cpp_virtual public return_type class_ref 617606 // AnyState
 	    nparams 1
 	      param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
 	    cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -4959,7 +5096,7 @@ ${inlines}
 	  end
 	end
 
-	operation 686086 "~Deduce_Size_Coinbase_State"
+	operation 774406 "~Deduce_Size_Coinbase_State"
 	  force_body_gen cpp_virtual public explicit_return_type ""
 	  nparams 0
 	  cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
@@ -4975,8 +5112,8 @@ ${inlines}
 	  key "STM generated" value ""
 	end
 
-	attribute 436742 "_wait_state"
-	  public type class_ref 543366 // Wait_State
+	attribute 487046 "_wait_state"
+	  public type class_ref 617862 // Wait_State
 	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	  java_decl ""
@@ -4990,8 +5127,8 @@ ${inlines}
 	  comment " memorize the instance of the state Wait, internal"
 	end
 
-	attribute 436870 "_deduce_state"
-	  public type class_ref 543494 // Deduce_State
+	attribute 487174 "_deduce_state"
+	  public type class_ref 617990 // Deduce_State
 	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	  java_decl ""
@@ -5005,8 +5142,8 @@ ${inlines}
 	  comment " memorize the instance of the state Deduce, internal"
 	end
 
-	attribute 437254 "_save_state"
-	  public type class_ref 543878 // Save_State
+	attribute 487558 "_save_state"
+	  public type class_ref 618374 // Save_State
 	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	  java_decl ""
@@ -5020,15 +5157,15 @@ ${inlines}
 	  comment " memorize the instance of the state Save, internal"
 	end
 
-	classrelation 598278 // <generalisation>
-	  relation 588166 ---|>
+	classrelation 672006 // <generalisation>
+	  relation 661894 ---|>
 	    a public
 	      cpp default "${type}"
-	      classrelation_ref 598278 // <generalisation>
-	    b parent class_ref 543110 // AnyState
+	      classrelation_ref 672006 // <generalisation>
+	    b parent class_ref 617606 // AnyState
 	end
 
-	operation 691590 "create"
+	operation 779142 "create"
 	  force_body_gen cpp_virtual public explicit_return_type "void"
 	  nparams 1
 	    param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
@@ -5046,8 +5183,8 @@ ${inlines}
 	  comment " to manage the event create"
 	end
 
-	operation 691718 "_upper"
-	  force_body_gen cpp_virtual public return_type class_ref 543110 // AnyState
+	operation 779270 "_upper"
+	  force_body_gen cpp_virtual public return_type class_ref 617606 // AnyState
 	  nparams 1
 	    param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
 	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} &${)}${const}${volatile}${throw}${abstract};
@@ -5066,7 +5203,7 @@ ${inlines}
       end
 
       attribute 436614 "_deduce_size_coinbase_state"
-	protected type class_ref 543238 // Deduce_Size_Coinbase_State
+	protected type class_ref 617734 // Deduce_Size_Coinbase_State
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -5110,23 +5247,6 @@ ${inlines}
 	
 	ncouples 1
 	key "STM generated" value ""
-      end
-
-      operation 687110 "received"
-	force_body_gen public explicit_return_type "bool"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-	ncouples 1
-	key "STM generated" value ""
-	comment " the operation you call to signal the event received"
       end
 
       operation 687494 "elapsed"
@@ -5197,15 +5317,6 @@ ${inlines}
 	comment " the operation you call to signal the event message"
       end
 
-      classrelation 598534 // <dependency>
-	relation 588422 -_->
-	  stereotype "friend"
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 598534 // <dependency>
-	  b parent class_ref 543366 // Wait_State
-      end
-
       operation 689414 "create"
 	force_body_gen public explicit_return_type "bool"
 	nparams 0
@@ -5221,51 +5332,6 @@ ${inlines}
 	ncouples 1
 	key "STM generated" value ""
 	comment " the operation you call to signal the event create"
-      end
-
-      classrelation 598918 // <dependency>
-	relation 588806 -_->
-	  stereotype "friend"
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 598918 // <dependency>
-	  b parent class_ref 543622 // Size_change_State
-      end
-
-      classrelation 599174 // <dependency>
-	relation 589062 -_->
-	  stereotype "friend"
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 599174 // <dependency>
-	  b parent class_ref 543750 // Remaining_size_State
-      end
-
-      classrelation 599302 // <dependency>
-	relation 589190 -_->
-	  stereotype "friend"
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 599302 // <dependency>
-	  b parent class_ref 543494 // Deduce_State
-      end
-
-      classrelation 599558 // <dependency>
-	relation 589446 -_->
-	  stereotype "friend"
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 599558 // <dependency>
-	  b parent class_ref 543878 // Save_State
-      end
-
-      classrelation 599686 // <dependency>
-	relation 589574 -_->
-	  stereotype "friend"
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 599686 // <dependency>
-	  b parent class_ref 543238 // Deduce_Size_Coinbase_State
       end
 
       operation 691846 "doActivity"
@@ -5288,7 +5354,7 @@ ${inlines}
       operation 691974 "_set_currentState"
 	force_body_gen cpp_inline protected explicit_return_type "void"
 	nparams 1
-	  param inout name "st" type class_ref 543110 // AnyState
+	  param inout name "st" explicit_type "AnyState"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -5320,16 +5386,6 @@ ${inlines}
 	comment " execution done, internal"
       end
 
-      classrelation 599814 // _current_state (<directional aggregation>)
-	relation 589702 o-->
-	  a role_name "_current_state" protected
-	    comment " contains the current state, internal"
-	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 599814 // _current_state (<directional aggregation>)
-	  b parent class_ref 543110 // AnyState
-      end
-
       classrelation 599942 // <generalisation>
 	relation 589830 ---|>
 	  a public
@@ -5344,6 +5400,104 @@ ${inlines}
 	    cpp default "#include in source"
 	    classrelation_ref 636934 // <dependency>
 	  b parent class_ref 564358 // cmath
+      end
+
+      operation 773638 "opened"
+	force_body_gen public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " the operation you call to signal the event opened"
+      end
+
+      operation 776454 "received"
+	force_body_gen public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " the operation you call to signal the event received"
+      end
+
+      classrelation 672262 // <dependency>
+	relation 662150 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 672262 // <dependency>
+	  b parent class_ref 617862 // Wait_State
+      end
+
+      classrelation 672646 // <dependency>
+	relation 662534 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 672646 // <dependency>
+	  b parent class_ref 618118 // Size_change_State
+      end
+
+      classrelation 672902 // <dependency>
+	relation 662790 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 672902 // <dependency>
+	  b parent class_ref 618246 // Remaining_size_State
+      end
+
+      classrelation 673030 // <dependency>
+	relation 662918 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 673030 // <dependency>
+	  b parent class_ref 617990 // Deduce_State
+      end
+
+      classrelation 673286 // <dependency>
+	relation 663174 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 673286 // <dependency>
+	  b parent class_ref 618374 // Save_State
+      end
+
+      classrelation 673414 // <dependency>
+	relation 663302 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 673414 // <dependency>
+	  b parent class_ref 617734 // Deduce_Size_Coinbase_State
+      end
+
+      classrelation 673542 // _current_state (<directional aggregation>)
+	relation 663430 o-->
+	  a role_name "_current_state" protected
+	    comment " contains the current state, internal"
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 673542 // _current_state (<directional aggregation>)
+	  b parent class_ref 617606 // AnyState
       end
     end
   end
@@ -5368,6 +5522,11 @@ ${inlines}
     
     activitydiagramsettings
      end
+    classdiagram 320774 "Bitstamp Messages"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
     state 177542 "DedupOrchestrator"
       stereotype "machine"
       statediagram 261382 "DedupOrchestrator"
@@ -6358,118 +6517,6 @@ ${inlines}
 "
 	    classrelation_ref 483462 // _current_state (<directional aggregation>)
 	  b parent class_ref 465414 // AnyState
-      end
-
-      operation 546694 "received"
-	cpp_virtual cpp_override protected explicit_return_type "bool"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 626054 "opened"
-	cpp_virtual protected explicit_return_type "bool"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 546822 "volumeIncremented"
-	cpp_virtual cpp_override protected explicit_return_type "bool"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 546950 "priceAdvanced"
-	cpp_virtual cpp_override protected explicit_return_type "bool"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 547078 "priceReceded"
-	cpp_virtual cpp_override protected explicit_return_type "bool"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 547206 "filled"
-	cpp_virtual cpp_override protected explicit_return_type "bool"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 547334 "partiallyCanceled"
-	cpp_virtual cpp_override protected explicit_return_type "bool"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 547462 "fullyCanceled"
-	cpp_virtual cpp_override protected explicit_return_type "bool"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
       end
 
       classrelation 518534 // <dependency>
@@ -7995,6 +8042,415 @@ ${inlines}
 	
       end
     end
+
+    class 603654 "BitstampReconstructor"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      class 603782 "BitstampMessage"
+	visibility public 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 658822 // <generalisation>
+	  relation 648710 ---|>
+	    a public
+	      cpp virtual default "${type}"
+	      classrelation_ref 658822 // <generalisation>
+	    b parent class_ref 448390 // ExchangeMessage
+	end
+
+	operation 759942 "getBaseMinSize"
+	  const constvalue cpp_virtual protected return_type class_ref 305798 // Volume
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 760070 "getBaseIncrement"
+	  const constvalue cpp_virtual protected return_type class_ref 305798 // Volume
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	attribute 480518 "reconstructor_"
+	  const_attribute protected type class_ref 603654 // BitstampReconstructor
+	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} &${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	end
+
+	operation 760454 "BitstampMessage"
+	  public explicit_return_type ""
+	  nparams 1
+	    param in name "reconstructor" type class_ref 603654 // BitstampReconstructor
+	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw}: reconstructor_{reconstructor} {
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 766982 "toUuid"
+	  class_operation constvalue public return_type class_ref 472582 // uuid
+	  nparams 1
+	    param in name "id" explicit_type "string"
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 767110 "toTimestamp"
+	  class_operation constvalue public return_type class_ref 230278 // Timestamp
+	  nparams 1
+	    param in name "timestamp" explicit_type "string"
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+      end
+
+      class 603910 "BitstampCreated"
+	visibility public 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 657286 // <generalisation>
+	  relation 647174 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 657286 // <generalisation>
+	    b parent class_ref 597126 // Created
+	end
+
+	operation 759174 "BitstampCreated"
+	  public explicit_return_type ""
+	  nparams 2
+	    param in name "tree" type class_ref 174214 // ptree
+	    param in name "reconstructor" type class_ref 603654 // BitstampReconstructor
+	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${volatile}${throw};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw}: BitstampMessage{reconstructor} {
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	classrelation 658310 // <generalisation>
+	  relation 648198 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 658310 // <generalisation>
+	    b parent class_ref 603782 // BitstampMessage
+	end
+
+	classrelation 665350 // <dependency>
+	  relation 655238 -_->
+	    a public
+	      cpp default "#include in source"
+	      classrelation_ref 665350 // <dependency>
+	    b parent class_ref 507910 // string_generator
+	end
+
+	classrelation 665478 // <dependency>
+	  relation 655366 -_->
+	    a public
+	      cpp default "#include in source"
+	      classrelation_ref 665478 // <dependency>
+	    b parent class_ref 611078 // iomanip
+	end
+      end
+
+      class 604038 "BitstampReceived"
+	visibility public 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 657414 // <generalisation>
+	  relation 647302 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 657414 // <generalisation>
+	    b parent class_ref 246790 // Received
+	end
+      end
+
+      class 604166 "BitstampOpened"
+	visibility public 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 657542 // <generalisation>
+	  relation 647430 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 657542 // <generalisation>
+	    b parent class_ref 246918 // Opened
+	end
+      end
+
+      class 604294 "BitstampCanceled"
+	visibility public 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 657670 // <generalisation>
+	  relation 647558 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 657670 // <generalisation>
+	    b parent class_ref 328710 // Canceled
+	end
+
+	operation 759430 "BitstampCanceled"
+	  public explicit_return_type ""
+	  nparams 2
+	    param in name "tree" type class_ref 174214 // ptree
+	    param in name "reconstructor" type class_ref 603654 // BitstampReconstructor
+	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${volatile}${throw};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw}: BitstampMessage{reconstructor} {
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	classrelation 658438 // <generalisation>
+	  relation 648326 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 658438 // <generalisation>
+	    b parent class_ref 603782 // BitstampMessage
+	end
+      end
+
+      class 604422 "BitstampFilled"
+	visibility public 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 657798 // <generalisation>
+	  relation 647686 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 657798 // <generalisation>
+	    b parent class_ref 246022 // Filled
+	end
+
+	operation 759558 "BitstampFilled"
+	  public explicit_return_type ""
+	  nparams 2
+	    param in name "tree" type class_ref 174214 // ptree
+	    param in name "reconstructor" type class_ref 603654 // BitstampReconstructor
+	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${volatile}${throw};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw}: BitstampMessage{reconstructor} {
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	classrelation 658566 // <generalisation>
+	  relation 648454 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 658566 // <generalisation>
+	    b parent class_ref 603782 // BitstampMessage
+	end
+      end
+
+      class 604550 "BitstampChanged"
+	visibility public 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 657926 // <generalisation>
+	  relation 647814 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 657926 // <generalisation>
+	    b parent class_ref 570886 // Changed
+	end
+
+	operation 759302 "BitstampChanged"
+	  public explicit_return_type ""
+	  nparams 2
+	    param in name "tree" type class_ref 174214 // ptree
+	    param in name "reconstructor" type class_ref 603654 // BitstampReconstructor
+	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${volatile}${throw};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw}: BitstampMessage{reconstructor} {
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	classrelation 658694 // <generalisation>
+	  relation 648582 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 658694 // <generalisation>
+	    b parent class_ref 603782 // BitstampMessage
+	end
+      end
+
+      operation 759686 "BitstampReconstructor"
+	public explicit_return_type ""
+	nparams 4
+	  param in name "store" type class_ref 231302 // Store
+	  param in name "base_min_size" type class_ref 305798 // Volume
+	  param in name "base_increment" type class_ref 305798 // Volume
+	  param in name "extract_only" explicit_type "bool"
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} * ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, ${t3} ${p3}${v3}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(} ${t0} * ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, ${t3} ${p3}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 658182 // <generalisation>
+	relation 648070 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 658182 // <generalisation>
+	  b parent class_ref 486278 // ReconstructorImplementation
+      end
+
+      operation 759814 "extract"
+	stereotype "vector"
+	cpp_virtual protected return_type class_ref 245766 // Message
+	multiplicity "1..*"
+	nparams 1
+	  param in name "tree" type class_ref 174214 // ptree
+	multiplicity "1"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${stereotype}<std::unique_ptr<${type}>> ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${stereotype}<std::unique_ptr<${type}>> ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+    end
   end
 
   deploymentview 154246 "Source files"
@@ -8138,12 +8594,14 @@ ${namespace_end}
       cpp_src "${comment}
 ${includes}
 #include <iostream>
+#include \"date.h\"
 ${namespace_start}
 ${members}
 ${namespace_end}"
       associated_elems
 	class_ref 320518 // Dedup
 	class_ref 320390 // DedupOrchestrator
+	class_ref 603654 // BitstampReconstructor
       end
     end
   end

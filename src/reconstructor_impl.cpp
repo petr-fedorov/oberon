@@ -143,6 +143,32 @@ const Volume MessageHandler::ExchangeMessage::roundToBaseIncrement(const Volume 
   return std::round(volume/getBaseIncrement())*getBaseIncrement();
 }
 
+//By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event
+std::unique_ptr<Event> MessageHandler::Created::toEvent() {
+  int sign = getSide() == kAsk ? -1 : 1;
+  return make_unique<EventImpl>(
+      getOrderId(), getTimestamp(), getLocalTimestamp(), getEventNo(), getPrice(),
+      roundToBaseIncrement(getRemainingSize()) * sign,
+      roundToBaseIncrement(getChangeSize()) * sign, kActive);
+}
+
+bool MessageHandler::Created::accept(MessageHandler* mh) {
+  return mh->created();
+}
+
+//By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event
+std::unique_ptr<Event> MessageHandler::Changed::toEvent() {
+  int sign = getSide() == kAsk ? -1 : 1;
+  return make_unique<EventImpl>(
+      getOrderId(), getTimestamp(), getLocalTimestamp(), getEventNo(), getPrice(),
+      roundToBaseIncrement(getRemainingSize()) * sign,
+      roundToBaseIncrement(getChangeSize()) * sign, kActive);
+}
+
+bool MessageHandler::Changed::accept(MessageHandler* mh) {
+  return mh->changed();
+}
+
 bool MessageHandler::Filled::accept(MessageHandler* mh) {
   return mh->filled();
   
@@ -183,22 +209,13 @@ string MessageHandler::Opened::toString() {
   
 }
 
-//By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event
-std::unique_ptr<Event> MessageHandler::Opened::toEvent() {
-  int sign = getSide() == kAsk ? -1 : 1;
-  return make_unique<EventImpl>(
-      getOrderId(), getTimestamp(), getLocalTimestamp(), getEventNo(), getPrice(),
-      roundToBaseIncrement(getRemainingSize()) * sign,
-      roundToBaseIncrement(getChangeSize()) * sign, kActive);
-}
-
 string MessageHandler::VolumeIncremented::toString() {
   std::stringstream buf;
   buf << ExchangeMessage::toString() << " VolumeIncremented";
   return buf.str();
 }
 
-string MessageHandler::PartiallyCanceled::toString() {
+string MessageHandler::VolumeDecremented::toString() {
   std::stringstream buf;
   buf << ExchangeMessage::toString() << " PartiallyCancelled";
   return buf.str();
@@ -216,18 +233,18 @@ string MessageHandler::PriceReceded::toString() {
   return buf.str();
 }
 
-bool MessageHandler::FullyCanceled::accept(MessageHandler * mh) {
-  return mh->fullyCanceled();
+bool MessageHandler::Canceled::accept(MessageHandler * mh) {
+  return mh->canceled();
 }
 
-string MessageHandler::FullyCanceled::toString() {
+string MessageHandler::Canceled::toString() {
   std::stringstream buf;
   buf << ExchangeMessage::toString() << " FullyCancelled";
   return buf.str();
 }
 
 //By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event
-std::unique_ptr<Event> MessageHandler::FullyCanceled::toEvent() {
+std::unique_ptr<Event> MessageHandler::Canceled::toEvent() {
   int sign = getSide() == kAsk ? -1 : 1;
   return make_unique<EventImpl>(
       getOrderId(), getTimestamp(), getLocalTimestamp(), getEventNo(), getPrice(),
@@ -303,49 +320,54 @@ bool MessageHandler::message() {
   return true;
 }
 
-bool MessageHandler::exchangeMessage() {
-  return message();
-}
-
-bool MessageHandler::orderBookUpdated() {
-  return exchangeMessage();
-  
-}
-
 bool MessageHandler::elapsed() {
   return message();
 }
 
+bool MessageHandler::exchangeMessage() {
+  return message();
+}
+
+bool MessageHandler::created() {
+  return exchangeMessage();
+  
+}
+
 bool MessageHandler::received() {
-  return orderBookUpdated();
+  return created();
 }
 
 bool MessageHandler::opened() {
-  return orderBookUpdated();
+  return created();
+}
+
+bool MessageHandler::changed() {
+  return exchangeMessage();
+  
 }
 
 bool MessageHandler::volumeIncremented() {
-  return orderBookUpdated();
+  return changed();
+}
+
+bool MessageHandler::volumeDecremented() {
+  return changed();
 }
 
 bool MessageHandler::priceAdvanced() {
-  return orderBookUpdated();
+  return changed();
 }
 
 bool MessageHandler::priceReceded() {
-  return orderBookUpdated();
+  return changed();
 }
 
 bool MessageHandler::filled() {
   return exchangeMessage();
 }
 
-bool MessageHandler::partiallyCanceled() {
-  return orderBookUpdated();
-}
-
-bool MessageHandler::fullyCanceled() {
-  return orderBookUpdated();
+bool MessageHandler::canceled() {
+  return exchangeMessage();
 }
 
 MessageHandler::MessageHandler() {

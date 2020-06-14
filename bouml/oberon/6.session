@@ -1,23 +1,20 @@
 window_sizes 1920 971 500 1414 867 52
 cleanlooks_style
 diagrams
-  classdiagram_ref 268166 // Reconstructor Interface
-    1131 693 100 A4 0 0
   classdiagram_ref 161030 // Message Hierarchy Detailed
-    1131 693 100 A4 0 0
+    1131 693 100 A4 180 0
+  classdiagram_ref 268294 // R classes
+    1131 693 100 A4 159 0
   classdiagram_ref 307590 // Message Hierarchy Overview
     1131 693 100 A4 0 0
-  active  activitydiagram_ref 300934 // R.3 Cleanse
-    1131 693 100 A4 12 0
+  active  classdiagram_ref 320774 // Bitstamp Messages
+    1131 693 100 A4 36 0
 end
 show_stereotypes
-selected activitydiagram_ref 300934 // R.3 Cleanse
 open
   usecaseview_ref 141446 // Reconstruct Order Book
-  interruptibleactivityregion_ref 141062 // 
-  classview_ref 154246 // Standalone application
-  attribute_ref 407686 // state_
-  attribute_ref 472966 // taker_order_id_
+  class_ref 230022 // RCoinbase
+  class_ref 596998 // RBitstamp
   deploymentview_ref 147590 // Source files
   class_ref 299014 // OrderState
   operation_ref 624262 // tradeId
@@ -25,29 +22,35 @@ open
   operation_ref 745606 // localTimestamp
   class_ref 202630 // Reconstructor
   operation_ref 225286 // transmit
-  activity_ref 181766 // R.3 Cleanse
+  class_ref 271366 // BookSide
   class_ref 245766 // Message
-  attribute_ref 473734 // local_timestamp_
-  attribute_ref 473094 // trade_id_
-  operation_ref 745222 // get_trade_id_
-  class_ref 246918 // Opened
-  class_ref 328710 // FullyCanceled
+  class_ref 448390 // ExchangeMessage
+  class_ref 597126 // Created
+  class_ref 570886 // Changed
   operation_ref 692230 // create
   operation_ref 590214 // handle
   operation_ref 692742 // getHandlerName
   operation_ref 721926 // message
+  operation_ref 483590 // elapsed
+  operation_ref 752646 // created
+  operation_ref 484742 // volumeIncremented
+  operation_ref 485254 // volumeDecremented
+  class_ref 486278 // ReconstructorImplementation
   attribute_ref 473862 // local_timestamp_
   class_ref 564230 // EventNumberGenerator
   state_ref 197894 // Deduce Size Coinbase
   class_ref 557702 // CoinbaseMessage
   class_ref 507398 // CoinbaseReceived
-  class_ref 507654 // CoinbaseMatch
-  class_ref 472710 // CoinbaseDoneCanceled
   class_ref 507526 // CoinbaseOpen
-  classview_ref 207494 // Implementation - Bitstamp
+  class_ref 617862 // Wait_State
+  class_ref 603782 // BitstampMessage
+  class_ref 603910 // BitstampCreated
+  class_ref 604294 // BitstampCanceled
+  class_ref 604422 // BitstampFilled
+  class_ref 604550 // BitstampChanged
   deploymentview_ref 154246 // Source files
   classview_ref 154374 // external
-  classview_ref 181254 // uuids
+  classview_ref 181382 // Rcpp
 end
 end
 verbose

@@ -26,12 +26,12 @@ end
 pseudostatecanvas 136838 pseudostate_ref 260998 // initial
    xyz 794 120 2000
 end
-note 137478 "This happens only when \"received\" message has not been seen, i.e. in the beginning of the data set. "
+note 137478 "This happens only when \"opened\" message has not been seen, i.e. in the beginning of the data set. "
   xyzwh 699 156 2000 129 103
-transitioncanvas 128774 transition_ref 357254 // received
+transitioncanvas 128774 transition_ref 357254 // opened
   decenter_end 173
   
-  from ref 128006 z 2001 label "received" xyz 196 122 2001 to point 70 126
+  from ref 128006 z 2001 label "opened" xyz 199 123 2001 to point 70 126
   line 128902 z 2001 to ref 128262
   write_horizontally default show_definition default drawing_language default
 end
@@ -72,7 +72,7 @@ transitioncanvas 134662 transition_ref 365702 // message
   decenter_begin 258
   decenter_end 769
   
-  from ref 128006 z 2006 label "message" xyz 406.5 292 2006 to ref 134406
+  from ref 128006 z 2006 label "message" xyz 406 292 2006 to ref 134406
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 134918 transition_ref 365830 // success
@@ -111,6 +111,15 @@ transitioncanvas 136966 transition_ref 379782 // <transition>
   decenter_end 524
   
   from ref 136838 z 2001 to ref 128006
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 137734 transition_ref 386310 // received
+  decenter_begin 671
+  decenter_end 306
+  
+  from ref 128006 z 2001 to point 546 57
+  line 137862 z 2001 label "received / drop message" xyz 432 52 3000 to point 446 57
+  line 137990 z 2001 to ref 128006
   write_horizontally default show_definition default drawing_language default
 end
 line 137606 -_-_

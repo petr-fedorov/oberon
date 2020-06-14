@@ -1,9 +1,9 @@
-class Changed
-!!!779398.cpp!!!	toEvent() : Event [0..1]
+class Created
+!!!650630.cpp!!!	toEvent() : Event [0..1]
 int sign = getSide() == kAsk ? -1 : 1;
 return make_unique<EventImpl>(
     getOrderId(), getTimestamp(), getLocalTimestamp(), getEventNo(), getPrice(),
     roundToBaseIncrement(getRemainingSize()) * sign,
     roundToBaseIncrement(getChangeSize()) * sign, kActive);
-!!!760326.cpp!!!	accept(in mh : MessageHandler [1]) : bool
-return mh->changed();
+!!!760198.cpp!!!	accept(in mh : MessageHandler [1]) : bool
+return mh->created();

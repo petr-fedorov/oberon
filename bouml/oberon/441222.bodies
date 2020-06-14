@@ -18,26 +18,29 @@ return "Default MessageHandler";
 !!!721926.cpp!!!	message() : bool
 output_.push_back(std::move(received_));
 return true;
-!!!721798.cpp!!!	exchangeMessage() : bool
-return message();
-!!!730118.cpp!!!	orderBookUpdated() : bool
-return exchangeMessage();
-
 !!!483590.cpp!!!	elapsed() : bool
 return message();
+!!!721798.cpp!!!	exchangeMessage() : bool
+return message();
+!!!752646.cpp!!!	created() : bool
+return exchangeMessage();
+
 !!!484486.cpp!!!	received() : bool
-return orderBookUpdated();
+return created();
 !!!625542.cpp!!!	opened() : bool
-return orderBookUpdated();
+return created();
+!!!730118.cpp!!!	changed() : bool
+return exchangeMessage();
+
 !!!484742.cpp!!!	volumeIncremented() : bool
-return orderBookUpdated();
+return changed();
+!!!485254.cpp!!!	volumeDecremented() : bool
+return changed();
 !!!484870.cpp!!!	priceAdvanced() : bool
-return orderBookUpdated();
+return changed();
 !!!484998.cpp!!!	priceReceded() : bool
-return orderBookUpdated();
+return changed();
 !!!485126.cpp!!!	filled() : bool
 return exchangeMessage();
-!!!485254.cpp!!!	partiallyCanceled() : bool
-return orderBookUpdated();
-!!!485382.cpp!!!	fullyCanceled() : bool
-return orderBookUpdated();
+!!!485382.cpp!!!	canceled() : bool
+return exchangeMessage();

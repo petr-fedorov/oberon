@@ -184,7 +184,22 @@ class MessageHandler {
 
     };
     
-    class Updated : virtual public ExchangeMessage {
+    class Created : virtual public ExchangeMessage {
+      public:
+        //By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event
+        virtual std::unique_ptr<Event> toEvent();
+
+        virtual bool accept(MessageHandler* mh);
+
+    };
+    
+    class Changed : virtual public ExchangeMessage {
+      public:
+        //By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event
+        virtual std::unique_ptr<Event> toEvent();
+
+        virtual bool accept(MessageHandler* mh);
+
     };
     
     //match or trade with or without order_ids
@@ -208,47 +223,44 @@ class MessageHandler {
     };
     
     //opened on Coinbase. Bitstamp, Bitfinex do not send
-    class Opened : public Updated {
+    class Opened : public Created {
       public:
         virtual bool accept(MessageHandler* mh);
 
         virtual string toString();
 
-        //By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event
-        virtual std::unique_ptr<Event> toEvent();
-
     };
     
     //order change on Bitstamp with increased volume and the same price
-    class VolumeIncremented : public Updated {
+    class VolumeIncremented : public Changed {
       public:
         virtual string toString();
 
     };
     
     //order_changed on Bitstamp
-    class PartiallyCanceled : public Updated {
+    class VolumeDecremented : public Changed {
       public:
         virtual string toString();
 
     };
     
     //order_change on Bitstamp or Bitfinex with increased price for bid or decreased price for ask.  Coinbase or MOEX does not generate such messages
-    class PriceAdvanced : public Updated {
+    class PriceAdvanced : public Changed {
       public:
         virtual string toString();
 
     };
     
     //order_change on Bitstamp or Bitfinex with decremented price for bid or incremented price for ask.  Coinbase or MOEX does not generate such messages
-    class PriceReceded : public Updated {
+    class PriceReceded : public Changed {
       public:
         virtual string toString();
 
     };
     
     //order_deleted on Bitstamp, done on Coinbase, price =0 on Bitfinex
-    class FullyCanceled : public Updated {
+    class Canceled : virtual public ExchangeMessage {
       public:
         virtual bool accept(MessageHandler * mh) override final;
 
@@ -260,7 +272,7 @@ class MessageHandler {
     };
     
     //order_created on Bitstamp, Bitfinex received on Coinbase
-    class Received : public Updated {
+    class Received : public Created {
       public:
         virtual bool accept(MessageHandler * mh) override final;
 
@@ -300,17 +312,21 @@ vector<std::unique_ptr<Message>> handle(vector<std::unique_ptr<Message>> && mess
 
     virtual bool message();
 
+    virtual bool elapsed();
+
     virtual bool exchangeMessage();
 
-    virtual bool orderBookUpdated();
-
-    virtual bool elapsed();
+    virtual bool created();
 
     virtual bool received();
 
     virtual bool opened();
 
+    virtual bool changed();
+
     virtual bool volumeIncremented();
+
+    virtual bool volumeDecremented();
 
     virtual bool priceAdvanced();
 
@@ -318,9 +334,7 @@ vector<std::unique_ptr<Message>> handle(vector<std::unique_ptr<Message>> && mess
 
     virtual bool filled();
 
-    virtual bool partiallyCanceled();
-
-    virtual bool fullyCanceled();
+    virtual bool canceled();
 
     std::unique_ptr<Message> received_;
 
@@ -388,6 +402,12 @@ class EventNumberGenerator : public MessageHandler {
 };
 class ReconstructorImplementation : public Reconstructor {
   protected:
+    //The base_min_size and base_max_size fields define the min and max order size. The quote_increment field specifies the min order price as well as the price increment.
+    //The order price must be a multiple of this increment (i.e. if the increment is 0.01, order prices of 0.001 or 0.021 would be rejected).
+    Volume base_min_size_;
+
+    Volume base_increment_;
+
     bool extract_only_;
 
     typedef MessageHandler::Message Message;

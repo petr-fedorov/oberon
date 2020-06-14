@@ -37,6 +37,8 @@ CoinbaseReconstructor::CoinbaseReceived::CoinbaseReceived(const boost::property_
   order_id_ = gen(tree.get<string>("order_id"));
   price_ = stod(tree.get<string>("price"));
   remaining_size_ = stod(tree.get<string>("size"));
+  change_size_ = 0;
+  event_no_ = 0;
   side_ = tree.get<string>("side") == "buy" ? kBid : kAsk;
   
 }
@@ -86,6 +88,7 @@ CoinbaseReconstructor::CoinbaseOpen::CoinbaseOpen(const boost::property_tree::pt
   remaining_size_ = stod(tree.get<string>("remaining_size"));
   change_size_ =
       0; // Open message signifies the first appearance of the order in LOB
+  event_no_ = 1;
   side_ = tree.get<string>("side") == "buy" ? kBid : kAsk;
 }
 
@@ -159,15 +162,15 @@ Deduce_Size_Coinbase::AnyState::~AnyState() {
 void Deduce_Size_Coinbase::AnyState::_do(Deduce_Size_Coinbase &) {
 }
 
-// the current state doesn't manage the event received, give it to the upper state
-void Deduce_Size_Coinbase::AnyState::received(Deduce_Size_Coinbase & stm) {
+// the current state doesn't manage the event opened, give it to the upper state
+void Deduce_Size_Coinbase::AnyState::opened(Deduce_Size_Coinbase & stm) {
     AnyState * st = _upper(stm);
   
     if (st != 0)
-      st->received(stm);
+      st->opened(stm);
 #ifdef VERBOSE_STATE_MACHINE
     else
-      std::cout << "DEBUG : transition received not expected" << std::endl;
+      std::cout << "DEBUG : transition opened not expected" << std::endl;
 #endif
 }
 
@@ -219,14 +222,26 @@ void Deduce_Size_Coinbase::AnyState::message(Deduce_Size_Coinbase & stm) {
 #endif
 }
 
+// the current state doesn't manage the event received, give it to the upper state
+void Deduce_Size_Coinbase::AnyState::received(Deduce_Size_Coinbase & stm) {
+    AnyState * st = _upper(stm);
+  
+    if (st != 0)
+      st->received(stm);
+#ifdef VERBOSE_STATE_MACHINE
+    else
+      std::cout << "DEBUG : transition received not expected" << std::endl;
+#endif
+}
+
 void Deduce_Size_Coinbase::AnyState::create(Deduce_Size_Coinbase &) {
 }
 
 Deduce_Size_Coinbase::Deduce_Size_Coinbase_State::Wait_State::~Wait_State() {
 }
 
-// to manage the event received
-void Deduce_Size_Coinbase::Deduce_Size_Coinbase_State::Wait_State::received(Deduce_Size_Coinbase & stm) {
+// to manage the event opened
+void Deduce_Size_Coinbase::Deduce_Size_Coinbase_State::Wait_State::opened(Deduce_Size_Coinbase & stm) {
     {
       stm._deduce_size_coinbase_state._wait_state._doexit(stm);
       stm._set_currentState(stm._deduce_size_coinbase_state._save_state);
@@ -281,6 +296,15 @@ void Deduce_Size_Coinbase::Deduce_Size_Coinbase_State::Wait_State::message(Deduc
 #endif
       stm._deduce_size_coinbase_state._deduce_state._size_change_state.create(stm);
     }
+}
+
+// to manage the event received
+void Deduce_Size_Coinbase::Deduce_Size_Coinbase_State::Wait_State::received(Deduce_Size_Coinbase & stm) {
+    {
+#ifdef VERBOSE_STATE_MACHINE
+      std::cout << "DEBUG : execute activity of transition received" << std::endl;
+#endif
+  stm.received_.reset(nullptr);  }
 }
 
 // perform the 'exit behavior'
@@ -490,17 +514,6 @@ Deduce_Size_Coinbase::Deduce_Size_Coinbase() {
 Deduce_Size_Coinbase::~Deduce_Size_Coinbase() {
 }
 
-// the operation you call to signal the event received
-bool Deduce_Size_Coinbase::received() {
-    if (_current_state != 0) {
-#ifdef VERBOSE_STATE_MACHINE
-      std::cout << "DEBUG : fire trigger received" << std::endl;
-#endif
-      _current_state->received(*this);
-    }
-    return (_current_state != 0);
-}
-
 // the operation you call to signal the event elapsed
 bool Deduce_Size_Coinbase::elapsed() {
     if (_current_state != 0) {
@@ -563,6 +576,28 @@ void Deduce_Size_Coinbase::_final() {
 #ifdef VERBOSE_STATE_MACHINE
       std::cout << "DEBUG : final state reached" << std::endl;
 #endif
+}
+
+// the operation you call to signal the event opened
+bool Deduce_Size_Coinbase::opened() {
+    if (_current_state != 0) {
+#ifdef VERBOSE_STATE_MACHINE
+      std::cout << "DEBUG : fire trigger opened" << std::endl;
+#endif
+      _current_state->opened(*this);
+    }
+    return (_current_state != 0);
+}
+
+// the operation you call to signal the event received
+bool Deduce_Size_Coinbase::received() {
+    if (_current_state != 0) {
+#ifdef VERBOSE_STATE_MACHINE
+      std::cout << "DEBUG : fire trigger received" << std::endl;
+#endif
+      _current_state->received(*this);
+    }
+    return (_current_state != 0);
 }
 
 

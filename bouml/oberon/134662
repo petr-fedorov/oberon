@@ -1,6 +1,6 @@
 format 222
 "R package" // R package
-  revision 29
+  revision 34
   modified_by 6 "petr"
   // class settings
   
@@ -82,7 +82,7 @@ format 222
       size A4
     end
 
-    class 230022 "RCoinbase"
+    class 590470 "RStore"
       visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -95,32 +95,6 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
-      operation 561798 "run"
-	public explicit_return_type "DataFrame"
-	nparams 2
-	  param in name "data" type class_ref 473094 // DataFrame
-	multiplicity "1"
-	  param in name "extract_only" explicit_type "bool"
-	    defaultvalue "false"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      classrelation 496774 // <dependency>
-	relation 486662 -_->
-	  a public
-	    cpp default "#include in source"
-	    classrelation_ref 496774 // <dependency>
-	  b parent class_ref 202630 // Reconstructor
-      end
-
       operation 590598 "transmit"
 	cpp_virtual public explicit_return_type "void"
 	nparams 1
@@ -135,14 +109,6 @@ ${inlines}
 	
 	
 	
-      end
-
-      classrelation 553478 // <realization>
-	relation 543366 -_-|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 553478 // <realization>
-	  b parent class_ref 231302 // Store
       end
 
       attribute 407046 "order_id_"
@@ -271,14 +237,6 @@ ${inlines}
 	MysqlColumn
       end
 
-      classrelation 554758 // <dependency>
-	relation 544646 -_->
-	  a public
-	    cpp default "#include in source"
-	    classrelation_ref 554758 // <dependency>
-	  b parent class_ref 508166 // uuid_io.hpp
-      end
-
       attribute 473990 "local_timestamp_"
 	private explicit_type "double"
 	multiplicity "0..1"
@@ -292,6 +250,132 @@ ${inlines}
 	mysql_decl ""
 	MysqlColumn
       end
+
+      classrelation 643462 // <realization>
+	relation 633350 -_-|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 643462 // <realization>
+	  b parent class_ref 231302 // Store
+      end
+
+      operation 752390 "toDataframe"
+	public return_type class_ref 473094 // DataFrame
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+    end
+
+    class 230022 "RCoinbase"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      operation 561798 "run"
+	public explicit_return_type "DataFrame"
+	nparams 2
+	  param in name "data" type class_ref 473094 // DataFrame
+	multiplicity "1"
+	  param in name "extract_only" explicit_type "bool"
+	    defaultvalue "false"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 496774 // <dependency>
+	relation 486662 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 496774 // <dependency>
+	  b parent class_ref 202630 // Reconstructor
+      end
+
+      classrelation 554758 // <dependency>
+	relation 544646 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 554758 // <dependency>
+	  b parent class_ref 508166 // uuid_io.hpp
+      end
+
+      classrelation 643590 // <generalisation>
+	relation 633478 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 643590 // <generalisation>
+	  b parent class_ref 590470 // RStore
+      end
+    end
+
+    class 596998 "RBitstamp"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 650118 // <generalisation>
+	relation 640006 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 650118 // <generalisation>
+	  b parent class_ref 590470 // RStore
+      end
+
+      classrelation 650246 // <dependency>
+	relation 640134 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 650246 // <dependency>
+	  b parent class_ref 202630 // Reconstructor
+      end
+
+      operation 752518 "run"
+	public return_type class_ref 473094 // DataFrame
+	nparams 3
+	  param in name "quotes" type class_ref 473094 // DataFrame
+	  param in name "trades" type class_ref 473094 // DataFrame
+	  param in name "extract_only" explicit_type "bool"
+	    defaultvalue "false"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, ${t2} ${p2}${v2}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, ${t2} ${p2}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
     end
   end
 
@@ -302,17 +386,27 @@ ${inlines}
     artifact 187526 "main.cpp"
       stereotype "text"
       cpp_src "#include \"rcoinbase.h\"
+#include \"rbitstamp.h\"
 #include <Rcpp.h>
 #include <iostream>
 
 using namespace Rcpp;
 // [[Rcpp::export]]
-DataFrame reconstructOrderBook(DataFrame source, LogicalVector extract_only) {
+DataFrame reconstructCoinbase(DataFrame source, LogicalVector extract_only) {
 
   // std::streambuf *coutbuf = std::cout.rdbuf();
   std::cout.rdbuf(Rcpp::Rcout.rdbuf());
   oberon::R::RCoinbase r;
   return r.run(source, extract_only[0]);
+}
+
+// [[Rcpp::export]]
+DataFrame reconstructBitstamp(DataFrame quotes, DataFrame trades, LogicalVector extract_only) {
+
+  // std::streambuf *coutbuf = std::cout.rdbuf();
+  std::cout.rdbuf(Rcpp::Rcout.rdbuf());
+  oberon::R::RBitstamp r;
+  return r.run(quotes, trades, extract_only[0]);
 }
 "
     end
@@ -337,7 +431,32 @@ ${namespace_start}
 ${members}
 ${namespace_end}"
       associated_elems
+	class_ref 590470 // RStore
 	class_ref 230022 // RCoinbase
+      end
+    end
+
+    artifact 220294 "rbitstamp"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+#include \"date.h\"
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 596998 // RBitstamp
       end
     end
   end

@@ -7,17 +7,17 @@ end
 classcanvas 132614 class_ref 246022 // Filled
   classdiagramsettings member_max_width 0 end
   color lightmediumgreen
-  xyzwh 460 645 2011 121 123
+  xyzwh 674 659 2011 121 123
 end
 classcanvas 134278 class_ref 246790 // Received
   classdiagramsettings member_max_width 0 end
   color lightmediumgreen
-  xyz 17.6 654 2000
+  xyz 19.6 652 2000
 end
 classcanvas 134534 class_ref 246918 // Opened
   classdiagramsettings member_max_width 0 end
   color lightmediumgreen
-  xyz 16 781 2000
+  xyz 119 651 2000
 end
 classcanvas 140678 class_ref 271366 // BookSide
   classdiagramsettings member_max_width 0 end
@@ -26,31 +26,31 @@ end
 classcanvas 142598 class_ref 292230 // VolumeIncremented
   classdiagramsettings member_max_width 0 end
   color lightmediumgreen
-  xyz 162 921 2006
+  xyz 80 809 2006
 end
 classcanvas 144518 class_ref 305542 // Price
   classdiagramsettings member_max_width 0 end
   xyz 523 114 2000
 end
-classcanvas 147462 class_ref 328582 // PartiallyCanceled
+classcanvas 147462 class_ref 328582 // VolumeDecremented
   classdiagramsettings member_max_width 0 end
   color lightmediumgreen
-  xyz 321 917 2000
+  xyz 216 808 2000
 end
-classcanvas 147718 class_ref 328710 // FullyCanceled
+classcanvas 147718 class_ref 328710 // Canceled
   classdiagramsettings member_max_width 0 end
   color lightmediumgreen
-  xyz 28 920 2000
+  xyz 522 668 2000
 end
 classcanvas 147974 class_ref 328838 // PriceAdvanced
   classdiagramsettings member_max_width 0 end
   color lightmediumgreen
-  xyz 342 816 2000
+  xyz 360 809 2000
 end
 classcanvas 148230 class_ref 356742 // PriceReceded
   classdiagramsettings member_max_width 0 end
   color lightmediumgreen
-  xyz 357 732 2000
+  xyz 474 810 2000
 end
 classcanvas 153094 class_ref 441478 // Elapsed
   classdiagramsettings member_max_width 0 end
@@ -74,13 +74,19 @@ classcanvas 157446 class_ref 564358 // cmath
   classdiagramsettings member_max_width 0 end
   xyz 704 363 2000
 end
-classcanvas 157702 class_ref 570886 // Updated
+classcanvas 157702 class_ref 570886 // Changed
   classdiagramsettings member_max_width 0 end
-  xyz 132 662 2018
+  color lightmediumgreen
+  xyzwh 263 649 2018 135 65
 end
 classcanvas 158854 class_ref 271366 // BookSide
   classdiagramsettings member_max_width 0 end
   xyz 694 432 2000
+end
+classcanvas 159238 class_ref 597126 // Created
+  classdiagramsettings member_max_width 0 end
+  color lightmediumgreen
+  xyzwh 56 585 2000 107 65
 end
 relationcanvas 153222 relation_ref 442374 // <generalisation>
   from ref 153094 z 2001 to ref 132230
@@ -118,42 +124,52 @@ relationcanvas 157574 relation_ref 605830 // <dependency>
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 157830 relation_ref 612358 // <generalisation>
+  decenter_begin 852
   from ref 157702 z 2019 to ref 154246
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
-relationcanvas 157958 relation_ref 613254 // <generalisation>
-  from ref 147718 z 2019 to ref 157702
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
-end
 relationcanvas 158086 relation_ref 612870 // <generalisation>
+  decenter_end 577
   from ref 147974 z 2019 to ref 157702
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 158214 relation_ref 613126 // <generalisation>
+  decenter_end 362
   from ref 147462 z 2019 to ref 157702
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 158342 relation_ref 612998 // <generalisation>
+  decenter_end 807
   from ref 148230 z 2019 to ref 157702
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 158470 relation_ref 612742 // <generalisation>
+  decenter_end 177
   from ref 142598 z 2019 to ref 157702
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
-relationcanvas 158598 relation_ref 612614 // <generalisation>
-  from ref 134534 z 2019 to ref 157702
+relationcanvas 159366 relation_ref 640262 // <generalisation>
+  from ref 159238 z 2013 to ref 154246
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
-relationcanvas 158726 relation_ref 612486 // <generalisation>
-  from ref 134278 z 2019 to ref 157702
+relationcanvas 159622 relation_ref 640390 // <generalisation>
+  from ref 147718 z 2013 to ref 154246
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 159750 relation_ref 640518 // <generalisation>
+  from ref 134278 z 2001 to ref 159238
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 159878 relation_ref 640646 // <generalisation>
+  from ref 134534 z 2001 to ref 159238
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end

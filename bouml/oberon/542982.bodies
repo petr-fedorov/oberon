@@ -1,14 +1,6 @@
 class Deduce_Size_Coinbase
 !!!686854.cpp!!!	Deduce_Size_Coinbase()
   _current_state = 0;
-!!!687110.cpp!!!	received() : bool
-  if (_current_state != 0) {
-#ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : fire trigger received" << std::endl;
-#endif
-    _current_state->received(*this);
-  }
-  return (_current_state != 0);
 !!!687494.cpp!!!	elapsed() : bool
   if (_current_state != 0) {
 #ifdef VERBOSE_STATE_MACHINE
@@ -47,10 +39,26 @@ if (_current_state == 0)
 return (_current_state != 0);
 !!!691846.cpp!!!	doActivity() : void
   _current_state->_do(*this);
-!!!691974.cpp!!!	_set_currentState(inout st : Deduce_Size_Coinbase::AnyState) : void
+!!!691974.cpp!!!	_set_currentState(inout st : AnyState) : void
   _current_state = &st;
 !!!692102.cpp!!!	_final() : void
   _current_state = 0;
 #ifdef VERBOSE_STATE_MACHINE
     std::cout << "DEBUG : final state reached" << std::endl;
 #endif
+!!!773638.cpp!!!	opened() : bool
+  if (_current_state != 0) {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : fire trigger opened" << std::endl;
+#endif
+    _current_state->opened(*this);
+  }
+  return (_current_state != 0);
+!!!776454.cpp!!!	received() : bool
+  if (_current_state != 0) {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : fire trigger received" << std::endl;
+#endif
+    _current_state->received(*this);
+  }
+  return (_current_state != 0);
