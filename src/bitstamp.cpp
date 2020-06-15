@@ -2,8 +2,6 @@
 #include "bitstamp.h"
 #include <boost/uuid/string_generator.hpp>
 
-#include <iomanip>
-
 
 #include <iostream>
 #include "date.h"
@@ -706,24 +704,6 @@ const Volume BitstampReconstructor::BitstampMessage::getBaseIncrement() const {
 }
 
 BitstampReconstructor::BitstampMessage::BitstampMessage(const BitstampReconstructor & reconstructor): reconstructor_{reconstructor} {
-}
-
-const boost::uuids::uuid BitstampReconstructor::BitstampMessage::toUuid(string id)
-{
-  std::stringstream buf;
-  buf << std::setw(32) << std::setfill('0') << std::right << std::stol(id);
-  return boost::uuids::string_generator{}(buf.str());
-  
-}
-
-const Timestamp BitstampReconstructor::BitstampMessage::toTimestamp(string timestamp)
-{
-  using namespace date;
-  boost::uuids::string_generator gen;
-  std::istringstream ss{timestamp};
-  Timestamp output;
-  ss >> parse("%FT%TZ", output);
-  return output;
 }
 
 BitstampReconstructor::BitstampCreated::BitstampCreated(const boost::property_tree::ptree & tree, const BitstampReconstructor & reconstructor): BitstampMessage{reconstructor} {

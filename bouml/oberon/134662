@@ -1,6 +1,6 @@
 format 222
 "R package" // R package
-  revision 34
+  revision 36
   modified_by 6 "petr"
   // class settings
   
@@ -112,10 +112,8 @@ ${inlines}
       end
 
       attribute 407046 "order_id_"
-	private explicit_type "string"
-	multiplicity "*"
-	stereotype "vector"
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+	private explicit_type "Rcpp::StringVector"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
 	php_decl ""
@@ -224,10 +222,8 @@ ${inlines}
       end
 
       attribute 472966 "taker_order_id_"
-	private explicit_type "string"
-	multiplicity "*"
-	stereotype "vector"
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+	private explicit_type "Rcpp::StringVector"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
 	php_decl ""
@@ -377,6 +373,54 @@ ${inlines}
 	
       end
     end
+
+    class 625670 "RBitfinex"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 681478 // <generalisation>
+	relation 671366 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 681478 // <generalisation>
+	  b parent class_ref 590470 // RStore
+      end
+
+      classrelation 681606 // <dependency>
+	relation 671494 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 681606 // <dependency>
+	  b parent class_ref 202630 // Reconstructor
+      end
+
+      operation 786054 "run"
+	public return_type class_ref 473094 // DataFrame
+	nparams 3
+	  param in name "quotes" type class_ref 473094 // DataFrame
+	  param in name "trades" type class_ref 473094 // DataFrame
+	  param in name "extract_only" explicit_type "bool"
+	    defaultvalue "false"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, ${t2} ${p2}${v2}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, ${t2} ${p2}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+    end
   end
 
   deploymentview 147590 "Source files"
@@ -387,6 +431,7 @@ ${inlines}
       stereotype "text"
       cpp_src "#include \"rcoinbase.h\"
 #include \"rbitstamp.h\"
+#include \"rbitfinex.h\"
 #include <Rcpp.h>
 #include <iostream>
 
@@ -406,6 +451,15 @@ DataFrame reconstructBitstamp(DataFrame quotes, DataFrame trades, LogicalVector 
   // std::streambuf *coutbuf = std::cout.rdbuf();
   std::cout.rdbuf(Rcpp::Rcout.rdbuf());
   oberon::R::RBitstamp r;
+  return r.run(quotes, trades, extract_only[0]);
+}
+
+// [[Rcpp::export]]
+DataFrame reconstructBitfinex(DataFrame quotes, DataFrame trades, LogicalVector extract_only) {
+
+  // std::streambuf *coutbuf = std::cout.rdbuf();
+  std::cout.rdbuf(Rcpp::Rcout.rdbuf());
+  oberon::R::RBitfinex r;
   return r.run(quotes, trades, extract_only[0]);
 }
 "
@@ -457,6 +511,30 @@ ${members}
 ${namespace_end}"
       associated_elems
 	class_ref 596998 // RBitstamp
+      end
+    end
+
+    artifact 226822 "rbitfinex"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+#include \"date.h\"
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 625670 // RBitfinex
       end
     end
   end

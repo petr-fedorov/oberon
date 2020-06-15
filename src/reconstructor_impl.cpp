@@ -6,6 +6,10 @@
 
 #include <cmath>
 
+#include <iomanip>
+
+#include <boost/uuid/string_generator.hpp>
+
 
 #include <iostream>
 #include "date.h"
@@ -252,6 +256,11 @@ std::unique_ptr<Event> MessageHandler::Canceled::toEvent() {
       roundToBaseIncrement(getChangeSize()) * sign, kFinished);
 }
 
+//By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event
+std::unique_ptr<Event> MessageHandler::Received::toEvent() {
+  return std::unique_ptr<Event>();
+}
+
 bool MessageHandler::Received::accept(MessageHandler * mh) {
   return mh->received();
 }
@@ -422,6 +431,24 @@ bool EventNumberGenerator::filled() {
 
 string EventNumberGenerator::getHandlerName() {
   return "EventNumberGenerator";
+}
+
+const boost::uuids::uuid ReconstructorImplementation::toUuid(string id)
+{
+  std::stringstream buf;
+  buf << std::setw(32) << std::setfill('0') << std::right << std::stol(id);
+  return boost::uuids::string_generator{}(buf.str());
+  
+}
+
+const Timestamp ReconstructorImplementation::toTimestamp(string timestamp)
+{
+  using namespace date;
+  boost::uuids::string_generator gen;
+  std::istringstream ss{timestamp};
+  Timestamp output;
+  ss >> parse("%FT%TZ", output);
+  return output;
 }
 
 void ReconstructorImplementation::process(const boost::property_tree::ptree & message) {

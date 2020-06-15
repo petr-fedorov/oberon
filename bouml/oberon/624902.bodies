@@ -1,0 +1,31 @@
+class BitfinexReconstructor
+!!!793222.cpp!!!	BitfinexReconstructor(in store : Store, in base_min_size : Volume, in base_increment : Volume, in extract_only : bool)
+store_ = store;
+base_min_size_ = base_min_size;
+base_increment_ = base_increment;
+extract_only_ = extract_only;
+size_deducer_ =std::make_unique<MessageHandler>();
+size_deducer_->create();
+// Deduplication is not needed for CoinBase
+deduplicator_ = std::unique_ptr<MessageHandler>();
+event_number_generator_ = std::make_unique<EventNumberGenerator>();
+
+!!!792582.cpp!!!	extract(in tree : ptree [1]) : MessageHandler::Message [1..*]
+using namespace date;
+using namespace std;
+string type = tree.get<string>("event");
+vector<unique_ptr<Message>> output;
+if (type == "elapsed") {
+  Timestamp timestamp;
+  std::istringstream ss{tree.get<string>("timestamp")};
+  ss >> parse("%FT%TZ", timestamp);
+  output.push_back(make_unique<Elapsed>(timestamp));
+} else if (type == "order_changed")
+  output.push_back(make_unique<BitfinexChanged>(tree, *this));
+else if (type == "order_deleted") {
+  output.push_back(make_unique<BitfinexCanceled>(tree, *this));
+
+} else if (type == "match") {
+  output.push_back(make_unique<BitfinexFilled>(tree, *this));
+}
+return output;

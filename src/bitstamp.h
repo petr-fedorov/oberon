@@ -10,9 +10,6 @@
 using namespace std;
 #include <map>
 
-#include <boost/uuid/uuid.hpp>
-#include <boost/uuid/nil_generator.hpp>
-
 #include <boost/property_tree/ptree.hpp>
 
 
@@ -464,10 +461,6 @@ class BitstampReconstructor : public ReconstructorImplementation {
 
       public:
         BitstampMessage(const BitstampReconstructor & reconstructor);
-
-        static const boost::uuids::uuid toUuid(string id);
-
-        static const Timestamp toTimestamp(string timestamp);
 
     };
     

@@ -4,4 +4,6 @@ if(exchange == kCoinbase)
   return std::make_unique<CoinbaseReconstructor>(store, 0.001, 0.00000001, extract_only);
 else if(exchange == kBitstamp)
   return std::make_unique<BitstampReconstructor>(store, 0.001, 0.00000001, extract_only);
+else if(exchange == kBitfinex)
+  return std::make_unique<BitfinexReconstructor>(store, 0.001, 0.00000001, extract_only);
 return std::unique_ptr<Reconstructor>();

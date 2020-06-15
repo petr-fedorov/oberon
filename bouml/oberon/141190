@@ -1,6 +1,6 @@
 format 222
 "Order Book Reconstructor" // Order Book Reconstructor
-  revision 122
+  revision 124
   modified_by 6 "petr"
   // class settings
   
@@ -665,6 +665,14 @@ ${members}};
 	    cpp default "#include in source"
 	    classrelation_ref 658054 // <dependency>
 	  b parent class_ref 603654 // BitstampReconstructor
+      end
+
+      classrelation 688262 // <dependency>
+	relation 678150 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 688262 // <dependency>
+	  b parent class_ref 624902 // BitfinexReconstructor
       end
     end
 
@@ -2417,6 +2425,22 @@ ${inlines}
 	mysql_decl ""
 	
 	comment "order_created on Bitstamp, Bitfinex received on Coinbase"
+	operation 793606 "toEvent"
+	  cpp_virtual public return_type class_ref 230406 // Event
+	  multiplicity "0..1"
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}std::unique_ptr<${type}> ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}std::unique_ptr<${type}> ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  comment "By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event"
+	end
+
 	operation 492550 "accept"
 	  cpp_virtual cpp_override cpp_final public explicit_return_type "bool"
 	  nparams 1
@@ -2892,6 +2916,36 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
+      operation 766982 "toUuid"
+	class_operation constvalue public return_type class_ref 472582 // uuid
+	nparams 1
+	  param in name "id" explicit_type "string"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 767110 "toTimestamp"
+	class_operation constvalue public return_type class_ref 230278 // Timestamp
+	nparams 1
+	  param in name "timestamp" explicit_type "string"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
       attribute 451206 "base_min_size_"
 	protected type class_ref 305798 // Volume
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
@@ -3067,6 +3121,22 @@ The order price must be a multiple of this increment (i.e. if the increment is 0
 "
 	    classrelation_ref 615558 // event_number_generator_ (<directional composition>)
 	  b multiplicity "0..1" parent class_ref 441222 // MessageHandler
+      end
+
+      classrelation 681222 // <dependency>
+	relation 671110 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 681222 // <dependency>
+	  b parent class_ref 611078 // iomanip
+      end
+
+      classrelation 681350 // <dependency>
+	relation 671238 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 681350 // <dependency>
+	  b parent class_ref 507910 // string_generator
       end
     end
 
@@ -3529,7 +3599,6 @@ ${inlines}
 	
       end
     end
-
   end
 
   classview 200966 "Implementation - Coinbase"
@@ -5440,7 +5509,7 @@ ${inlines}
 	relation 662150 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 672262 // <dependency>
 	  b parent class_ref 617862 // Wait_State
       end
@@ -5449,7 +5518,7 @@ ${inlines}
 	relation 662534 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 672646 // <dependency>
 	  b parent class_ref 618118 // Size_change_State
       end
@@ -5458,7 +5527,7 @@ ${inlines}
 	relation 662790 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 672902 // <dependency>
 	  b parent class_ref 618246 // Remaining_size_State
       end
@@ -5467,7 +5536,7 @@ ${inlines}
 	relation 662918 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 673030 // <dependency>
 	  b parent class_ref 617990 // Deduce_State
       end
@@ -5476,7 +5545,7 @@ ${inlines}
 	relation 663174 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 673286 // <dependency>
 	  b parent class_ref 618374 // Save_State
       end
@@ -5485,7 +5554,7 @@ ${inlines}
 	relation 663302 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 673414 // <dependency>
 	  b parent class_ref 617734 // Deduce_Size_Coinbase_State
       end
@@ -8131,36 +8200,6 @@ ${inlines}
 	  
 	  
 	end
-
-	operation 766982 "toUuid"
-	  class_operation constvalue public return_type class_ref 472582 // uuid
-	  nparams 1
-	    param in name "id" explicit_type "string"
-	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	end
-
-	operation 767110 "toTimestamp"
-	  class_operation constvalue public return_type class_ref 230278 // Timestamp
-	  nparams 1
-	    param in name "timestamp" explicit_type "string"
-	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	end
       end
 
       class 603910 "BitstampCreated"
@@ -8214,14 +8253,6 @@ ${inlines}
 	      cpp default "#include in source"
 	      classrelation_ref 665350 // <dependency>
 	    b parent class_ref 507910 // string_generator
-	end
-
-	classrelation 665478 // <dependency>
-	  relation 655366 -_->
-	    a public
-	      cpp default "#include in source"
-	      classrelation_ref 665478 // <dependency>
-	    b parent class_ref 611078 // iomanip
 	end
       end
 
@@ -8453,6 +8484,305 @@ ${inlines}
     end
   end
 
+  classview 214022 "Implementation - Bitfinex"
+    
+    classdiagramsettings member_max_width 0 end
+    
+    classcompositediagramsettings end
+    
+    collaborationdiagramsettings end
+    
+    objectdiagramsettings end
+    
+    objectcompositediagramsettings end
+    
+    sequencediagramsettings end
+    
+    statediagramsettings
+     end
+    
+    
+    activitydiagramsettings
+     end
+    classdiagram 327302 "Bitfinex Messages"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
+    class 624902 "BitfinexReconstructor"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      operation 793222 "BitfinexReconstructor"
+	public explicit_return_type ""
+	nparams 4
+	  param in name "store" type class_ref 231302 // Store
+	  param in name "base_min_size" type class_ref 305798 // Volume
+	  param in name "base_increment" type class_ref 305798 // Volume
+	  param in name "extract_only" explicit_type "bool"
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} * ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, ${t3} ${p3}${v3}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(} ${t0} * ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, ${t3} ${p3}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 792582 "extract"
+	stereotype "vector"
+	cpp_virtual protected return_type class_ref 245766 // Message
+	multiplicity "1..*"
+	nparams 1
+	  param in name "tree" type class_ref 174214 // ptree
+	multiplicity "1"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${stereotype}<std::unique_ptr<${type}>> ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${stereotype}<std::unique_ptr<${type}>> ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      class 625030 "BitfinexMessage"
+	visibility package 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	operation 792966 "getBaseMinSize"
+	  const constvalue cpp_virtual protected return_type class_ref 305798 // Volume
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 792838 "getBaseIncrement"
+	  const constvalue cpp_virtual protected return_type class_ref 305798 // Volume
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 792710 "BitfinexMessage"
+	  public explicit_return_type ""
+	  nparams 1
+	    param in name "reconstructor" type class_ref 624902 // BitfinexReconstructor
+	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw}: reconstructor_{reconstructor} {
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	attribute 494086 "reconstructor_"
+	  const_attribute protected type class_ref 624902 // BitfinexReconstructor
+	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} &${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	end
+
+	classrelation 680582 // <generalisation>
+	  relation 670470 ---|>
+	    a public
+	      cpp virtual default "${type}"
+	      classrelation_ref 680582 // <generalisation>
+	    b parent class_ref 448390 // ExchangeMessage
+	end
+      end
+
+      class 625286 "BitfinexChanged"
+	visibility package 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 680198 // <generalisation>
+	  relation 670086 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 680198 // <generalisation>
+	    b parent class_ref 570886 // Changed
+	end
+
+	classrelation 680838 // <generalisation>
+	  relation 670726 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 680838 // <generalisation>
+	    b parent class_ref 625030 // BitfinexMessage
+	end
+
+	operation 793094 "BitfinexChanged"
+	  public explicit_return_type ""
+	  nparams 2
+	    param in name "tree" type class_ref 174214 // ptree
+	    param in name "reconstructor" type class_ref 624902 // BitfinexReconstructor
+	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${volatile}${throw};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw} : BitfinexMessage {reconstructor} {
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+      end
+
+      class 625414 "BitfinexCanceled"
+	visibility package 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	operation 793478 "BitfinexCanceled"
+	  public explicit_return_type ""
+	  nparams 2
+	    param in name "tree" type class_ref 174214 // ptree
+	    param in name "reconstructor" type class_ref 624902 // BitfinexReconstructor
+	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${volatile}${throw};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw} : BitfinexMessage {reconstructor} {
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	classrelation 680326 // <generalisation>
+	  relation 670214 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 680326 // <generalisation>
+	    b parent class_ref 328710 // Canceled
+	end
+
+	classrelation 680966 // <generalisation>
+	  relation 670854 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 680966 // <generalisation>
+	    b parent class_ref 625030 // BitfinexMessage
+	end
+      end
+
+      class 625542 "BitfinexFilled"
+	visibility package 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 680454 // <generalisation>
+	  relation 670342 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 680454 // <generalisation>
+	    b parent class_ref 246022 // Filled
+	end
+
+	classrelation 681094 // <generalisation>
+	  relation 670982 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 681094 // <generalisation>
+	    b parent class_ref 625030 // BitfinexMessage
+	end
+
+	operation 793350 "BitfinexFilled"
+	  public explicit_return_type ""
+	  nparams 2
+	    param in name "tree" type class_ref 174214 // ptree
+	    param in name "reconstructor" type class_ref 624902 // BitfinexReconstructor
+	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${volatile}${throw};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw} : BitfinexMessage{reconstructor} {
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+      end
+
+      classrelation 688134 // <generalisation>
+	relation 678022 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 688134 // <generalisation>
+	  b parent class_ref 486278 // ReconstructorImplementation
+      end
+    end
+  end
+
   deploymentview 154246 "Source files"
     //deployment diagram settings
     deploymentdiagramsettings
@@ -8602,6 +8932,30 @@ ${namespace_end}"
 	class_ref 320518 // Dedup
 	class_ref 320390 // DedupOrchestrator
 	class_ref 603654 // BitstampReconstructor
+      end
+    end
+
+    artifact 233350 "bitfinex"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+#include \"date.h\"
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 624902 // BitfinexReconstructor
       end
     end
   end

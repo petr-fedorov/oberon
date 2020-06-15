@@ -5,15 +5,3 @@ return reconstructor_.base_min_size_;
 !!!760070.cpp!!!	getBaseIncrement() : Volume
 return reconstructor_.base_increment_;
 
-!!!766982.cpp!!!	toUuid(in id : string) : uuid
-std::stringstream buf;
-buf << std::setw(32) << std::setfill('0') << std::right << std::stol(id);
-return boost::uuids::string_generator{}(buf.str());
-
-!!!767110.cpp!!!	toTimestamp(in timestamp : string) : Timestamp
-using namespace date;
-boost::uuids::string_generator gen;
-std::istringstream ss{timestamp};
-Timestamp output;
-ss >> parse("%FT%TZ", output);
-return output;

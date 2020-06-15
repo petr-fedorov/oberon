@@ -1,0 +1,12 @@
+class BitfinexChanged
+!!!793094.cpp!!!	BitfinexChanged(in tree : ptree, in reconstructor : BitfinexReconstructor)
+timestamp_ = toTimestamp(tree.get<string>("exchange_timestamp"));
+local_timestamp_ = toTimestamp(tree.get<string>("local_timestamp"));
+order_id_ = toUuid(tree.get<string>("order_id"));
+price_ = std::stod(tree.get<string>("price"));
+remaining_size_ = std::stod(tree.get<string>("amount"));
+if (remaining_size_ < 0) {
+  remaining_size_ *= -1;
+  side_ = kAsk;
+} else
+  side_ = kBid;

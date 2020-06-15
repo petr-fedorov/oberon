@@ -2,7 +2,7 @@ format 222
 
 classcanvas 128006 class_ref 486278 // ReconstructorImplementation
   classdiagramsettings show_members_visibility yes member_max_width 0 end
-  xyzwh 199 339 2000 183 125
+  xyzwh 199 339 2000 183 189
 end
 classcanvas 128134 class_ref 202630 // Reconstructor
   classdiagramsettings member_max_width 0 end
@@ -10,7 +10,7 @@ classcanvas 128134 class_ref 202630 // Reconstructor
 end
 classcanvas 128390 class_ref 486406 // CoinbaseReconstructor
   classdiagramsettings member_max_width 0 end
-  xyz 434 357 2000
+  xyz 431 372 2000
 end
 classcanvas 129798 class_ref 230406 // Event
   classdiagramsettings member_max_width 0 end
@@ -34,7 +34,23 @@ classcanvas 132358 class_ref 441222 // MessageHandler
 end
 classcanvas 133126 class_ref 564230 // EventNumberGenerator
   classdiagramsettings member_max_width 0 end
-  xyz 376 707 2000
+  xyz 366 724 2000
+end
+classcanvas 133638 class_ref 611078 // iomanip
+  classdiagramsettings member_max_width 0 end
+  xyz 547 535 2000
+end
+classcanvas 133894 class_ref 507910 // string_generator
+  classdiagramsettings member_max_width 0 end
+  xyz 472 591 2006
+end
+classcanvas 134278 class_ref 624902 // BitfinexReconstructor
+  classdiagramsettings member_max_width 0 end
+  xyz 454 157 2000
+end
+classcanvas 134534 class_ref 603654 // BitstampReconstructor
+  classdiagramsettings member_max_width 0 end
+  xyz 502 259 2006
 end
 relationcanvas 128518 relation_ref 500486 // <generalisation>
   from ref 128390 z 2001 to ref 128006
@@ -71,15 +87,15 @@ relationcanvas 132614 relation_ref 589958 // <directional composition>
   decenter_end 230
   from ref 128006 z 2007 to point 107 396
   line 132742 z 2007 to ref 132358
-  role_a_pos 116 533 3000 no_role_b
-  multiplicity_a_pos 89 533 3000 multiplicity_b_pos 168 405 3000
+  role_a_pos 118 533 3000 no_role_b
+  multiplicity_a_pos 91 533 3000 multiplicity_b_pos 168 422 3000
 end
 relationcanvas 132870 relation_ref 590086 // <directional composition>
   decenter_begin 726
-  from ref 128006 z 2007 to point 328 694
+  from ref 128006 z 2007 to point 334 709
   line 132998 z 2007 to ref 132358
-  role_a_pos 223 678 3000 no_role_b
-  multiplicity_a_pos 223 703 3000 multiplicity_b_pos 301 470 3000
+  role_a_pos 229 693 3000 no_role_b
+  multiplicity_a_pos 229 718 3000 multiplicity_b_pos 301 534 3000
 end
 relationcanvas 133254 relation_ref 605318 // <generalisation>
   decenter_begin 487
@@ -90,9 +106,44 @@ relationcanvas 133254 relation_ref 605318 // <generalisation>
 end
 relationcanvas 133382 relation_ref 605446 // <directional composition>
   decenter_end 238
-  from ref 128006 z 2007 to point 284 618
+  from ref 128006 z 2007 to point 291 626
   line 133510 z 2007 to ref 132358
-  role_a_pos 223 602 3000 no_role_b
-  multiplicity_a_pos 223 627 3000 multiplicity_b_pos 258 470 3000
+  role_a_pos 229 610 3000 no_role_b
+  multiplicity_a_pos 229 635 3000 multiplicity_b_pos 260 534 3000
+end
+relationcanvas 133766 relation_ref 671110 // <dependency>
+  from ref 128006 z 2001 to ref 133638
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 134022 relation_ref 551430 // <dependency>
+  from ref 128390 z 2007 to ref 133894
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 134150 relation_ref 671238 // <dependency>
+  from ref 128006 z 2007 to ref 133894
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 134406 relation_ref 678022 // <generalisation>
+  from ref 134278 z 2001 to ref 128006
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 134662 relation_ref 648070 // <generalisation>
+  from ref 134534 z 2007 to ref 128006
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 134790 relation_ref 647942 // <dependency>
+  from ref 128134 z 2007 to ref 134534
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 134918 relation_ref 678150 // <dependency>
+  from ref 128134 z 2001 to ref 134278
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
 end
 end

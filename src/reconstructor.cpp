@@ -4,6 +4,7 @@
 
 #include "coinbase.h"
 #include "bitstamp.h"
+#include "bitfinex.h"
 
 #include <cmath>
 #include <limits>
@@ -33,6 +34,8 @@ std::unique_ptr<Reconstructor> Reconstructor::create(Exchanges exchange, string 
     return std::make_unique<CoinbaseReconstructor>(store, 0.001, 0.00000001, extract_only);
   else if(exchange == kBitstamp)
     return std::make_unique<BitstampReconstructor>(store, 0.001, 0.00000001, extract_only);
+  else if(exchange == kBitfinex)
+    return std::make_unique<BitfinexReconstructor>(store, 0.001, 0.00000001, extract_only);
   return std::unique_ptr<Reconstructor>();
 }
 

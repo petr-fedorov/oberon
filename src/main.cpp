@@ -1,5 +1,6 @@
 #include "rcoinbase.h"
 #include "rbitstamp.h"
+#include "rbitfinex.h"
 #include <Rcpp.h>
 #include <iostream>
 
@@ -19,5 +20,14 @@ DataFrame reconstructBitstamp(DataFrame quotes, DataFrame trades, LogicalVector 
   // std::streambuf *coutbuf = std::cout.rdbuf();
   std::cout.rdbuf(Rcpp::Rcout.rdbuf());
   oberon::R::RBitstamp r;
+  return r.run(quotes, trades, extract_only[0]);
+}
+
+// [[Rcpp::export]]
+DataFrame reconstructBitfinex(DataFrame quotes, DataFrame trades, LogicalVector extract_only) {
+
+  // std::streambuf *coutbuf = std::cout.rdbuf();
+  std::cout.rdbuf(Rcpp::Rcout.rdbuf());
+  oberon::R::RBitfinex r;
   return r.run(quotes, trades, extract_only[0]);
 }

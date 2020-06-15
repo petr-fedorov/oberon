@@ -30,10 +30,24 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// reconstructBitfinex
+DataFrame reconstructBitfinex(DataFrame quotes, DataFrame trades, LogicalVector extract_only);
+RcppExport SEXP _oberon_reconstructBitfinex(SEXP quotesSEXP, SEXP tradesSEXP, SEXP extract_onlySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< DataFrame >::type quotes(quotesSEXP);
+    Rcpp::traits::input_parameter< DataFrame >::type trades(tradesSEXP);
+    Rcpp::traits::input_parameter< LogicalVector >::type extract_only(extract_onlySEXP);
+    rcpp_result_gen = Rcpp::wrap(reconstructBitfinex(quotes, trades, extract_only));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_oberon_reconstructCoinbase", (DL_FUNC) &_oberon_reconstructCoinbase, 2},
     {"_oberon_reconstructBitstamp", (DL_FUNC) &_oberon_reconstructBitstamp, 3},
+    {"_oberon_reconstructBitfinex", (DL_FUNC) &_oberon_reconstructBitfinex, 3},
     {NULL, NULL, 0}
 };
 

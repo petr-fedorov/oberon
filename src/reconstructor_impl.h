@@ -9,6 +9,9 @@ using namespace std;
 
 #include <map>
 
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/nil_generator.hpp>
+
 #include <boost/property_tree/ptree.hpp>
 
 
@@ -274,6 +277,9 @@ class MessageHandler {
     //order_created on Bitstamp, Bitfinex received on Coinbase
     class Received : public Created {
       public:
+        //By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event
+        virtual std::unique_ptr<Event> toEvent();
+
         virtual bool accept(MessageHandler * mh) override final;
 
         virtual string toString();
@@ -401,6 +407,12 @@ class EventNumberGenerator : public MessageHandler {
 
 };
 class ReconstructorImplementation : public Reconstructor {
+  public:
+    static const boost::uuids::uuid toUuid(string id);
+
+    static const Timestamp toTimestamp(string timestamp);
+
+
   protected:
     //The base_min_size and base_max_size fields define the min and max order size. The quote_increment field specifies the min order price as well as the price increment.
     //The order price must be a multiple of this increment (i.e. if the increment is 0.01, order prices of 0.001 or 0.021 would be rejected).

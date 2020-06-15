@@ -9,3 +9,7 @@ reconstructBitstamp <- function(quotes, trades, extract_only) {
     .Call(`_oberon_reconstructBitstamp`, quotes, trades, extract_only)
 }
 
+reconstructBitfinex <- function(quotes, trades, extract_only) {
+    .Call(`_oberon_reconstructBitfinex`, quotes, trades, extract_only)
+}
+

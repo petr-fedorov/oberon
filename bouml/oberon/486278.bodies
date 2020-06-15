@@ -1,4 +1,16 @@
 class ReconstructorImplementation
+!!!766982.cpp!!!	toUuid(in id : string) : uuid
+std::stringstream buf;
+buf << std::setw(32) << std::setfill('0') << std::right << std::stol(id);
+return boost::uuids::string_generator{}(buf.str());
+
+!!!767110.cpp!!!	toTimestamp(in timestamp : string) : Timestamp
+using namespace date;
+boost::uuids::string_generator gen;
+std::istringstream ss{timestamp};
+Timestamp output;
+ss >> parse("%FT%TZ", output);
+return output;
 !!!575878.cpp!!!	process(in message : ptree [1]) : void
 if (extract_only_)
   transmit(extract(message));
