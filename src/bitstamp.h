@@ -448,6 +448,19 @@ inline void DedupOrchestrator::_set_currentState(DedupOrchestrator::AnyState & s
     _current_state = &st;
 }
 
+class DeduceSizeBitstamp : public MessageHandler {
+  protected:
+    virtual bool created();
+
+    virtual bool changed();
+
+    virtual bool canceled();
+
+
+  private:
+    map<OrderId, Volume> sizes_;
+
+};
 class BitstampReconstructor : public ReconstructorImplementation {
   public:
     class BitstampMessage : virtual public MessageHandler::ExchangeMessage {

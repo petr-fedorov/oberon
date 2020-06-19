@@ -12,5 +12,7 @@ reconstruct <- function(exchange=c("Coinbase", "Bitstamp", "Bitfinex"), source1,
                    Bitfinex=reconstructBitfinex(source1, source2, extract.only))
   setDT(output)
   output[, c("timestamp", "local_timestamp") := .(as.POSIXct(timestamp, origin="1970-01-01"), as.POSIXct(local_timestamp, origin="1970-01-01"))]
+  output[maker_order_id == "NA", maker_order_id := NA_character_]
+  output[taker_order_id == "NA", taker_order_id := NA_character_]
   output
 }

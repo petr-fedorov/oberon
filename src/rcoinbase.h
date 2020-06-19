@@ -4,6 +4,8 @@
 
 #include <vector>
 
+#include <string>
+using namespace std;
 #include "reconstructor.h"
 #include <Rcpp.h>
 using Rcpp::DataFrame;
@@ -22,7 +24,7 @@ class RStore : public oberon::core::Store {
 
 
   private:
-    Rcpp::StringVector order_id_;
+    vector<string> order_id_;
 
     vector<double> timestamp_;
 
@@ -38,7 +40,7 @@ class RStore : public oberon::core::Store {
 
     vector<int32_t> trade_id_;
 
-    Rcpp::StringVector taker_order_id_;
+    vector<string> taker_order_id_;
 
     vector<double> local_timestamp_;
 

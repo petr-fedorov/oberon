@@ -48,6 +48,7 @@ Rcpp::DataFrame RBitfinex::run(const Rcpp::DataFrame & quotes, const Rcpp::DataF
       else
         tree.put("event", "order_deleted");
       tree.put("exchange_timestamp", format("%FT%TZ\n", current_timestamp));
+      // std::cout << "\r" << tree.get<string>("exchange_timestamp") << std::flush;
       tree.put("local_timestamp",
                format("%FT%TZ\n",
                       Timestamp(Duration(lround(quote_local[q] * 1000000)))));

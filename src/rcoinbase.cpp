@@ -18,7 +18,7 @@ void RStore::transmit( std::unique_ptr<oberon::core::Event> && event) {
       else
         order_id_.push_back("");
     else
-      order_id_.push_back(NA_STRING);
+      order_id_.push_back("NA");
     timestamp_.push_back(event->timestamp().time_since_epoch().count() /
                          1000000.0);
     local_timestamp_.push_back(event->localTimestamp().time_since_epoch().count() /
@@ -40,7 +40,7 @@ void RStore::transmit( std::unique_ptr<oberon::core::Event> && event) {
       else
         taker_order_id_.push_back("");
     else
-      taker_order_id_.push_back(NA_STRING);
+      taker_order_id_.push_back("NA");
     state_.push_back(event->state());
   }
 }

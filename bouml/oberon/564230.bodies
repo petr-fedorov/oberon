@@ -1,6 +1,9 @@
 class EventNumberGenerator
 !!!722438.cpp!!!	exchangeMessage() : bool
 ExchangeMessage *em = dynamic_cast<ExchangeMessage *>(received_.get());
+#ifdef VERBOSE_STATE_MACHINE
+std::cout << "exchangeMessage " << em->toString() << "\n";
+#endif
 try {
   em->setEventNo(eventNumbers_.at(em->getOrderId()) + 1);
   eventNumbers_[em->getOrderId()] = em->getEventNo();
@@ -8,14 +11,21 @@ try {
 }
 output_.push_back(std::move(received_));
 return true;
-!!!722566.cpp!!!	received() : bool
+!!!722566.cpp!!!	created() : bool
 ExchangeMessage *em = dynamic_cast<ExchangeMessage *>(received_.get());
-eventNumbers_[em->getOrderId()] = 0;
-em->setEventNo(0);
+#ifdef VERBOSE_STATE_MACHINE
+std::cout << "created " << em->toString() << "\n";
+#endif
+eventNumbers_[em->getOrderId()] = 1;
+em->setEventNo(1);
 output_.push_back(std::move(received_));
 return true;
-!!!722694.cpp!!!	fullyCanceled() : bool
+!!!722694.cpp!!!	canceled() : bool
 ExchangeMessage *em = dynamic_cast<ExchangeMessage *>(received_.get());
+#ifdef VERBOSE_STATE_MACHINE
+std::cout << "fullyCanceled " << em->toString() << "\n";
+#endif
+
 try {
   em->setEventNo(eventNumbers_.at(em->getOrderId()) + 1);
   eventNumbers_.erase(em->getOrderId());
@@ -25,6 +35,10 @@ output_.push_back(std::move(received_));
 return true;
 !!!722822.cpp!!!	filled() : bool
 ExchangeMessage *em = dynamic_cast<ExchangeMessage *>(received_.get());
+#ifdef VERBOSE_STATE_MACHINE
+std::cout << "filled " << em->toString() << "\n";
+#endif
+
 try {
   em->setEventNo(eventNumbers_.at(em->getOrderId()) + 1);
   if (!em->getRemainingSize())

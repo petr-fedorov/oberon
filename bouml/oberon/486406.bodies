@@ -2,11 +2,9 @@ class CoinbaseReconstructor
 !!!576134.cpp!!!	extract(in tree : ptree [1]) : MessageHandler::Message [1..*]
 using namespace date;
 using namespace std;
-string type = tree.get<string>("type");
-Timestamp timestamp;
-std::istringstream ss{tree.get<string>("time")};
-ss >> parse("%FT%TZ", timestamp);
+Timestamp timestamp = toTimestamp(tree.get<string>("time"));
 vector<unique_ptr<Message>> output;
+string type = tree.get<string>("type");
 if (type == "elapsed")
   output.push_back(make_unique<Elapsed>(timestamp));
 else if (type == "received")
@@ -19,7 +17,7 @@ else if (type == "done") {
 } else if (type == "match") {
   output.push_back(make_unique<CoinbaseMatch>(tree, *this));
 }
-return output;
+return size_deducer_->handle(move(output));
 !!!582918.cpp!!!	CoinbaseReconstructor(in store : Store, in base_min_size : Volume, in base_increment : Volume, in extract_only : bool)
 store_ = store;
 base_min_size_ = base_min_size;

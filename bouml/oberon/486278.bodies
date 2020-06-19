@@ -17,11 +17,11 @@ if (extract_only_)
 else
   transmit(cleanse(extract(message)));
 !!!641798.cpp!!!	cleanse(in messages : MessageHandler::Message [1..*]) : MessageHandler::Message [*]
-auto output = size_deducer_->handle(move(messages));
 if(deduplicator_)
-  output = deduplicator_->handle(std::move(output));
-output = event_number_generator_->handle(std::move(output));
-return output;
+  messages = deduplicator_->handle(std::move(messages));
+return messages;
 !!!641926.cpp!!!	transmit(in messages : MessageHandler::Message [*]) : void
-for(auto &msg : messages) store_->transmit(msg->toEvent());
+messages = event_number_generator_->handle(std::move(messages));
+for(auto &msg : messages) 
+  store_->transmit(msg->toEvent());
 

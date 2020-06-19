@@ -1,6 +1,6 @@
 format 222
 "R package" // R package
-  revision 36
+  revision 38
   modified_by 6 "petr"
   // class settings
   
@@ -112,8 +112,10 @@ ${inlines}
       end
 
       attribute 407046 "order_id_"
-	private explicit_type "Rcpp::StringVector"
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+	private explicit_type "string"
+	multiplicity "*"
+	stereotype "vector"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
 "
 	java_decl ""
 	php_decl ""
@@ -222,8 +224,10 @@ ${inlines}
       end
 
       attribute 472966 "taker_order_id_"
-	private explicit_type "Rcpp::StringVector"
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+	private explicit_type "string"
+	multiplicity "*"
+	stereotype "vector"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
 "
 	java_decl ""
 	php_decl ""

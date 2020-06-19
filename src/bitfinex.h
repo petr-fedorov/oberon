@@ -2,8 +2,10 @@
 #define OBERON_CORE_BITFINEX_H
 
 
-#include "reconstructor.h"
 #include "reconstructor_impl.h"
+#include <map>
+
+#include "reconstructor.h"
 #include <boost/property_tree/ptree.hpp>
 
 
@@ -13,6 +15,19 @@ namespace oberon {
 
 namespace core {
 
+class DeduceSizeBitfinex : public MessageHandler {
+  protected:
+    virtual bool created();
+
+    virtual bool changed();
+
+    virtual bool canceled();
+
+
+  private:
+    map<OrderId, Volume> sizes_;
+
+};
 class BitfinexReconstructor : public ReconstructorImplementation {
   public:
     BitfinexReconstructor(Store * store, const Volume & base_min_size, const Volume & base_increment, bool extract_only);

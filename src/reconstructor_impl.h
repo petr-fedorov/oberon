@@ -395,13 +395,13 @@ class EventNumberGenerator : public MessageHandler {
 
 
   protected:
-    virtual bool exchangeMessage();
+    virtual bool exchangeMessage() override;
 
-    virtual bool received();
+    virtual bool created() override;
 
-    virtual bool fullyCanceled();
+    virtual bool canceled() override;
 
-    virtual bool filled();
+    virtual bool filled() override;
 
     virtual string getHandlerName();
 
@@ -436,9 +436,9 @@ class ReconstructorImplementation : public Reconstructor {
 
 
   private:
-    virtual vector<std::unique_ptr<MessageHandler::Message>> cleanse( vector<std::unique_ptr<MessageHandler::Message>> && messages);
+    virtual vector<std::unique_ptr<MessageHandler::Message>> cleanse( vector<std::unique_ptr<MessageHandler::Message>>  messages);
 
-    inline virtual void transmit( vector<std::unique_ptr<MessageHandler::Message>> &&  messages);
+    inline virtual void transmit( vector<std::unique_ptr<MessageHandler::Message>>  messages);
 
 
   protected:
@@ -451,8 +451,10 @@ class ReconstructorImplementation : public Reconstructor {
     std::unique_ptr<MessageHandler> event_number_generator_;
 
 };
-inline void ReconstructorImplementation::transmit( vector<std::unique_ptr<MessageHandler::Message>> &&  messages) {
-  for(auto &msg : messages) store_->transmit(msg->toEvent());
+inline void ReconstructorImplementation::transmit( vector<std::unique_ptr<MessageHandler::Message>>  messages) {
+  messages = event_number_generator_->handle(std::move(messages));
+  for(auto &msg : messages) 
+    store_->transmit(msg->toEvent());
   
 }
 

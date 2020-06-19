@@ -1,6 +1,5 @@
 
 #include "bitfinex.h"
-#include "reconstructor.h"
 #include <vector>
 
 
@@ -9,12 +8,44 @@ namespace oberon {
 
 namespace core {
 
+bool DeduceSizeBitfinex::created() {
+  auto msg = dynamic_cast<ExchangeMessage *>(received_.get());
+  sizes_[msg->getOrderId()] = msg->getRemainingSize();
+  output_.push_back(std::move(received_));
+  return true;
+}
+
+bool DeduceSizeBitfinex::changed() {
+  auto msg = dynamic_cast<ExchangeMessage *>(received_.get());
+  try {
+    msg->setChangeSize(sizes_.at(msg->getOrderId()) -
+                             msg->getRemainingSize());
+  } catch (const std::out_of_range &) {
+  };
+  sizes_[msg->getOrderId()] = msg->getRemainingSize();
+  output_.push_back(std::move(received_));
+  
+  return true;
+}
+
+bool DeduceSizeBitfinex::canceled() {
+  auto msg = dynamic_cast<ExchangeMessage *>(received_.get());
+  try {
+    msg->setChangeSize(sizes_.at(msg->getOrderId()) -
+                             msg->getRemainingSize());
+    sizes_.erase(msg->getOrderId());
+  } catch (const std::out_of_range &) {
+  };
+  output_.push_back(std::move(received_));
+  return true;
+}
+
 BitfinexReconstructor::BitfinexReconstructor( Store * store, const Volume & base_min_size, const Volume & base_increment, bool extract_only) {
   store_ = store;
   base_min_size_ = base_min_size;
   base_increment_ = base_increment;
   extract_only_ = extract_only;
-  size_deducer_ =std::make_unique<MessageHandler>();
+  size_deducer_ =std::make_unique<DeduceSizeBitfinex>();
   size_deducer_->create();
   // Deduplication is not needed for CoinBase
   deduplicator_ = std::unique_ptr<MessageHandler>();
@@ -40,7 +71,10 @@ vector<std::unique_ptr<MessageHandler::Message>> BitfinexReconstructor::extract(
   } else if (type == "match") {
     output.push_back(make_unique<BitfinexFilled>(tree, *this));
   }
-  return output;
+  if (size_deducer_)
+    return size_deducer_->handle(std::move(output));
+  else
+    return output;
 }
 
 const Volume BitfinexReconstructor::BitfinexMessage::getBaseMinSize() const {

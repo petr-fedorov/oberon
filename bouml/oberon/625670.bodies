@@ -40,6 +40,7 @@ while (q < quote_local.size() || t < trade_local.size()) {
     else
       tree.put("event", "order_deleted");
     tree.put("exchange_timestamp", format("%FT%TZ\n", current_timestamp));
+    // std::cout << "\r" << tree.get<string>("exchange_timestamp") << std::flush;
     tree.put("local_timestamp",
              format("%FT%TZ\n",
                     Timestamp(Duration(lround(quote_local[q] * 1000000)))));

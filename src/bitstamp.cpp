@@ -693,6 +693,38 @@ string DedupOrchestrator::getHandlerName() {
   return "DedupOrch";
 }
 
+bool DeduceSizeBitstamp::created() {
+  auto msg = dynamic_cast<ExchangeMessage *>(received_.get());
+  sizes_[msg->getOrderId()] = msg->getRemainingSize();
+  output_.push_back(std::move(received_));
+  return true;
+}
+
+bool DeduceSizeBitstamp::changed() {
+  auto msg = dynamic_cast<ExchangeMessage *>(received_.get());
+  try {
+    msg->setChangeSize(sizes_.at(msg->getOrderId()) -
+                             msg->getRemainingSize());
+  } catch (const std::out_of_range &) {
+  };
+  sizes_[msg->getOrderId()] = msg->getRemainingSize();
+  output_.push_back(std::move(received_));
+  
+  return true;
+}
+
+bool DeduceSizeBitstamp::canceled() {
+  auto msg = dynamic_cast<ExchangeMessage *>(received_.get());
+  try {
+    msg->setChangeSize(sizes_.at(msg->getOrderId()) -
+                             msg->getRemainingSize());
+    sizes_.erase(msg->getOrderId());
+  } catch (const std::out_of_range &) {
+  };
+  output_.push_back(std::move(received_));
+  return true;
+}
+
 const Volume BitstampReconstructor::BitstampMessage::getBaseMinSize() const {
   return reconstructor_.base_min_size_;
   
@@ -764,9 +796,8 @@ BitstampReconstructor::BitstampReconstructor( Store * store, const Volume & base
   base_min_size_ = base_min_size;
   base_increment_ = base_increment;
   extract_only_ = extract_only;
-  size_deducer_ =std::make_unique<MessageHandler>();
-  size_deducer_->create();
-  // Deduplication is not needed for CoinBase
+  size_deducer_ =std::make_unique<DeduceSizeBitstamp>();
+  // Deduplication is needed - TBD
   deduplicator_ = std::unique_ptr<MessageHandler>();
   event_number_generator_ = std::make_unique<EventNumberGenerator>();
   
@@ -791,8 +822,10 @@ vector<std::unique_ptr<MessageHandler::Message>> BitstampReconstructor::extract(
   } else if (type == "match") {
     output.push_back(make_unique<BitstampFilled>(tree, *this));
   }
-  return output;
-  
+  if (size_deducer_)
+    return size_deducer_->handle(std::move(output));
+  else
+    return output;
 }
 
 

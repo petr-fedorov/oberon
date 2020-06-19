@@ -1,0 +1,27 @@
+class DeduceSizeBitfinex
+!!!806918.cpp!!!	created() : bool
+auto msg = dynamic_cast<ExchangeMessage *>(received_.get());
+sizes_[msg->getOrderId()] = msg->getRemainingSize();
+output_.push_back(std::move(received_));
+return true;
+!!!807046.cpp!!!	changed() : bool
+auto msg = dynamic_cast<ExchangeMessage *>(received_.get());
+try {
+  msg->setChangeSize(sizes_.at(msg->getOrderId()) -
+                           msg->getRemainingSize());
+} catch (const std::out_of_range &) {
+};
+sizes_[msg->getOrderId()] = msg->getRemainingSize();
+output_.push_back(std::move(received_));
+
+return true;
+!!!807174.cpp!!!	canceled() : bool
+auto msg = dynamic_cast<ExchangeMessage *>(received_.get());
+try {
+  msg->setChangeSize(sizes_.at(msg->getOrderId()) -
+                           msg->getRemainingSize());
+  sizes_.erase(msg->getOrderId());
+} catch (const std::out_of_range &) {
+};
+output_.push_back(std::move(received_));
+return true;

@@ -387,6 +387,9 @@ MessageHandler::~MessageHandler() {
 
 bool EventNumberGenerator::exchangeMessage() {
   ExchangeMessage *em = dynamic_cast<ExchangeMessage *>(received_.get());
+#ifdef VERBOSE_STATE_MACHINE
+  std::cout << "exchangeMessage " << em->toString() << "\n";
+#endif
   try {
     em->setEventNo(eventNumbers_.at(em->getOrderId()) + 1);
     eventNumbers_[em->getOrderId()] = em->getEventNo();
@@ -396,16 +399,23 @@ bool EventNumberGenerator::exchangeMessage() {
   return true;
 }
 
-bool EventNumberGenerator::received() {
+bool EventNumberGenerator::created() {
   ExchangeMessage *em = dynamic_cast<ExchangeMessage *>(received_.get());
-  eventNumbers_[em->getOrderId()] = 0;
-  em->setEventNo(0);
+#ifdef VERBOSE_STATE_MACHINE
+  std::cout << "created " << em->toString() << "\n";
+#endif
+  eventNumbers_[em->getOrderId()] = 1;
+  em->setEventNo(1);
   output_.push_back(std::move(received_));
   return true;
 }
 
-bool EventNumberGenerator::fullyCanceled() {
+bool EventNumberGenerator::canceled() {
   ExchangeMessage *em = dynamic_cast<ExchangeMessage *>(received_.get());
+#ifdef VERBOSE_STATE_MACHINE
+  std::cout << "fullyCanceled " << em->toString() << "\n";
+#endif
+  
   try {
     em->setEventNo(eventNumbers_.at(em->getOrderId()) + 1);
     eventNumbers_.erase(em->getOrderId());
@@ -417,6 +427,10 @@ bool EventNumberGenerator::fullyCanceled() {
 
 bool EventNumberGenerator::filled() {
   ExchangeMessage *em = dynamic_cast<ExchangeMessage *>(received_.get());
+#ifdef VERBOSE_STATE_MACHINE
+  std::cout << "filled " << em->toString() << "\n";
+#endif
+  
   try {
     em->setEventNo(eventNumbers_.at(em->getOrderId()) + 1);
     if (!em->getRemainingSize())
@@ -458,12 +472,10 @@ void ReconstructorImplementation::process(const boost::property_tree::ptree & me
     transmit(cleanse(extract(message)));
 }
 
-vector<std::unique_ptr<MessageHandler::Message>> ReconstructorImplementation::cleanse( vector<std::unique_ptr<MessageHandler::Message>> && messages) {
-  auto output = size_deducer_->handle(move(messages));
+vector<std::unique_ptr<MessageHandler::Message>> ReconstructorImplementation::cleanse( vector<std::unique_ptr<MessageHandler::Message>>  messages) {
   if(deduplicator_)
-    output = deduplicator_->handle(std::move(output));
-  output = event_number_generator_->handle(std::move(output));
-  return output;
+    messages = deduplicator_->handle(std::move(messages));
+  return messages;
 }
 
 

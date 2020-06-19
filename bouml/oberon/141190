@@ -1,6 +1,6 @@
 format 222
 "Order Book Reconstructor" // Order Book Reconstructor
-  revision 124
+  revision 130
   modified_by 6 "petr"
   // class settings
   
@@ -1023,8 +1023,8 @@ ${items}};
       parameter 191878 "message" type class_ref 245766 // Message
 	 multiplicity "1" unordered is_control
 	in
-	flow 322694 "<flow>"
-	  on pin_ref 305286 // messages
+	flow 360838 "<flow>"
+	  on activitynode_ref 270086 // decision
 	end
       end
 
@@ -1063,29 +1063,7 @@ ${items}};
 	end
       end
 
-      activityaction 246790 "Generate event numbers"
-	call_operation_action
-	operation_ref 590214 // handle
-	pin 296582 "target" type class_ref 441222 // MessageHandler
-	  unordered 
-	  in
-	end
-
-	pin 296710 "output" type class_ref 245766 // Message
-	   multiplicity "*" unordered is_control
-	  return
-	  flow 312454 "<flow>"
-	    on pin_ref 297222 // messages
-	  end
-	end
-
-	pin 296838 "messages" type class_ref 245766 // Message
-	   multiplicity "*" unordered is_control
-	  in
-	end
-      end
-
-      activityaction 246918 "Other"
+      activityaction 246918 "Filter out takers"
 	call_operation_action
 	operation_ref 590214 // handle
 	pin 296966 "target" type class_ref 441222 // MessageHandler
@@ -1096,8 +1074,8 @@ ${items}};
 	pin 297094 "output" type class_ref 245766 // Message
 	   multiplicity "*" unordered 
 	  return
-	  flow 312838 "<flow>"
-	    on parameter_ref 192134 // output
+	  flow 352134 "<flow>"
+	    on activitynode_ref 283526 // merge
 	  end
 	end
 
@@ -1111,46 +1089,13 @@ ${items}};
 	stereotype "datastore"
 	 type class_ref 486278 // ReconstructorImplementation
 	unordered 
-	flow 313094 "<flow>"
-	  on pin_ref 296582 // target
-	      uml_transformation "Event Number Generator"
-	end
-
-	flow 313222 "<flow>"
-	  on pin_ref 296966 // target
-	      uml_transformation "Other (TBD)"
-	end
-
-	flow 323078 "<flow>"
-	  on pin_ref 305030 // target
-	      uml_transformation "Size Deducer"
-	end
-
 	flow 337030 "<flow>"
-	  on activityobject_ref 193926 // activity object deduplicator_
+	  on activityobject_ref 193926 // activity object deduplicator
 	      uml_transformation "Deduplicator"
 	end
-      end
 
-      activityaction 253958 "Deduce Size"
-	call_operation_action
-	operation_ref 590214 // handle
-	pin 305030 "target" type class_ref 441222 // MessageHandler
-	  unordered 
-	  in
-	end
-
-	pin 305158 "output" type class_ref 245766 // Message
-	   multiplicity "*" fifo is_control
-	  return
-	  flow 336646 "<flow>"
-	    on activitynode_ref 270086 // decision
-	  end
-	end
-
-	pin 305286 "messages" type class_ref 245766 // Message
-	   multiplicity "*" fifo is_control
-	  in
+	flow 351366 "<flow>"
+	  on activityobject_ref 200454 // activity object filter
 	end
       end
 
@@ -1166,7 +1111,7 @@ ${items}};
 	end
       end
 
-      activityobject 193926 "deduplicator_"
+      activityobject 193926 "deduplicator"
 	stereotype "datastore"
 	 explicit_type ""
 	unordered 
@@ -1180,8 +1125,38 @@ ${items}};
       end
 
       activitynode 270214 merge ""
-	flow 337670 "<flow>"
-	  on pin_ref 296838 // messages
+	flow 351750 "<flow>"
+	  on activitynode_ref 283398 // decision
+	end
+      end
+
+      activitynode 283398 decision ""
+	flow 351878 "<flow>"
+	  on pin_ref 297222 // messages
+	end
+
+	flow 352006 "<flow>"
+	  on activitynode_ref 283526 // merge
+	    uml_guard "filter is null"
+	end
+      end
+
+      activityobject 200454 "filter"
+	stereotype "datastore"
+	 explicit_type ""
+	unordered 
+	flow 351494 "<flow>"
+	  on activitynode_ref 283398 // decision
+	end
+
+	flow 351622 "<flow>"
+	  on pin_ref 296966 // target
+	end
+      end
+
+      activitynode 283526 merge ""
+	flow 360710 "<flow>"
+	  on parameter_ref 192134 // output
 	end
       end
     end
@@ -1197,24 +1172,16 @@ ${items}};
       parameter 192262 "messages" type class_ref 245766 // Message
 	 multiplicity "*" fifo is_control
 	in
-	flow 313478 "<flow>"
-	  on activityobject_ref 180742 // activity object messages
+	flow 352646 "<flow>"
+	  on pin_ref 312454 // messages
 	end
       end
 
       parameter 192390 "target" type class_ref 486278 // ReconstructorImplementation
 	 multiplicity "1" unordered 
 	in
-	flow 313990 "<flow>"
-	  on pin_ref 297350 // target
-	end
-      end
-
-      activityobject 180742 "messages"
-	 type class_ref 245766 // Message
-	 multiplicity "*" fifo is_control
-	flow 313734 "<flow>"
-	  on activitynode_ref 263430 // decision
+	flow 352518 "<flow>"
+	  on activityobject_ref 200582 // activity object this
 	end
       end
 
@@ -1230,26 +1197,44 @@ ${items}};
 	   multiplicity "0..1" unordered is_control
 	  in
 	end
+      end
 
-	flow 314118 "<flow>"
-	  on activityobject_ref 180742 // activity object messages
+      activityaction 260486 "Generate event numbers"
+	call_operation_action
+	operation_ref 590214 // handle
+	pin 312198 "target" type class_ref 441222 // MessageHandler
+	  unordered 
+	  in
+	end
+
+	pin 312326 "output" type class_ref 245766 // Message
+	   multiplicity "*" fifo is_control
+	  return
+	  flow 360582 "<flow>"
+	    on pin_ref 297478 // event
+		uml_transformation "to event"
+	  end
+	end
+
+	pin 312454 "messages" type class_ref 245766 // Message
+	   multiplicity "*" unordered is_control
+	  in
 	end
       end
 
-      activitynode 263430 decision ""
-	flow 313606 "<flow>"
-	  on pin_ref 297478 // event
-	    uml_guard "not null"
-	      uml_transformation "Message to Event"
+      activityobject 200582 "this"
+	stereotype "datastore"
+	 type class_ref 486278 // ReconstructorImplementation
+	 multiplicity "1" unordered 
+	flow 352902 "<flow>"
+	  on pin_ref 312198 // target
+	      uml_transformation "generator"
 	end
 
-	flow 313862 "<flow>"
-	  on activitynode_ref 263558 // activity_final
-	    uml_guard "null"
+	flow 353030 "<flow>"
+	  on pin_ref 297350 // target
+	      uml_transformation "store"
 	end
-      end
-
-      activitynode 263558 activity_final ""
       end
     end
 
@@ -3052,9 +3037,9 @@ The order price must be a multiple of this increment (i.e. if the increment is 0
 	nparams 1
 	  param in name "messages" type class_ref 245766 // Message
 	multiplicity "1..*"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${stereotype}<std::unique_ptr<${type}>> ${name}${(} vector<std::unique_ptr<${t0}>> && ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${stereotype}<std::unique_ptr<${type}>> ${name}${(} vector<std::unique_ptr<${t0}>>  ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
 "
-	cpp_def "${comment}${inline}${typeprefix}${stereotype}<std::unique_ptr<${type}>> ${class}::${name}${(} vector<std::unique_ptr<${t0}>> && ${p0}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${typeprefix}${stereotype}<std::unique_ptr<${type}>> ${class}::${name}${(} vector<std::unique_ptr<${t0}>>  ${p0}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
@@ -3068,9 +3053,9 @@ The order price must be a multiple of this increment (i.e. if the increment is 0
 	nparams 1
 	  param in name "messages" type class_ref 245766 // Message
 	multiplicity "*"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(} vector<std::unique_ptr<${t0}>> &&  ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(} vector<std::unique_ptr<${t0}>>  ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
 "
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(} vector<std::unique_ptr<${t0}>> &&  ${p0}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(} vector<std::unique_ptr<${t0}>>  ${p0}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
@@ -3530,7 +3515,7 @@ ${inlines}
       end
 
       operation 722438 "exchangeMessage"
-	cpp_virtual protected explicit_return_type "bool"
+	cpp_virtual cpp_override protected explicit_return_type "bool"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3543,8 +3528,8 @@ ${inlines}
 	
       end
 
-      operation 722566 "received"
-	cpp_virtual protected explicit_return_type "bool"
+      operation 722566 "created"
+	cpp_virtual cpp_override protected explicit_return_type "bool"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3557,8 +3542,8 @@ ${inlines}
 	
       end
 
-      operation 722694 "fullyCanceled"
-	cpp_virtual protected explicit_return_type "bool"
+      operation 722694 "canceled"
+	cpp_virtual cpp_override protected explicit_return_type "bool"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3572,7 +3557,7 @@ ${inlines}
       end
 
       operation 722822 "filled"
-	cpp_virtual protected explicit_return_type "bool"
+	cpp_virtual cpp_override protected explicit_return_type "bool"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -5592,6 +5577,11 @@ ${inlines}
     activitydiagramsettings
      end
     classdiagram 320774 "Bitstamp Messages"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
+    classdiagram 333958 "Bitstamp Deduce Size"
       classdiagramsettings member_max_width 0 end
       size A4
     end
@@ -8482,6 +8472,84 @@ ${inlines}
 	
       end
     end
+
+    class 632198 "DeduceSizeBitstamp"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 694790 // <generalisation>
+	relation 684678 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 694790 // <generalisation>
+	  b parent class_ref 441222 // MessageHandler
+      end
+
+      operation 800134 "created"
+	cpp_virtual protected explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 800262 "changed"
+	cpp_virtual protected explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 800390 "canceled"
+	cpp_virtual protected explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      attribute 500614 "sizes_"
+	private type class_ref 305798 // Volume
+	multiplicity "*"
+	stereotype "map"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<OrderId, ${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+    end
   end
 
   classview 214022 "Implementation - Bitfinex"
@@ -8504,6 +8572,84 @@ ${inlines}
     
     activitydiagramsettings
      end
+    class 638726 "DeduceSizeBitfinex"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 701318 // <generalisation>
+	relation 691206 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 701318 // <generalisation>
+	  b parent class_ref 441222 // MessageHandler
+      end
+
+      operation 806918 "created"
+	cpp_virtual protected explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 807046 "changed"
+	cpp_virtual protected explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 807174 "canceled"
+	cpp_virtual protected explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      attribute 507142 "sizes_"
+	private type class_ref 305798 // Volume
+	multiplicity "*"
+	stereotype "map"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<OrderId, ${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+    end
+
     classdiagram 327302 "Bitfinex Messages"
       classdiagramsettings member_max_width 0 end
       size A4
@@ -8931,6 +9077,7 @@ ${namespace_end}"
       associated_elems
 	class_ref 320518 // Dedup
 	class_ref 320390 // DedupOrchestrator
+	class_ref 632198 // DeduceSizeBitstamp
 	class_ref 603654 // BitstampReconstructor
       end
     end
@@ -8955,6 +9102,7 @@ ${namespace_start}
 ${members}
 ${namespace_end}"
       associated_elems
+	class_ref 638726 // DeduceSizeBitfinex
 	class_ref 624902 // BitfinexReconstructor
       end
     end

@@ -117,12 +117,13 @@ These messages are then taken by the activity `R.3 Cleanse` that performs so cal
 
 > *Data cleaning*, also called *data cleansing* or *scrubbing*, deals with detecting and removing errors and inconsistencies from data in order to improve the quality of data.
 
-UML2 UseCase Diagram [@cook_omg_2017] shown on figure \@ref(fig:reconstruction-use-case) lists the kinds of cleansing performed by `R.3 Cleanse`. 
+UML2 Activity Diagram [@cook_omg_2017] of `R.3 Cleanse` is shown on figure \@ref(fig:cleanse-activity).
 
-```{r reconstruction-use-case, echo=FALSE, fig.cap="UseCase diagram of Order Book Reconstructor package showing UseCases applied to Reconstructor class", fig.align="center"}
-knitr::include_graphics("reconstruction_use_case.png", dpi=80)
+```{r  cleanse-activity, echo=FALSE,fig.cap="UML2 Activity Diagram  of cleansing", fig.align="center"}
+knitr::include_graphics("R.3 Cleanse.png", dpi=80)
 ```
-The details of `R.3 Cleanse` activity are shown on figure \@ref(fig:cleanse-activity) below. The output of `R.3 Cleanse` is a set of zero or more messages each of which is then converted into zero or one events as defined by \@ref(def:order-event) which together compose Limit Order Book as defined by \@ref(def:lob). These events are persisted by `R.4 Save` activity. `R.3 Cleanse` will not produce output when subsequent messages are required for cleansing. In this case the messages will be accumulated within `R.3 Cleanse` between runs until enough messages are received.
+
+The output of `R.3 Cleanse` is a set of zero or more messages each of which is then converted into zero or one events as defined by \@ref(def:order-event) which together compose Limit Order Book as defined by \@ref(def:lob). These events are persisted by `R.4 Save` activity. `R.3 Cleanse` will not produce output when subsequent messages are required for cleansing. In this case the messages will be accumulated within `R.3 Cleanse` between runs until enough messages are received.
 
 
 Surprisingly, an order, an order event, a limit order book,  the operations of a continous double auction are rather complicated things if one attempts to define them rigorously. Consider, for example,  a definition given in the recent book [@bouchaud_trades_2018]:
@@ -534,11 +535,6 @@ TBDD
 ## Cleanse
 
 
-```{r  cleanse-activity, echo=FALSE,fig.cap="UML2 Activity Diagram  of cleansing", fig.align="center"}
-knitr::include_graphics("R.3 Cleanse.png", dpi=80)
-```
-
-
 
 ### Deduplicate
 
@@ -556,7 +552,7 @@ knitr::include_graphics("redundant1.png", dpi=80)
 knitr::include_graphics("redundant2.png", dpi=80)
 ```
 
-### Detect Makers
+### Filter out takers
 
 # Results
 
@@ -779,28 +775,20 @@ coinbase.o <- coinbase.full[ceiling_date(`_time`) == '2020-04-01 16:51:57',]
 
 
 ```{r Prepare oberon.Rdata, eval=FALSE, echo=FALSE,}
-
-bitfinex.quotes[order(exchange_timestamp, local_timestamp), c("price", "event","amount", "order.sign") := .(fifelse(price != 0, price, shift(price,1)),fifelse(price == 0, 0,1), fifelse(price==0, NA_real_, amount), fifelse(amount > 0, 1,-1)), by=order_id]
-
-bitfinex.quotes[order(exchange_timestamp, local_timestamp), c("volume.decrease", "n") := .(round(abs(nafill(shift(amount,1),fill=0)) - abs(nafill(amount,fill=0)), finex.digits), seq_len(.N)), by=order_id]
-
-finex.digits <- 5
-
-finex.q.1 <- bitfinex.quotes[between(exchange_timestamp,'2020-03-26 07:01:33+03','2020-03-26 07:01:34+03')][order(local_timestamp), .(exchange_timestamp, order_id, price=round(price, finex.digits), amount=round(amount, finex.digits), event, local_timestamp, order.sign, volume.decrease, n) ]
-
-
-finex.t.1 <- bitfinex.trades[between(exchange_timestamp,'2020-03-26 07:01:33+03','2020-03-26 07:01:34+03')][order(local_timestamp), .(id, qty, price=round(price, finex.digits), exchange_timestamp, trade_id, local_timestamp, n=.I)]
-finex.t.1[, c("qty", "d") := .(round(abs(qty), finex.digits), ifelse(qty > 0, -1, 1))]
-
-coinbase.extracted <- reconstruct("Coinbase", coinbase.full[lubridate::ceiling_date(`_time`) == '2020-04-01 16:51:57',], extract.only=TRUE)
+coinbase.extracted <- reconstruct("Coinbase", coinbase.full[`_time` <= '2020-04-01 16:51:57',], extract.only=TRUE)[lubridate::ceiling_date(timestamp) == '2020-04-01 16:51:57',]
 setDT(bitstamp.quotes)
 setDT(bitstamp.trades)
-bitstamp.extracted <- reconstruct("Bitstamp", bitstamp.quotes[lubridate::ceiling_date(microtimestamp) == '2020-03-25 12:17:24+03',], bitstamp.trades[lubridate::ceiling_date(trade_timestamp) == '2020-03-25 12:17:24+03',], extract.only = TRUE) 
+bitstamp.extracted <- reconstruct("Bitstamp",
+                                  bitstamp.quotes[microtimestamp <= '2020-03-25 12:17:24+03',],
+                                  bitstamp.trades[trade_timestamp <= '2020-03-25 12:17:24+03',],
+                                  extract.only = TRUE)[lubridate::ceiling_date(timestamp) == '2020-03-25 12:17:24+03',]
 
 setDT(bitfinex.quotes)
 setDT(bitfinex.trades)
-bitfinex.extracted <- reconstruct("Bitfinex", bitfinex.quotes[lubridate::ceiling_date(exchange_timestamp) == '2020-03-26 07:01:34+03',],
-                                  bitfinex.trades[lubridate::ceiling_date(exchange_timestamp) == '2020-03-26 07:01:34+03'], extract.only = TRUE) 
+bitfinex.extracted <- reconstruct("Bitfinex",
+                                  bitfinex.quotes[exchange_timestamp <= '2020-03-26 07:01:34+03',],
+                                  bitfinex.trades[exchange_timestamp <= '2020-03-26 07:01:34+03'],
+                                  extract.only = TRUE)[lubridate::ceiling_date(timestamp) == '2020-03-26 07:01:34+03',] 
 save( coinbase.extracted, bitstamp.extracted, bitfinex.extracted, file="oberon.Rdata", compress=TRUE)
 
 ```

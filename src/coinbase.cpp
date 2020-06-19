@@ -95,11 +95,9 @@ CoinbaseReconstructor::CoinbaseOpen::CoinbaseOpen(const boost::property_tree::pt
 vector<std::unique_ptr<MessageHandler::Message>> CoinbaseReconstructor::extract(const boost::property_tree::ptree & tree) {
   using namespace date;
   using namespace std;
-  string type = tree.get<string>("type");
-  Timestamp timestamp;
-  std::istringstream ss{tree.get<string>("time")};
-  ss >> parse("%FT%TZ", timestamp);
+  Timestamp timestamp = toTimestamp(tree.get<string>("time"));
   vector<unique_ptr<Message>> output;
+  string type = tree.get<string>("type");
   if (type == "elapsed")
     output.push_back(make_unique<Elapsed>(timestamp));
   else if (type == "received")
@@ -112,7 +110,7 @@ vector<std::unique_ptr<MessageHandler::Message>> CoinbaseReconstructor::extract(
   } else if (type == "match") {
     output.push_back(make_unique<CoinbaseMatch>(tree, *this));
   }
-  return output;
+  return size_deducer_->handle(move(output));
 }
 
 CoinbaseReconstructor::CoinbaseReconstructor( Store * store, const Volume & base_min_size, const Volume & base_increment, bool extract_only) {
