@@ -314,7 +314,9 @@ vector<std::unique_ptr<MessageHandler::Message>> MessageHandler::handle(vector<s
       // Here I produced the log record in BoUML style 
       std::cout << "DEBUG : " << getHandlerName() << " received " << received_->toString() << "\n";
 #endif
-      received_->accept(this);
+      std::string s{received_->toString()};
+      if(!received_->accept(this))
+        throw std::logic_error(s);
     }
   }
   return std::move(output_);
@@ -466,10 +468,15 @@ const Timestamp ReconstructorImplementation::toTimestamp(string timestamp)
 }
 
 void ReconstructorImplementation::process(const boost::property_tree::ptree & message) {
+  try{
   if (extract_only_)
     transmit(extract(message));
   else
     transmit(cleanse(extract(message)));
+  }
+  catch (const std::logic_error &e) {
+    throw;
+  }
 }
 
 vector<std::unique_ptr<MessageHandler::Message>> ReconstructorImplementation::cleanse( vector<std::unique_ptr<MessageHandler::Message>>  messages) {

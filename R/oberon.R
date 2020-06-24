@@ -8,7 +8,7 @@ reconstruct <- function(exchange=c("Coinbase", "Bitstamp", "Bitfinex"), source1,
   exchange <- match.arg(exchange)
   output <- switch(exchange,
                    Coinbase=reconstructCoinbase(source1, extract.only),
-                   Bitstamp=reconstructBitstamp(source1, source2, extract.only),
+                   Bitstamp=reconstructBitstamp(source1[order(microtimestamp), ], source2[order(trade_timestamp), ], extract.only),
                    Bitfinex=reconstructBitfinex(source1, source2, extract.only))
   setDT(output)
   output[, c("timestamp", "local_timestamp") := .(as.POSIXct(timestamp, origin="1970-01-01"), as.POSIXct(local_timestamp, origin="1970-01-01"))]

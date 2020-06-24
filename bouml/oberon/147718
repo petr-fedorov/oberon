@@ -1,6 +1,6 @@
 format 222
 "Standalone application" // Standalone application
-  revision 37
+  revision 38
   modified_by 6 "petr"
   // class settings
   
@@ -207,6 +207,14 @@ format 222
 	  flow 314758 "<flow>"
 	    on activityaction_ref 247302 // activity action R.1 Reconstruct Order Book
 	  end
+
+	  pin 319110 "logic_error" explicit_type ""
+	     multiplicity "1" unordered is_control
+	    out exception
+	    flow 374278 "<flow>"
+	      on activitynode_ref 190086 // activity_final
+	    end
+	  end
 	end
 
 	activityobject 187398 "reconstructor"
@@ -233,6 +241,7 @@ format 222
 
       activitypartition 128134 "Application"
       end
+
     end
 
     activity 141446 "S.2 Subscribe"

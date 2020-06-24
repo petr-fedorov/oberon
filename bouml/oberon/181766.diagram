@@ -40,7 +40,7 @@ activityactioncanvas 148742 activityaction_ref 193542 // activity action Stop re
   xyzwh 180 380 3019 100 60
 end
 activitynodecanvas 148870 activitynode_ref 190086 // activity_final
-  xyz 217 524 2006
+  xyz 397 520 2006
 end
 interruptibleactivityregioncanvas 149126 interruptibleactivityregion_ref 141062 // 
   xyzwh 143 79 2000 583 410
@@ -90,7 +90,10 @@ activityactioncanvas 166534 activityaction_ref 247302 // activity action R.1 Rec
       xyzwh 555 371 2007 11 11 label_xy 569 367
     end
     pincanvas 166918 pin_ref 298246 // 
-      xyzwh 531 436 2007 11 11 label_xy 559 447
+      xyzwh 571 436 2007 11 11 label_xy 599 447
+    end
+    pincanvas 168838 pin_ref 319110 // logic_error
+      xyzwh 519 436 2007 11 11 label_xy 449 438
     end
   end
 end
@@ -99,8 +102,9 @@ activityobjectcanvas 168454 activityobject_ref 187398 // activity object reconst
   xyzwh 384 296 4020 95 45 label_xy 384 341
 end
 flowcanvas 148998 flow_ref 219782 // S.1.13
+  decenter_end 360
   
-  from ref 148742 z 2013 label "S.1.13" xyz 222 447 2013 to ref 148870
+  from ref 148742 z 2013 label "S.1.13" xyz 318.5 477 2013 to ref 148870
    write_horizontally default
 end
 flowcanvas 152582 flow_ref 243462 // S.1.9
@@ -161,7 +165,7 @@ flowcanvas 166406 flow_ref 314502 // <flow>
 end
 flowcanvas 167046 flow_ref 314630 // <flow>
   
-  from ref 166918 z 2008 to point 534 533
+  from ref 166918 z 2008 to point 573 560
   line 167174 z 2008 to ref 148870
    write_horizontally default
 end
@@ -193,8 +197,15 @@ flowcanvas 168582 flow_ref 329862 // <flow>
    write_horizontally default
 end
 flowcanvas 168710 flow_ref 329990 // <flow>
+  decenter_end 818
   
   from ref 168454 z 4021 to ref 166662
+   write_horizontally default
+end
+flowcanvas 169478 flow_ref 374278 // <flow>
+  
+  from ref 168838 z 2008 to point 514 510
+  line 169734 z 2008 to ref 148870
    write_horizontally default
 end
 end

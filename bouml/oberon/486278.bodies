@@ -12,10 +12,15 @@ Timestamp output;
 ss >> parse("%FT%TZ", output);
 return output;
 !!!575878.cpp!!!	process(in message : ptree [1]) : void
+try{
 if (extract_only_)
   transmit(extract(message));
 else
   transmit(cleanse(extract(message)));
+}
+catch (const std::logic_error &e) {
+  throw;
+}
 !!!641798.cpp!!!	cleanse(in messages : MessageHandler::Message [1..*]) : MessageHandler::Message [*]
 if(deduplicator_)
   messages = deduplicator_->handle(std::move(messages));

@@ -13,6 +13,9 @@ activitycanvas 128006 activity_ref 175238 // R.1 Reconstruct Order Book
     parametercanvas 129286 parameter_ref 185350 // target
         xyzwh 379 32 2002 117 25
     end
+    parametercanvas 149510 parameter_ref 198918 // logic_error
+        xyzwh 643 332 2002 117 25 label_xy 682 314
+    end
   end
 end
 activityactioncanvas 128646 activityaction_ref 226950 // activity action R.2 Extract
@@ -44,13 +47,16 @@ activityactioncanvas 146566 activityaction_ref 247174 // activity action R.3 Cle
   xyzwh 570 185 2005 100 60
   pins
     pincanvas 146694 pin_ref 297606 // target
-      xyzwh 607 175 2007 11 11 label_xy 622 166
+      xyzwh 624 175 2007 11 11 label_xy 639 166
     end
     pincanvas 146822 pin_ref 297734 // output
       xyzwh 626 244 2007 11 11 label_xy 576 249
     end
     pincanvas 146950 pin_ref 297862 // message
       xyzwh 560 208 2007 11 11 label_xy 491 187
+    end
+    pincanvas 149766 pin_ref 318982 // logic_error
+      xyzwh 646 244 2007 11 11 label_xy 660 256
     end
   end
 end
@@ -107,7 +113,8 @@ flowcanvas 147206 flow_ref 314374 // <flow>
 end
 flowcanvas 147846 flow_ref 315398 // <flow>
   
-  from ref 132998 z 2008 to ref 147462
+  from ref 132998 z 2008 to point 748 102
+  line 149638 z 2008 to ref 147462
    write_horizontally default
 end
 flowcanvas 148102 flow_ref 344198 // <flow>
@@ -144,6 +151,12 @@ flowcanvas 148870 flow_ref 344838 // <flow>
   
   from ref 148486 z 2008 to point 730 306
   line 149126 z 2008 to ref 147590
+   write_horizontally default
+end
+flowcanvas 149894 flow_ref 374150 // <flow>
+  decenter_end 119
+  
+  from ref 149766 z 2008 to ref 149510
    write_horizontally default
 end
 line 149382 -_-_

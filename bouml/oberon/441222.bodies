@@ -9,7 +9,9 @@ for(auto& msg: messages) {
     // Here I produced the log record in BoUML style 
     std::cout << "DEBUG : " << getHandlerName() << " received " << received_->toString() << "\n";
 #endif
-    received_->accept(this);
+    std::string s{received_->toString()};
+    if(!received_->accept(this))
+      throw std::logic_error(s);
   }
 }
 return std::move(output_);
