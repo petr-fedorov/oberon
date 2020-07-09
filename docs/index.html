@@ -24,7 +24,7 @@
 <meta name="author" content="Petr Fedorov" />
 
 
-<meta name="date" content="2020-06-24" />
+<meta name="date" content="2020-07-09" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -66,7 +66,7 @@
 
 <ul class="summary">
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
-<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#continous-time-double-auction-and-lob"><i class="fa fa-check"></i><b>1.1</b> Continous-time double auction and LOB</a></li>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#continuous-time-double-auction-and-lob"><i class="fa fa-check"></i><b>1.1</b> Continuous-time double auction and LOB</a></li>
 <li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#available-data-sets"><i class="fa fa-check"></i><b>1.2</b> Available data sets</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html"><i class="fa fa-check"></i><b>2</b> Reconstruction algorithm</a><ul>
@@ -76,8 +76,8 @@
 <li class="chapter" data-level="2.4" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#limit-order-book-lob"><i class="fa fa-check"></i><b>2.4</b> Limit Order Book (LOB)</a></li>
 <li class="chapter" data-level="2.5" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#extract"><i class="fa fa-check"></i><b>2.5</b> Extract</a></li>
 <li class="chapter" data-level="2.6" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#cleanse"><i class="fa fa-check"></i><b>2.6</b> Cleanse</a><ul>
-<li class="chapter" data-level="2.6.1" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#filter-out-takers"><i class="fa fa-check"></i><b>2.6.1</b> Filter out takers</a></li>
-<li class="chapter" data-level="2.6.2" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#deduplicate"><i class="fa fa-check"></i><b>2.6.2</b> Deduplicate</a></li>
+<li class="chapter" data-level="2.6.1" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#deduplicate"><i class="fa fa-check"></i><b>2.6.1</b> Deduplicate</a></li>
+<li class="chapter" data-level="2.6.2" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#classify"><i class="fa fa-check"></i><b>2.6.2</b> Classify</a></li>
 </ul></li>
 <li class="chapter" data-level="2.7" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#transmit"><i class="fa fa-check"></i><b>2.7</b> Transmit</a></li>
 </ul></li>
@@ -114,14 +114,14 @@
 <h1 class="title">Order book events reconstruction from empirical data</h1>
 <h2 class="subtitle"><em>A preliminary draft</em></h2>
 <p class="author"><em>Petr Fedorov</em></p>
-<p class="date"><em>2020-06-24</em></p>
+<p class="date"><em>2020-07-09</em></p>
 </div>
 <div id="index" class="section level1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
-<div id="continous-time-double-auction-and-lob" class="section level2">
-<h2><span class="header-section-number">1.1</span> Continous-time double auction and LOB</h2>
+<div id="continuous-time-double-auction-and-lob" class="section level2">
+<h2><span class="header-section-number">1.1</span> Continuous-time double auction and LOB</h2>
 <p>Today, most liquid markets – including stocks, futures, and foreign exchange – are electronic, and adopt a continuous-time double auction mechanism using a limit order book (LOB), in which a transaction occurs whenever a buyer and a seller agree on a price<span class="citation">(Bouchaud and Bonart 2018)</span>. Cryptocurrenices are not exception.</p>
-<p>The mechanics of the countinous double auction or LOB trading may be briefly described as follows:</p>
+<p>The mechanics of the continuous double auction or LOB trading may be briefly described as follows:</p>
 <ol style="list-style-type: decimal">
 <li>Traders submit <em>limit orders</em> and <em>market</em> orders</li>
 <li><em>Market</em> orders are <a href="https://www.investopedia.com/terms/m/matchingorders.asp">matched</a> with <em>limit orders</em> and executed to produce <em>trades</em>.</li>
@@ -133,7 +133,7 @@
 </div>
 <div id="available-data-sets" class="section level2">
 <h2><span class="header-section-number">1.2</span> Available data sets</h2>
-<p>Most of data sets containing information about orders and trades consist of two separate loosely coupled files: a <strong>trades</strong> file recording trades and an <strong>orders</strong> file recording limit and sometimes market order placements, changes and cancellations. Loosely coupled in this context means that records in <strong>trades</strong> file do not always have clearly identifiable corresponding records in <strong>orders</strong> file as one would expect since by definition every trade shoud change some limit order. A matching or <em>coupling</em> procedure is required in order to establish the link between the <strong>trades</strong> and <strong>orders</strong> files in order to</p>
+<p>Most of data sets containing information about orders and trades consist of two separate loosely coupled files: a <strong>trades</strong> file recording trades and an <strong>orders</strong> file recording limit and sometimes market order placements, changes and cancellations. Loosely coupled in this context means that records in <strong>trades</strong> file do not always have clearly identifiable corresponding records in <strong>orders</strong> file as one would expect since by definition every trade should change some limit order. A matching or <em>coupling</em> procedure is required in order to establish the link between the <strong>trades</strong> and <strong>orders</strong> files in order to</p>
 <ul>
 <li>Distinguish between limit order changes due to cancellation and market order execution</li>
 <li>Calculate sizes of submitted market orders</li>
@@ -141,7 +141,7 @@
 <p>and, overall, to achieve the ultimate goal - to perform a complete order book reconstruction at every moment of time.</p>
 <p>A recently published book <span class="citation">(Abergel 2016)</span> uses the <a href="https://www.refinitiv.com/en/financial-data/market-data/tick-history">Thomson Reuters Tick History (TRTH)</a> database tells us that</p>
 <blockquote>
-<p>Because one cannot distinguish market orders from cancellations just by observing changes in the limit order book (the “event” file), and since, the timestamps of the “trade” and “event” files are asynchronous, we use a matching procedure to reconstruct the order book events.</p>
+<p>Because one cannot distinguish market orders from cancellations just by observing changes in the limit order book (the “event” file), and since, the time stamps of the “trade” and “event” files are asynchronous, we use a matching procedure to reconstruct the order book events.</p>
 </blockquote>
 <p>The reported matching rate of the above procedure is about 85% for CAC 40 stocks and as a byproduct the procedure outputs the sign of each matched trade, that is whether it is a buyer or a seller initiated trade. Note that TRTH data set does not even provide information about trade direction, it has to be deduced!</p>
 <p>The description of similar issues we find in <span class="citation">(Hautsch 2004)</span>:</p>
@@ -153,11 +153,11 @@
 <li><strong>Live ticker</strong> channel - information about trades. Unique ids of participating limit and market order are provided for every trade,</li>
 <li><strong>Live orders</strong> channel - information about limit and market orders (all order creation, change and deletion events are reported).</li>
 </ul>
-<p>As we will see later, events in these channels are not always sent in correct order. Sometimes some events appears to be ommitted. Timestamps in Live tickers and Live orders channels are not synchronized: market order, changes of limit orders and of market order itself caused by the execution of the market order, trades produced - all may have different timestamps. Substantial amount of orders which appears to be matched are not executed due to <a href="https://www.reddit.com/r/Bitstamp/comments/bbvut2/bitstamp_api_behaviour/?utm_source=share&amp;utm_medium=web2x">self-trade prevention</a> policy of Bitstamp.</p>
+<p>As we will see later, events in these channels are not always sent in correct order. Sometimes some events appears to be omitted. Time stamps in Live tickers and Live orders channels are not synchronized: market order, changes of limit orders and of market order itself caused by the execution of the market order, trades produced - all may have different time stamps. Substantial amount of orders which appears to be matched are not executed due to <a href="https://www.reddit.com/r/Bitstamp/comments/bbvut2/bitstamp_api_behaviour/?utm_source=share&amp;utm_medium=web2x">self-trade prevention</a> policy of Bitstamp.</p>
 <p>Similarly <a href="">Websocket API version 2.0</a> of the cryptocurrency exchange Bitfinex have the following channels (for every instrument traded):</p>
 <ul>
 <li><strong>Trades</strong> channel - information about trades. Ids of participating limit and market orders are not provided,</li>
-<li><strong>Raw book</strong> channel - provides information about 100 best bid and 100 ask limit orders. Market orders are not reported at all. A limit order is reported as deleted when it falls beyond 100+ best limit orders and as re-created (i.e. with the same id) if it returns back. What happens to the order after it has fallen beyound 100+ is not known: Bitfinex allows traders to change the price and volume of submitted limit order, so the order can be changed, cancelled or stay unchanged.</li>
+<li><strong>Raw book</strong> channel - provides information about 100 best bid and 100 ask limit orders. Market orders are not reported at all. A limit order is reported as deleted when it falls beyond 100+ best limit orders and as re-created (i.e. with the same id) if it returns back. What happens to the order after it has fallen beyond 100+ is not known: Bitfinex allows traders to change the price and volume of submitted limit order, so the order can be changed, cancelled or stay unchanged.</li>
 </ul>
 <p>As well as at Bitstamp, records in Trades and Raw book channels are not synchronized.</p>
 <p>It should be clear from the above that substantial effort is required to reconstruct the true dynamics of order submission, matching and execution.</p>

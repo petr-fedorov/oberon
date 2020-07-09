@@ -49,7 +49,6 @@ BitfinexReconstructor::BitfinexReconstructor( Store * store, const Volume & base
   size_deducer_->create();
   // Deduplication is not needed for CoinBase
   deduplicator_ = std::unique_ptr<MessageHandler>();
-  event_number_generator_ = std::make_unique<EventNumberGenerator>();
   
 }
 
@@ -103,6 +102,10 @@ BitfinexReconstructor::BitfinexChanged::BitfinexChanged(const boost::property_tr
     side_ = kBid;
 }
 
+MessageHandler::Changed* BitfinexReconstructor::BitfinexChanged::clone() {
+  return new BitfinexChanged(*this);
+}
+
 BitfinexReconstructor::BitfinexCanceled::BitfinexCanceled(const boost::property_tree::ptree & tree, const BitfinexReconstructor & reconstructor) : BitfinexMessage {reconstructor} {
   timestamp_ = toTimestamp(tree.get<string>("exchange_timestamp"));
   local_timestamp_ = toTimestamp(tree.get<string>("local_timestamp"));
@@ -111,6 +114,10 @@ BitfinexReconstructor::BitfinexCanceled::BitfinexCanceled(const boost::property_
     side_ = kAsk;
   } else
     side_ = kBid;
+}
+
+MessageHandler::Canceled* BitfinexReconstructor::BitfinexCanceled::clone() {
+  return new BitfinexCanceled(*this);
 }
 
 BitfinexReconstructor::BitfinexFilled::BitfinexFilled(const boost::property_tree::ptree & tree, const BitfinexReconstructor & reconstructor) : BitfinexMessage{reconstructor} {
@@ -126,6 +133,10 @@ BitfinexReconstructor::BitfinexFilled::BitfinexFilled(const boost::property_tree
    side_ = kAsk;
   trade_id_ = std::stol(tree.get<string>("id"));
   
+}
+
+MessageHandler::Filled* BitfinexReconstructor::BitfinexFilled::clone() {
+  return new BitfinexFilled(*this);
 }
 
 

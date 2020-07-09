@@ -1,9 +1,14 @@
 class Changed
+!!!852230.cpp!!!	toString() : string
+std::stringstream buf;
+buf << ExchangeMessage::toString() << " Changed";
+return buf.str();
+
 !!!779398.cpp!!!	toEvent() : Event [0..1]
 int sign = getSide() == kAsk ? -1 : 1;
 return make_unique<EventImpl>(
     getOrderId(), getTimestamp(), getLocalTimestamp(), getEventNo(), getPrice(),
     roundToBaseIncrement(getRemainingSize()) * sign,
-    roundToBaseIncrement(getChangeSize()) * sign, kActive);
+    roundToBaseIncrement(getChangeSize()) * sign, kActive, is_deleted_);
 !!!760326.cpp!!!	accept(in mh : MessageHandler [1]) : bool
 return mh->changed();

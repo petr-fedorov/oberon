@@ -41,11 +41,15 @@ class CoinbaseReconstructor : public ReconstructorImplementation {
       public:
         CoinbaseReceived(const boost::property_tree::ptree & tree, const CoinbaseReconstructor & reconstructor);
 
+        virtual MessageHandler::Received* clone();
+
     };
     
     class CoinbaseMatch : public MessageHandler::Filled, public CoinbaseMessage {
       public:
         CoinbaseMatch(const boost::property_tree::ptree & tree, const CoinbaseReconstructor & reconstructor);
+
+        virtual MessageHandler::Filled* clone();
 
     };
     
@@ -53,11 +57,15 @@ class CoinbaseReconstructor : public ReconstructorImplementation {
       public:
         CoinbaseDoneCanceled(const boost::property_tree::ptree & tree, const CoinbaseReconstructor & reconstructor);
 
+        virtual MessageHandler::Canceled* clone();
+
     };
     
     class CoinbaseOpen : public MessageHandler::Opened, public CoinbaseMessage {
       public:
         CoinbaseOpen(const boost::property_tree::ptree & tree, const CoinbaseReconstructor & reconstructor);
+
+        virtual MessageHandler::Opened* clone();
 
     };
     

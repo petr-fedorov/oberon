@@ -35,7 +35,9 @@ Rcpp::DataFrame RBitstamp::run(const Rcpp::DataFrame & quotes, const Rcpp::DataF
   size_t q{0}, t{0};
   try {
     while (q < quote_local.size() || t < trade_local.size()) {
-  
+#ifdef VERBOSE_RBITSTAMP
+      std::cout << "q= " <<q << " t= " <<t << "\n";
+#endif
       if (q < quote_timestamp.size() &&
           (t >= trade_local.size() || quote_timestamp[q] <= trade_timestamp[t])) {
         Timestamp next_timestamp =

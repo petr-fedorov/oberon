@@ -38,7 +38,7 @@ PriceSide::PriceSide() {
   side_ = kBid;
 }
 
-EventImpl::EventImpl(const OrderId & order_id, const Timestamp & timestamp, const Timestamp & local_timestamp, const EventNo & event_no, const Price & price, const Volume & volume, const Volume & delta_volume, OrderState state) {
+EventImpl::EventImpl(const OrderId & order_id, const Timestamp & timestamp, const Timestamp & local_timestamp, const EventNo & event_no, const Price & price, const Volume & volume, const Volume & delta_volume, OrderState state, bool is_deleted) {
   order_id_ = order_id;
   timestamp_ = timestamp;
   local_timestamp_ = local_timestamp;
@@ -49,9 +49,10 @@ EventImpl::EventImpl(const OrderId & order_id, const Timestamp & timestamp, cons
   state_ = state;
   trade_id_ = 0;
   taker_order_id_ = boost::uuids::nil_uuid();
+  is_deleted_ = is_deleted;
 }
 
-EventImpl::EventImpl(const OrderId & order_id, const Timestamp & timestamp, const Timestamp & local_timestamp, const EventNo & event_no, const Price & price, const Volume & volume, const Volume & delta_volume, OrderState state, const TradeId & trade_id, const OrderId & taker_order_id) {
+EventImpl::EventImpl(const OrderId & order_id, const Timestamp & timestamp, const Timestamp & local_timestamp, const EventNo & event_no, const Price & price, const Volume & volume, const Volume & delta_volume, OrderState state, const TradeId & trade_id, const OrderId & taker_order_id, bool is_deleted) {
   order_id_ = order_id;
   timestamp_ = timestamp;
   local_timestamp_ = local_timestamp;
@@ -62,6 +63,7 @@ EventImpl::EventImpl(const OrderId & order_id, const Timestamp & timestamp, cons
   state_ = state;
   trade_id_ = trade_id;
   taker_order_id_ = taker_order_id;
+  is_deleted_ = is_deleted;
 }
 
 const Timestamp EventImpl::timestamp() const {
@@ -104,6 +106,14 @@ const Timestamp EventImpl::localTimestamp() const {
   return local_timestamp_;
 }
 
+const bool EventImpl::isDeleted() const {
+  return is_deleted_;
+}
+
+void MessageHandler::Message::set_is_deleted(bool value) {
+  is_deleted_ = value;
+}
+
 //By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event
 std::unique_ptr<Event> MessageHandler::Message::toEvent() {
   return std::unique_ptr<Event>();
@@ -139,12 +149,19 @@ string MessageHandler::ExchangeMessage::toString() {
   std::stringstream buf;
   buf << Message::toString() << " " << order_id_ << " " << event_no_ << " "
       << (side_ == kBid ? 'B' : 'A') << price_ << " " << remaining_size_ << " "
-      << change_size_; 
+      << change_size_ << ( is_deleted_ ? " DELETED " : ""); 
   return buf.str();
 }
 
 const Volume MessageHandler::ExchangeMessage::roundToBaseIncrement(const Volume & volume) const {
   return std::round(volume/getBaseIncrement())*getBaseIncrement();
+}
+
+string MessageHandler::Created::toString() {
+  std::stringstream buf;
+  buf << ExchangeMessage::toString() << " Created";
+  return buf.str();
+  
 }
 
 //By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event
@@ -153,11 +170,18 @@ std::unique_ptr<Event> MessageHandler::Created::toEvent() {
   return make_unique<EventImpl>(
       getOrderId(), getTimestamp(), getLocalTimestamp(), getEventNo(), getPrice(),
       roundToBaseIncrement(getRemainingSize()) * sign,
-      roundToBaseIncrement(getChangeSize()) * sign, kActive);
+      roundToBaseIncrement(getChangeSize()) * sign, kActive, is_deleted_);
 }
 
 bool MessageHandler::Created::accept(MessageHandler* mh) {
   return mh->created();
+}
+
+string MessageHandler::Changed::toString() {
+  std::stringstream buf;
+  buf << ExchangeMessage::toString() << " Changed";
+  return buf.str();
+  
 }
 
 //By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event
@@ -166,7 +190,7 @@ std::unique_ptr<Event> MessageHandler::Changed::toEvent() {
   return make_unique<EventImpl>(
       getOrderId(), getTimestamp(), getLocalTimestamp(), getEventNo(), getPrice(),
       roundToBaseIncrement(getRemainingSize()) * sign,
-      roundToBaseIncrement(getChangeSize()) * sign, kActive);
+      roundToBaseIncrement(getChangeSize()) * sign, kActive, is_deleted_);
 }
 
 bool MessageHandler::Changed::accept(MessageHandler* mh) {
@@ -198,12 +222,7 @@ std::unique_ptr<Event> MessageHandler::Filled::toEvent() {
                                 getPrice(),
                                 roundToBaseIncrement(getRemainingSize()) * sign,
                                 roundToBaseIncrement(getChangeSize()) * sign,
-                                state, trade_id_, taker_order_id_);
-}
-
-bool MessageHandler::Opened::accept(MessageHandler* mh) {
-  return mh->opened();
-  
+                                state, trade_id_, taker_order_id_, is_deleted_);
 }
 
 string MessageHandler::Opened::toString() {
@@ -211,6 +230,14 @@ string MessageHandler::Opened::toString() {
   buf << ExchangeMessage::toString() << " Opened";
   return buf.str();
   
+}
+
+bool MessageHandler::Opened::accept(MessageHandler* mh) {
+  return mh->opened();
+  
+}
+
+MessageHandler::Opened::Opened(const MessageHandler::Created & source) : Created {source} {
 }
 
 string MessageHandler::VolumeIncremented::toString() {
@@ -243,7 +270,7 @@ bool MessageHandler::Canceled::accept(MessageHandler * mh) {
 
 string MessageHandler::Canceled::toString() {
   std::stringstream buf;
-  buf << ExchangeMessage::toString() << " FullyCancelled";
+  buf << ExchangeMessage::toString() << " Canceled";
   return buf.str();
 }
 
@@ -253,7 +280,7 @@ std::unique_ptr<Event> MessageHandler::Canceled::toEvent() {
   return make_unique<EventImpl>(
       getOrderId(), getTimestamp(), getLocalTimestamp(), getEventNo(), getPrice(),
       roundToBaseIncrement(getRemainingSize()) * sign,
-      roundToBaseIncrement(getChangeSize()) * sign, kFinished);
+      roundToBaseIncrement(getChangeSize()) * sign, kFinished, is_deleted_);
 }
 
 //By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event
@@ -269,6 +296,9 @@ string MessageHandler::Received::toString() {
   std::stringstream buf;
   buf << ExchangeMessage::toString() << " Received";
   return buf.str();
+}
+
+MessageHandler::Received::Received(const MessageHandler::Created & source) : Created {source} {
 }
 
 bool MessageHandler::Elapsed::accept( MessageHandler * mh) {
@@ -309,14 +339,18 @@ bool MessageHandler::create() {
 vector<std::unique_ptr<MessageHandler::Message>> MessageHandler::handle(vector<std::unique_ptr<MessageHandler::Message>> && messages) {
   for(auto& msg: messages) {
     if(msg) {
-      received_ = std::move(msg);
 #ifdef VERBOSE_STATE_MACHINE
       // Here I produced the log record in BoUML style 
-      std::cout << "DEBUG : " << getHandlerName() << " received " << received_->toString() << "\n";
+      std::cout << "DEBUG : " << getHandlerName() << " received " << msg->toString() << "\n";
 #endif
-      std::string s{received_->toString()};
-      if(!received_->accept(this))
-        throw std::logic_error(s);
+      if(!msg->isDeleted()) {
+        received_ = std::move(msg);
+        std::string s{received_->toString()};
+        if(!received_->accept(this))
+          throw std::logic_error(s);
+      }
+      else 
+        output_.push_back(std::move(msg));
     }
   }
   return std::move(output_);
@@ -482,7 +516,16 @@ void ReconstructorImplementation::process(const boost::property_tree::ptree & me
 vector<std::unique_ptr<MessageHandler::Message>> ReconstructorImplementation::cleanse( vector<std::unique_ptr<MessageHandler::Message>>  messages) {
   if(deduplicator_)
     messages = deduplicator_->handle(std::move(messages));
+  if(taker_filter_)
+    messages = taker_filter_->handle(std::move(messages));
   return messages;
+}
+
+ReconstructorImplementation::ReconstructorImplementation() {
+  deduplicator_ = std::unique_ptr<MessageHandler>();
+  taker_filter_ = std::unique_ptr<MessageHandler>();
+  size_deducer_ = std::unique_ptr<MessageHandler>();
+  event_number_generator_ = std::make_unique<EventNumberGenerator>(); 
 }
 
 

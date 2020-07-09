@@ -1,20 +1,35 @@
-class DeduplicateBitstamp
+class Deduplicator
 !!!820230.cpp!!!	elapsed() : bool
+#ifdef VERBOSE_BITSTAMP_DEDUPLICATOR
+std::cout << received_->toString() << "\n";
+#endif
 for (auto i_other = std::begin(other_messages_);
      i_other != std::end(other_messages_); ++i_other) {
   auto change_size = (*i_other)->getChangeSize();
+  // string order_id {boost::uuids::to_string((*i_other)->getOrderId())};
   if (std::isnan(change_size) || change_size > 0) {
     for (auto i_fills = std::begin(fills_); i_fills != std::end(fills_);
          ++i_fills) {
-      if ((*i_other)->getOrderId() == (*i_fills)->getOrderId() &&
-          (std::isnan(change_size) ||
-           std::abs(change_size - (*i_fills)->getChangeSize()) <
-              reconstructor_.base_increment_)) {
-        (*i_fills)->setRemainingSize((*i_other)->getRemainingSize());
-        i_other = other_messages_.erase(i_other);
-        i_other = other_messages_.insert(i_other, std::move(*i_fills));
-        fills_.erase(i_fills);
-        break;
+      if ((*i_other)->getOrderId() == (*i_fills)->getOrderId()) {
+        if ((std::isnan(change_size) ||
+             std::abs(change_size - (*i_fills)->getChangeSize()) <
+                 reconstructor_.base_increment_)) {
+          (*i_fills)->setRemainingSize((*i_other)->getRemainingSize());
+#ifdef VERBOSE_BITSTAMP_DEDUPLICATOR
+          std::cout << (*i_other)->toString() << " duplicate, dropped\n";
+#endif
+          //i_other = other_messages_.erase(i_other);
+          (*i_other)->set_is_deleted(true);
+          i_other = other_messages_.insert(i_other, std::move(*i_fills));
+          fills_.erase(i_fills);
+          break;
+        } else {
+#ifdef VERBOSE_BITSTAMP_DEDUPLICATOR
+          std::cout << "Not matched\n";
+          std::cout << (*i_other)->toString() << "\n";
+          std::cout << (*i_fills)->toString() << "\n";
+#endif
+        }
       }
     }
   }
@@ -26,10 +41,10 @@ output_.push_back(std::move(received_));
 if (fills_.empty())
   return true;
 else {
-  /*for (auto &msg : fills_)
+  for (auto &msg : fills_)
     std::cout << "F :" << msg->toString() << std::endl;
   for (auto &msg : output_)
-    std::cout << "E: " << msg->toString() << std::endl;*/
+    std::cout << "E: " << msg->toString() << std::endl;
   fills_.clear();
   return false;
 }

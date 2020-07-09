@@ -1,5 +1,5 @@
-class BitstampCreated
-!!!759174.cpp!!!	BitstampCreated(in tree : ptree, in reconstructor : BitstampReconstructor)
+class BitstampOpened
+!!!759174.cpp!!!	BitstampOpened(in tree : ptree, in reconstructor : BitstampReconstructor)
 order_id_ = toUuid(tree.get<string>("id"));
 timestamp_ = toTimestamp(tree.get<string>("microtimestamp"));
 local_timestamp_ = toTimestamp(tree.get<string>("local_timestamp"));
@@ -12,3 +12,5 @@ side_ = kBid;
 else
 side_ = kAsk;
 
+!!!835334.cpp!!!	clone() : BitstampReconstructor::BitstampOpened
+return new BitstampOpened(*this);

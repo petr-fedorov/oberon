@@ -22,10 +22,14 @@ library(tibble)
 library(ggplot2)
 library(gridExtra)
 library(latex2exp)
-load("oberon.Rdata")
+
 
 #futile.logger::flog.threshold(futile.logger::WARN, 'obadiah')
 
+```
+
+```{r load data, include=FALSE}
+load("oberon.Rdata")
 ```
 
 
@@ -35,12 +39,12 @@ load("oberon.Rdata")
 # Introduction{#index}
 
 
-## Continous-time double auction and LOB
+## Continuous-time double auction and LOB
 
 
 Today, most liquid markets – including stocks, futures, and foreign exchange – are electronic, and adopt a continuous-time double auction mechanism using a limit order book (LOB), in which a transaction occurs whenever a buyer and a seller agree on a price[@bouchaud_trades_2018]. Cryptocurrenices are not exception. 
 
-The mechanics of the countinous double auction or LOB trading may be briefly described as follows: 
+The mechanics of the continuous double auction or LOB trading may be briefly described as follows: 
 
 1. Traders submit *limit orders* and *market* orders 
 2. *Market* orders are [matched](https://www.investopedia.com/terms/m/matchingorders.asp) with *limit orders*  and executed to produce *trades*.
@@ -55,7 +59,7 @@ Thus in order to reconstruct the dynamics of the trading process and order book 
 
 ## Available data sets
 
-Most of data sets containing information about orders and trades consist of two separate loosely coupled files: a **trades** file recording  trades and an **orders** file recording limit and sometimes market order placements, changes and cancellations. Loosely coupled in this context means that records in **trades** file do not always have clearly identifiable corresponding records in **orders** file as one would expect since by definition every trade shoud change some limit order. A matching or *coupling* procedure is required in order to establish the link between the **trades** and **orders** files in order to
+Most of data sets containing information about orders and trades consist of two separate loosely coupled files: a **trades** file recording  trades and an **orders** file recording limit and sometimes market order placements, changes and cancellations. Loosely coupled in this context means that records in **trades** file do not always have clearly identifiable corresponding records in **orders** file as one would expect since by definition every trade should change some limit order. A matching or *coupling* procedure is required in order to establish the link between the **trades** and **orders** files in order to
 
 * Distinguish between limit order changes due to cancellation and market order execution
 * Calculate sizes of submitted market orders
@@ -64,7 +68,7 @@ and, overall, to achieve the ultimate goal - to perform a complete order book re
 
 A recently published book [@abergel_limit_2016] uses the [Thomson Reuters Tick History (TRTH)](https://www.refinitiv.com/en/financial-data/market-data/tick-history) database tells us that
 
-> Because one cannot distinguish market orders from cancellations just by observing changes in the limit order book (the “event” file), and since, the timestamps of the “trade” and “event” files are asynchronous, we use a matching procedure to reconstruct the order book events.
+> Because one cannot distinguish market orders from cancellations just by observing changes in the limit order book (the “event” file), and since, the time stamps of the “trade” and “event” files are asynchronous, we use a matching procedure to reconstruct the order book events.
 
 The reported matching rate of the above procedure is about 85% for CAC 40 stocks and as a byproduct the procedure outputs the sign of each matched trade, that is whether it is a buyer or a seller initiated trade. Note that TRTH data set does not even provide information about trade direction, it has to be deduced!
 
@@ -77,13 +81,13 @@ The description of similar issues we find in [@hautsch_modelling_2004]:
  * **Live ticker** channel - information about trades. Unique ids of participating limit and market order are provided for every trade,
  * **Live orders** channel - information about limit and market orders (all order creation, change and deletion events are reported).
 
-As we will see later, events in these channels are not always sent in correct order. Sometimes some events appears to be ommitted. Timestamps in Live tickers and Live orders channels are not synchronized: market order, changes of limit orders and of market order itself caused by the execution of the market order, trades produced - all may have different timestamps. Substantial amount of orders which appears to be matched are not executed due to [self-trade prevention](https://www.reddit.com/r/Bitstamp/comments/bbvut2/bitstamp_api_behaviour/?utm_source=share&utm_medium=web2x) policy of Bitstamp.
+As we will see later, events in these channels are not always sent in correct order. Sometimes some events appears to be omitted. Time stamps in Live tickers and Live orders channels are not synchronized: market order, changes of limit orders and of market order itself caused by the execution of the market order, trades produced - all may have different time stamps. Substantial amount of orders which appears to be matched are not executed due to [self-trade prevention](https://www.reddit.com/r/Bitstamp/comments/bbvut2/bitstamp_api_behaviour/?utm_source=share&utm_medium=web2x) policy of Bitstamp.
  
 
 Similarly [Websocket API version 2.0]() of the cryptocurrency exchange Bitfinex have the following channels (for every instrument traded):
 
  * **Trades** channel - information about trades. Ids of participating limit and market orders are not provided,
- * **Raw book** channel - provides information about 100 best bid and 100 ask limit orders. Market orders are not reported at all. A limit order is reported as deleted when it falls beyond 100+ best limit orders and as re-created (i.e. with the same id) if it returns back. What happens to the order after it has fallen beyound 100+ is not known: Bitfinex allows traders to change the price and volume of submitted limit order, so the order can be changed, cancelled or stay unchanged. 
+ * **Raw book** channel - provides information about 100 best bid and 100 ask limit orders. Market orders are not reported at all. A limit order is reported as deleted when it falls beyond 100+ best limit orders and as re-created (i.e. with the same id) if it returns back. What happens to the order after it has fallen beyond 100+ is not known: Bitfinex allows traders to change the price and volume of submitted limit order, so the order can be changed, cancelled or stay unchanged. 
  
 As well as at Bitstamp, records in Trades and Raw book channels are not synchronized.
 
@@ -98,15 +102,15 @@ Figure \@ref(fig:standalone-application) shows UML2 Activity Diagram [@cook_omg_
 ```{r standalone-application, echo=FALSE, fig.cap="UML2 Activity Diagram  of a standalone application using Reconstruction algorithm", fig.align="center"}
 knitr::include_graphics("S.1 Standalone application.png", dpi=80)
 ```
-The application starts from `S.7 Initialize` activity.  The activity connects to a websocket of the exchange specified by `exchange_name` and subscribes for the channels sending messages about the pair specified by `pair_name`. Then `S.7 Initialize` creates a store (i.e. file) where reconstructed events is to be persisted, creates an instance of `Reconstructor` object and passes the store to the instance for the future use. 
+The application starts from `S.7 Initialize` activity.  The activity connects to a websocket feed provided by the exchange specified by `exchange_name` parameter and subscribes for channels sending messages about the pair specified by `pair_name` parameter. Then `S.7 Initialize` creates a store (for example, a file) where the reconstructed events is to be persisted, creates an instance of `Reconstructor` object and passes the store to the instance for the future use. 
 
-Aftewards the application launches `S.5 Receive messages` and `R.1 Reconstruct Order Book`. These activities run concurrently. `S.5 Receive messages` continously receives messages from the exchange (note `{stream}` on the figure \@ref(fig:reconstruction-activity)) and store them into `buffer`.  `R.1 Reconstruct Order Book` takes them from the `buffer` in FIFO order and processes as shown on figure \@ref(fig:reconstruction-activity)
+Afterwards the application launches `S.5 Receive messages` and `R.1 Reconstruct Order Book`. These activities run concurrently. `S.5 Receive messages` continuously receives messages from the exchange (note `{stream}` on the figure \@ref(fig:reconstruction-activity)) and stores them into `buffer`.  `R.1 Reconstruct Order Book` takes messages from the `buffer` in FIFO order and processes them as shown on figure \@ref(fig:reconstruction-activity)
 
 ```{r reconstruction-activity, echo=FALSE, fig.cap="UML2 Activity Diagram  of Reconstruction algorithm", fig.align="center"}
 knitr::include_graphics("R.1 Reconstruct Order Book.png", dpi=80)
 ```
 
-The activity `R.2 Extract` takes an exchange-specific data in [Boost.PropertyTree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) container and  produces one or more internal exchange-independent messages shown on figure \@ref(fig:message-hierarchy). 
+The activity `R.2 Extract` takes a [Boost.PropertyTree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) container with an exchange-specific data and produces one or more internal exchange-independent messages. The produced messages belong to the classes shown on figure \@ref(fig:message-hierarchy). 
 
 
 ```{r message-hierarchy, echo=FALSE, fig.cap="UML2 Class Diagram of internal exchange-independent message types used by Order Book Reconstruction algorithm", fig.align="center"}
@@ -123,10 +127,11 @@ UML2 Activity Diagram [@cook_omg_2017] of `R.3 Cleanse` is shown on figure \@ref
 knitr::include_graphics("R.3 Cleanse.png", dpi=80)
 ```
 
-The output of `R.3 Cleanse` is a set of zero or more messages each of which is then converted into zero or one events as defined by \@ref(def:order-event) which together compose Limit Order Book as defined by \@ref(def:lob). These events are persisted by `R.4 Save` activity. `R.3 Cleanse` will not produce output when subsequent messages are required for cleansing. In this case the messages will be accumulated within `R.3 Cleanse` between runs until enough messages are received.
+The output of `R.3 Cleanse` is a set of zero or more messages each of which is then converted into zero or one event as defined by \@ref(def:order-event) which together compose Limit Order Book as defined by \@ref(def:lob). These events are persisted by `R.4 Save` activity.
 
+`R.3 Cleanse` will not produce output for a message when subsequent messages are required for cleansing. In this case the message will be kept within `R.3 Cleanse` between runs until enough subsequent messages are received. Then all kept and cleansed messages are returned together.
 
-Surprisingly, an order, an order event, a limit order book,  the operations of a continous double auction are rather complicated things if one attempts to define them rigorously. Consider, for example,  a definition given in the recent book [@bouchaud_trades_2018]:
+Surprisingly, an order, an order event, a limit order book,  the operations of a continuous double auction are rather complicated things if one attempts to define them rigorously. Consider, for example,  a definition given in the recent book [@bouchaud_trades_2018]:
 
 
 > An order is a commitment, declared at a given submission time, to buy or sell a given volume of an asset at no worse than a given price. An order $x$ is thus described by four attributes:
@@ -180,7 +185,7 @@ $$
  a. $f_k \in \mathbb{R}$ are constants called *function values* such that $\forall k_1 \neq k_2 : f_{k_1} \neq f_{k_2}$
 ```
 
-All piecewise constant functions we use hereafter must also have either left or right (or both) limits at every point of their domains. So in our definition of piecewise constant function set $\mathcal{T}$ does not include  degenerate intervals. 
+All piece-wise constant functions we use hereafter must also have either left or right (or both) limits at every point of their domains. So in our definition of piece wise constant function set $\mathcal{T}$ does not include  degenerate intervals. 
 
 
 ```{definition Volume Function, name="Volume Function", label="volume-function"}
@@ -221,15 +226,15 @@ sot <- tribble( ~i, ~n,   ~t,   ~f, ~e,   ~p,   ~v,
                 2,   2,	  1.9,   0,	 1,	80,  -100,
                 2,   3,	  4.3,   0,	 0,	80,  -100,
                 3,   1,	  2.5,   0,	 1,	25,  500,
-                3,   2,	  3.1,   1,	 0,	25,  500,
+                3,   2,	  3.1,   2,	 0,	25,  500,
                 4,   1,	  3.1,   0,	 1,	25,  -500,
-                4,   2,	  5.0,   1,	 0,	25,	-500,
+                4,   2,	  5.0,   3,	 0,	25,	-500,
                 5,   1,	  3.7,   0,	 1,	50,  -400,
-                5,   2,	  5.0,   1,	 1,	50,  -100,
-                5,   3,	  5.4,   1,	 0,	50,  -100,
+                5,   2,	  5.0,   4,	 1,	50,  -100,
+                5,   3,	  5.4,   5,	 0,	50,  -100,
                 6,   1,	  4.8,   0,	 1,	10,	500,
                 6,   2,	  5.4,   0,	 1,	60,	400,
-                6,   3,	  6.0,   1,	 1,	20,	100,)
+                6,   3,	  6.0,   6,	 1,	20,	100,)
 setDT(sot)
 sot[ ,"volume.decrease" := nafill(shift(v,1),fill=0) - nafill(xor(1,xor(e,1)*f)*v,fill=0), by=i]
 
@@ -297,7 +302,7 @@ An order which has ever entered Maker state is called a [limit order](https://ww
 
 An order which has never entered Maker state is called a [market order](https://www.investopedia.com/terms/m/marketorder.asp).
 
-If an order has been *matched* before entering *Maker* state or it has been *matched* after *price amendment*, then the order is sometimes called a market limit order.  We always model market limit orders as a comibnation of an appropriate market order and a limit order that placed simultaneously. 
+If an order has been *matched* before entering *Maker* state or it has been *matched* after *price amendment*, then the order is sometimes called a market limit order.  We always model market limit orders as a combination of an appropriate market order and a limit order that placed simultaneously. 
 
 Market orders are always fleeting. To model an evolution of a limit order we use the following function:
 
@@ -328,9 +333,9 @@ Note that we follow [@bouchaud_trades_2018] while modelling the actions of an or
 
 > ... we will consider the evolution of an LOB $\mathcal{L}(t)$ as a so-called *càglàd process (continu à gauche, limite à droite)*. Informally, this means that when a new order $x$ is submitted at time $t_x$ , we regard it to be present in the LOB immediately after its arrival, but not immediately upon its arrival.
 
-In other words, definition \@ref(def:amended-volume) means that when order $v$ is cancelled at time $t$, we regard the cancellation visible in the LOB immediately after its arrival, but not immeditely upon its arrival. 
+In other words, definition \@ref(def:amended-volume) means that when order $v$ is cancelled at time $t$, we regard the cancellation visible in the LOB immediately after its arrival, but not immediately upon its arrival. 
 
-Trades are modelled as *càdlàg (continue à droite, limite à gauche)* occurences so they are visible immeditely upon arrival.  
+Trades are modeled as *càdlàg (continue à droite, limite à gauche)* occurrences so they are visible immediately upon arrival.  
 
 The consequence of the above is that $v(t)$ can be interpreted as a amount available for trade at time $t$ as it should and if a cancellation and a trade happen simultaneously, the trade is executed.
 
@@ -493,10 +498,10 @@ v <- ggplot(mapping=aes(x=t, y=v, colour=as.character(i),  group=as.character(i)
                size=2
                ) + 
   geom_point(data=rbind(sot.intervals[e==1 & v != p.v & f == 0,  .(t = t_1, v, e, i) ],
-                        sot.intervals[f == 1,.(t = t_1, v=p.v, e, i)]),
+                        sot.intervals[f != 0,.(t = t_1, v=p.v, e, i)]),
              fill="white", size=4, show.legend=F, shape="circle filled") +
   geom_point(data=rbind(sot.intervals[e==0 & f == 0, .(t = t_1,  v, e, i)],
-                        sot.intervals[e==1 & v != p.v & f == 1,  .(t = t_1, v, e, i)],
+                        sot.intervals[e==1 & v != p.v & f != 0,  .(t = t_1, v, e, i)],
                         sot.intervals[e==1 & v != p.v & f == 0 & n > 1,  .(t = t_1, v=p.v, e, i)]),
              fill="white", size=4, show.legend=F, shape="circle") + 
   scale_color_manual("", 
@@ -524,9 +529,9 @@ It can bee seen from figure \@ref(fig:example-order-book) that:
 * At `r format(time_0 + sort(unique(sot$t))[6], "%H:%M:%OS1")` order 5 to sell 400 units of the asset at price no worse than 50 per unit has been placed,
 * At `r format(time_0 + sort(unique(sot$t))[7], "%H:%M:%OS1")` order 2 has been cancelled,  
 * At `r format(time_0 + sort(unique(sot$t))[8], "%H:%M:%OS1")` order 6 to buy 500 units of the asset at price no worse than 10 per unit has been placed,
-* At `r format(time_0 + sort(unique(sot$t))[9], "%H:%M:%OS1")` a market order to buy the asset for 27500 units of the currency has been placed and two buy trades have been executed: $(\text{`r format(time_0 + sort(unique(sot$t))[9], "%H:%M:%OS1")`}, 4, 25, -500)$ and $(\text{`r format(time_0 + sort(unique(sot$t))[9], "%H:%M:%OS1")`}, 5, 50, -300)$. Alternatively, it could be a limit order to buy 800 units of the asset at price no worser than 50 that was fully executed. 
+* At `r format(time_0 + sort(unique(sot$t))[9], "%H:%M:%OS1")` a market order to buy the asset for 27500 units of the currency has been placed and two buy trades have been executed: $(\text{`r format(time_0 + sort(unique(sot$t))[9], "%H:%M:%OS1")`}, 4, 25, -500)$ and $(\text{`r format(time_0 + sort(unique(sot$t))[9], "%H:%M:%OS1")`}, 5, 50, -300)$. Alternatively, it could be a limit order to buy 800 units of the asset at price no worse than 50 that was fully executed. 
 * At `r format(time_0 + sort(unique(sot$t))[10], "%H:%M:%OS1")` volume and price of order 6 have been amended. Its volume has been reduced by 100 units of the asset and its price increased to 60. At the same time a market buy order has been placed for 5000 units of the currency and single trade has been executed: $(\text{`r format(time_0 + sort(unique(sot$t))[9], "%H:%M:%OS1")`}, 5, 50, -100)$. Most likely the change of price of order 6 has transformed it to a market limit order which was partially executed and the reminder was placed in the order book again. 
-* At `r format(time_0 + sort(unique(sot$t))[11], "%H:%M:%OS1")` a sell market order has been placed, single trade was executed: $(\text{`r format(time_0 + sort(unique(sot$t))[11], "%H:%M:%OS1")`}, 6, 60, 300)$ and, simultaneously, probably as a conseqence of the trade, the price of order 6 has been amended from 60 to 20. Note that trade has been executed at price 60.
+* At `r format(time_0 + sort(unique(sot$t))[11], "%H:%M:%OS1")` a sell market order has been placed, single trade was executed: $(\text{`r format(time_0 + sort(unique(sot$t))[11], "%H:%M:%OS1")`}, 6, 60, 300)$ and, simultaneously, probably as a consequence of the trade, the price of order 6 has been amended from 60 to 20. Note that trade has been executed at price 60.
 
 ## Extract
 
@@ -534,7 +539,6 @@ TBD
 
 ## Cleanse
 
-### Filter out takers
 
 ### Deduplicate
 
@@ -552,6 +556,7 @@ knitr::include_graphics("redundant1.png", dpi=80)
 knitr::include_graphics("redundant2.png", dpi=80)
 ```
 
+### Classify
 
 ## Transmit
 
@@ -570,13 +575,11 @@ In the tables below the output of `R.2 Extract` is immediately, i.e. without cle
 
 as_hux(coinbase.extracted[,
                     .(`#`=.I,
-                    `\\(i\\)(maker)`=substr(maker_order_id,25, 36), `\\(n\\)`=event_no, `\\(t^i_n\\)`=format(timestamp,format="%H:%M:%OS3"), `\\(s^i_n\\)`=state, `\\(p^i_n\\)`=price, `\\(v^i_n\\)`=volume, `\\(f^i_n\\)`=trade_id, `\\(\\Delta v^i_n \\)`=delta_volume, `taker`=substr(taker_order_id, 25,36) ) ],  scientific=F) %>% add_colnames() %>% set_align(1, c(2,4,5,10), 'center') %>% set_align(everywhere, c(1,3, 6:9), 'right') %>% set_number_format(row=everywhere, col=6:7,value="%.2f") %>% set_number_format(row=everywhere, col=9,value="%.3f") %>% set_left_border(everywhere,9, 1) %>% set_right_border(everywhere,1, 1) %>% set_na_string(everywhere, everywhere, "NA") %>% set_caption('(#tab:stamp-quote-frag) A fragment of ETHUSD stream extracted from data generated by Coinbase during 1 second.') %>%
+                    `\\(i\\)(maker)`=substr(maker_order_id,25, 36), `\\(n\\)`=event_no, `\\(t^i_n\\)`=format(timestamp,format="%H:%M:%OS3"), `\\(s^i_n\\)`=state, `\\(p^i_n\\)`=price, `\\(v^i_n\\)`=volume, `\\(f^i_n\\)`=trade_id, `\\(\\Delta v^i_n \\)`=delta_volume, `taker`=substr(taker_order_id, 25,36) ) ],  scientific=F) %>% add_colnames() %>% set_align(1, c(2,4,5,10), 'center') %>% set_align(everywhere, c(1,3, 6:9), 'right') %>% set_number_format(row=everywhere, col=6:7,value="%.2f") %>% set_number_format(row=everywhere, col=9,value="%.3f") %>% set_left_border(everywhere,9, 1) %>% set_right_border(everywhere,1, 1) %>% set_na_string(everywhere, everywhere, "NA") %>% set_caption('(#tab:stamp-quote-frag) A fragment of ETHUSD stream extracted from data generated by Coinbase during 1 second. Coinbase sends correct data and cleansing is not needed.') %>%
   set_caption_pos("topleft")
   
-
 ```
 
-Coinbase sends correct data so cleansing is not needed.
 
 ### Bitstamp
 
@@ -619,23 +622,7 @@ as_hux_event_table <- function(data, capt, rows.to.show = NULL) {
 
 
 ```{r Sample Bitstamp Extracted Events, eval=TRUE, echo=FALSE}
-as_hux_event_table(bitstamp.extracted,'(#tab:stamp-quote-frag) A fragment of ETHUSD stream extracted from data generated by Bitstamp during 1 second.')
-
-```
-
-Bitstamp fragment has the following inconsistencies which need to be clenased:
-
-  * Duplicated events
-  * Takers enters order book as well as Makers
-
-```{r Bitstamp Duplicated Events Example, eval=TRUE, echo=FALSE}
-as_hux_event_table(bitstamp.extracted,'(#tab:stamp-duplicated) An example of duplicated events in ETHUSD stream extracted from data generated by Bitstamp.', 15:16)
-
-```
-
-```{r Bitstamp Takers in Order Book Example, eval=TRUE, echo=FALSE}
-as_hux_event_table(bitstamp.extracted,'(#tab:stamp-duplicated) An example of takers entering order book in ETHUSD stream extracted from data generated by Bitstamp.', 17:18)
-
+as_hux_event_table(bitstamp.extracted,'(#tab:stamp-quote-frag) A fragment of ETHUSD stream extracted from data generated by Bitstamp during 1 second. Rows were received in the order shown in the table. This order is sometimes different from the order in which events have happened on the exchange, see, for example, rows 86 and 87. Bitstamp sends duplicate events and correct class of a received event can not always be determined immediately, so cleansing is required.')
 ```
 
 
@@ -665,7 +652,7 @@ as_hux(bitfinex.extracted[,
   set_left_border(everywhere,9, 1) %>%
   set_right_border(everywhere,1, 1) %>%
   set_na_string(everywhere, everywhere, "NA") %>%
-  set_caption('(#tab:stamp-quote-frag) A fragment of ETHUSD stream extracted from data generated by Bitfinex during 1 second.') %>%
+  set_caption('(#tab:stamp-quote-frag) A fragment of ETHUSD stream extracted from data generated by Bitfinex during 1 second. Similar to Bitstamp, Bitfinex sends duplicate events and the correct class of an event can not always be determined. Furthermore, many attributes are missing and need to be deduced by a cleansing process.') %>%
   set_caption_pos("topleft")
   
 
@@ -677,7 +664,16 @@ as_hux(bitfinex.extracted[,
 ### Bitstamp
 
 ```{r Sample Bitstamp Cleansed Events, eval=TRUE, echo=FALSE}
-as_hux_event_table(bitstamp.cleansed,'(#tab:stamp-cleansed-quote-frag) A fragment of ETHUSD stream extracted from data generated by Bitstamp during 1 second and cleansed.')
+deleted.rows <- which(bitstamp.cleansed$is_deleted) + 1
+as_hux_event_table(bitstamp.cleansed,'(#tab:stamp-cleansed-quote-frag) A fragment of ETHUSD stream extracted from data generated by Bitstamp during 1 second. Red rows are deleted by the cleansing step.') %>%
+  set_background_color(deleted.rows, col=everywhere, value="red")
+
+```
+
+
+```{r Bitstamp Cleansed Events Example, eval=TRUE, echo=FALSE}
+as_hux_event_table(bitstamp.cleansed,'(#tab:stamp-duplicated) Row 16 is deleted since it is a duplicate of row 12. Rows 14 and 15 are related to the taker order 615591571456 so they are deleted too.', c(12, 14:16))
+
 ```
 
 
@@ -708,7 +704,7 @@ coinbase.full <- NULL
 ```
 
 
-```{r, eval=FALSE, echo=FALSE}
+```{r Create connection to the database, eval=FALSE, echo=FALSE}
 conn <- obadiah::connect("192.168.3.5", "5433", dbname = "obadiah-devel", use.cache=F, user="ob-analytics")
 con <- conn$con()
 ```
@@ -729,6 +725,13 @@ where trade_timestamp between '2020-03-25 11:27:12.829+03' and '2020-03-26 18:50
 
 ```
 
+```{r add missing order_created event to Bitstamp, eval=FALSE, include=FALSE}
+r <- data.table(order_id=1213590606602240, amount=0.28548526, event='order_created', order_type='sell',  datetime=as.POSIXct('2020-03-25 11:27:13', origin="1970-01-01"), microtimestamp=as.POSIXct('2020-03-25 11:27:12.828', origin="1970-01-01"), local_timestamp=as.POSIXct('2020-03-25 11:27:13.054939', origin="1970-01-01"), pair_id=3, price=142, era=as.POSIXct('2020-03-25 11:27:12.828', origin="1970-01-01"))
+class(r$order_type) <- "pq_direction"
+class(r$event) <- "pq_live_orders_event"
+bitstamp.quotes <- rbind(r, bitstamp.quotes)
+
+```
 
 
 ```{sql sql - bitfinex.quotes, eval=FALSE, echo=FALSE, connection=con, output.var=bitfinex.quotes}
@@ -780,16 +783,6 @@ dcast(coinbase.full[`_type` != 'match', .N, by=ceiling_date(`_time`)][coinbase.f
 ```
 
 
-
-
-```{r, eval=FALSE, echo=FALSE}
-coinbase.full[order(`_time`), `_order_type` := `_order_type`[1], by=`_order_id` ]
-coinbase.o <- coinbase.full[ceiling_date(`_time`) == '2020-04-01 16:51:57',]
-
-```
-
-
-
 ```{r Prepare oberon.Rdata, eval=FALSE, echo=FALSE,}
 coinbase.extracted <- reconstruct("Coinbase", coinbase.full[`_time` <= '2020-04-01 16:51:57',], extract.only=TRUE)[lubridate::ceiling_date(timestamp) == '2020-04-01 16:51:57',]
 setDT(bitstamp.quotes)
@@ -798,11 +791,10 @@ bitstamp.extracted <- reconstruct("Bitstamp",
                                   bitstamp.quotes[microtimestamp <= '2020-03-25 12:17:24+03',],
                                   bitstamp.trades[trade_timestamp <= '2020-03-25 12:17:24+03',],
                                   extract.only = TRUE)[lubridate::ceiling_date(timestamp) == '2020-03-25 12:17:24+03',]
+bitstamp.extracted <- bitstamp.extracted[order(local_timestamp)]
 
-bitstamp.cleansed <- reconstruct("Bitstamp",
-                                  bitstamp.quotes[microtimestamp <= '2020-03-25 12:17:24+03',],
-                                  bitstamp.trades[trade_timestamp <= '2020-03-25 12:17:24+03',],
-                                  extract.only = FALSE)[lubridate::ceiling_date(timestamp) == '2020-03-25 12:17:24+03',]
+bitstamp.cleansed <- reconstruct("Bitstamp", bitstamp.quotes[microtimestamp <= '2020-03-25 12:17:24+03',], bitstamp.trades[trade_timestamp <= '2020-03-25 12:17:24+03',], extract.only = FALSE)[lubridate::ceiling_date(timestamp) == '2020-03-25 12:17:24+03',]
+bitstamp.cleansed <- bitstamp.cleansed[order(local_timestamp)]
 setDT(bitfinex.quotes)
 setDT(bitfinex.trades)
 bitfinex.extracted <- reconstruct("Bitfinex",

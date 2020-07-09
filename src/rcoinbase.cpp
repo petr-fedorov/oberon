@@ -30,6 +30,7 @@ void RStore::transmit( std::unique_ptr<oberon::core::Event> && event) {
     price_.push_back(event->price());
     volume_.push_back(event->volume());
     delta_volume_.push_back(event->deltaVolume());
+    is_deleted_.push_back(event->isDeleted());
     if (event->tradeId() != Event::kNaTradeId)
       trade_id_.push_back(event->tradeId());
     else
@@ -53,7 +54,8 @@ Rcpp::DataFrame RStore::toDataframe() {
       Rcpp::Named("trade_id") = trade_id_,
       Rcpp::Named("delta_volume") = delta_volume_,
       Rcpp::Named("taker_order_id") = taker_order_id_,
-      Rcpp::Named("local_timestamp") = local_timestamp_);
+      Rcpp::Named("local_timestamp") = local_timestamp_,
+      Rcpp::Named("is_deleted") = is_deleted_);
   
 }
 

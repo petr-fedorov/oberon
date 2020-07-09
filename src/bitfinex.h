@@ -58,17 +58,23 @@ class BitfinexReconstructor : public ReconstructorImplementation {
       public:
         BitfinexChanged(const boost::property_tree::ptree & tree, const BitfinexReconstructor & reconstructor);
 
+        virtual MessageHandler::Changed* clone();
+
     };
     
     class BitfinexCanceled : public MessageHandler::Canceled, public BitfinexMessage {
       public:
         BitfinexCanceled(const boost::property_tree::ptree & tree, const BitfinexReconstructor & reconstructor);
 
+        virtual MessageHandler::Canceled* clone();
+
     };
     
     class BitfinexFilled : public MessageHandler::Filled, public BitfinexMessage {
       public:
         BitfinexFilled(const boost::property_tree::ptree & tree, const BitfinexReconstructor & reconstructor);
+
+        virtual MessageHandler::Filled* clone();
 
     };
     

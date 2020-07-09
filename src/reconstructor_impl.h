@@ -61,11 +61,13 @@ class EventImpl : public Event {
 
     Timestamp local_timestamp_;
 
+    bool is_deleted_;
+
 
   public:
-    EventImpl(const OrderId & order_id, const Timestamp & timestamp, const Timestamp & local_timestamp, const EventNo & event_no, const Price & price, const Volume & volume, const Volume & delta_volume, OrderState state);
+    EventImpl(const OrderId & order_id, const Timestamp & timestamp, const Timestamp & local_timestamp, const EventNo & event_no, const Price & price, const Volume & volume, const Volume & delta_volume, OrderState state, bool is_deleted);
 
-    EventImpl(const OrderId & order_id, const Timestamp & timestamp, const Timestamp & local_timestamp, const EventNo & event_no, const Price & price, const Volume & volume, const Volume & delta_volume, OrderState state, const TradeId & trade_id, const OrderId & taker_order_id);
+    EventImpl(const OrderId & order_id, const Timestamp & timestamp, const Timestamp & local_timestamp, const EventNo & event_no, const Price & price, const Volume & volume, const Volume & delta_volume, OrderState state, const TradeId & trade_id, const OrderId & taker_order_id, bool is_deleted);
 
     virtual const Timestamp timestamp() const;
 
@@ -87,10 +89,24 @@ class EventImpl : public Event {
 
     virtual const Timestamp localTimestamp() const;
 
+    virtual const bool isDeleted() const;
+
 };
 class MessageHandler {
   public:
     class Message {
+      public:
+        inline const bool isDeleted() const;
+
+
+      protected:
+        bool is_deleted_ = false;
+
+
+      public:
+        void set_is_deleted(bool value);
+
+
       protected:
         Timestamp timestamp_;
 
@@ -111,6 +127,8 @@ class MessageHandler {
     
     class ExchangeMessage : public Message {
       public:
+        virtual ExchangeMessage* clone() = 0;
+
         PriceSide getPriceSide();
 
 
@@ -189,6 +207,8 @@ class MessageHandler {
     
     class Created : virtual public ExchangeMessage {
       public:
+        virtual string toString();
+
         //By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event
         virtual std::unique_ptr<Event> toEvent();
 
@@ -198,6 +218,8 @@ class MessageHandler {
     
     class Changed : virtual public ExchangeMessage {
       public:
+        virtual string toString();
+
         //By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event
         virtual std::unique_ptr<Event> toEvent();
 
@@ -223,14 +245,20 @@ class MessageHandler {
         //By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event
         virtual std::unique_ptr<Event> toEvent();
 
+        inline const OrderId getTakerOrderId() const;
+
     };
     
     //opened on Coinbase. Bitstamp, Bitfinex do not send
     class Opened : public Created {
       public:
+        virtual string toString();
+
         virtual bool accept(MessageHandler* mh);
 
-        virtual string toString();
+        Opened(const Created & source);
+
+        Opened() = default;
 
     };
     
@@ -283,6 +311,10 @@ class MessageHandler {
         virtual bool accept(MessageHandler * mh) override final;
 
         virtual string toString();
+
+        Received(const Created & source);
+
+        Received() = default;
 
     };
     
@@ -353,6 +385,10 @@ vector<std::unique_ptr<Message>> handle(vector<std::unique_ptr<Message>> && mess
     virtual ~MessageHandler();
 
 };
+inline const bool MessageHandler::Message::isDeleted() const {
+  return is_deleted_;
+}
+
 inline const Timestamp MessageHandler::Message::getTimestamp() const {
   return timestamp_;
 }
@@ -387,6 +423,10 @@ inline const Timestamp MessageHandler::ExchangeMessage::getLocalTimestamp() cons
 
 inline const TradeId MessageHandler::Filled::getTradeId() const {
   return trade_id_;
+}
+
+inline const OrderId MessageHandler::Filled::getTakerOrderId() const {
+  return taker_order_id_;
 }
 
 class EventNumberGenerator : public MessageHandler {
@@ -449,6 +489,12 @@ class ReconstructorImplementation : public Reconstructor {
     std::unique_ptr<MessageHandler> size_deducer_;
 
     std::unique_ptr<MessageHandler> event_number_generator_;
+
+    std::unique_ptr<MessageHandler> taker_filter_;
+
+
+  public:
+    ReconstructorImplementation();
 
 };
 inline void ReconstructorImplementation::transmit( vector<std::unique_ptr<MessageHandler::Message>>  messages) {

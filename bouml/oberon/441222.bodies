@@ -4,14 +4,18 @@ return true;
 !!!590214.cpp!!!	handle(in messages : MessageHandler::Message [*]) : MessageHandler::Message [*]
 for(auto& msg: messages) {
   if(msg) {
-    received_ = std::move(msg);
 #ifdef VERBOSE_STATE_MACHINE
     // Here I produced the log record in BoUML style 
-    std::cout << "DEBUG : " << getHandlerName() << " received " << received_->toString() << "\n";
+    std::cout << "DEBUG : " << getHandlerName() << " received " << msg->toString() << "\n";
 #endif
-    std::string s{received_->toString()};
-    if(!received_->accept(this))
-      throw std::logic_error(s);
+    if(!msg->isDeleted()) {
+      received_ = std::move(msg);
+      std::string s{received_->toString()};
+      if(!received_->accept(this))
+        throw std::logic_error(s);
+    }
+    else 
+      output_.push_back(std::move(msg));
   }
 }
 return std::move(output_);

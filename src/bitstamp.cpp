@@ -44,22 +44,37 @@ bool BitstampReconstructor::DeduceSizeBitstamp::canceled() {
   return true;
 }
 
-bool BitstampReconstructor::DeduplicateBitstamp::elapsed() {
+bool BitstampReconstructor::Deduplicator::elapsed() {
+#ifdef VERBOSE_BITSTAMP_DEDUPLICATOR
+  std::cout << received_->toString() << "\n";
+#endif
   for (auto i_other = std::begin(other_messages_);
        i_other != std::end(other_messages_); ++i_other) {
     auto change_size = (*i_other)->getChangeSize();
+    // string order_id {boost::uuids::to_string((*i_other)->getOrderId())};
     if (std::isnan(change_size) || change_size > 0) {
       for (auto i_fills = std::begin(fills_); i_fills != std::end(fills_);
            ++i_fills) {
-        if ((*i_other)->getOrderId() == (*i_fills)->getOrderId() &&
-            (std::isnan(change_size) ||
-             std::abs(change_size - (*i_fills)->getChangeSize()) <
-                reconstructor_.base_increment_)) {
-          (*i_fills)->setRemainingSize((*i_other)->getRemainingSize());
-          i_other = other_messages_.erase(i_other);
-          i_other = other_messages_.insert(i_other, std::move(*i_fills));
-          fills_.erase(i_fills);
-          break;
+        if ((*i_other)->getOrderId() == (*i_fills)->getOrderId()) {
+          if ((std::isnan(change_size) ||
+               std::abs(change_size - (*i_fills)->getChangeSize()) <
+                   reconstructor_.base_increment_)) {
+            (*i_fills)->setRemainingSize((*i_other)->getRemainingSize());
+#ifdef VERBOSE_BITSTAMP_DEDUPLICATOR
+            std::cout << (*i_other)->toString() << " duplicate, dropped\n";
+#endif
+            //i_other = other_messages_.erase(i_other);
+            (*i_other)->set_is_deleted(true);
+            i_other = other_messages_.insert(i_other, std::move(*i_fills));
+            fills_.erase(i_fills);
+            break;
+          } else {
+#ifdef VERBOSE_BITSTAMP_DEDUPLICATOR
+            std::cout << "Not matched\n";
+            std::cout << (*i_other)->toString() << "\n";
+            std::cout << (*i_fills)->toString() << "\n";
+#endif
+          }
         }
       }
     }
@@ -71,26 +86,26 @@ bool BitstampReconstructor::DeduplicateBitstamp::elapsed() {
   if (fills_.empty())
     return true;
   else {
-    /*for (auto &msg : fills_)
+    for (auto &msg : fills_)
       std::cout << "F :" << msg->toString() << std::endl;
     for (auto &msg : output_)
-      std::cout << "E: " << msg->toString() << std::endl;*/
+      std::cout << "E: " << msg->toString() << std::endl;
     fills_.clear();
     return false;
   }
 }
 
-bool BitstampReconstructor::DeduplicateBitstamp::filled() {
+bool BitstampReconstructor::Deduplicator::filled() {
   fills_.push_back(std::unique_ptr<Filled>(dynamic_cast<Filled*>(received_.release())));
   return true;
 }
 
-bool BitstampReconstructor::DeduplicateBitstamp::exchangeMessage() {
+bool BitstampReconstructor::Deduplicator::exchangeMessage() {
   other_messages_.push_back(std::unique_ptr<ExchangeMessage>(dynamic_cast<ExchangeMessage*>(received_.release())));
   return true;
 }
 
-BitstampReconstructor::DeduplicateBitstamp::DeduplicateBitstamp(const BitstampReconstructor & reconstructor): reconstructor_{reconstructor} {
+BitstampReconstructor::Deduplicator::Deduplicator(const BitstampReconstructor & reconstructor): reconstructor_{reconstructor} {
 }
 
 const Volume BitstampReconstructor::BitstampMessage::getBaseMinSize() const {
@@ -106,7 +121,7 @@ const Volume BitstampReconstructor::BitstampMessage::getBaseIncrement() const {
 BitstampReconstructor::BitstampMessage::BitstampMessage(const BitstampReconstructor & reconstructor): reconstructor_{reconstructor} {
 }
 
-BitstampReconstructor::BitstampCreated::BitstampCreated(const boost::property_tree::ptree & tree, const BitstampReconstructor & reconstructor): BitstampMessage{reconstructor} {
+BitstampReconstructor::BitstampOpened::BitstampOpened(const boost::property_tree::ptree & tree, const BitstampReconstructor & reconstructor): BitstampMessage{reconstructor} {
   order_id_ = toUuid(tree.get<string>("id"));
   timestamp_ = toTimestamp(tree.get<string>("microtimestamp"));
   local_timestamp_ = toTimestamp(tree.get<string>("local_timestamp"));
@@ -121,6 +136,10 @@ BitstampReconstructor::BitstampCreated::BitstampCreated(const boost::property_tr
   
 }
 
+BitstampReconstructor::BitstampOpened* BitstampReconstructor::BitstampOpened::clone() {
+  return new BitstampOpened(*this);
+}
+
 BitstampReconstructor::BitstampCanceled::BitstampCanceled(const boost::property_tree::ptree & tree, const BitstampReconstructor & reconstructor): BitstampMessage{reconstructor} {
   order_id_ = toUuid(tree.get<string>("id"));
   timestamp_ = toTimestamp(tree.get<string>("microtimestamp"));
@@ -131,6 +150,10 @@ BitstampReconstructor::BitstampCanceled::BitstampCanceled(const boost::property_
     side_ = kBid;
   else
     side_ = kAsk;
+}
+
+BitstampReconstructor::BitstampCanceled* BitstampReconstructor::BitstampCanceled::clone() {
+  return new BitstampCanceled(*this);
 }
 
 BitstampReconstructor::BitstampFilled::BitstampFilled(const boost::property_tree::ptree & tree, const BitstampReconstructor & reconstructor): BitstampMessage{reconstructor} {
@@ -147,6 +170,10 @@ BitstampReconstructor::BitstampFilled::BitstampFilled(const boost::property_tree
     side_ = kAsk;
 }
 
+BitstampReconstructor::BitstampFilled* BitstampReconstructor::BitstampFilled::clone() {
+  return new BitstampFilled(*this);
+}
+
 BitstampReconstructor::BitstampChanged::BitstampChanged(const boost::property_tree::ptree & tree, const BitstampReconstructor & reconstructor): BitstampMessage{reconstructor} {
   order_id_ = toUuid(tree.get<string>("id"));
   timestamp_ = toTimestamp(tree.get<string>("microtimestamp"));
@@ -159,15 +186,18 @@ BitstampReconstructor::BitstampChanged::BitstampChanged(const boost::property_tr
     side_ = kAsk;
 }
 
+BitstampReconstructor::BitstampChanged* BitstampReconstructor::BitstampChanged::clone() {
+  return new BitstampChanged(*this);
+}
+
 BitstampReconstructor::BitstampReconstructor( Store * store, const Volume & base_min_size, const Volume & base_increment, bool extract_only) {
   store_ = store;
   base_min_size_ = base_min_size;
   base_increment_ = base_increment;
   extract_only_ = extract_only;
   size_deducer_ =std::make_unique<DeduceSizeBitstamp>();
-  // Deduplication is needed - TBD
-  deduplicator_ = std::make_unique<DeduplicateBitstamp>(*this);
-  event_number_generator_ = std::make_unique<EventNumberGenerator>();
+  deduplicator_ = std::make_unique<Deduplicator>(*this);
+  taker_filter_ = std::make_unique<Classifier>(*this);
   
 }
 
@@ -182,7 +212,7 @@ vector<std::unique_ptr<MessageHandler::Message>> BitstampReconstructor::extract(
     ss >> parse("%FT%TZ", timestamp);
     output.push_back(make_unique<Elapsed>(timestamp));
   } else if (type == "order_created")
-    output.push_back(make_unique<BitstampCreated>(tree, *this));
+    output.push_back(make_unique<BitstampOpened>(tree, *this));
   else if (type == "order_changed")
     output.push_back(make_unique<BitstampChanged>(tree, *this));
   else if (type == "order_deleted") {
@@ -194,6 +224,42 @@ vector<std::unique_ptr<MessageHandler::Message>> BitstampReconstructor::extract(
     return size_deducer_->handle(std::move(output));
   else
     return output;
+}
+
+BitstampReconstructor::Classifier::Classifier(const BitstampReconstructor & reconstructor): reconstructor_{reconstructor} {
+}
+
+bool BitstampReconstructor::Classifier::opened() {
+  BitstampOpened *msg = dynamic_cast<BitstampOpened*>(received_.get());
+  if(msg->getSide() == kBid)
+    return classifyOpened(&bids_, &asks_);
+  else
+    return classifyOpened(&asks_, &bids_);
+}
+
+bool BitstampReconstructor::Classifier::changed() {
+  BitstampChanged *msg = dynamic_cast<BitstampChanged *>(received_.get());
+  if(msg->getSide() == kBid)
+    return classifyChanged(&bids_, &asks_);
+  else
+    return classifyChanged(&asks_, &bids_);
+}
+
+bool BitstampReconstructor::Classifier::canceled() {
+  BitstampCanceled *msg = dynamic_cast<BitstampCanceled *>(received_.get());
+  if(msg->getSide() == kBid)
+    return classifyCanceled(&bids_, &asks_);
+  else
+    return classifyCanceled(&asks_, &bids_);
+  
+}
+
+bool BitstampReconstructor::Classifier::filled() {
+  Filled *msg = dynamic_cast<Filled*>(received_.get());
+  if(msg->getSide() == kBid)
+    return classifyFilled(&bids_, &asks_);
+  else
+    return classifyFilled(&asks_, &bids_);
 }
 
 

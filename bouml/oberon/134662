@@ -1,6 +1,6 @@
 format 222
 "R package" // R package
-  revision 40
+  revision 42
   modified_by 6 "petr"
   // class settings
   
@@ -242,6 +242,20 @@ ${inlines}
 	multiplicity "0..1"
 	stereotype "vector"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 554630 "is_deleted"
+	private explicit_type "bool"
+	multiplicity "*"
+	stereotype "vector"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}_${value};
 "
 	java_decl ""
 	php_decl ""

@@ -10,7 +10,7 @@ else
 std::stringstream buf;
 buf << Message::toString() << " " << order_id_ << " " << event_no_ << " "
     << (side_ == kBid ? 'B' : 'A') << price_ << " " << remaining_size_ << " "
-    << change_size_; 
+    << change_size_ << ( is_deleted_ ? " DELETED " : ""); 
 return buf.str();
 !!!723590.cpp!!!	roundToBaseIncrement(in volume : Volume) : Volume
 return std::round(volume/getBaseIncrement())*getBaseIncrement();

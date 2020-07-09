@@ -1,5 +1,5 @@
 class EventImpl
-!!!627718.cpp!!!	EventImpl(in order_id : OrderId [1], in timestamp : Timestamp [1], in local_timestamp : Timestamp, in event_no : EventNo [1], in price : Price [1], in volume : Volume [1], in delta_volume : Volume, in state : OrderState [1])
+!!!627718.cpp!!!	EventImpl(in order_id : OrderId [1], in timestamp : Timestamp [1], in local_timestamp : Timestamp, in event_no : EventNo [1], in price : Price [1], in volume : Volume [1], in delta_volume : Volume, in state : OrderState [1], in is_deleted : bool)
 order_id_ = order_id;
 timestamp_ = timestamp;
 local_timestamp_ = local_timestamp;
@@ -10,7 +10,8 @@ delta_volume_ = delta_volume;
 state_ = state;
 trade_id_ = 0;
 taker_order_id_ = boost::uuids::nil_uuid();
-!!!707846.cpp!!!	EventImpl(in order_id : OrderId [1], in timestamp : Timestamp [1], in local_timestamp : Timestamp, in event_no : EventNo [1], in price : Price [1], in volume : Volume [1], in delta_volume : Volume, in state : OrderState [1], in trade_id : TradeId, in taker_order_id : OrderId)
+is_deleted_ = is_deleted;
+!!!707846.cpp!!!	EventImpl(in order_id : OrderId [1], in timestamp : Timestamp [1], in local_timestamp : Timestamp, in event_no : EventNo [1], in price : Price [1], in volume : Volume [1], in delta_volume : Volume, in state : OrderState [1], in trade_id : TradeId, in taker_order_id : OrderId, in is_deleted : bool)
 order_id_ = order_id;
 timestamp_ = timestamp;
 local_timestamp_ = local_timestamp;
@@ -21,6 +22,7 @@ delta_volume_ = delta_volume;
 state_ = state;
 trade_id_ = trade_id;
 taker_order_id_ = taker_order_id;
+is_deleted_ = is_deleted;
 !!!744070.cpp!!!	timestamp() : Timestamp
 return timestamp_;
 !!!744198.cpp!!!	orderId() : OrderId [1]
@@ -41,3 +43,5 @@ return delta_volume_;
 return taker_order_id_;
 !!!745734.cpp!!!	localTimestamp() : Timestamp
 return local_timestamp_;
+!!!865798.cpp!!!	isDeleted() : bool
+return is_deleted_;

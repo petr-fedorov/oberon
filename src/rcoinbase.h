@@ -44,6 +44,8 @@ class RStore : public oberon::core::Store {
 
     vector<double> local_timestamp_;
 
+    vector<bool> is_deleted_;
+
 
   public:
     Rcpp::DataFrame toDataframe();

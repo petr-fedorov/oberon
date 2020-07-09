@@ -1,9 +1,14 @@
 class Created
+!!!852102.cpp!!!	toString() : string
+std::stringstream buf;
+buf << ExchangeMessage::toString() << " Created";
+return buf.str();
+
 !!!650630.cpp!!!	toEvent() : Event [0..1]
 int sign = getSide() == kAsk ? -1 : 1;
 return make_unique<EventImpl>(
     getOrderId(), getTimestamp(), getLocalTimestamp(), getEventNo(), getPrice(),
     roundToBaseIncrement(getRemainingSize()) * sign,
-    roundToBaseIncrement(getChangeSize()) * sign, kActive);
+    roundToBaseIncrement(getChangeSize()) * sign, kActive, is_deleted_);
 !!!760198.cpp!!!	accept(in mh : MessageHandler [1]) : bool
 return mh->created();

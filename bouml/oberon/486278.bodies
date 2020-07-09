@@ -24,9 +24,16 @@ catch (const std::logic_error &e) {
 !!!641798.cpp!!!	cleanse(in messages : MessageHandler::Message [1..*]) : MessageHandler::Message [*]
 if(deduplicator_)
   messages = deduplicator_->handle(std::move(messages));
+if(taker_filter_)
+  messages = taker_filter_->handle(std::move(messages));
 return messages;
 !!!641926.cpp!!!	transmit(in messages : MessageHandler::Message [*]) : void
 messages = event_number_generator_->handle(std::move(messages));
 for(auto &msg : messages) 
   store_->transmit(msg->toEvent());
 
+!!!827910.cpp!!!	ReconstructorImplementation()
+deduplicator_ = std::unique_ptr<MessageHandler>();
+taker_filter_ = std::unique_ptr<MessageHandler>();
+size_deducer_ = std::unique_ptr<MessageHandler>();
+event_number_generator_ = std::make_unique<EventNumberGenerator>(); 

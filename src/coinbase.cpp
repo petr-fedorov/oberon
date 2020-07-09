@@ -43,6 +43,10 @@ CoinbaseReconstructor::CoinbaseReceived::CoinbaseReceived(const boost::property_
   
 }
 
+MessageHandler::Received* CoinbaseReconstructor::CoinbaseReceived::clone() {
+  return new CoinbaseReceived{*this};
+}
+
 CoinbaseReconstructor::CoinbaseMatch::CoinbaseMatch(const boost::property_tree::ptree & tree, const CoinbaseReconstructor & reconstructor) : CoinbaseMessage{reconstructor} {
   using namespace date;
   using namespace std;
@@ -57,6 +61,10 @@ CoinbaseReconstructor::CoinbaseMatch::CoinbaseMatch(const boost::property_tree::
   side_ = (tree.get<string>("side") == "buy" ? kBid : kAsk);
   order_id_ = gen(tree.get<string>("maker_order_id"));
   taker_order_id_ = gen(tree.get<string>("taker_order_id"));
+}
+
+MessageHandler::Filled* CoinbaseReconstructor::CoinbaseMatch::clone() {
+  return new CoinbaseMatch{*this};
 }
 
 CoinbaseReconstructor::CoinbaseDoneCanceled::CoinbaseDoneCanceled(const boost::property_tree::ptree & tree, const CoinbaseReconstructor & reconstructor): CoinbaseMessage{reconstructor}{
@@ -75,6 +83,10 @@ CoinbaseReconstructor::CoinbaseDoneCanceled::CoinbaseDoneCanceled(const boost::p
   
 }
 
+MessageHandler::Canceled* CoinbaseReconstructor::CoinbaseDoneCanceled::clone() {
+  return new CoinbaseDoneCanceled {*this};
+}
+
 CoinbaseReconstructor::CoinbaseOpen::CoinbaseOpen(const boost::property_tree::ptree & tree, const CoinbaseReconstructor & reconstructor): CoinbaseMessage{reconstructor} {
   using namespace date;
   using namespace std;
@@ -90,6 +102,10 @@ CoinbaseReconstructor::CoinbaseOpen::CoinbaseOpen(const boost::property_tree::pt
       0; // Open message signifies the first appearance of the order in LOB
   event_no_ = 1;
   side_ = tree.get<string>("side") == "buy" ? kBid : kAsk;
+}
+
+MessageHandler::Opened* CoinbaseReconstructor::CoinbaseOpen::clone() {
+  return new CoinbaseOpen{*this};
 }
 
 vector<std::unique_ptr<MessageHandler::Message>> CoinbaseReconstructor::extract(const boost::property_tree::ptree & tree) {

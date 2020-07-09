@@ -73,6 +73,8 @@ class Event {
 
     virtual const Timestamp localTimestamp() const = 0;
 
+    virtual const bool isDeleted() const = 0;
+
     virtual ~Event();
 
 };

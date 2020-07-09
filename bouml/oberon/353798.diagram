@@ -1,0 +1,67 @@
+format 222
+
+pseudostatecanvas 128006 pseudostate_ref 267526 // initial
+   xyz 211 33 2000
+end
+statecanvas 128134 state_ref 211846 // Wait
+  
+  xyzwh 334 159 2000 117 35
+end
+statecanvas 129670 state_ref 212102 // Filter
+  
+  xyzwh 582 242 2000 103 61
+end
+statecanvas 132230 state_ref 212358 // Save taker
+  
+  xyzwh 214 408 2000 81 33
+end
+transitioncanvas 128262 transition_ref 392838 // <transition>
+  
+  from ref 128006 z 2001 to ref 128134
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 128390 transition_ref 392966 // <transition>
+  
+  from ref 128134 z 2001 to point 552 94
+  line 128518 z 2001 label "opened / pass opened" xyz 439 78 3000 to point 441 73
+  line 128646 z 2001 to ref 128134
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 128774 transition_ref 393094 // <transition>
+  
+  from ref 128134 z 2001 to point 400 8
+  line 128902 z 2001 label "received / pass received" xyz 288 15 3000 to point 302 32
+  line 129030 z 2001 to ref 128134
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129158 transition_ref 393222 // <transition>
+  
+  from ref 128134 z 2001 to point 228 93
+  line 129286 z 2001 label "filled / pass filled" xyz 183 123 3000 to point 223 163
+  line 129414 z 2001 to ref 128134
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129798 transition_ref 393350 // <transition>
+  
+  from ref 128134 z 2001 label "canceled" xyz 429 224 3000 to point 494 268
+  line 130566 z 2001 to ref 129670
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 130694 transition_ref 393862 // <transition>
+  
+  from ref 129670 z 2001 to ref 128134
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 132358 transition_ref 394374 // <transition>
+  
+  from ref 128134 z 2001 label "changed [was taker]" xyz 256.5 323.5 3000 to ref 132230
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 132486 transition_ref 394502 // <transition>
+  
+  from ref 128134 z 2001 to point 50 293
+  line 132742 z 2001 to point 35 201
+  line 132614 z 2001 to ref 128134
+  write_horizontally default show_definition default drawing_language default
+end
+end
