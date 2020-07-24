@@ -38,20 +38,6 @@ PriceSide::PriceSide() {
   side_ = kBid;
 }
 
-EventImpl::EventImpl(const OrderId & order_id, const Timestamp & timestamp, const Timestamp & local_timestamp, const EventNo & event_no, const Price & price, const Volume & volume, const Volume & delta_volume, OrderState state, bool is_deleted) {
-  order_id_ = order_id;
-  timestamp_ = timestamp;
-  local_timestamp_ = local_timestamp;
-  event_no_ = event_no;
-  price_ = price;
-  volume_ = volume;
-  delta_volume_ = delta_volume;
-  state_ = state;
-  trade_id_ = 0;
-  taker_order_id_ = boost::uuids::nil_uuid();
-  is_deleted_ = is_deleted;
-}
-
 EventImpl::EventImpl(const OrderId & order_id, const Timestamp & timestamp, const Timestamp & local_timestamp, const EventNo & event_no, const Price & price, const Volume & volume, const Volume & delta_volume, OrderState state, const TradeId & trade_id, const OrderId & taker_order_id, bool is_deleted) {
   order_id_ = order_id;
   timestamp_ = timestamp;
@@ -108,6 +94,13 @@ const Timestamp EventImpl::localTimestamp() const {
 
 const bool EventImpl::isDeleted() const {
   return is_deleted_;
+}
+
+string EventImpl::toString() const {
+  std::stringstream ss;
+  std::string oid = boost::uuids::to_string(order_id_); 
+  ss << "[ " << date::format("%T", timestamp_) << " " << oid.substr(oid.length()-12, 12) << " " << event_no_ << " ]";
+  return ss.str();
 }
 
 void MessageHandler::Message::set_is_deleted(bool value) {
@@ -170,7 +163,7 @@ std::unique_ptr<Event> MessageHandler::Created::toEvent() {
   return make_unique<EventImpl>(
       getOrderId(), getTimestamp(), getLocalTimestamp(), getEventNo(), getPrice(),
       roundToBaseIncrement(getRemainingSize()) * sign,
-      roundToBaseIncrement(getChangeSize()) * sign, kActive, is_deleted_);
+      roundToBaseIncrement(getChangeSize()) * sign, kActive, 0, boost::uuids::nil_uuid(), is_deleted_);
 }
 
 bool MessageHandler::Created::accept(MessageHandler* mh) {
@@ -190,7 +183,7 @@ std::unique_ptr<Event> MessageHandler::Changed::toEvent() {
   return make_unique<EventImpl>(
       getOrderId(), getTimestamp(), getLocalTimestamp(), getEventNo(), getPrice(),
       roundToBaseIncrement(getRemainingSize()) * sign,
-      roundToBaseIncrement(getChangeSize()) * sign, kActive, is_deleted_);
+      roundToBaseIncrement(getChangeSize()) * sign, kActive, 0, boost::uuids::nil_uuid(), is_deleted_);
 }
 
 bool MessageHandler::Changed::accept(MessageHandler* mh) {
@@ -280,7 +273,7 @@ std::unique_ptr<Event> MessageHandler::Canceled::toEvent() {
   return make_unique<EventImpl>(
       getOrderId(), getTimestamp(), getLocalTimestamp(), getEventNo(), getPrice(),
       roundToBaseIncrement(getRemainingSize()) * sign,
-      roundToBaseIncrement(getChangeSize()) * sign, kFinished, is_deleted_);
+      roundToBaseIncrement(getChangeSize()) * sign, kFinished,0, boost::uuids::nil_uuid(), is_deleted_);
 }
 
 //By default, toEvent() returns 0 Events. A derived class that overrides this method is supposed to return 1 Event

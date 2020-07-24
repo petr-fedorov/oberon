@@ -24,7 +24,7 @@
 <meta name="author" content="Petr Fedorov" />
 
 
-<meta name="date" content="2020-07-09" />
+<meta name="date" content="2020-07-24" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -7368,6 +7368,30 @@
 </tr>
 </table>
 
+<p>as_hux(bitfinex.extracted[,
+.(<code>#</code>=.I,
+<code>\\(i\\)(maker)</code>=substr(maker_order_id,25, 36),
+<code>\\(n\\)</code>=event_no,
+<code>\\(t^i_n\\)</code>=format(timestamp,format=“%H:%M:%OS3”),
+<code>\\(s^i_n\\)</code>=state,
+<code>\\(p^i_n\\)</code>=price,
+<code>\\(v^i_n\\)</code>=volume,
+<code>\\(f^i_n\\)</code>=trade_id,
+<code>\\(\\Delta v^i_n \\)</code>=delta_volume,
+<code>taker</code>=substr(taker_order_id, 25,36)
+)
+],
+scientific=F) %&gt;%
+add_colnames() %&gt;%
+set_align(1, c(2,4,5,10), ‘center’) %&gt;%
+set_align(everywhere, c(1,3, 6:9), ‘right’) %&gt;%
+set_number_format(row=everywhere, col=6:7,value=“%.2f”) %&gt;%
+set_number_format(row=everywhere, col=9,value=“%.3f”) %&gt;%
+set_left_border(everywhere,9, 1) %&gt;%
+set_right_border(everywhere,1, 1) %&gt;%
+set_na_string(everywhere, everywhere, “NA”) %&gt;%
+set_caption() %&gt;%
+set_caption_pos(“topleft”)</p>
 </div>
 </div>
 <div id="fragments-of-cleansed-data" class="section level2">
@@ -8820,6 +8844,18 @@
 </tr>
 </table>
 
+<div class="figure"><span id="fig:visualise-one-second-changes"></span>
+<img src="oberon_files/figure-html/visualise-one-second-changes-1.png" alt="A graphical representation of the evolution of a market depth during 1 second, which is calculated from changing limit orders only. Tick size is $0.1 and sample period is 0.1 second." width="672" />
+<p class="caption">
+Figure 3.1: A graphical representation of the evolution of a market depth during 1 second, which is calculated from changing limit orders only. Tick size is $0.1 and sample period is 0.1 second.
+</p>
+</div>
+<div class="figure"><span id="fig:visualise-one-second-all"></span>
+<img src="oberon_files/figure-html/visualise-one-second-all-1.png" alt="A graphical representation of the evolution of a market depth during 1 second, which is calculated from all known limit orders. Tick size and sample period are the same as on the previous figure." width="672" />
+<p class="caption">
+Figure 3.2: A graphical representation of the evolution of a market depth during 1 second, which is calculated from all known limit orders. Tick size and sample period are the same as on the previous figure.
+</p>
+</div>
 </div>
 </div>
 </div>

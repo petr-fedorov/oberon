@@ -1,0 +1,19 @@
+class Price
+!!!879366.cpp!!!	operator ==(in other : Price) : bool
+return price_ == other.price_;
+!!!879494.cpp!!!	operator <(in other : Price) : bool
+return price_ < other.price_;
+!!!879622.cpp!!!	operator >(in other : Price) : bool
+return price_ > other.price_;
+!!!879750.cpp!!!	operator double()
+return price_;
+!!!879878.cpp!!!	alignUp(in tick_size : double) : Price
+return Price{tick_size > kPricePrecision
+                 ? std::ceil((price_ - kPricePrecisionFraction) / tick_size) *
+                       tick_size
+                 : price_};
+!!!880006.cpp!!!	alignDown(in tick_size : double) : Price
+return Price{tick_size > kPricePrecision
+                 ? std::floor((price_ + kPricePrecisionFraction) / tick_size) *
+                       tick_size
+                 : price_};

@@ -10,4 +10,4 @@ int sign = getSide() == kAsk ? -1 : 1;
 return make_unique<EventImpl>(
     getOrderId(), getTimestamp(), getLocalTimestamp(), getEventNo(), getPrice(),
     roundToBaseIncrement(getRemainingSize()) * sign,
-    roundToBaseIncrement(getChangeSize()) * sign, kFinished, is_deleted_);
+    roundToBaseIncrement(getChangeSize()) * sign, kFinished,0, boost::uuids::nil_uuid(), is_deleted_);

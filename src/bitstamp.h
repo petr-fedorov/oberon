@@ -15,6 +15,7 @@ using namespace std;
 
 #include <iostream>
 namespace oberon { namespace core { class Store; }  } 
+namespace oberon { namespace core { class Price; }  } 
 
 namespace oberon {
 

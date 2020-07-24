@@ -6,7 +6,7 @@
 using namespace Rcpp;
 
 // reconstructCoinbase
-DataFrame reconstructCoinbase(DataFrame source, LogicalVector extract_only);
+List reconstructCoinbase(DataFrame source, LogicalVector extract_only);
 RcppExport SEXP _oberon_reconstructCoinbase(SEXP sourceSEXP, SEXP extract_onlySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -18,7 +18,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // reconstructBitstamp
-DataFrame reconstructBitstamp(DataFrame quotes, DataFrame trades, LogicalVector extract_only);
+List reconstructBitstamp(DataFrame quotes, DataFrame trades, LogicalVector extract_only);
 RcppExport SEXP _oberon_reconstructBitstamp(SEXP quotesSEXP, SEXP tradesSEXP, SEXP extract_onlySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -31,7 +31,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // reconstructBitfinex
-DataFrame reconstructBitfinex(DataFrame quotes, DataFrame trades, LogicalVector extract_only);
+List reconstructBitfinex(DataFrame quotes, DataFrame trades, LogicalVector extract_only);
 RcppExport SEXP _oberon_reconstructBitfinex(SEXP quotesSEXP, SEXP tradesSEXP, SEXP extract_onlySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -43,11 +43,29 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// events2image
+List events2image(DataFrame events, NumericVector min_price, NumericVector max_price, NumericVector tick_size, NumericVector start, NumericVector end, CharacterVector sampling_period);
+RcppExport SEXP _oberon_events2image(SEXP eventsSEXP, SEXP min_priceSEXP, SEXP max_priceSEXP, SEXP tick_sizeSEXP, SEXP startSEXP, SEXP endSEXP, SEXP sampling_periodSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< DataFrame >::type events(eventsSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type min_price(min_priceSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type max_price(max_priceSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type tick_size(tick_sizeSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type start(startSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type end(endSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type sampling_period(sampling_periodSEXP);
+    rcpp_result_gen = Rcpp::wrap(events2image(events, min_price, max_price, tick_size, start, end, sampling_period));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_oberon_reconstructCoinbase", (DL_FUNC) &_oberon_reconstructCoinbase, 2},
     {"_oberon_reconstructBitstamp", (DL_FUNC) &_oberon_reconstructBitstamp, 3},
     {"_oberon_reconstructBitfinex", (DL_FUNC) &_oberon_reconstructBitfinex, 3},
+    {"_oberon_events2image", (DL_FUNC) &_oberon_events2image, 7},
     {NULL, NULL, 0}
 };
 

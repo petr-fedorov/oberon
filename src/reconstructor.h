@@ -4,6 +4,8 @@
 
 #include <chrono>
 
+#include <cmath>
+
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/nil_generator.hpp>
 
@@ -14,6 +16,7 @@ using namespace std;
 #include <boost/property_tree/ptree.hpp>
 
 
+namespace oberon { namespace core { class EventImpl; }  } 
 namespace oberon { namespace core { class CoinbaseReconstructor; }  } 
 namespace oberon { namespace core { class BitstampReconstructor; }  } 
 namespace oberon { namespace core { class BitfinexReconstructor; }  } 
@@ -22,10 +25,60 @@ namespace oberon {
 
 namespace core {
 
-typedef std::chrono::time_point<std::chrono::system_clock, std::chrono::microseconds> Timestamp;
+typedef std::chrono::microseconds Duration;
+typedef std::chrono::time_point<std::chrono::system_clock, Duration> Timestamp;
 typedef int32_t EventNo;
 typedef double Volume;
-typedef double Price;
+class Price {
+  private:
+    static const double kPricePrecision;
+
+    static const double kPricePrecisionFraction;
+
+    double price_;
+
+
+  public:
+    Price();
+
+    Price(double price);
+
+    inline const bool operator ==(const Price & other) const;
+
+    inline const bool operator <(const Price & other) const;
+
+    inline const bool operator >(const Price & other) const;
+
+    inline  operator double() const;
+
+    Price alignUp(double tick_size) const;
+
+    inline Price alignDown(double tick_size) const;
+
+};
+inline const bool Price::operator ==(const Price & other) const {
+  return price_ == other.price_;
+}
+
+inline const bool Price::operator <(const Price & other) const {
+  return price_ < other.price_;
+}
+
+inline const bool Price::operator >(const Price & other) const {
+  return price_ > other.price_;
+}
+
+inline  Price::operator double() const {
+  return price_;
+}
+
+inline Price Price::alignDown(double tick_size) const {
+  return Price{tick_size > kPricePrecision
+                   ? std::floor((price_ + kPricePrecisionFraction) / tick_size) *
+                         tick_size
+                   : price_};
+}
+
 typedef boost::uuids::uuid OrderId;
 typedef int32_t TradeId;
 enum OrderState {
@@ -43,6 +96,8 @@ class time_order_error : public std::logic_error {
 };
 class Event {
   public:
+    static std::unique_ptr<Event> create(const OrderId & order_id, const Timestamp & timestamp, const Timestamp & local_timestamp, const EventNo & event_no, const Price & price, const Volume & volume, const Volume & delta_volume, OrderState state, const TradeId & trade_id, const OrderId & taker_order_id, bool is_deleted);
+
     static const Volume kNaVolume;
 
     static const TradeId kNaTradeId;
@@ -77,6 +132,8 @@ class Event {
 
     virtual ~Event();
 
+    virtual string toString() const = 0;
+
 };
 class Store {
   public:
@@ -95,7 +152,6 @@ class Reconstructor {
     virtual ~Reconstructor();
 
 };
-typedef std::chrono::microseconds Duration;
 
 } // namespace oberon::core
 

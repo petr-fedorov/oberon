@@ -1,6 +1,6 @@
 format 222
 "Order Book Reconstructor" // Order Book Reconstructor
-  revision 148
+  revision 154
   modified_by 6 "petr"
   // class settings
   
@@ -194,17 +194,189 @@ format 222
     end
 
     class 305542 "Price"
-      visibility package stereotype "typedef" explicit_base_type "double"
-      cpp_decl "${comment}typedef ${type} ${name};
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
 "
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl "${comment}typedef ${type} ${name};
+      java_decl "${comment}${@}${visibility}${static}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl "${comment}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      python_2_2 python_decl "class ${name}${inherit}:
+${docstring}${members}
+"
+      idl_decl "${comment}${abstract}${custom}valuetype ${name}${inherit} {
+${members}};
 "
       explicit_switch_type ""
       mysql_decl ""
       
+      attribute 569350 "kPricePrecision"
+	class_attribute const_attribute private explicit_type "double"
+	init_value "0.000001"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 569478 "kPricePrecisionFraction"
+	class_attribute const_attribute private explicit_type "double"
+	init_value "kPricePrecision/4"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 569222 "price_"
+	private explicit_type "double"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      operation 879110 "Price"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw}: price_ {0.0} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 879238 "Price"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "price" explicit_type "double"
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} ${p0}${v0}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${volatile}${throw}: price_ {price} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 879366 "operator =="
+	const constvalue cpp_inline public explicit_return_type "bool"
+	nparams 1
+	  param in name "other" type class_ref 305542 // Price
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 879494 "operator <"
+	const constvalue cpp_inline public explicit_return_type "bool"
+	nparams 1
+	  param in name "other" type class_ref 305542 // Price
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 879622 "operator >"
+	const constvalue cpp_inline public explicit_return_type "bool"
+	nparams 1
+	  param in name "other" type class_ref 305542 // Price
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 879750 "operator double"
+	const cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 879878 "alignUp"
+	const public return_type class_ref 305542 // Price
+	nparams 1
+	  param in name "tick_size" explicit_type "double"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 880006 "alignDown"
+	const cpp_inline public return_type class_ref 305542 // Price
+	nparams 1
+	  param in name "tick_size" explicit_type "double"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 747910 // <dependency>
+	relation 737798 -_->
+	  a public
+	    cpp default "#include in header"
+	    classrelation_ref 747910 // <dependency>
+	  b parent class_ref 564358 // cmath
+      end
     end
 
     class 305798 "Volume"
@@ -269,7 +441,7 @@ format 222
       actual class class_ref 514822 // time_point
         rank 0 value class_ref 514694 // system_clock
       actual class class_ref 514822 // time_point
-        rank 1 value class_ref 514950 // microseconds
+        rank 1 value class_ref 448518 // Duration
       cpp_decl "${comment}typedef ${type} ${name};
 "
       java_decl ""
@@ -383,6 +555,42 @@ ${members}};
       explicit_switch_type ""
       mysql_decl ""
       
+      operation 880262 "create"
+	class_operation public return_type class_ref 230406 // Event
+	nparams 11
+	  param in name "order_id" type class_ref 306822 // OrderId
+	multiplicity "1"
+	  param in name "timestamp" type class_ref 230278 // Timestamp
+	multiplicity "1"
+	  param in name "local_timestamp" type class_ref 230278 // Timestamp
+	multiplicity "1"
+	  param in name "event_no" type class_ref 507142 // EventNo
+	multiplicity "1"
+	  param in name "price" type class_ref 305542 // Price
+	multiplicity "1"
+	  param in name "volume" type class_ref 305798 // Volume
+	multiplicity "1"
+	  param in name "delta_volume" type class_ref 305798 // Volume
+	multiplicity "1"
+	  param in name "state" type class_ref 299014 // OrderState
+	multiplicity "1"
+	  param in name "trade_id" type class_ref 551174 // TradeId
+	multiplicity "1"
+	  param in name "taker_order_id" type class_ref 306822 // OrderId
+	multiplicity "1"
+	  param in name "is_deleted" explicit_type "bool"
+	multiplicity "1"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}std::unique_ptr<${typeprefix}${type}> ${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}, const ${t4} & ${p4}${v4}, const ${t5} & ${p5}${v5}, const ${t6} & ${p6}${v6}, ${t7} ${p7}${v7}, const ${t8} & ${p8}${v8}, const ${t9} & ${p9}${v9}, ${t10} ${p10}${v10}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}std::unique_ptr<${typeprefix}${type}> ${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, const ${t4} & ${p4}, const ${t5} & ${p5}, const ${t6} & ${p6}, ${t7} ${p7}, const ${t8} & ${p8}, const ${t9} & ${p9}, ${t10} ${p10}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
       attribute 465030 "kNaVolume"
 	class_attribute const_attribute public type class_ref 305798 // Volume
 	init_value "std::nan(\"1954\")"
@@ -590,6 +798,25 @@ ${members}};
 	    cpp default "#include in source"
 	    classrelation_ref 636806 // <dependency>
 	  b parent class_ref 583942 // random_generator
+      end
+
+      classrelation 748038 // <dependency>
+	relation 737926 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 748038 // <dependency>
+	  b parent class_ref 507782 // EventImpl
+      end
+
+      operation 893318 "toString"
+	abstract const cpp_virtual public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	
+	
       end
     end
 
@@ -6026,35 +6253,6 @@ ${members}};
 	MysqlColumn
       end
 
-      operation 627718 "EventImpl"
-	public explicit_return_type ""
-	nparams 9
-	  param in name "order_id" type class_ref 306822 // OrderId
-	multiplicity "1"
-	  param in name "timestamp" type class_ref 230278 // Timestamp
-	multiplicity "1"
-	  param in name "local_timestamp" type class_ref 230278 // Timestamp
-	  param in name "event_no" type class_ref 507142 // EventNo
-	multiplicity "1"
-	  param in name "price" type class_ref 305542 // Price
-	multiplicity "1"
-	  param in name "volume" type class_ref 305798 // Volume
-	multiplicity "1"
-	  param in name "delta_volume" type class_ref 305798 // Volume
-	  param in name "state" type class_ref 299014 // OrderState
-	multiplicity "1"
-	  param in name "is_deleted" explicit_type "bool"
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}, const ${t4} & ${p4}${v4}, const ${t5} & ${p5}${v5}, const ${t6} & ${p6}${v6}, ${t7} ${p7}${v7}, ${t8} ${p8}${v8}${)}${volatile}${throw};
-"
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, const ${t4} & ${p4}, const ${t5} & ${p5}, const ${t6} & ${p6}, ${t7} ${p7}, ${t8} ${p8}${)}${volatile}${throw} {
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
       operation 707846 "EventImpl"
 	public explicit_return_type ""
 	nparams 11
@@ -6237,6 +6435,20 @@ ${members}};
 
       operation 865798 "isDeleted"
 	const constvalue cpp_virtual public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 893446 "toString"
+	const cpp_virtual public explicit_return_type "string"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -9700,6 +9912,7 @@ ${namespace_start}
 ${members}
 ${namespace_end}"
       associated_elems
+	class_ref 448518 // Duration
 	class_ref 230278 // Timestamp
 	class_ref 507142 // EventNo
 	class_ref 305798 // Volume
@@ -9712,7 +9925,6 @@ ${namespace_end}"
 	class_ref 230406 // Event
 	class_ref 231302 // Store
 	class_ref 202630 // Reconstructor
-	class_ref 448518 // Duration
       end
     end
 

@@ -2,11 +2,11 @@ format 222
 
 classcanvas 128006 class_ref 472838 // time_order_error
   classdiagramsettings member_max_width 0 end
-  xyz 287 225 2000
+  xyz 343 229 2000
 end
 classcanvas 128134 class_ref 448006 // logic_error
   classdiagramsettings member_max_width 0 end
-  xyz 298 106 2000
+  xyz 345 102 2000
 end
 classcanvas 129030 class_ref 202630 // Reconstructor
   classdiagramsettings member_max_width 0 end
@@ -60,11 +60,23 @@ classcanvas 135686 class_ref 551174 // TradeId
 end
 classcanvas 135942 class_ref 583942 // random_generator
   classdiagramsettings member_max_width 0 end
-  xyz 173 599 3010
+  xyz 167 631 3010
 end
 classcanvas 136198 class_ref 299014 // OrderState
   classdiagramsettings member_max_width 0 end
   xyz 47 408 2020
+end
+classcanvas 136454 class_ref 564358 // cmath
+  classdiagramsettings member_max_width 0 end
+  xyz 332 383 2000
+end
+classcanvas 136838 class_ref 507782 // EventImpl
+  classdiagramsettings member_max_width 0 end
+  xyz 337 457 3010
+end
+classcanvas 137350 class_ref 448518 // Duration
+  classdiagramsettings member_max_width 0 end
+  xyz 577 622 2000
 end
 relationcanvas 128902 relation_ref 486534 // <generalisation>
   from ref 128006 z 2001 to ref 128134
@@ -72,12 +84,28 @@ relationcanvas 128902 relation_ref 486534 // <generalisation>
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 135558 relation_ref 551174 // <realization>
-  from ref 134406 z 3006 label "<Clock->system_clock, Duration->microseconds>" max_width 255 xyz 561 358 3006 stereotype "<<bind>>" xyz 668 372 3006 to ref 135430
+  from ref 134406 z 3006 label "<Clock->system_clock, Duration->Duration>" max_width 255 xyz 576 358 3006 stereotype "<<bind>>" xyz 668 372 3006 to ref 135430
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 136070 relation_ref 626694 // <dependency>
   from ref 133766 z 3011 to ref 135942
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 136710 relation_ref 737798 // <dependency>
+  from ref 134790 z 2016 to ref 136454
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 136966 relation_ref 544262 // <realization>
+  from ref 136838 z 3011 to ref 133766
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 137094 relation_ref 737926 // <dependency>
+  from ref 133766 z 3011 to point 297 726
+  line 137862 z 3011 to ref 136838
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end

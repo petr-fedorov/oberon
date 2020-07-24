@@ -65,8 +65,6 @@ class EventImpl : public Event {
 
 
   public:
-    EventImpl(const OrderId & order_id, const Timestamp & timestamp, const Timestamp & local_timestamp, const EventNo & event_no, const Price & price, const Volume & volume, const Volume & delta_volume, OrderState state, bool is_deleted);
-
     EventImpl(const OrderId & order_id, const Timestamp & timestamp, const Timestamp & local_timestamp, const EventNo & event_no, const Price & price, const Volume & volume, const Volume & delta_volume, OrderState state, const TradeId & trade_id, const OrderId & taker_order_id, bool is_deleted);
 
     virtual const Timestamp timestamp() const;
@@ -90,6 +88,8 @@ class EventImpl : public Event {
     virtual const Timestamp localTimestamp() const;
 
     virtual const bool isDeleted() const;
+
+    virtual string toString() const;
 
 };
 class MessageHandler {

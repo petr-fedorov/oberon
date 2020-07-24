@@ -1,6 +1,6 @@
 format 222
 "R package" // R package
-  revision 42
+  revision 51
   modified_by 6 "petr"
   // class settings
   
@@ -77,6 +77,275 @@ format 222
     
     activitydiagramsettings
      end
+    class 677894 "RDepthImage"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      operation 880134 "RDepthImage"
+	public explicit_return_type ""
+	nparams 5
+	  param in name "min_price" type class_ref 305542 // Price
+	  param in name "max_price" type class_ref 305542 // Price
+	  param in name "tick_size" explicit_type "double"
+	  param in name "start" explicit_type "double"
+	  param in name "end" explicit_type "double"
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, ${t2} ${p2}${v2}, ${t3} ${p3}${v3}, ${t4} ${p4}${v4}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${)}${volatile}${throw}: min_price_ {min_price.alignDown(tick_size)}, max_price_ {max_price.alignUp(tick_size)}, tick_size_ {tick_size}, start_{start}, end_{end} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      class 684550 "Column"
+	visibility package stereotype "template_typedef"
+	nactuals 1
+	actual class class_ref 492934 // vector
+	  rank 0 explicit_value "double"
+	cpp_decl "${comment}${template}using ${name} = ${inherit};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 747654 // <realization>
+	  relation 737542 -_-|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 747654 // <realization>
+	    b parent class_ref 492934 // vector
+	end
+      end
+
+      classrelation 741126 // <realization>
+	relation 731014 -_-|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 741126 // <realization>
+	  b parent class_ref 231302 // Store
+      end
+
+      attribute 561158 "events_"
+	private type class_ref 230406 // Event
+	multiplicity "*"
+	stereotype "map"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<oberon::core::OrderId, std::unique_ptr<${type}>> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      operation 872326 "toList"
+	public return_type class_ref 678022 // List
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      attribute 561542 "tick_size_"
+	private explicit_type "double"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 561926 "min_price_"
+	private type class_ref 305542 // Price
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 562054 "max_price_"
+	private type class_ref 305542 // Price
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 568582 "x_"
+	private explicit_type "double"
+	multiplicity "*"
+	stereotype "vector"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 589062 "x_lab_"
+	private explicit_type "string"
+	multiplicity "*"
+	stereotype "vector"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 568710 "y_"
+	private explicit_type "double"
+	multiplicity "*"
+	stereotype "vector"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 568838 "z_"
+	private type class_ref 684550 // Column
+	multiplicity "*"
+	stereotype "vector"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<std::shared_ptr<${type}>> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      operation 878854 "transmit"
+	cpp_virtual public explicit_return_type "void"
+	nparams 1
+	  param in name "event" type class_ref 230406 // Event
+	multiplicity "0..1"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(} std::unique_ptr<${t0}> && ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(} std::unique_ptr<${t0}> && ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 878982 "run"
+	cpp_inline public return_type class_ref 678022 // List
+	nparams 1
+	  param in name "events" type class_ref 473094 // DataFrame
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	nformals 1
+	formal name "Period" type "class" explicit_default_value ""
+	  explicit_extends ""
+	
+	
+	
+	
+      end
+
+      operation 886790 "column"
+	public return_type class_ref 684550 // Column
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}std::shared_ptr<${typeprefix}${type}> ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}std::shared_ptr<${typeprefix}${type}> ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 754566 // <dependency>
+	relation 744454 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 754566 // <dependency>
+	  b parent class_ref 507910 // string_generator
+      end
+
+      attribute 595590 "start_"
+	private explicit_type "double"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 595718 "end_"
+	private explicit_type "double"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+    end
+
+    classdiagram 373382 "Depth"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
     classdiagram 268294 "R classes"
       classdiagramsettings member_max_width 0 end
       size A4
@@ -168,7 +437,7 @@ ${inlines}
       end
 
       attribute 407302 "price_"
-	private type class_ref 305542 // Price
+	private explicit_type "double"
 	multiplicity "*"
 	stereotype "vector"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
@@ -274,7 +543,7 @@ ${inlines}
       end
 
       operation 752390 "toDataframe"
-	public return_type class_ref 473094 // DataFrame
+	public return_type class_ref 678022 // List
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -285,6 +554,38 @@ ${inlines}
 	
 	
 	
+      end
+
+      attribute 582534 "next_timestamp_"
+	private explicit_type "double"
+	multiplicity "0..1"
+	stereotype "vector"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      classrelation 761606 // <dependency>
+	relation 751494 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 761606 // <dependency>
+	  b parent class_ref 508166 // uuid_io.hpp
+      end
+
+      classrelation 761734 // previous_ (<directional composition>)
+	relation 751622 *-->
+	  stereotype "map"
+	  a role_name "previous_" multiplicity "*" private
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}, std::size_t> ${name}${value};
+"
+	    classrelation_ref 761734 // previous_ (<directional composition>)
+	  b parent class_ref 306822 // OrderId
       end
     end
 
@@ -302,7 +603,7 @@ ${inlines}
       mysql_decl ""
       
       operation 561798 "run"
-	public explicit_return_type "DataFrame"
+	public return_type class_ref 678022 // List
 	nparams 2
 	  param in name "data" type class_ref 473094 // DataFrame
 	multiplicity "1"
@@ -374,7 +675,7 @@ ${inlines}
       end
 
       operation 752518 "run"
-	public return_type class_ref 473094 // DataFrame
+	public return_type class_ref 678022 // List
 	nparams 3
 	  param in name "quotes" type class_ref 473094 // DataFrame
 	  param in name "trades" type class_ref 473094 // DataFrame
@@ -422,7 +723,7 @@ ${inlines}
       end
 
       operation 786054 "run"
-	public return_type class_ref 473094 // DataFrame
+	public return_type class_ref 678022 // List
 	nparams 3
 	  param in name "quotes" type class_ref 473094 // DataFrame
 	  param in name "trades" type class_ref 473094 // DataFrame
@@ -450,12 +751,15 @@ ${inlines}
       cpp_src "#include \"rcoinbase.h\"
 #include \"rbitstamp.h\"
 #include \"rbitfinex.h\"
+#include \"rcommon.h\"
 #include <Rcpp.h>
 #include <iostream>
+#include <chrono>
+#include <ratio>
 
 using namespace Rcpp;
 // [[Rcpp::export]]
-DataFrame reconstructCoinbase(DataFrame source, LogicalVector extract_only) {
+List reconstructCoinbase(DataFrame source, LogicalVector extract_only) {
 
   // std::streambuf *coutbuf = std::cout.rdbuf();
   std::cout.rdbuf(Rcpp::Rcout.rdbuf());
@@ -464,7 +768,7 @@ DataFrame reconstructCoinbase(DataFrame source, LogicalVector extract_only) {
 }
 
 // [[Rcpp::export]]
-DataFrame reconstructBitstamp(DataFrame quotes, DataFrame trades, LogicalVector extract_only) {
+List reconstructBitstamp(DataFrame quotes, DataFrame trades, LogicalVector extract_only) {
 
   // std::streambuf *coutbuf = std::cout.rdbuf();
   std::cout.rdbuf(Rcpp::Rcout.rdbuf());
@@ -473,12 +777,21 @@ DataFrame reconstructBitstamp(DataFrame quotes, DataFrame trades, LogicalVector 
 }
 
 // [[Rcpp::export]]
-DataFrame reconstructBitfinex(DataFrame quotes, DataFrame trades, LogicalVector extract_only) {
+List reconstructBitfinex(DataFrame quotes, DataFrame trades, LogicalVector extract_only) {
 
   // std::streambuf *coutbuf = std::cout.rdbuf();
   std::cout.rdbuf(Rcpp::Rcout.rdbuf());
   oberon::R::RBitfinex r;
   return r.run(quotes, trades, extract_only[0]);
+}
+
+// [[Rcpp::export]]
+List events2image(DataFrame events, NumericVector min_price, NumericVector max_price, NumericVector tick_size, NumericVector start, NumericVector end, CharacterVector sampling_period) {
+
+  // std::streambuf *coutbuf = std::cout.rdbuf();
+  std::cout.rdbuf(Rcpp::Rcout.rdbuf());
+  oberon::R::RDepthImage r {min_price[0], max_price[0], tick_size[0], start[0], end[0]};
+  return r.run<std::deci>(events);
 }
 "
     end
@@ -503,7 +816,6 @@ ${namespace_start}
 ${members}
 ${namespace_end}"
       associated_elems
-	class_ref 590470 // RStore
 	class_ref 230022 // RCoinbase
       end
     end
@@ -553,6 +865,33 @@ ${members}
 ${namespace_end}"
       associated_elems
 	class_ref 625670 // RBitfinex
+      end
+    end
+
+    artifact 239878 "rcommon"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+#include \"date.h\"
+#include <chrono>
+#include <boost/uuid/string_generator.hpp>
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 677894 // RDepthImage
+	class_ref 590470 // RStore
       end
     end
   end

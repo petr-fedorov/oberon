@@ -2,7 +2,10 @@
 #define OBERON_R_RBITSTAMP_H
 
 
-#include "rcoinbase.h"
+#include "rcommon.h"
+#include <Rcpp.h>
+using Rcpp::List;
+
 #include <Rcpp.h>
 using Rcpp::DataFrame;
 
@@ -15,7 +18,7 @@ namespace R {
 
 class RBitstamp : public RStore {
   public:
-    Rcpp::DataFrame run(const Rcpp::DataFrame & quotes, const Rcpp::DataFrame & trades, bool extract_only = false);
+    Rcpp::List run(const Rcpp::DataFrame & quotes, const Rcpp::DataFrame & trades, bool extract_only = false);
 
 };
 

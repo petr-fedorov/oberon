@@ -7,7 +7,7 @@ namespace oberon {
 
 namespace R {
 
-Rcpp::DataFrame RBitfinex::run(const Rcpp::DataFrame & quotes, const Rcpp::DataFrame & trades, bool extract_only) {
+Rcpp::List RBitfinex::run(const Rcpp::DataFrame & quotes, const Rcpp::DataFrame & trades, bool extract_only) {
   using oberon::core::Duration;
   using oberon::core::Reconstructor;
   using oberon::core::Timestamp;

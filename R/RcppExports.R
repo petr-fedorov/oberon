@@ -13,3 +13,7 @@ reconstructBitfinex <- function(quotes, trades, extract_only) {
     .Call(`_oberon_reconstructBitfinex`, quotes, trades, extract_only)
 }
 
+events2image <- function(events, min_price, max_price, tick_size, start, end, sampling_period) {
+    .Call(`_oberon_events2image`, events, min_price, max_price, tick_size, start, end, sampling_period)
+}
+

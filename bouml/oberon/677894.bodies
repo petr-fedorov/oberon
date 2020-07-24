@@ -1,0 +1,117 @@
+class RDepthImage
+!!!880134.cpp!!!	RDepthImage(in min_price : Price, in max_price : Price, in tick_size : double, in start : double, in end : double)
+for (double price = min_price_; price <= max_price_+tick_size_; price += tick_size_)
+  y_.push_back(price);
+!!!872326.cpp!!!	toList() : List
+// std::cout << "z.size() = " << z_.size() << " y_.size()=" << y_.size() << std::endl;
+// vector<double> z(z_.size() * y_.size());
+Rcpp::NumericVector z(z_.size() * y_.size());
+
+auto it = z.begin();
+for (auto i = 0; i < z_.size(); ++i)
+  it = copy(z_[i]->begin(), z_[i]->end(), it);
+z.attr("dim") = Rcpp::Dimension(y_.size(), z_.size());
+return Rcpp::List::create(Rcpp::Named("x") = x_,Rcpp::Named("x_lab") = x_lab_, Rcpp::Named("y") = y_,
+                          Rcpp::Named("z") = Rcpp::transpose(Rcpp::as<Rcpp::NumericMatrix>(z)));
+!!!878854.cpp!!!	transmit(in event : Event [0..1]) : void
+// std::cout << event->toString();
+if (event->state()== oberon::core::OrderState::kActive) {
+  // std::cout << " - saved\n";
+  events_[event->orderId()] = std::move(event);
+}
+else {
+  // std::cout << " - erased\n";
+  events_.erase(event->orderId());
+}
+!!!878982.cpp!!!	run(in events : DataFrame) : List
+using namespace std;
+using namespace std::chrono;
+using namespace date;
+using Duration = duration<int64_t, Period>;
+using Timestamp = time_point<system_clock, Duration>;
+Rcpp::CharacterVector maker_order_id = events["maker_order_id"];
+Rcpp::IntegerVector event_no = events["event_no"];
+Rcpp::NumericVector timestamp = events["timestamp"];
+Rcpp::IntegerVector state = events["state"];
+Rcpp::NumericVector price = events["price"];
+Rcpp::NumericVector volume = events["volume"];
+Rcpp::IntegerVector trade_id = events["state"];
+Rcpp::NumericVector delta_volume = events["delta_volume"];
+Rcpp::CharacterVector taker_order_id = events["taker_order_id"];
+Rcpp::NumericVector local_timestamp = events["local_timestamp"];
+Rcpp::LogicalVector is_deleted = events["is_deleted"];
+
+Timestamp current_timestamp =
+    Timestamp(ceil<Duration>(duration<double>{timestamp[0]}));
+Timestamp start =
+    Timestamp(ceil<Duration>(duration<double>{start_}));
+Timestamp end =
+    Timestamp(ceil<Duration>(duration<double>{end_}));
+// std::cout << "Initial " << format("%FT%TZ\n", current_timestamp);
+for (size_t i = 0; i < maker_order_id.size(); ++i) {
+  Timestamp next_timestamp =
+      Timestamp(ceil<Duration>(duration<double>{timestamp[i]}));
+  if (next_timestamp > current_timestamp) {
+    // std::cout << i << "Next " << format("%FT%TZ", next_timestamp) << " current " << format("%FT%TZ\n", current_timestamp);
+    auto col = column();
+    while (next_timestamp > current_timestamp) {
+      if (current_timestamp >= start && current_timestamp <= end) {
+        z_.push_back(col);
+        x_.push_back(duration_cast<duration<double>>(
+                         current_timestamp.time_since_epoch())
+                         .count());
+      }
+      current_timestamp += Duration {1};
+      // std::cout << format("%FT%TZ\n", current_timestamp);
+    }
+  }
+  boost::uuids::string_generator gen;
+  boost::uuids::uuid taker;
+  try {
+    taker = gen(std::string{taker_order_id[i]});
+  } catch (...) {
+    taker = oberon::core::Event::kNaOrderId;
+  }
+  // moid is supposed to be used in gdb's breakpoint condition
+  // std::string moid{maker_order_id[i]};
+  // std::cout << "i=" << i << " " << moid << "\n";
+  transmit(oberon::core::Event::create(
+      gen(maker_order_id[i]),
+      oberon::core::Timestamp(round<oberon::core::Timestamp::duration>(duration<double>(timestamp[i]))),
+      oberon::core::Timestamp(round<oberon::core::Timestamp::duration>(duration<double>(local_timestamp[i]))),
+      static_cast<oberon::core::EventNo>(event_no[i]),static_cast<oberon::core::Price>(price[i]),
+      static_cast<oberon::core::Volume>(volume[i]), static_cast<oberon::core::Volume>(delta_volume[i]),
+      static_cast<oberon::core::OrderState>(state[i]),
+      static_cast<oberon::core::TradeId>(Rcpp::IntegerVector::is_na(trade_id[i])
+                               ? oberon::core::Event::kNaTradeId
+                               : trade_id[i]),
+      taker, false));
+}
+z_.push_back(column());
+x_.push_back(
+    duration_cast<duration<double>>(current_timestamp.time_since_epoch())
+        .count());
+x_.push_back(duration_cast<duration<double>>(
+                 (current_timestamp + Duration{1}).time_since_epoch())
+                 .count());
+return toList();
+!!!886790.cpp!!!	column() : RDepthImage::Column
+auto res = std::make_shared<Column>(y_.size());
+for (auto it = events_.begin(); it != events_.end(); ++it) {
+  long loc;
+  if (it->second->volume() > 0)
+    loc = std::lround((it->second->price().alignDown(tick_size_) - min_price_) /
+                      tick_size_);
+  else
+    loc = std::lround((it->second->price().alignUp(tick_size_) - min_price_) /
+                      tick_size_);
+
+  if (loc >= 0 && loc < y_.size())
+    (*res)[loc] += it->second->volume();
+}
+/*res->at(0) = 2;
+res->at(y_.size()/4) = 1;
+res->at(y_.size()*3/4) = -1;
+res->at(y_.size()-1) = -2;
+*/
+return res;

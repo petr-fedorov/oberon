@@ -7,10 +7,11 @@ namespace oberon {
 
 namespace R {
 
-Rcpp::DataFrame RBitstamp::run(const Rcpp::DataFrame & quotes, const Rcpp::DataFrame & trades, bool extract_only) {
+Rcpp::List RBitstamp::run(const Rcpp::DataFrame & quotes, const Rcpp::DataFrame & trades, bool extract_only) {
   using oberon::core::Duration;
   using oberon::core::Reconstructor;
-  using oberon::core::Timestamp;
+  using std::chrono::duration;
+  using Timestamp=std::chrono::time_point<std::chrono::system_clock, duration<double>>;
   using namespace date;
   Rcpp::NumericVector order_id = quotes["order_id"];
   Rcpp::NumericVector amount = quotes["amount"];
@@ -31,7 +32,7 @@ Rcpp::DataFrame RBitstamp::run(const Rcpp::DataFrame & quotes, const Rcpp::DataF
   
   auto bitstamp = Reconstructor::create(oberon::core::kBitstamp, "ETHUSD", this,
                                         2.0, extract_only);
-  oberon::core::Timestamp current_timestamp = Timestamp();
+  Timestamp current_timestamp;
   size_t q{0}, t{0};
   try {
     while (q < quote_local.size() || t < trade_local.size()) {
@@ -41,21 +42,21 @@ Rcpp::DataFrame RBitstamp::run(const Rcpp::DataFrame & quotes, const Rcpp::DataF
       if (q < quote_timestamp.size() &&
           (t >= trade_local.size() || quote_timestamp[q] <= trade_timestamp[t])) {
         Timestamp next_timestamp =
-            Timestamp(Duration(lround(quote_timestamp[q] * 1000000)));
+            Timestamp(duration<double>(quote_timestamp[q]));
         if (current_timestamp != next_timestamp) {
           using boost::property_tree::ptree;
           ptree tree;
           current_timestamp = next_timestamp;
           tree.put("event", "elapsed");
-          tree.put("timestamp", format("%FT%TZ\n", current_timestamp));
+          tree.put("timestamp", format("%FT%TZ", current_timestamp));
           bitstamp->process(tree);
         }
         using boost::property_tree::ptree;
         ptree tree;
-        tree.put("microtimestamp", format("%FT%TZ\n", current_timestamp));
+        tree.put("microtimestamp", format("%FT%TZ", current_timestamp));
         tree.put("local_timestamp",
-                 format("%FT%TZ\n",
-                        Timestamp(Duration(lround(quote_local[q] * 1000000)))));
+                 format("%FT%TZ",
+                        Timestamp(duration<double>(quote_local[q]))));
         tree.put("event", event[q]);
         tree.put("id", order_id[q]);
         tree.put("price", price[q]);
@@ -67,21 +68,21 @@ Rcpp::DataFrame RBitstamp::run(const Rcpp::DataFrame & quotes, const Rcpp::DataF
                  (q >= quote_timestamp.size() ||
                   trade_timestamp[t] < quote_timestamp[q])) {
         Timestamp next_timestamp =
-            Timestamp(Duration(lround(trade_timestamp[t] * 1000000)));
+            Timestamp(duration<double>(trade_timestamp[t]));
         if (current_timestamp != next_timestamp) {
           using boost::property_tree::ptree;
           ptree tree;
           current_timestamp = next_timestamp;
           tree.put("event", "elapsed");
-          tree.put("timestamp", format("%FT%TZ\n", current_timestamp));
+          tree.put("timestamp", format("%FT%TZ", current_timestamp));
           bitstamp->process(tree);
         }
         using boost::property_tree::ptree;
         ptree tree;
-        tree.put("trade_timestamp", format("%FT%TZ\n", current_timestamp));
+        tree.put("trade_timestamp", format("%FT%TZ", current_timestamp));
         tree.put("local_timestamp",
-                 format("%FT%TZ\n",
-                        Timestamp(Duration(lround(trade_local[t] * 1000000)))));
+                 format("%FT%TZ",
+                        Timestamp(duration<double>(trade_local[t]))));
         tree.put("event", "match");
         tree.put("price", trade_price[t]);
         tree.put("amount", trade_amount[t]);
@@ -108,7 +109,7 @@ Rcpp::DataFrame RBitstamp::run(const Rcpp::DataFrame & quotes, const Rcpp::DataF
   ptree tree;
   tree.put("event", "elapsed");
   tree.put("timestamp",
-           format("%FT%TZ\n", current_timestamp + std::chrono::seconds{2}));
+           format("%FT%TZ", current_timestamp + std::chrono::seconds{2}));
   bitstamp->process(tree);
   return toDataframe();
 }
