@@ -42,19 +42,19 @@ load("oberon.Rdata")
 ## Continuous-time double auction and LOB
 
 
-Today, most liquid markets – including stocks, futures, and foreign exchange – are electronic, and adopt a continuous-time double auction mechanism using a limit order book (LOB), in which a transaction occurs whenever a buyer and a seller agree on a price[@bouchaud_trades_2018]. Cryptocurrenices are not exception. 
+Today, most liquid markets – including stocks, futures, and foreign exchange – are electronic, and adopt a continuous-time double auction mechanism using a limit order book (LOB), in which a transaction occurs whenever a buyer and a seller agree on a price[@bouchaud_trades_2018]. Cryptocurrency exchanges are not exception. 
 
 The mechanics of the continuous double auction or LOB trading may be briefly described as follows: 
 
 1. Traders submit *limit orders* and *market* orders 
-2. *Market* orders are [matched](https://www.investopedia.com/terms/m/matchingorders.asp) with *limit orders*  and executed to produce *trades*.
-3. Unmatched amounts of *limit orders* reside in LOB's queues until matched with another *market* order or cancelled by the participant who submitted it.
+2. *Market* orders are [matched](https://www.investopedia.com/terms/m/matchingorders.asp) with *limit orders*  and (often) executed to produce *trades*.
+3. Unmatched amounts of *limit orders* reside in LOB's queues until matched with another *market* order or cancelled by the trader who submitted it.
 
 Market orders are also often called *takers* (of liquidity) while limit orders sitting in queues are called *makers* (of liquidity).
 
-Note that not all matched orders are necessarily executed to produce trades. Due to so called self-match or self-trade prevention rules the matched orders may be cancelled instead. See for example [CME Globex Self-Match Prevention](https://www.cmegroup.com/globex/trade-on-cme-globex/self-match-faq.html) or [Coinbase Markets Trading Rules 2.4 Self-trade prevention](https://www.coinbase.com/legal/trading_rules).
+Note that not all matched orders are necessarily executed to produce trades. If a market order and a matched limit order are placed by the same trader, an execution would lead to a self-trade.  So called self-match or self-trade prevention rules stipulate that in this situation some or both of the matched orders have to  be cancelled instead of being executed. See for example [CME Globex Self-Match Prevention](https://www.cmegroup.com/globex/trade-on-cme-globex/self-match-faq.html) or [Coinbase Markets Trading Rules 2.4 Self-trade prevention](https://www.coinbase.com/legal/trading_rules).
 
-Thus in order to reconstruct the dynamics of the trading process and order book one needs  information about submitted limit and market orders as well as about the trades produced. As we will see below this information is not always provided by exchanges fully.
+Thus even if one can figure out from an exchange provided data that a market order has been placed, he can deduce neither whether the trade(s) is going to be produced from the market order nor the amount of the trade(s).  In order to reconstruct the dynamics of the countinous-time double auction completely one needs information about all submitted limit and market orders as well as about all trades produced. As we will see below not all exchanges provide this information. 
 
 
 ## Available data sets
@@ -628,35 +628,24 @@ as_hux_event_table(bitstamp.extracted,'(#tab:stamp-quote-frag) A fragment of ETH
 
 ### Bitfinex 
 
+
+Table \@ref(tab:finex-extracted) shows information which can be extracted from data provided by Bitfinex.
+
+The exchange does not provide any information about *market* orders.
+
+Trades are reported by Bitfinex without specifying identification numbers of orders involved (see, for example, line 17). Since Bitfinex trading rules allows a trader to place [Hidden orders](https://support.bitfinex.com/hc/en-us/articles/115003451049-Bitfinex-Order-Types#h_01EDSHX0VBHSX36HFD3A1N3R2E), one may expect to see trades out of the blue since, as it is already said, market orders are not reported and the matched limit order could be a hidden one.
+
+Every ~800 milliseconds Bitfinex sends an update of "200 best LOB orders" set.
+
+The update starts from the list of order identification numbers which have to be removed from "200 best LOB orders" set. The reason of removal is not specified by Bitfinex: the removed order may be cancelled, filled or it may just fall beyound 200 best (see, for example, lines 18-24). Since Bitfinex allows to change the price of a placed order even an order with a last known price that is far from spread may be suddenly filled if the trader who placed the order decides to change the order's price. 
+
+Then update ends by the list of orders to be added to "200 best LOB orders" set. Price and remaining size are provided for each order as well as an order identification number (see lines 25-34). 
+
 ```{r Sample Bitfinex Extracted Events, eval=TRUE, echo=FALSE}
-as_hux_event_table(bitfinex.extracted,'(#tab:stamp-quote-frag) A fragment of ETHUSD stream extracted from data generated by Bitfinex during 1 second. Similar to Bitstamp, Bitfinex sends duplicate events and the correct class of an event can not always be determined. Furthermore, many attributes are missing and need to be deduced by a cleansing process.' )
+as_hux_event_table(bitfinex.extracted,'(#tab:finex-extracted) A fragment of order table which can be extracted from Bitfinex\'s Raw Book and Trades websockets data provided for ETHUSD pair during 1 second. Rows are shown in the order they were received from Bitfinex.' )
 ```
 
 
-as_hux(bitfinex.extracted[,
-                    .(`#`=.I,
-                    `\\(i\\)(maker)`=substr(maker_order_id,25, 36),
-                    `\\(n\\)`=event_no,
-                    `\\(t^i_n\\)`=format(timestamp,format="%H:%M:%OS3"),
-                    `\\(s^i_n\\)`=state,
-                    `\\(p^i_n\\)`=price,
-                    `\\(v^i_n\\)`=volume,
-                    `\\(f^i_n\\)`=trade_id,
-                    `\\(\\Delta v^i_n \\)`=delta_volume,
-                    `taker`=substr(taker_order_id, 25,36)
-                    )
-                    ], 
-       scientific=F) %>%
-  add_colnames() %>%
-  set_align(1, c(2,4,5,10), 'center') %>%
-  set_align(everywhere, c(1,3, 6:9), 'right') %>%
-  set_number_format(row=everywhere, col=6:7,value="%.2f") %>%
-  set_number_format(row=everywhere, col=9,value="%.3f") %>%
-  set_left_border(everywhere,9, 1) %>%
-  set_right_border(everywhere,1, 1) %>%
-  set_na_string(everywhere, everywhere, "NA") %>%
-  set_caption() %>%
-  set_caption_pos("topleft")
   
 ## Fragments of cleansed data
 

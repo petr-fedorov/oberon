@@ -24,7 +24,7 @@
 <meta name="author" content="Petr Fedorov" />
 
 
-<meta name="date" content="2020-07-24" />
+<meta name="date" content="2020-07-25" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -114,22 +114,22 @@
 <h1 class="title">Order book events reconstruction from empirical data</h1>
 <h2 class="subtitle"><em>A preliminary draft</em></h2>
 <p class="author"><em>Petr Fedorov</em></p>
-<p class="date"><em>2020-07-24</em></p>
+<p class="date"><em>2020-07-25</em></p>
 </div>
 <div id="index" class="section level1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
 <div id="continuous-time-double-auction-and-lob" class="section level2">
 <h2><span class="header-section-number">1.1</span> Continuous-time double auction and LOB</h2>
-<p>Today, most liquid markets – including stocks, futures, and foreign exchange – are electronic, and adopt a continuous-time double auction mechanism using a limit order book (LOB), in which a transaction occurs whenever a buyer and a seller agree on a price<span class="citation">(Bouchaud and Bonart 2018)</span>. Cryptocurrenices are not exception.</p>
+<p>Today, most liquid markets – including stocks, futures, and foreign exchange – are electronic, and adopt a continuous-time double auction mechanism using a limit order book (LOB), in which a transaction occurs whenever a buyer and a seller agree on a price<span class="citation">(Bouchaud and Bonart 2018)</span>. Cryptocurrency exchanges are not exception.</p>
 <p>The mechanics of the continuous double auction or LOB trading may be briefly described as follows:</p>
 <ol style="list-style-type: decimal">
 <li>Traders submit <em>limit orders</em> and <em>market</em> orders</li>
-<li><em>Market</em> orders are <a href="https://www.investopedia.com/terms/m/matchingorders.asp">matched</a> with <em>limit orders</em> and executed to produce <em>trades</em>.</li>
-<li>Unmatched amounts of <em>limit orders</em> reside in LOB’s queues until matched with another <em>market</em> order or cancelled by the participant who submitted it.</li>
+<li><em>Market</em> orders are <a href="https://www.investopedia.com/terms/m/matchingorders.asp">matched</a> with <em>limit orders</em> and (often) executed to produce <em>trades</em>.</li>
+<li>Unmatched amounts of <em>limit orders</em> reside in LOB’s queues until matched with another <em>market</em> order or cancelled by the trader who submitted it.</li>
 </ol>
 <p>Market orders are also often called <em>takers</em> (of liquidity) while limit orders sitting in queues are called <em>makers</em> (of liquidity).</p>
-<p>Note that not all matched orders are necessarily executed to produce trades. Due to so called self-match or self-trade prevention rules the matched orders may be cancelled instead. See for example <a href="https://www.cmegroup.com/globex/trade-on-cme-globex/self-match-faq.html">CME Globex Self-Match Prevention</a> or <a href="https://www.coinbase.com/legal/trading_rules">Coinbase Markets Trading Rules 2.4 Self-trade prevention</a>.</p>
-<p>Thus in order to reconstruct the dynamics of the trading process and order book one needs information about submitted limit and market orders as well as about the trades produced. As we will see below this information is not always provided by exchanges fully.</p>
+<p>Note that not all matched orders are necessarily executed to produce trades. If a market order and a matched limit order are placed by the same trader, an execution would lead to a self-trade. So called self-match or self-trade prevention rules stipulate that in this situation some or both of the matched orders have to be cancelled instead of being executed. See for example <a href="https://www.cmegroup.com/globex/trade-on-cme-globex/self-match-faq.html">CME Globex Self-Match Prevention</a> or <a href="https://www.coinbase.com/legal/trading_rules">Coinbase Markets Trading Rules 2.4 Self-trade prevention</a>.</p>
+<p>Thus even if one can figure out from an exchange provided data that a market order has been placed, he can deduce neither whether the trade(s) is going to be produced from the market order nor the amount of the trade(s). In order to reconstruct the dynamics of the countinous-time double auction completely one needs information about all submitted limit and market orders as well as about all trades produced. As we will see below not all exchanges provide this information.</p>
 </div>
 <div id="available-data-sets" class="section level2">
 <h2><span class="header-section-number">1.2</span> Available data sets</h2>
