@@ -11,7 +11,7 @@ auto it = z.begin();
 for (auto i = 0; i < z_.size(); ++i)
   it = copy(z_[i]->begin(), z_[i]->end(), it);
 z.attr("dim") = Rcpp::Dimension(y_.size(), z_.size());
-return Rcpp::List::create(Rcpp::Named("x") = x_,Rcpp::Named("x_lab") = x_lab_, Rcpp::Named("y") = y_,
+return Rcpp::List::create(Rcpp::Named("x") = x_,Rcpp::Named("y") = y_,
                           Rcpp::Named("z") = Rcpp::transpose(Rcpp::as<Rcpp::NumericMatrix>(z)));
 !!!878854.cpp!!!	transmit(in event : Event [0..1]) : void
 // std::cout << event->toString();

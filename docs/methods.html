@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>2 Reconstruction algorithm | Order book events reconstruction from empirical data</title>
-  <meta name="description" content="2 Reconstruction algorithm | Order book events reconstruction from empirical data" />
+  <title>2 Methods | Order book events reconstruction from empirical data</title>
+  <meta name="description" content="2 Methods | Order book events reconstruction from empirical data" />
   <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="2 Reconstruction algorithm | Order book events reconstruction from empirical data" />
+  <meta property="og:title" content="2 Methods | Order book events reconstruction from empirical data" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="2 Reconstruction algorithm | Order book events reconstruction from empirical data" />
+  <meta name="twitter:title" content="2 Methods | Order book events reconstruction from empirical data" />
   
   
   
@@ -24,7 +24,7 @@
 <meta name="author" content="Petr Fedorov" />
 
 
-<meta name="date" content="2020-07-25" />
+<meta name="date" content="2020-07-27" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -69,17 +69,17 @@
 <li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#continuous-time-double-auction-and-lob"><i class="fa fa-check"></i><b>1.1</b> Continuous-time double auction and LOB</a></li>
 <li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#available-data-sets"><i class="fa fa-check"></i><b>1.2</b> Available data sets</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html"><i class="fa fa-check"></i><b>2</b> Reconstruction algorithm</a><ul>
-<li class="chapter" data-level="2.1" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#overview"><i class="fa fa-check"></i><b>2.1</b> Overview</a></li>
-<li class="chapter" data-level="2.2" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#basic-tools"><i class="fa fa-check"></i><b>2.2</b> Basic Tools</a></li>
-<li class="chapter" data-level="2.3" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#order-and-trade"><i class="fa fa-check"></i><b>2.3</b> Order and Trade</a></li>
-<li class="chapter" data-level="2.4" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#limit-order-book-lob"><i class="fa fa-check"></i><b>2.4</b> Limit Order Book (LOB)</a></li>
-<li class="chapter" data-level="2.5" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#extract"><i class="fa fa-check"></i><b>2.5</b> Extract</a></li>
-<li class="chapter" data-level="2.6" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#cleanse"><i class="fa fa-check"></i><b>2.6</b> Cleanse</a><ul>
-<li class="chapter" data-level="2.6.1" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#deduplicate"><i class="fa fa-check"></i><b>2.6.1</b> Deduplicate</a></li>
-<li class="chapter" data-level="2.6.2" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#classify"><i class="fa fa-check"></i><b>2.6.2</b> Classify</a></li>
+<li class="chapter" data-level="2" data-path="methods.html"><a href="methods.html"><i class="fa fa-check"></i><b>2</b> Methods</a><ul>
+<li class="chapter" data-level="2.1" data-path="methods.html"><a href="methods.html#overview"><i class="fa fa-check"></i><b>2.1</b> Overview</a></li>
+<li class="chapter" data-level="2.2" data-path="methods.html"><a href="methods.html#mathematical-formulation"><i class="fa fa-check"></i><b>2.2</b> Mathematical formulation</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="methods.html"><a href="methods.html#basic-tools"><i class="fa fa-check"></i><b>2.2.1</b> Basic Tools</a></li>
+<li class="chapter" data-level="2.2.2" data-path="methods.html"><a href="methods.html#order-and-trade"><i class="fa fa-check"></i><b>2.2.2</b> Order and Trade</a></li>
+<li class="chapter" data-level="2.2.3" data-path="methods.html"><a href="methods.html#limit-order-book-lob"><i class="fa fa-check"></i><b>2.2.3</b> Limit Order Book (LOB)</a></li>
 </ul></li>
-<li class="chapter" data-level="2.7" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#transmit"><i class="fa fa-check"></i><b>2.7</b> Transmit</a></li>
+<li class="chapter" data-level="2.3" data-path="methods.html"><a href="methods.html#reconstruction-process"><i class="fa fa-check"></i><b>2.3</b> Reconstruction process</a><ul>
+<li class="chapter" data-level="2.3.1" data-path="methods.html"><a href="methods.html#extract"><i class="fa fa-check"></i><b>2.3.1</b> Extract</a></li>
+<li class="chapter" data-level="2.3.2" data-path="methods.html"><a href="methods.html#cleanse"><i class="fa fa-check"></i><b>2.3.2</b> Cleanse</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>3</b> Results</a><ul>
 <li class="chapter" data-level="3.1" data-path="results.html"><a href="results.html#fragments-of-extracted-events"><i class="fa fa-check"></i><b>3.1</b> Fragments of extracted events</a><ul>
@@ -110,45 +110,23 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="reconstruction-algorithm" class="section level1">
-<h1><span class="header-section-number">2</span> Reconstruction algorithm</h1>
+<div id="methods" class="section level1">
+<h1><span class="header-section-number">2</span> Methods</h1>
 <div id="overview" class="section level2">
 <h2><span class="header-section-number">2.1</span> Overview</h2>
-<p>Figure <a href="reconstruction-algorithm.html#fig:standalone-application">2.1</a> shows UML2 Activity Diagram <span class="citation">(Cook et al. 2017)</span> of a standalone application that uses Order Book Reconstruction algorithm.</p>
-<div class="figure" style="text-align: center"><span id="fig:standalone-application"></span>
-<img src="S.1%20Standalone%20application.png" alt="UML2 Activity Diagram  of a standalone application using Reconstruction algorithm"  />
+<p>Figure <a href="methods.html#fig:oberon-package-overview">2.1</a> shows UML2 Activity Diagram <span class="citation">(Cook et al. 2017)</span> of two functions implemented in R package <code>oberon</code> which together realize the order book events reconstruction process:</p>
+<ul>
+<li><code>oberon::obtain()</code> - connects to the specified exchange, obtains available information for the specified pair and saves it as a set of JSON lines with an exchange-specific names into Messages file,</li>
+<li><code>oberon::reconstruct()</code> - takes Messages file, produced by <code>oberon::obtain()</code>, reconstructs Order Table as defined by <a href="methods.html#def:order-table">2.12</a>, i.e. produces a set of an exchange-independent Events as defined by <a href="methods.html#def:order-event">2.11</a>, and saves the set into Events file in CSV format.</li>
+</ul>
+<div class="figure" style="text-align: center"><span id="fig:oberon-package-overview"></span>
+<img src="Oberon%20package%20overview.png" alt="UML2 Activity Diagram  of a standalone application using Reconstruction algorithm"  />
 <p class="caption">
 Figure 2.1: UML2 Activity Diagram of a standalone application using Reconstruction algorithm
 </p>
 </div>
-<p>The application starts from <code>S.7 Initialize</code> activity. The activity connects to a websocket feed provided by the exchange specified by <code>exchange_name</code> parameter and subscribes for channels sending messages about the pair specified by <code>pair_name</code> parameter. Then <code>S.7 Initialize</code> creates a store (for example, a file) where the reconstructed events is to be persisted, creates an instance of <code>Reconstructor</code> object and passes the store to the instance for the future use.</p>
-<p>Afterwards the application launches <code>S.5 Receive messages</code> and <code>R.1 Reconstruct Order Book</code>. These activities run concurrently. <code>S.5 Receive messages</code> continuously receives messages from the exchange (note <code>{stream}</code> on the figure <a href="reconstruction-algorithm.html#fig:reconstruction-activity">2.2</a>) and stores them into <code>buffer</code>. <code>R.1 Reconstruct Order Book</code> takes messages from the <code>buffer</code> in FIFO order and processes them as shown on figure <a href="reconstruction-algorithm.html#fig:reconstruction-activity">2.2</a></p>
-<div class="figure" style="text-align: center"><span id="fig:reconstruction-activity"></span>
-<img src="R.1%20Reconstruct%20Order%20Book.png" alt="UML2 Activity Diagram  of Reconstruction algorithm"  />
-<p class="caption">
-Figure 2.2: UML2 Activity Diagram of Reconstruction algorithm
-</p>
-</div>
-<p>The activity <code>R.2 Extract</code> takes a <a href="https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html">Boost.PropertyTree</a> container with an exchange-specific data and produces one or more internal exchange-independent messages. The produced messages belong to the classes shown on figure <a href="reconstruction-algorithm.html#fig:message-hierarchy">2.3</a>.</p>
-<div class="figure" style="text-align: center"><span id="fig:message-hierarchy"></span>
-<img src="Message%20Hierarchy.png" alt="UML2 Class Diagram of internal exchange-independent message types used by Order Book Reconstruction algorithm"  />
-<p class="caption">
-Figure 2.3: UML2 Class Diagram of internal exchange-independent message types used by Order Book Reconstruction algorithm
-</p>
-</div>
-<p>These messages are then taken by the activity <code>R.3 Cleanse</code> that performs so called <em>data cleansing</em>. According to <span class="citation">(Rahm and Do 2000)</span>:</p>
-<blockquote>
-<p><em>Data cleaning</em>, also called <em>data cleansing</em> or <em>scrubbing</em>, deals with detecting and removing errors and inconsistencies from data in order to improve the quality of data.</p>
-</blockquote>
-<p>UML2 Activity Diagram <span class="citation">(Cook et al. 2017)</span> of <code>R.3 Cleanse</code> is shown on figure <a href="reconstruction-algorithm.html#fig:cleanse-activity">2.4</a>.</p>
-<div class="figure" style="text-align: center"><span id="fig:cleanse-activity"></span>
-<img src="R.3%20Cleanse.png" alt="UML2 Activity Diagram  of cleansing"  />
-<p class="caption">
-Figure 2.4: UML2 Activity Diagram of cleansing
-</p>
-</div>
-<p>The output of <code>R.3 Cleanse</code> is a set of zero or more messages each of which is then converted into zero or one event as defined by <a href="reconstruction-algorithm.html#def:order-event">2.11</a> which together compose Limit Order Book as defined by <a href="reconstruction-algorithm.html#def:lob">2.17</a>. These events are persisted by <code>R.4 Save</code> activity.</p>
-<p><code>R.3 Cleanse</code> will not produce output for a message when subsequent messages are required for cleansing. In this case the message will be kept within <code>R.3 Cleanse</code> between runs until enough subsequent messages are received. Then all kept and cleansed messages are returned together.</p>
+<p><code>oberon::obtain()</code> subscribes to the exchange’s websocket channel(s) providing information about events and trades for the specified pair. Then it starts an era, i.e. it requests a snapshot of the order book for the specified pair and synchronises the stream of messages it’s already receiving from the websocket with the snapshot. As soon as the synchronization is completed, the snapshot itself and the messages that represents an update of the snapshot are being saved to the output file. It is important to note that messages are saved in the order of events as they had happened on the exchange, not in the order they have been received. <code>Receive and arrange messages</code> activity performs buffering and re-arranging of the messages before saving them as JSON lines.</p>
+<p>The <code>exchange name</code> parameter tells <code>oberon::reconstruct()</code> which kind of reconstructor object needs to be created to process the Messages file. Every line of the file is transformed into <a href="https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html">Boost.Property Tree</a> container by <code>Read next message</code> activity. The container is then passed to <code>R.1 Reconstruct Order Book</code> activity, described in details in section <a href="methods.html#reconstruction-process">2.3</a>. This activity represents the core of the reconstruction algorithm. The output of <code>R.1 Reconstruct Order Book</code> is a set of an exchange-independent order events, whch also carries information about trades. The events are saved into Events file in CSV format.</p>
 <p>Surprisingly, an order, an order event, a limit order book, the operations of a continuous double auction are rather complicated things if one attempts to define them rigorously. Consider, for example, a definition given in the recent book <span class="citation">(Bouchaud and Bonart 2018)</span>:</p>
 <blockquote>
 <p>An order is a commitment, declared at a given submission time, to buy or sell a given volume of an asset at no worse than a given price. An order <span class="math inline">\(x\)</span> is thus described by four attributes:</p>
@@ -172,8 +150,10 @@ Figure 2.4: UML2 Activity Diagram of cleansing
 </ul>
 <p>Below we propose stricter definitions that address these and the other similar issues while staying as close as possible to <span class="citation">(Bouchaud and Bonart 2018)</span>.</p>
 </div>
-<div id="basic-tools" class="section level2">
-<h2><span class="header-section-number">2.2</span> Basic Tools</h2>
+<div id="mathematical-formulation" class="section level2">
+<h2><span class="header-section-number">2.2</span> Mathematical formulation</h2>
+<div id="basic-tools" class="section level3">
+<h3><span class="header-section-number">2.2.1</span> Basic Tools</h3>
 
 <div class="definition">
 <p><span id="def:support" class="definition"><strong>Definition 2.1  (Support)  </strong></span>Suppose <span class="math inline">\(X \subset \mathbb{R}\)</span> and <span class="math inline">\(f : X \mapsto \mathbb{R}\)</span>. The support of <span class="math inline">\(f\)</span> is defined as the closure of the subset of <span class="math inline">\(X\)</span> where <span class="math inline">\(f\)</span> is non-zero:
@@ -203,7 +183,7 @@ where</p>
 <div class="definition">
 <p><span id="def:volume-function" class="definition"><strong>Definition 2.3  (Volume Function)  </strong></span>A function <span class="math inline">\(v : \mathbb{R} \mapsto \mathbb{R}_{\geq 0}\)</span> or <span class="math inline">\(v : \mathbb{R} \mapsto \mathbb{R}_{\leq 0}\)</span> such that</p>
 <ol style="list-style-type: lower-alpha">
-<li><span class="math inline">\(v(\cdot)\)</span> is a piecewise constant function as defined by <a href="reconstruction-algorithm.html#def:piecewise-constant">2.2</a> with values in the set <span class="math inline">\(\{ n v_0 : n \in \mathbb{Z}\setminus \{0\} \}\)</span> where <span class="math inline">\(v_0\)</span> is a constant called <em>lot size</em>,</li>
+<li><span class="math inline">\(v(\cdot)\)</span> is a piecewise constant function as defined by <a href="methods.html#def:piecewise-constant">2.2</a> with values in the set <span class="math inline">\(\{ n v_0 : n \in \mathbb{Z}\setminus \{0\} \}\)</span> where <span class="math inline">\(v_0\)</span> is a constant called <em>lot size</em>,</li>
 <li><span class="math inline">\(v(\cdot)\)</span> is either càdlàg or càglàd at each point of discontinuity</li>
 </ol>
 is called a <em>volume function</em>.
@@ -211,7 +191,7 @@ is called a <em>volume function</em>.
 
 
 <div class="definition">
-<p><span id="def:fill-volume" class="definition"><strong>Definition 2.4  (Filled Volume)  </strong></span>Suppose a volume function <span class="math inline">\(v(t)\)</span> as defined by <a href="reconstruction-algorithm.html#def:volume-function">2.3</a> is given. The function
+<p><span id="def:fill-volume" class="definition"><strong>Definition 2.4  (Filled Volume)  </strong></span>Suppose a volume function <span class="math inline">\(v(t)\)</span> as defined by <a href="methods.html#def:volume-function">2.3</a> is given. The function
 <span class="math display">\[
   f_{v}(t) = \lim_{t^{&#39;} \uparrow t} v(t^{&#39;}) - v(t)
   \]</span> is called a <em>filled volume</em> at time <span class="math inline">\(t\)</span>.</p>
@@ -219,7 +199,7 @@ is called a <em>volume function</em>.
 
 
 <div class="definition">
-<p><span id="def:amended-volume" class="definition"><strong>Definition 2.5  (Amended Volume)  </strong></span>Suppose a volume function <span class="math inline">\(v(t)\)</span> as defined by <a href="reconstruction-algorithm.html#def:volume-function">2.3</a> is given. The function
+<p><span id="def:amended-volume" class="definition"><strong>Definition 2.5  (Amended Volume)  </strong></span>Suppose a volume function <span class="math inline">\(v(t)\)</span> as defined by <a href="methods.html#def:volume-function">2.3</a> is given. The function
 <span class="math display">\[
   a_{v}(t) = v(t) - \lim_{t^{&#39;} \downarrow t} v(t^{&#39;})
 \]</span> is called an <em>amended</em> volume at time <span class="math inline">\(t\)</span>.</p>
@@ -229,7 +209,7 @@ is called a <em>volume function</em>.
 <div class="definition">
 <p><span id="def:price-function" class="definition"><strong>Definition 2.6  (Price Function)  </strong></span>A function <span class="math inline">\(p : \mathbb{R} \mapsto \mathbb{R}_{\geq 0}\)</span> such that</p>
 <ol style="list-style-type: lower-alpha">
-<li><span class="math inline">\(p(\cdot)\)</span> is a piecewise constant function as defined by <a href="reconstruction-algorithm.html#def:piecewise-constant">2.2</a> with values in the set <span class="math inline">\(\{ n \vartheta : n \in \mathbb{Z}\setminus \{0\} \}\)</span> where <span class="math inline">\(\vartheta\)</span> is a constant called <em>tick size</em></li>
+<li><span class="math inline">\(p(\cdot)\)</span> is a piecewise constant function as defined by <a href="methods.html#def:piecewise-constant">2.2</a> with values in the set <span class="math inline">\(\{ n \vartheta : n \in \mathbb{Z}\setminus \{0\} \}\)</span> where <span class="math inline">\(\vartheta\)</span> is a constant called <em>tick size</em></li>
 <li><span class="math inline">\(p(\cdot)\)</span> is a càglàd at each point of discontinuity</li>
 </ol>
 is called a <em>price function</em>.
@@ -237,10 +217,10 @@ is called a <em>price function</em>.
 
 <p>The lot size <span class="math inline">\(v_0\)</span> and tick size <span class="math inline">\(\vartheta\)</span> are collectively called <em>resolution parameters</em>.</p>
 </div>
-<div id="order-and-trade" class="section level2">
-<h2><span class="header-section-number">2.3</span> Order and Trade</h2>
+<div id="order-and-trade" class="section level3">
+<h3><span class="header-section-number">2.2.2</span> Order and Trade</h3>
 <p>Hereafter is assumed that a single asset is traded and a single currency is used.</p>
-<p>As it has already been mentioned above an order is a commitment at a given time, to buy or sell a given volume of an asset at no worse than a given price. Figure <a href="reconstruction-algorithm.html#fig:order-life-cycle">2.5</a> shows UML2 State Machine of High-level Order Life Cycle while the order is being processed by an exchange. The possible states an order can be in are:</p>
+<p>As it has already been mentioned above an order is a commitment at a given time, to buy or sell a given volume of an asset at no worse than a given price. Figure <a href="methods.html#fig:order-life-cycle">2.2</a> shows UML2 State Machine of High-level Order Life Cycle while the order is being processed by an exchange. The possible states an order can be in are:</p>
 <ul>
 <li><em>Taker</em> - a valid order has just been received by an exchange or its price has been changed in such a way that it may be filled immediately. This state is fleeting.</li>
 <li><em>Maker</em> - the order is open on the order book. Orders which are not fully filled or cancelled immediately enters this state. This state is lasting.</li>
@@ -248,7 +228,7 @@ is called a <em>price function</em>.
 <div class="figure" style="text-align: center"><span id="fig:order-life-cycle"></span>
 <img src="order-life-cycle.png" alt="States of an order while it being processed by an exchange"  />
 <p class="caption">
-Figure 2.5: States of an order while it being processed by an exchange
+Figure 2.2: States of an order while it being processed by an exchange
 </p>
 </div>
 <p>An order which has ever entered Maker state is called a <a href="https://www.investopedia.com/terms/l/limitorder.asp">limit order</a>.</p>
@@ -257,18 +237,18 @@ Figure 2.5: States of an order while it being processed by an exchange
 <p>Market orders are always fleeting. To model an evolution of a limit order we use the following function:</p>
 
 <div class="definition">
-<span id="def:order" class="definition"><strong>Definition 2.7  (Order)  </strong></span>Suppose that <span class="math inline">\(i \in \mathbb{N}\)</span> is an <em>unique order identification</em>, <span class="math inline">\(v^i(t)\)</span> is a volume function as defined by <a href="reconstruction-algorithm.html#def:volume-function">2.3</a>, <span class="math inline">\(p^i(t)\)</span> is a price function as defined by <a href="reconstruction-algorithm.html#def:price-function">2.6</a> such that <span class="math display">\[\text{supp}\,(v^i) = \text{supp}\,(p^i)\]</span> Then a vector-valued function <span class="math inline">\(o^i : \mathbb{R} \mapsto \mathbb{R}_{&gt;0} \times \mathbb{R}\)</span> representing a commitment to buy or sell a given volume <span class="math inline">\(v^i(t)\)</span> of an asset at no worse than a given price <span class="math inline">\(p^i(t)\)</span> at a particular time <span class="math inline">\(t\)</span> with a closed form <span class="math display">\[o^i(t) = (p^i(t), v^i(t))\]</span> is called an <em>order</em>. If <span class="math inline">\(\forall t : v^i(t) \leq 0\)</span> the order is a commitment to <em>sell</em> and is also called a <em>sell order</em>. If <span class="math inline">\(\forall t : v^i(t) \geq 0\)</span> the order is a commitment to <em>buy</em> and is also called a <em>buy order</em>.
+<span id="def:order" class="definition"><strong>Definition 2.7  (Order)  </strong></span>Suppose that <span class="math inline">\(i \in \mathbb{N}\)</span> is an <em>unique order identification</em>, <span class="math inline">\(v^i(t)\)</span> is a volume function as defined by <a href="methods.html#def:volume-function">2.3</a>, <span class="math inline">\(p^i(t)\)</span> is a price function as defined by <a href="methods.html#def:price-function">2.6</a> such that <span class="math display">\[\text{supp}\,(v^i) = \text{supp}\,(p^i)\]</span> Then a vector-valued function <span class="math inline">\(o^i : \mathbb{R} \mapsto \mathbb{R}_{&gt;0} \times \mathbb{R}\)</span> representing a commitment to buy or sell a given volume <span class="math inline">\(v^i(t)\)</span> of an asset at no worse than a given price <span class="math inline">\(p^i(t)\)</span> at a particular time <span class="math inline">\(t\)</span> with a closed form <span class="math display">\[o^i(t) = (p^i(t), v^i(t))\]</span> is called an <em>order</em>. If <span class="math inline">\(\forall t : v^i(t) \leq 0\)</span> the order is a commitment to <em>sell</em> and is also called a <em>sell order</em>. If <span class="math inline">\(\forall t : v^i(t) \geq 0\)</span> the order is a commitment to <em>buy</em> and is also called a <em>buy order</em>.
 </div>
 
 <p>Now we can define</p>
 
 <div class="definition">
-<span id="def:order-volume" class="definition"><strong>Definition 2.8  (Order Volume)  </strong></span>The function <span class="math inline">\(v^i(t)\)</span> in definition <a href="reconstruction-algorithm.html#def:order">2.7</a> is called an <em>order volume</em>.
+<span id="def:order-volume" class="definition"><strong>Definition 2.8  (Order Volume)  </strong></span>The function <span class="math inline">\(v^i(t)\)</span> in definition <a href="methods.html#def:order">2.7</a> is called an <em>order volume</em>.
 </div>
 
 
 <div class="definition">
-<span id="def:order-price" class="definition"><strong>Definition 2.9  (Order Price)  </strong></span>The function <span class="math inline">\(p^i(t)\)</span> in definition <a href="reconstruction-algorithm.html#def:order">2.7</a> is called an <em>order price</em>.
+<span id="def:order-price" class="definition"><strong>Definition 2.9  (Order Price)  </strong></span>The function <span class="math inline">\(p^i(t)\)</span> in definition <a href="methods.html#def:order">2.7</a> is called an <em>order price</em>.
 </div>
 
 
@@ -280,10 +260,10 @@ Figure 2.5: States of an order while it being processed by an exchange
 <blockquote>
 <p>… we will consider the evolution of an LOB <span class="math inline">\(\mathcal{L}(t)\)</span> as a so-called <em>càglàd process (continu à gauche, limite à droite)</em>. Informally, this means that when a new order <span class="math inline">\(x\)</span> is submitted at time <span class="math inline">\(t_x\)</span> , we regard it to be present in the LOB immediately after its arrival, but not immediately upon its arrival.</p>
 </blockquote>
-<p>In other words, definition <a href="reconstruction-algorithm.html#def:amended-volume">2.5</a> means that when order <span class="math inline">\(v\)</span> is cancelled at time <span class="math inline">\(t\)</span>, we regard the cancellation visible in the LOB immediately after its arrival, but not immediately upon its arrival.</p>
+<p>In other words, definition <a href="methods.html#def:amended-volume">2.5</a> means that when order <span class="math inline">\(v\)</span> is cancelled at time <span class="math inline">\(t\)</span>, we regard the cancellation visible in the LOB immediately after its arrival, but not immediately upon its arrival.</p>
 <p>Trades are modeled as <em>càdlàg (continue à droite, limite à gauche)</em> occurrences so they are visible immediately upon arrival.</p>
 <p>The consequence of the above is that <span class="math inline">\(v(t)\)</span> can be interpreted as a amount available for trade at time <span class="math inline">\(t\)</span> as it should and if a cancellation and a trade happen simultaneously, the trade is executed.</p>
-<p>An order can be conveniently represented in the form of a order table defined by <a href="reconstruction-algorithm.html#def:order-table">2.12</a>.</p>
+<p>An order can be conveniently represented in the form of a order table defined by <a href="methods.html#def:order-table">2.12</a>.</p>
 
 <div class="definition">
 <p><span id="def:order-event" class="definition"><strong>Definition 2.11  (Order Event)  </strong></span>
@@ -301,7 +281,7 @@ An <em>order event</em> is a tuple <span class="math inline">\((i, n, t^i_n,s^i_
 
 <div class="definition">
 <p><span id="def:order-table" class="definition"><strong>Definition 2.12  (Order Table)  </strong></span>
-An <em>order table</em> is a set of <em>order events</em> as defined by <a href="reconstruction-algorithm.html#def:order-event">2.11</a> such that</p>
+An <em>order table</em> is a set of <em>order events</em> as defined by <a href="methods.html#def:order-event">2.11</a> such that</p>
 <ol start="2" style="list-style-type: lower-alpha">
 <li><span class="math inline">\(\forall i, \forall n: t^i_n &lt; t^i_{n+1}\)</span>,</li>
 <li><span class="math inline">\(\forall i : s^i_1 = 1\)</span> and <span class="math inline">\(\forall n \in \{2, \ldots, N^i\} : s^i_n = 0 \implies s^i_{n-1} = 1\)</span>,</li>
@@ -311,22 +291,22 @@ An <em>order table</em> is a set of <em>order events</em> as defined by <a href=
 </ol>
 
 <div class="theorem">
-<p><span id="thm:equivalence" class="theorem"><strong>Theorem 2.1  </strong></span>There is one-to-one correspondance between orders as defined by <a href="reconstruction-algorithm.html#def:order">2.7</a> and order tables as defined by <a href="reconstruction-algorithm.html#def:order-table">2.12</a>.</p>
+<p><span id="thm:equivalence" class="theorem"><strong>Theorem 2.1  </strong></span>There is one-to-one correspondance between orders as defined by <a href="methods.html#def:order">2.7</a> and order tables as defined by <a href="methods.html#def:order-table">2.12</a>.</p>
 </div>
 
 <p>TBD - more constraints to be added to the definition of Order Table. Otherwise the theorem can’t be proved.</p>
 </div>
-<div id="limit-order-book-lob" class="section level2">
-<h2><span class="header-section-number">2.4</span> Limit Order Book (LOB)</h2>
+<div id="limit-order-book-lob" class="section level3">
+<h3><span class="header-section-number">2.2.3</span> Limit Order Book (LOB)</h3>
 <p>Typically the term <a href="https://www.investopedia.com/terms/o/order-book.asp">order book</a> refers to an electronic list of buy and sell orders for a specific security or financial instrument organized by price level. An order book lists the number of shares being bid on or offered at each price point, or market depth. Order books are used by almost every exchange to list the orders for different securities.</p>
 
 <div class="definition">
-<p><span id="def:order-book" class="definition"><strong>Definition 2.13  (Order Book)  </strong></span>A set of orders with common resolution parameters <span class="math inline">\(v_0\)</span> and <span class="math inline">\(\vartheta\)</span> <span class="math inline">\(\mathcal{O} = \{o^i(\cdot)\}_i\)</span> where <span class="math inline">\(o^i(\cdot)\)</span> is defined by <a href="reconstruction-algorithm.html#def:order">2.7</a> is called an <em>order book</em>.</p>
+<p><span id="def:order-book" class="definition"><strong>Definition 2.13  (Order Book)  </strong></span>A set of orders with common resolution parameters <span class="math inline">\(v_0\)</span> and <span class="math inline">\(\vartheta\)</span> <span class="math inline">\(\mathcal{O} = \{o^i(\cdot)\}_i\)</span> where <span class="math inline">\(o^i(\cdot)\)</span> is defined by <a href="methods.html#def:order">2.7</a> is called an <em>order book</em>.</p>
 <p>A (possibly empty) subset <span class="math inline">\(\mathcal{B} =\{o^b(\cdot)\}_{v^b(\cdot) \geq 0} \subset \mathcal{O}\)</span> of buy orders is called <em>bids</em>. A (possibly empty) subset of <em>bids</em> <span class="math inline">\(\mathcal{B}(t) =\{o^b(\cdot)\}_{v^b(\cdot) \geq 0 \land p^b(t) &gt; 0} \subset \mathcal{B}\)</span> of buy orders is called <em>bids</em> at time <span class="math inline">\(t\)</span>.</p>
 A (possibly empty) subset <span class="math inline">\(\mathcal{A} =\{o^a(\cdot)\}_{v^a(\cdot) \leq 0} \subset \mathcal{O}\)</span> of sell orders is called <em>asks</em>. A (possibly empty) subset of <em>asks</em> <span class="math inline">\(\mathcal{A}(t) =\{o^a(\cdot)\}_{v^a(\cdot) \leq 0 \land p^a(t) &gt; 0} \subset \mathcal{A}\)</span> of buy orders is called <em>asks</em> at time <span class="math inline">\(t\)</span>.
 </div>
 
-<p>From definition of an order <a href="reconstruction-algorithm.html#def:order">2.7</a> follows that <span class="math inline">\(\mathcal{O} = \mathcal{A} \cup \mathcal{B}\)</span> and <span class="math inline">\(\mathcal{A} \cap \mathcal{B} = \emptyset\)</span>.</p>
+<p>From definition of an order <a href="methods.html#def:order">2.7</a> follows that <span class="math inline">\(\mathcal{O} = \mathcal{A} \cup \mathcal{B}\)</span> and <span class="math inline">\(\mathcal{A} \cap \mathcal{B} = \emptyset\)</span>.</p>
 
 <div class="definition">
 <span id="def:best-bid-price" class="definition"><strong>Definition 2.14  (Best Bid Price)  </strong></span>Suppose an order book <span class="math inline">\(\mathcal{O}\)</span> is given. The function <span class="math inline">\(b(t)\)</span> defined as:
@@ -345,14 +325,14 @@ A (possibly empty) subset <span class="math inline">\(\mathcal{A} =\{o^a(\cdot)\
 
 
 <div class="definition">
-<span id="def:spread" class="definition"><strong>Definition 2.16  (Spread)  </strong></span>Suppose an order book <span class="math inline">\(\mathcal{O}\)</span> is given and <span class="math inline">\(a_{\mathcal{O}}(t)\)</span> and <span class="math inline">\(b_{\mathcal{O}}(t)\)</span> are its best ask price and best bid price functions as defined by <a href="reconstruction-algorithm.html#def:best-ask-price">2.15</a> and <a href="reconstruction-algorithm.html#def:best-bid-price">2.14</a> respectively. Then the function <span class="math display">\[
+<span id="def:spread" class="definition"><strong>Definition 2.16  (Spread)  </strong></span>Suppose an order book <span class="math inline">\(\mathcal{O}\)</span> is given and <span class="math inline">\(a_{\mathcal{O}}(t)\)</span> and <span class="math inline">\(b_{\mathcal{O}}(t)\)</span> are its best ask price and best bid price functions as defined by <a href="methods.html#def:best-ask-price">2.15</a> and <a href="methods.html#def:best-bid-price">2.14</a> respectively. Then the function <span class="math display">\[
   s_{\mathcal{O}}(t) = a_{\mathcal{O}}(t) -  b_{\mathcal{O}}(t) 
   \]</span> is called <em>spread</em>.
 </div>
 
 
 <div class="definition">
-<span id="def:lob" class="definition"><strong>Definition 2.17  (Limit Order Book)  </strong></span>Suppose an order book <span class="math inline">\(\mathcal{L}\)</span> as defined by <a href="reconstruction-algorithm.html#def:order-book">2.13</a> is given. Then <span class="math inline">\(\mathcal{L}\)</span> is called a <em>Limit Order Book (LOB)</em> if its spread function as defined by <a href="reconstruction-algorithm.html#def:spread">2.16</a> is always positive:
+<span id="def:lob" class="definition"><strong>Definition 2.17  (Limit Order Book)  </strong></span>Suppose an order book <span class="math inline">\(\mathcal{L}\)</span> as defined by <a href="methods.html#def:order-book">2.13</a> is given. Then <span class="math inline">\(\mathcal{L}\)</span> is called a <em>Limit Order Book (LOB)</em> if its spread function as defined by <a href="methods.html#def:spread">2.16</a> is always positive:
 <span class="math display">\[ 
   \forall t: s_{\mathcal{L}}(t) &gt; 0
 \]</span>
@@ -361,15 +341,15 @@ A (possibly empty) subset <span class="math inline">\(\mathcal{A} =\{o^a(\cdot)\
 <p>A <a href="https://www.investopedia.com/terms/m/marketorder.asp">market order</a> is a request by an investor to buy or sell a security at the best available price at the time of order placement. The request is usually made through a broker or brokerage service and is ultimately executed by an exchange that maintains an order book. Clearly, a market order cause an exchange’s order book to be updated so market orders are modeled as <em>changes</em> of an order book.</p>
 
 <div class="definition">
-<p><span id="def:market-buy-order" class="definition"><strong>Definition 2.18  (Market Buy Order)  </strong></span>Suppose a Limit Order Book <span class="math inline">\(\mathcal{L}\)</span> is given as defined by <a href="reconstruction-algorithm.html#def:lob">2.17</a>. Suppose that at time <span class="math inline">\(t_j\)</span> <span class="math display">\[\sum_{o^a(\cdot) \in \mathcal{A(t_j)} } f_{v^a}(t_j) &lt; 0 \]</span> Then it is said that a <em>market buy order</em> is placed and executed at time <span class="math inline">\(t_j\)</span> for <span class="math inline">\(\sum_{o^a(\cdot) \in \mathcal{A}(t_j) } |f_{v^a}(t_j)p^a(t_j)|\)</span> units of currency.</p>
+<p><span id="def:market-buy-order" class="definition"><strong>Definition 2.18  (Market Buy Order)  </strong></span>Suppose a Limit Order Book <span class="math inline">\(\mathcal{L}\)</span> is given as defined by <a href="methods.html#def:lob">2.17</a>. Suppose that at time <span class="math inline">\(t_j\)</span> <span class="math display">\[\sum_{o^a(\cdot) \in \mathcal{A(t_j)} } f_{v^a}(t_j) &lt; 0 \]</span> Then it is said that a <em>market buy order</em> is placed and executed at time <span class="math inline">\(t_j\)</span> for <span class="math inline">\(\sum_{o^a(\cdot) \in \mathcal{A}(t_j) } |f_{v^a}(t_j)p^a(t_j)|\)</span> units of currency.</p>
 </div>
 
 
 <div class="definition">
-<p><span id="def:market-sell-order" class="definition"><strong>Definition 2.19  (Market Sell Order)  </strong></span>Suppose a Limit Order Book <span class="math inline">\(\mathcal{L}\)</span> is given as defined by <a href="reconstruction-algorithm.html#def:lob">2.17</a>. Suppose that at time <span class="math inline">\(t_j\)</span> <span class="math display">\[\sum_{o^b(\cdot) \in \mathcal{B}(t_j) } f_{v^b}(t_j) &gt; 0 \]</span> Then it is said that a <em>market sell order</em> is placed and executed at time <span class="math inline">\(t_j\)</span> for <span class="math inline">\(\sum_{o^b(\cdot) \in \mathcal{B}(t_j) } f_{v^b}(t_j)\)</span> units of asset.</p>
+<p><span id="def:market-sell-order" class="definition"><strong>Definition 2.19  (Market Sell Order)  </strong></span>Suppose a Limit Order Book <span class="math inline">\(\mathcal{L}\)</span> is given as defined by <a href="methods.html#def:lob">2.17</a>. Suppose that at time <span class="math inline">\(t_j\)</span> <span class="math display">\[\sum_{o^b(\cdot) \in \mathcal{B}(t_j) } f_{v^b}(t_j) &gt; 0 \]</span> Then it is said that a <em>market sell order</em> is placed and executed at time <span class="math inline">\(t_j\)</span> for <span class="math inline">\(\sum_{o^b(\cdot) \in \mathcal{B}(t_j) } f_{v^b}(t_j)\)</span> units of asset.</p>
 </div>
 
-<p>To make the above definitions intuitively clear, let’s consider an example. Table <a href="reconstruction-algorithm.html#tab:example-order-table">2.1</a> contains a consolidated order table for six limit orders</p>
+<p>To make the above definitions intuitively clear, let’s consider an example. Table <a href="methods.html#tab:example-order-table">2.1</a> contains a consolidated order table for six limit orders</p>
 <table class="huxtable" style="border-collapse: collapse; margin-bottom: 2em; margin-top: 2em; width: 90%; margin-left: 0%; margin-right: auto;  ">
 <caption style="caption-side: top; text-align: left;"><span id="tab:example-order-table">Table 2.1: </span> The sample order table contains information about six limit orders, four market orders and six trades.</caption><col><col><col><col><col><col><col><col><col><tr>
 <td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">#</td>
@@ -549,14 +529,14 @@ A (possibly empty) subset <span class="math inline">\(\mathcal{A} =\{o^a(\cdot)\
 </tr>
 </table>
 
-<p>Figure <a href="reconstruction-algorithm.html#fig:example-order-book">2.6</a> shows price and volume functions for six limit orders in table <a href="reconstruction-algorithm.html#tab:example-order-table">2.1</a>.</p>
+<p>Figure <a href="methods.html#fig:example-order-book">2.3</a> shows price and volume functions for six limit orders in table <a href="methods.html#tab:example-order-table">2.1</a>.</p>
 <div class="figure"><span id="fig:example-order-book"></span>
 <img src="oberon_files/figure-html/example-order-book-1.png" alt="Price and Volume functions for the limit orders in table \@ref(tab:example-order-table)" width="672" />
 <p class="caption">
-Figure 2.6: Price and Volume functions for the limit orders in table <a href="reconstruction-algorithm.html#tab:example-order-table">2.1</a>
+Figure 2.3: Price and Volume functions for the limit orders in table <a href="methods.html#tab:example-order-table">2.1</a>
 </p>
 </div>
-<p>It can bee seen from figure <a href="reconstruction-algorithm.html#fig:example-order-book">2.6</a> that:</p>
+<p>It can bee seen from figure <a href="methods.html#fig:example-order-book">2.3</a> that:</p>
 <ul>
 <li>At 13:59:57.2 order 1 to buy 200 units of the asset at price no worse than 50 per unit has been placed,</li>
 <li>At 13:59:58.0 order 2 to sell 200 units of the asset at price no worse than 80 per unit has been placed,</li>
@@ -572,14 +552,42 @@ Figure 2.6: Price and Volume functions for the limit orders in table <a href="re
 <li>At 14:00:03.0 a sell market order has been placed, single trade was executed: <span class="math inline">\((\text{14:00:03.0}, 6, 60, 300)\)</span> and, simultaneously, probably as a consequence of the trade, the price of order 6 has been amended from 60 to 20. Note that trade has been executed at price 60.</li>
 </ul>
 </div>
-<div id="extract" class="section level2">
-<h2><span class="header-section-number">2.5</span> Extract</h2>
+</div>
+<div id="reconstruction-process" class="section level2">
+<h2><span class="header-section-number">2.3</span> Reconstruction process</h2>
+<p>Figure <a href="methods.html#fig:reconstruction-activity">2.4</a> shows UML2 Activity Diagram of <code>R.1 Reconstruct Order Book</code> activity of <code>oberon::reconstruct()</code> function.</p>
+<div class="figure" style="text-align: center"><span id="fig:reconstruction-activity"></span>
+<img src="R.1%20Reconstruct%20Order%20Book.png" alt="UML2 Activity Diagram  of Reconstruction algorithm"  />
+<p class="caption">
+Figure 2.4: UML2 Activity Diagram of Reconstruction algorithm
+</p>
+</div>
+<p>The activity <code>R.2 Extract</code> takes a <a href="https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html">Boost.PropertyTree</a> container with an exchange-specific data and produces one or more internal exchange-independent messages. The produced messages belong to the classes shown on figure <a href="methods.html#fig:message-hierarchy">2.5</a>.</p>
+<div class="figure" style="text-align: center"><span id="fig:message-hierarchy"></span>
+<img src="Message%20Hierarchy.png" alt="UML2 Class Diagram of internal exchange-independent message types used by Order Book Reconstruction algorithm"  />
+<p class="caption">
+Figure 2.5: UML2 Class Diagram of internal exchange-independent message types used by Order Book Reconstruction algorithm
+</p>
+</div>
+<p>These messages are then taken by the activity <code>R.3 Cleanse</code> that performs so called <em>data cleansing</em>. According to <span class="citation">(Rahm and Do 2000)</span>:</p>
+<blockquote>
+<p><em>Data cleaning</em>, also called <em>data cleansing</em> or <em>scrubbing</em>, deals with detecting and removing errors and inconsistencies from data in order to improve the quality of data.</p>
+</blockquote>
+<p>UML2 Activity Diagram <span class="citation">(Cook et al. 2017)</span> of <code>R.3 Cleanse</code> is shown on figure <a href="methods.html#fig:cleanse-activity">2.6</a>.</p>
+<div class="figure" style="text-align: center"><span id="fig:cleanse-activity"></span>
+<img src="R.3%20Cleanse.png" alt="UML2 Activity Diagram  of cleansing"  />
+<p class="caption">
+Figure 2.6: UML2 Activity Diagram of cleansing
+</p>
+</div>
+<p>The output of <code>R.3 Cleanse</code> is a set of zero or more messages each of which is then converted into zero or one event as defined by <a href="methods.html#def:order-event">2.11</a> which together compose Limit Order Book as defined by <a href="methods.html#def:lob">2.17</a>. These events are persisted by <code>R.4 Save</code> activity.</p>
+<p><code>R.3 Cleanse</code> will not produce output for a message when subsequent messages are required for cleansing. In this case the message will be kept within <code>R.3 Cleanse</code> between runs until enough subsequent messages are received. Then all kept and cleansed messages are returned together.</p>
+<div id="extract" class="section level3">
+<h3><span class="header-section-number">2.3.1</span> Extract</h3>
 <p>TBD</p>
 </div>
-<div id="cleanse" class="section level2">
-<h2><span class="header-section-number">2.6</span> Cleanse</h2>
-<div id="deduplicate" class="section level3">
-<h3><span class="header-section-number">2.6.1</span> Deduplicate</h3>
+<div id="cleanse" class="section level3">
+<h3><span class="header-section-number">2.3.2</span> Cleanse</h3>
 <div class="figure" style="text-align: center"><span id="fig:redundant-base"></span>
 <img src="redundant0.png" alt="States of an order while it being processed by an exchange"  />
 <p class="caption">
@@ -599,13 +607,6 @@ Figure 2.9: States of an order while it being processed by an exchange
 </p>
 </div>
 </div>
-<div id="classify" class="section level3">
-<h3><span class="header-section-number">2.6.2</span> Classify</h3>
-</div>
-</div>
-<div id="transmit" class="section level2">
-<h2><span class="header-section-number">2.7</span> Transmit</h2>
-<p>TBD</p>
 </div>
 </div>
             </section>

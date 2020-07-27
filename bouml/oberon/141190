@@ -1,6 +1,6 @@
 format 222
 "Order Book Reconstructor" // Order Book Reconstructor
-  revision 154
+  revision 156
   modified_by 6 "petr"
   // class settings
   
@@ -3754,6 +3754,14 @@ ${inlines}
 	   multiplicity "*" unordered is_control
 	  in
 	end
+
+	pin 333318 "events" explicit_type ""
+	   multiplicity "*" unordered 
+	  out
+	  flow 390278 "<flow>"
+	    on parameter_ref 212614 // events
+	  end
+	end
       end
 
       activitynode 276742 decision ""
@@ -3772,6 +3780,11 @@ ${inlines}
 	flow 344838 "<flow>"
 	  on pin_ref 298502 // messages
 	end
+      end
+
+      parameter 212614 "events" explicit_type ""
+	 multiplicity "*" ordered 
+	out
       end
     end
 

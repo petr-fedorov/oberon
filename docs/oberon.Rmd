@@ -93,43 +93,22 @@ As well as at Bitstamp, records in Trades and Raw book channels are not synchron
 
 It should be clear from the above that substantial effort is required to reconstruct the true dynamics of order submission, matching and execution.
 
-# Reconstruction algorithm
+# Methods
 
 ## Overview
 
-Figure \@ref(fig:standalone-application) shows UML2 Activity Diagram [@cook_omg_2017] of a standalone application that uses Order Book Reconstruction algorithm. 
+Figure \@ref(fig:oberon-package-overview) shows UML2 Activity Diagram [@cook_omg_2017] of two functions implemented in R package `oberon` which together realize the order book events reconstruction process:
 
-```{r standalone-application, echo=FALSE, fig.cap="UML2 Activity Diagram  of a standalone application using Reconstruction algorithm", fig.align="center"}
-knitr::include_graphics("S.1 Standalone application.png", dpi=80)
-```
-The application starts from `S.7 Initialize` activity.  The activity connects to a websocket feed provided by the exchange specified by `exchange_name` parameter and subscribes for channels sending messages about the pair specified by `pair_name` parameter. Then `S.7 Initialize` creates a store (for example, a file) where the reconstructed events is to be persisted, creates an instance of `Reconstructor` object and passes the store to the instance for the future use. 
+  * `oberon::obtain()` - connects to the specified exchange, obtains available information for the specified pair and saves it as a set of JSON lines with an exchange-specific names into Messages file,
+  * `oberon::reconstruct()` - takes Messages file, produced by `oberon::obtain()`, reconstructs Order Table as defined by \@ref(def:order-table), i.e. produces a set of an exchange-independent Events as defined by \@ref(def:order-event), and saves the set into Events file in CSV format.
 
-Afterwards the application launches `S.5 Receive messages` and `R.1 Reconstruct Order Book`. These activities run concurrently. `S.5 Receive messages` continuously receives messages from the exchange (note `{stream}` on the figure \@ref(fig:reconstruction-activity)) and stores them into `buffer`.  `R.1 Reconstruct Order Book` takes messages from the `buffer` in FIFO order and processes them as shown on figure \@ref(fig:reconstruction-activity)
-
-```{r reconstruction-activity, echo=FALSE, fig.cap="UML2 Activity Diagram  of Reconstruction algorithm", fig.align="center"}
-knitr::include_graphics("R.1 Reconstruct Order Book.png", dpi=80)
+```{r oberon-package-overview, echo=FALSE, fig.cap="UML2 Activity Diagram  of a standalone application using Reconstruction algorithm", fig.align="center"}
+knitr::include_graphics("Oberon package overview.png", dpi=80)
 ```
 
-The activity `R.2 Extract` takes a [Boost.PropertyTree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) container with an exchange-specific data and produces one or more internal exchange-independent messages. The produced messages belong to the classes shown on figure \@ref(fig:message-hierarchy). 
+`oberon::obtain()` subscribes to the exchange's websocket channel(s) providing information about events and trades for the specified pair. Then it starts an era, i.e. it requests a snapshot of the order book for the specified pair and synchronises the stream of messages it's already receiving from the websocket with the snapshot. As soon as the synchronization is completed, the snapshot itself and the messages that represents an update of the snapshot are being saved to the output file. It is important to note that messages are saved in the order of events as they had happened on the exchange, not in the order they have been received. `Receive and arrange messages` activity performs buffering and re-arranging of the messages before saving them as JSON lines.
 
-
-```{r message-hierarchy, echo=FALSE, fig.cap="UML2 Class Diagram of internal exchange-independent message types used by Order Book Reconstruction algorithm", fig.align="center"}
-knitr::include_graphics("Message Hierarchy.png", dpi=80)
-```
-
-These messages are then taken by the activity `R.3 Cleanse` that performs so called *data cleansing*. According to [@rahm_data_2000]:
-
-> *Data cleaning*, also called *data cleansing* or *scrubbing*, deals with detecting and removing errors and inconsistencies from data in order to improve the quality of data.
-
-UML2 Activity Diagram [@cook_omg_2017] of `R.3 Cleanse` is shown on figure \@ref(fig:cleanse-activity).
-
-```{r  cleanse-activity, echo=FALSE,fig.cap="UML2 Activity Diagram  of cleansing", fig.align="center"}
-knitr::include_graphics("R.3 Cleanse.png", dpi=80)
-```
-
-The output of `R.3 Cleanse` is a set of zero or more messages each of which is then converted into zero or one event as defined by \@ref(def:order-event) which together compose Limit Order Book as defined by \@ref(def:lob). These events are persisted by `R.4 Save` activity.
-
-`R.3 Cleanse` will not produce output for a message when subsequent messages are required for cleansing. In this case the message will be kept within `R.3 Cleanse` between runs until enough subsequent messages are received. Then all kept and cleansed messages are returned together.
+The `exchange name` parameter tells `oberon::reconstruct()` which kind of reconstructor object needs to be created to process the Messages file. Every line of the file is transformed into [Boost.Property Tree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) container by `Read next message` activity. The container is then passed to `R.1 Reconstruct Order Book` activity, described in details in section \@ref(reconstruction-process). This activity represents the core of the reconstruction algorithm.  The output of `R.1 Reconstruct Order Book` is a set of an exchange-independent order events, whch also carries information about trades. The events are saved into Events file in CSV format.
 
 Surprisingly, an order, an order event, a limit order book,  the operations of a continuous double auction are rather complicated things if one attempts to define them rigorously. Consider, for example,  a definition given in the recent book [@bouchaud_trades_2018]:
 
@@ -157,7 +136,10 @@ The above definition and description are incomplete:
 
 Below we propose stricter definitions that address these and the other similar issues while staying as close as possible to [@bouchaud_trades_2018].
 
-## Basic Tools
+
+## Mathematical formulation
+
+### Basic Tools
 
 
 ```{definition Support, name="Support", label=support}
@@ -283,7 +265,7 @@ is called a *price function*.
 
 The lot size $v_0$ and tick size $\vartheta$ are collectively called *resolution parameters*.
 
-## Order and Trade
+### Order and Trade
 
 
 Hereafter is assumed that a single asset is traded and a single currency is used. 
@@ -378,7 +360,7 @@ There is one-to-one correspondance between orders as defined by \@ref(def:order)
 
 TBD - more constraints to be added to the definition of Order Table. Otherwise the theorem can't be proved.
 
-## Limit Order Book (LOB)
+### Limit Order Book (LOB)
 
 Typically the term [order book](https://www.investopedia.com/terms/o/order-book.asp) refers to an electronic list of buy and sell orders for a specific security or financial instrument organized by price level. An order book lists the number of shares being bid on or offered at each price point, or market depth. Order books are used by almost every exchange to list the orders for different securities. 
 
@@ -533,14 +515,43 @@ It can bee seen from figure \@ref(fig:example-order-book) that:
 * At `r format(time_0 + sort(unique(sot$t))[10], "%H:%M:%OS1")` volume and price of order 6 have been amended. Its volume has been reduced by 100 units of the asset and its price increased to 60. At the same time a market buy order has been placed for 5000 units of the currency and single trade has been executed: $(\text{`r format(time_0 + sort(unique(sot$t))[9], "%H:%M:%OS1")`}, 5, 50, -100)$. Most likely the change of price of order 6 has transformed it to a market limit order which was partially executed and the reminder was placed in the order book again. 
 * At `r format(time_0 + sort(unique(sot$t))[11], "%H:%M:%OS1")` a sell market order has been placed, single trade was executed: $(\text{`r format(time_0 + sort(unique(sot$t))[11], "%H:%M:%OS1")`}, 6, 60, 300)$ and, simultaneously, probably as a consequence of the trade, the price of order 6 has been amended from 60 to 20. Note that trade has been executed at price 60.
 
-## Extract
+
+## Reconstruction process{#reconstruction-process}
+
+Figure \@ref(fig:reconstruction-activity) shows UML2 Activity Diagram of `R.1 Reconstruct Order Book` activity of `oberon::reconstruct()` function.
+
+
+```{r reconstruction-activity, echo=FALSE, fig.cap="UML2 Activity Diagram  of Reconstruction algorithm", fig.align="center"}
+knitr::include_graphics("R.1 Reconstruct Order Book.png", dpi=80)
+```
+
+The activity `R.2 Extract` takes a [Boost.PropertyTree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) container with an exchange-specific data and produces one or more internal exchange-independent messages. The produced messages belong to the classes shown on figure \@ref(fig:message-hierarchy). 
+
+
+```{r message-hierarchy, echo=FALSE, fig.cap="UML2 Class Diagram of internal exchange-independent message types used by Order Book Reconstruction algorithm", fig.align="center"}
+knitr::include_graphics("Message Hierarchy.png", dpi=80)
+```
+
+These messages are then taken by the activity `R.3 Cleanse` that performs so called *data cleansing*. According to [@rahm_data_2000]:
+
+> *Data cleaning*, also called *data cleansing* or *scrubbing*, deals with detecting and removing errors and inconsistencies from data in order to improve the quality of data.
+
+UML2 Activity Diagram [@cook_omg_2017] of `R.3 Cleanse` is shown on figure \@ref(fig:cleanse-activity).
+
+```{r  cleanse-activity, echo=FALSE,fig.cap="UML2 Activity Diagram  of cleansing", fig.align="center"}
+knitr::include_graphics("R.3 Cleanse.png", dpi=80)
+```
+
+The output of `R.3 Cleanse` is a set of zero or more messages each of which is then converted into zero or one event as defined by \@ref(def:order-event) which together compose Limit Order Book as defined by \@ref(def:lob). These events are persisted by `R.4 Save` activity.
+
+`R.3 Cleanse` will not produce output for a message when subsequent messages are required for cleansing. In this case the message will be kept within `R.3 Cleanse` between runs until enough subsequent messages are received. Then all kept and cleansed messages are returned together.
+
+### Extract
 
 TBD
 
-## Cleanse
+### Cleanse
 
-
-### Deduplicate
 
 
 ```{r  redundant-base, echo=FALSE, fig.cap="States of an order while it being processed by an exchange", fig.align="center"}
@@ -556,11 +567,7 @@ knitr::include_graphics("redundant1.png", dpi=80)
 knitr::include_graphics("redundant2.png", dpi=80)
 ```
 
-### Classify
 
-## Transmit
-
-TBD
 
 # Results
 
@@ -637,7 +644,7 @@ Trades are reported by Bitfinex without specifying identification numbers of ord
 
 Every ~800 milliseconds Bitfinex sends an update of "200 best LOB orders" set.
 
-The update starts from the list of order identification numbers which have to be removed from "200 best LOB orders" set. The reason of removal is not specified by Bitfinex: the removed order may be cancelled, filled or it may just fall beyound 200 best (see, for example, lines 18-24). Since Bitfinex allows to change the price of a placed order even an order with a last known price that is far from spread may be suddenly filled if the trader who placed the order decides to change the order's price. 
+The update starts from the list of order identification numbers which have to be removed from "200 best LOB orders" set. The reason of removal is not specified by Bitfinex: the removed order could be cancelled, filled or it could just fall beyound 200 best (see, for example, lines 18-24). Since Bitfinex allows to change the price of a placed order even an order with a last known price that is far from spread may be suddenly filled if the trader who placed the order decides to change the order's price. 
 
 Then update ends by the list of orders to be added to "200 best LOB orders" set. Price and remaining size are provided for each order as well as an order identification number (see lines 25-34). 
 

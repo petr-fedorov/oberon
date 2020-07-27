@@ -1,6 +1,6 @@
 format 222
 "R package" // R package
-  revision 51
+  revision 54
   modified_by 6 "petr"
   // class settings
   
@@ -55,6 +55,352 @@ format 222
     
     activitydiagramsettings
      end
+    activity 188550 "oberon::obtain"
+      activitydiagram 379910 "Overview"
+	activitydiagramsettings
+	 end
+	size A4
+      end
+
+      activityobject 207110 "Messages file"
+	stereotype "datastore"
+	 explicit_type "JSON"
+	 multiplicity "*" ordered 
+      end
+
+      parameter 205446 "exchange name" explicit_type ""
+	unordered 
+	in
+	flow 392198 "<flow>"
+	  on activityobject_ref 214406 // activity object exchange name
+	end
+      end
+
+      parameter 205574 "pair name" explicit_type ""
+	unordered 
+	in
+	flow 392070 "<flow>"
+	  on activityobject_ref 214534 // activity object pair name
+	end
+      end
+
+      parameter 205702 "output file name" explicit_type ""
+	unordered 
+	in
+	flow 391942 "<flow>"
+	  on activityobject_ref 214662 // activity object output file name
+	end
+      end
+
+      activityaction 274310 "Subscribe"
+	opaque_action
+	pin 334086 "channel" explicit_type ""
+	   multiplicity "1" unordered is_control
+	  out
+	  flow 391686 "<flow>"
+	    on pin_ref 334342 // channel
+	  end
+	end
+
+	pin 334854 "exchange" explicit_type ""
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 334982 "pair" explicit_type ""
+	   multiplicity "1" unordered 
+	  in
+	end
+      end
+
+      activitynode 297094 merge ""
+	flow 391174 "<flow>"
+	  on activityaction_ref 274310 // activity action Subscribe
+	end
+      end
+
+      activityaction 274438 "Receive and arrange messages"
+	opaque_action
+	pin 333958 "error" explicit_type ""
+	   multiplicity "1" unordered is_control
+	  out exception
+	  flow 390918 "<flow>"
+	    on activitynode_ref 297094 // merge
+	  end
+	end
+
+	pin 334470 "channel" explicit_type ""
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 334598 "messages" explicit_type "JSON"
+	   multiplicity "*" ordered 
+	  out stream
+	  flow 391430 "<flow>"
+	    on activityobject_ref 207110 // activity object Messages file
+	  end
+	end
+
+	pin 334726 "file" explicit_type ""
+	   multiplicity "1" unordered 
+	  in
+	end
+      end
+
+      activityaction 274566 "Start new era"
+	opaque_action
+	pin 334214 "channel" explicit_type ""
+	   multiplicity "1" unordered is_control
+	  out
+	  flow 391558 "<flow>"
+	    on pin_ref 334470 // channel
+	  end
+	end
+
+	pin 334342 "channel" explicit_type ""
+	   multiplicity "1" unordered is_control
+	  in
+	end
+      end
+
+      activitynode 297222 initial_node ""
+	flow 391046 "<flow>"
+	  on activitynode_ref 297094 // merge
+	end
+      end
+
+      activityobject 214406 "exchange name"
+	stereotype "datastore"
+	 explicit_type ""
+	 multiplicity "1" unordered 
+	flow 392326 "<flow>"
+	  on pin_ref 334854 // exchange
+	end
+      end
+
+      activityobject 214534 "pair name"
+	stereotype "datastore"
+	 explicit_type ""
+	 multiplicity "1" unordered 
+	flow 392454 "<flow>"
+	  on pin_ref 334982 // pair
+	end
+      end
+
+      activityobject 214662 "output file name"
+	stereotype "datastore"
+	 explicit_type ""
+	 multiplicity "1" unordered 
+	flow 391814 "<flow>"
+	  on pin_ref 334726 // file
+	end
+      end
+
+      interruptibleactivityregion 147590 ""
+	activityaction 274694 "Stop"
+	  accept_event_action
+	  flow 392582 "<flow>"
+	    on activitynode_ref 297350 // activity_final
+	  end
+	end
+      end
+
+      activitynode 297350 activity_final ""
+      end
+    end
+
+    activity 188678 "oberon::reconstruct"
+      parameter 205830 "input file name" explicit_type ""
+	unordered 
+	in
+	flow 388870 "<flow>"
+	  on pin_ref 333062 // file name
+	end
+      end
+
+      parameter 205958 "exchange name" explicit_type ""
+	unordered 
+	in
+	flow 390534 "<flow>"
+	  on pin_ref 333574 // exchange name
+	end
+      end
+
+      parameter 206086 "output file name" explicit_type ""
+	unordered 
+	in
+	flow 390662 "<flow>"
+	  on pin_ref 333702 // output file name
+	end
+      end
+
+      activityaction 267270 "Create reconstructor"
+	create_object_action
+	flow 389638 "<flow>"
+	  on activityaction_ref 274054 // activity action Open messages file
+	end
+
+	pin 333190 "reconstructor" explicit_type ""
+	  unordered 
+	  out
+	  flow 389766 "<flow>"
+	    on activityobject_ref 207750 // activity object reconstructor
+	  end
+	end
+
+	pin 333574 "exchange name" explicit_type ""
+	  unordered 
+	  in
+	end
+
+	pin 333702 "output file name" explicit_type ""
+	  unordered 
+	  in
+	end
+
+	pin 333830 "mode" explicit_type ""
+	  unordered 
+	  in
+	end
+      end
+
+      activityaction 267398 "Read next message"
+	opaque_action
+	pin 326278 "ptree" explicit_type ""
+	   multiplicity "0..1" unordered is_control
+	  out
+	  flow 381830 "<flow>"
+	    on activitynode_ref 290182 // decision
+	  end
+	end
+
+	pin 332806 "message" explicit_type ""
+	   multiplicity "0..1" unordered 
+	  in
+	end
+      end
+
+      activityaction 267526 "R.1 Reconstruct Order Book"
+	call_behavior_action
+	synchronous activity_ref 175238 // R.1 Reconstruct Order Book
+	pin 325766 "ptree" type class_ref 174214 // ptree
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 325894 "time_order_error" type class_ref 472838 // time_order_error
+	   multiplicity "1" unordered is_control
+	  out exception
+	  flow 390150 "<flow>"
+	    on activitynode_ref 290310 // activity_final
+	  end
+	end
+
+	pin 326022 "logic_error" explicit_type ""
+	   multiplicity "1" unordered is_control
+	  out exception
+	  flow 390022 "<flow>"
+	    on activitynode_ref 290310 // activity_final
+	  end
+	end
+
+	pin 326150 "target" type class_ref 486278 // ReconstructorImplementation
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	flow 389382 "<flow>"
+	  on activitynode_ref 296838 // merge
+	end
+
+	pin 333446 "events" explicit_type ""
+	   multiplicity "*" unordered 
+	  out
+	  flow 390406 "<flow>"
+	    on activityobject_ref 207366 // activity object Events file
+	  end
+	end
+      end
+
+      activityobject 207366 "Events file"
+	stereotype "datastore"
+	 explicit_type "CSV"
+	 multiplicity "*" ordered 
+      end
+
+      activityobject 207494 "buffer"
+	 explicit_type ""
+	unordered 
+      end
+
+      activitynode 290182 decision ""
+	flow 381190 "<flow>"
+	  on activitynode_ref 290310 // activity_final
+	    uml_guard "empty"
+	end
+
+	flow 382086 "<flow>"
+	  on pin_ref 325766 // ptree
+	    uml_guard "not empty"
+	end
+      end
+
+      activitynode 290310 activity_final ""
+      end
+
+      activityobject 207750 "reconstructor"
+	stereotype "datastore"
+	 explicit_type ""
+	 multiplicity "1" unordered 
+	flow 389126 "<flow>"
+	  on pin_ref 326150 // target
+	end
+      end
+
+      activityobject 214278 "Messages file"
+	stereotype "datastore"
+	 explicit_type "JSON"
+	 multiplicity "*" ordered 
+	flow 388614 "<flow>"
+	  on pin_ref 332806 // message
+	end
+      end
+
+      activityaction 274054 "Open messages file"
+	opaque_action
+	pin 332934 "message" explicit_type ""
+	   multiplicity "*" unordered 
+	  out
+	  flow 388742 "<flow>"
+	    on activityobject_ref 214278 // activity object Messages file
+	  end
+	end
+
+	pin 333062 "file name" explicit_type ""
+	  unordered 
+	  in
+	end
+
+	flow 389254 "<flow>"
+	  on activitynode_ref 296838 // merge
+	end
+      end
+
+      activitynode 296838 merge ""
+	flow 389510 "<flow>"
+	  on activityaction_ref 267398 // activity action Read next message
+	end
+      end
+
+      parameter 212742 "reconstruction mode" explicit_type ""
+	unordered 
+	in
+	flow 390790 "<flow>"
+	  on pin_ref 333830 // mode
+	end
+      end
+    end
   end
 
   classview 161158 "R Package"
@@ -206,20 +552,6 @@ ${inlines}
 
       attribute 568582 "x_"
 	private explicit_type "double"
-	multiplicity "*"
-	stereotype "vector"
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-      end
-
-      attribute 589062 "x_lab_"
-	private explicit_type "string"
 	multiplicity "*"
 	stereotype "vector"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};

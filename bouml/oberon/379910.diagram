@@ -1,0 +1,387 @@
+format 222
+
+activityobjectcanvas 128134 activityobject_ref 207110 // activity object Messages file
+  
+  xyzwh 697 181 5015 95 59 label_xy 647 159
+end
+activitycanvas 128518 activity_ref 188550 // oberon::obtain
+  
+  xyzwh 48 38 2005 773 371
+  params
+    parametercanvas 128902 parameter_ref 205446 // exchange name
+        xyzwh 97 396 2006 101 25
+    end
+    parametercanvas 129030 parameter_ref 205574 // pair name
+        xyzwh 223 396 2006 101 25
+    end
+    parametercanvas 129158 parameter_ref 205702 // output file name
+        xyzwh 519 396 2006 101 25
+    end
+  end
+end
+activitycanvas 128774 activity_ref 188678 // oberon::reconstruct
+  
+  xyzwh 54 457 2000 761 379
+  params
+    parametercanvas 129286 parameter_ref 205830 // input file name
+        xyzwh 2 721 2002 105 25
+    end
+    parametercanvas 129414 parameter_ref 205958 // exchange name
+        xyzwh 144 823 2002 105 25
+    end
+    parametercanvas 133126 parameter_ref 206086 // output file name
+        xyzwh 259 823 2002 105 25
+    end
+    parametercanvas 139142 parameter_ref 212742 // reconstruction mode
+        xyzwh 384 823 2002 105 25
+    end
+  end
+end
+activityactioncanvas 129542 activityaction_ref 267270 // activity action Create reconstructor
+  
+  show_opaque_action_definition default
+  xyzwh 210 699 2005 100 60
+  pins
+    pincanvas 136838 pin_ref 333190 // reconstructor
+      xyzwh 309 719 2007 11 11 label_xy 324 710
+    end
+    pincanvas 137990 pin_ref 333574 // exchange name
+      xyzwh 224 758 2007 11 11 label_xy 139 775
+    end
+    pincanvas 138118 pin_ref 333702 // output file name
+      xyzwh 265 758 2007 11 11 label_xy 278 774
+    end
+    pincanvas 139270 pin_ref 333830 // mode
+      xyzwh 309 745 2007 11 11 label_xy 328 734
+    end
+  end
+end
+activityactioncanvas 129670 activityaction_ref 267398 // activity action Read next message
+  
+  show_opaque_action_definition default
+  xyzwh 406 571 2010 100 60
+  pins
+    pincanvas 132358 pin_ref 326278 // ptree
+      xyzwh 505 600 2012 11 11 label_xy 507 631
+    end
+    pincanvas 134918 pin_ref 332806 // message
+      xyzwh 396 593 2012 11 11 label_xy 346 607
+    end
+  end
+end
+activityactioncanvas 130438 activityaction_ref 267526 // activity action R.1 Reconstruct Order Book
+  
+  show_opaque_action_definition default
+  color lightmediumgreen
+  xyzwh 644 579 2007 135 56
+  pins
+    pincanvas 130566 pin_ref 325766 // ptree
+      xyzwh 634 601 2008 11 11 label_xy 598 616
+    end
+    pincanvas 130694 pin_ref 325894 // time_order_error
+      xyzwh 727 569 2008 11 11 label_xy 659 543
+    end
+    pincanvas 130822 pin_ref 326022 // logic_error
+      xyzwh 634 578 2008 11 11 label_xy 591 556
+    end
+    pincanvas 130950 pin_ref 326150 // target
+      xyzwh 678 630 2008 11 11 label_xy 678 644
+    end
+    pincanvas 137734 pin_ref 333446 // events
+      xyzwh 738 630 2009 11 11 label_xy 746 644
+    end
+  end
+end
+activityobjectcanvas 131078 activityobject_ref 207366 // activity object Events file
+  
+  xyzwh 696 700 2005 95 59 label_xy 653 764
+end
+activitynodecanvas 131462 activitynode_ref 290182 // decision
+  xyz 537 588 2005
+end
+activitynodecanvas 131590 activitynode_ref 290310 // activity_final
+  xyz 538 502 2005
+end
+activityobjectcanvas 133638 activityobject_ref 207750 // activity object reconstructor
+  
+  color transparent xyzwh 497 704 2005 91 41 label_xy 497 749
+end
+activityobjectcanvas 134534 activityobject_ref 214278 // activity object Messages file
+  
+  xyzwh 250 570 2015 95 59 label_xy 226 553
+end
+activityactioncanvas 134662 activityaction_ref 274054 // activity action Open messages file
+  
+  show_opaque_action_definition default
+  xyzwh 86 572 2020 100 60
+  pins
+    pincanvas 135174 pin_ref 332934 // message
+      xyzwh 185 594 2022 11 11 label_xy 189 614
+    end
+    pincanvas 135430 pin_ref 333062 // file name
+      xyzwh 122 631 2022 11 11 label_xy 67 639
+    end
+  end
+end
+activitynodecanvas 135942 activitynode_ref 296838 // merge
+  xyz 440 478 2015
+end
+activityactioncanvas 139654 activityaction_ref 274310 // activity action Subscribe
+  
+  show_opaque_action_definition default
+  xyzwh 152 183 4005 100 60
+  pins
+    pincanvas 141702 pin_ref 334086 // channel
+      xyzwh 251 208 6011 11 11 label_xy 255 220
+    end
+    pincanvas 143878 pin_ref 334854 // exchange
+      xyzwh 168 242 6011 11 11 label_xy 102 242
+    end
+    pincanvas 144134 pin_ref 334982 // pair
+      xyzwh 233 242 6011 11 11 label_xy 248 243
+    end
+  end
+end
+activitynodecanvas 139782 activitynode_ref 297094 // merge
+  xyz 186 127 4005
+end
+activityactioncanvas 139910 activityaction_ref 274438 // activity action Receive and arrange messages
+  
+  show_opaque_action_definition default
+  xyzwh 514 182 4005 100 60
+  pins
+    pincanvas 140166 pin_ref 333958 // error
+      xyzwh 555 172 4006 11 11 label_xy 563 148
+    end
+    pincanvas 142214 pin_ref 334470 // channel
+      xyzwh 504 212 6011 11 11 label_xy 458 198
+    end
+    pincanvas 142342 pin_ref 334598 // messages
+      xyzwh 613 203 6011 11 11 label_xy 618 218
+    end
+    pincanvas 143238 pin_ref 334726 // file
+      xyzwh 558 241 6011 11 11 label_xy 571 246
+    end
+  end
+end
+activityactioncanvas 140038 activityaction_ref 274566 // activity action Start new era
+  
+  show_opaque_action_definition default
+  xyzwh 337 183 4010 100 60
+  pins
+    pincanvas 141830 pin_ref 334214 // channel
+      xyzwh 436 212 6016 11 11 label_xy 439 225
+    end
+    pincanvas 141958 pin_ref 334342 // channel
+      xyzwh 327 209 6016 11 11 label_xy 280 194
+    end
+  end
+end
+activitynodecanvas 140422 activitynode_ref 297222 // initial_node
+  xyz 189 84 4005
+end
+activityobjectcanvas 142854 activityobject_ref 214406 // activity object exchange name
+  
+  color transparent xyzwh 100 297 4005 99 41 label_xy 154 338
+end
+activityobjectcanvas 142982 activityobject_ref 214534 // activity object pair name
+  
+  color transparent xyzwh 230 296 4005 91 41 label_xy 282 337
+end
+activityobjectcanvas 143110 activityobject_ref 214662 // activity object output file name
+  
+  color transparent xyzwh 523 294 4005 99 41 label_xy 508 340
+end
+interruptibleactivityregioncanvas 144390 interruptibleactivityregion_ref 147590 // 
+  xyzwh 69 108 2000 740 250
+end
+activityactioncanvas 144518 activityaction_ref 274694 // activity action Stop
+  
+  show_opaque_action_definition default
+  xyzwh 661 289 8158 96 45
+end
+activitynodecanvas 144774 activitynode_ref 297350 // activity_final
+  xyz 697 379 8037
+end
+flowcanvas 131718 flow_ref 381190 // <flow>
+  decenter_begin 560
+  
+  from ref 131462 z 2006 label "[empty]" xyz 530 549 3000 to ref 131590
+   write_horizontally default
+end
+flowcanvas 134150 flow_ref 381830 // <flow>
+  
+  from ref 132358 z 2013 to ref 131462
+   write_horizontally default
+end
+flowcanvas 134406 flow_ref 382086 // <flow>
+  decenter_begin 513
+  
+  from ref 131462 z 2009 label "[not empty]" xyz 567 599 3000 to ref 130566
+   write_horizontally default
+end
+flowcanvas 135046 flow_ref 388614 // <flow>
+  
+  from ref 134534 z 2016 to ref 134918
+   write_horizontally default
+end
+flowcanvas 135302 flow_ref 388742 // <flow>
+  
+  from ref 135174 z 2023 to ref 134534
+   write_horizontally default
+end
+flowcanvas 135558 flow_ref 388870 // <flow>
+  
+  from ref 129286 z 2023 to point 124 687
+  line 139014 z 2023 to ref 135430
+   write_horizontally default
+end
+flowcanvas 135814 flow_ref 389126 // <flow>
+  
+  from ref 133638 z 2009 to ref 130950
+   write_horizontally default
+end
+flowcanvas 136070 flow_ref 389254 // <flow>
+  
+  from ref 134662 z 2021 to point 251 493
+  line 136198 z 2021 to ref 135942
+   write_horizontally default
+end
+flowcanvas 136326 flow_ref 389382 // <flow>
+  decenter_begin 851
+  decenter_end 540
+  
+  from ref 130438 z 2016 to point 755 492
+  line 136454 z 2016 to ref 135942
+   write_horizontally default
+end
+flowcanvas 136582 flow_ref 389510 // <flow>
+  
+  from ref 135942 z 2016 to ref 129670
+   write_horizontally default
+end
+flowcanvas 136710 flow_ref 389638 // <flow>
+  decenter_end 820
+  
+  from ref 129542 z 2021 to point 167 725
+  line 138502 z 2021 to ref 134662
+   write_horizontally default
+end
+flowcanvas 136966 flow_ref 389766 // <flow>
+  
+  from ref 136838 z 2008 to ref 133638
+   write_horizontally default
+end
+flowcanvas 137478 flow_ref 390022 // <flow>
+  
+  from ref 130822 z 2009 to ref 131590
+   write_horizontally default
+end
+flowcanvas 137606 flow_ref 390150 // <flow>
+  
+  from ref 130694 z 2009 to point 728 510
+  line 138886 z 2009 to ref 131590
+   write_horizontally default
+end
+flowcanvas 137862 flow_ref 390406 // <flow>
+  
+  from ref 137734 z 2010 to ref 131078
+   write_horizontally default
+end
+flowcanvas 138246 flow_ref 390534 // <flow>
+  decenter_begin 809
+  
+  from ref 129414 z 2008 to ref 137990
+   write_horizontally default
+end
+flowcanvas 138374 flow_ref 390662 // <flow>
+  decenter_begin 114
+  
+  from ref 133126 z 2008 to ref 138118
+   write_horizontally default
+end
+flowcanvas 139398 flow_ref 390790 // <flow>
+  decenter_begin 514
+  
+  from ref 139142 z 2008 to point 435 748
+  line 139526 z 2008 to ref 139270
+   write_horizontally default
+end
+flowcanvas 140294 flow_ref 390918 // <flow>
+  decenter_end 567
+  
+  from ref 140166 z 4008 to point 557 145
+  line 142086 z 4008 to ref 139782
+   write_horizontally default
+end
+flowcanvas 140550 flow_ref 391046 // <flow>
+  
+  from ref 140422 z 4006 to ref 139782
+   write_horizontally default
+end
+flowcanvas 140678 flow_ref 391174 // <flow>
+  decenter_begin 440
+  decenter_end 450
+  
+  from ref 139782 z 4006 to ref 139654
+   write_horizontally default
+end
+flowcanvas 142470 flow_ref 391430 // <flow>
+  decenter_end 474
+  
+  from ref 142342 z 5016 to ref 128134
+   write_horizontally default
+end
+flowcanvas 142598 flow_ref 391558 // <flow>
+  
+  from ref 141830 z 4013 to ref 142214
+   write_horizontally default
+end
+flowcanvas 142726 flow_ref 391686 // <flow>
+  
+  from ref 141702 z 4013 to ref 141958
+   write_horizontally default
+end
+flowcanvas 143366 flow_ref 391814 // <flow>
+  decenter_begin 424
+  
+  from ref 143110 z 4008 to ref 143238
+   write_horizontally default
+end
+flowcanvas 143494 flow_ref 391942 // <flow>
+  decenter_begin 564
+  decenter_end 535
+  
+  from ref 129158 z 4006 to ref 143110
+   write_horizontally default
+end
+flowcanvas 143622 flow_ref 392070 // <flow>
+  decenter_begin 495
+  decenter_end 461
+  
+  from ref 129030 z 4006 to ref 142982
+   write_horizontally default
+end
+flowcanvas 143750 flow_ref 392198 // <flow>
+  
+  from ref 128902 z 4006 to ref 142854
+   write_horizontally default
+end
+flowcanvas 144006 flow_ref 392326 // <flow>
+  decenter_begin 757
+  
+  from ref 142854 z 4008 to ref 143878
+   write_horizontally default
+end
+flowcanvas 144262 flow_ref 392454 // <flow>
+  decenter_begin 120
+  
+  from ref 142982 z 4008 to ref 144134
+   write_horizontally default
+end
+flowcanvas 144902 flow_ref 392582 // <flow>
+  
+  from ref 144518 z 8159 to ref 144774
+   write_horizontally default
+end
+end

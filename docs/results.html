@@ -24,14 +24,14 @@
 <meta name="author" content="Petr Fedorov" />
 
 
-<meta name="date" content="2020-07-25" />
+<meta name="date" content="2020-07-27" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="reconstruction-algorithm.html"/>
+<link rel="prev" href="methods.html"/>
 <link rel="next" href="discussion.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -69,17 +69,17 @@
 <li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#continuous-time-double-auction-and-lob"><i class="fa fa-check"></i><b>1.1</b> Continuous-time double auction and LOB</a></li>
 <li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#available-data-sets"><i class="fa fa-check"></i><b>1.2</b> Available data sets</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html"><i class="fa fa-check"></i><b>2</b> Reconstruction algorithm</a><ul>
-<li class="chapter" data-level="2.1" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#overview"><i class="fa fa-check"></i><b>2.1</b> Overview</a></li>
-<li class="chapter" data-level="2.2" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#basic-tools"><i class="fa fa-check"></i><b>2.2</b> Basic Tools</a></li>
-<li class="chapter" data-level="2.3" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#order-and-trade"><i class="fa fa-check"></i><b>2.3</b> Order and Trade</a></li>
-<li class="chapter" data-level="2.4" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#limit-order-book-lob"><i class="fa fa-check"></i><b>2.4</b> Limit Order Book (LOB)</a></li>
-<li class="chapter" data-level="2.5" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#extract"><i class="fa fa-check"></i><b>2.5</b> Extract</a></li>
-<li class="chapter" data-level="2.6" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#cleanse"><i class="fa fa-check"></i><b>2.6</b> Cleanse</a><ul>
-<li class="chapter" data-level="2.6.1" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#deduplicate"><i class="fa fa-check"></i><b>2.6.1</b> Deduplicate</a></li>
-<li class="chapter" data-level="2.6.2" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#classify"><i class="fa fa-check"></i><b>2.6.2</b> Classify</a></li>
+<li class="chapter" data-level="2" data-path="methods.html"><a href="methods.html"><i class="fa fa-check"></i><b>2</b> Methods</a><ul>
+<li class="chapter" data-level="2.1" data-path="methods.html"><a href="methods.html#overview"><i class="fa fa-check"></i><b>2.1</b> Overview</a></li>
+<li class="chapter" data-level="2.2" data-path="methods.html"><a href="methods.html#mathematical-formulation"><i class="fa fa-check"></i><b>2.2</b> Mathematical formulation</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="methods.html"><a href="methods.html#basic-tools"><i class="fa fa-check"></i><b>2.2.1</b> Basic Tools</a></li>
+<li class="chapter" data-level="2.2.2" data-path="methods.html"><a href="methods.html#order-and-trade"><i class="fa fa-check"></i><b>2.2.2</b> Order and Trade</a></li>
+<li class="chapter" data-level="2.2.3" data-path="methods.html"><a href="methods.html#limit-order-book-lob"><i class="fa fa-check"></i><b>2.2.3</b> Limit Order Book (LOB)</a></li>
 </ul></li>
-<li class="chapter" data-level="2.7" data-path="reconstruction-algorithm.html"><a href="reconstruction-algorithm.html#transmit"><i class="fa fa-check"></i><b>2.7</b> Transmit</a></li>
+<li class="chapter" data-level="2.3" data-path="methods.html"><a href="methods.html#reconstruction-process"><i class="fa fa-check"></i><b>2.3</b> Reconstruction process</a><ul>
+<li class="chapter" data-level="2.3.1" data-path="methods.html"><a href="methods.html#extract"><i class="fa fa-check"></i><b>2.3.1</b> Extract</a></li>
+<li class="chapter" data-level="2.3.2" data-path="methods.html"><a href="methods.html#cleanse"><i class="fa fa-check"></i><b>2.3.2</b> Cleanse</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>3</b> Results</a><ul>
 <li class="chapter" data-level="3.1" data-path="results.html"><a href="results.html#fragments-of-extracted-events"><i class="fa fa-check"></i><b>3.1</b> Fragments of extracted events</a><ul>
@@ -2329,7 +2329,7 @@
 <p>The exchange does not provide any information about <em>market</em> orders.</p>
 <p>Trades are reported by Bitfinex without specifying identification numbers of orders involved (see, for example, line 17). Since Bitfinex trading rules allows a trader to place <a href="https://support.bitfinex.com/hc/en-us/articles/115003451049-Bitfinex-Order-Types#h_01EDSHX0VBHSX36HFD3A1N3R2E">Hidden orders</a>, one may expect to see trades out of the blue since, as it is already said, market orders are not reported and the matched limit order could be a hidden one.</p>
 <p>Every ~800 milliseconds Bitfinex sends an update of “200 best LOB orders” set.</p>
-<p>The update starts from the list of order identification numbers which have to be removed from “200 best LOB orders” set. The reason of removal is not specified by Bitfinex: the removed order may be cancelled, filled or it may just fall beyound 200 best (see, for example, lines 18-24). Since Bitfinex allows to change the price of a placed order even an order with a last known price that is far from spread may be suddenly filled if the trader who placed the order decides to change the order’s price.</p>
+<p>The update starts from the list of order identification numbers which have to be removed from “200 best LOB orders” set. The reason of removal is not specified by Bitfinex: the removed order could be cancelled, filled or it could just fall beyound 200 best (see, for example, lines 18-24). Since Bitfinex allows to change the price of a placed order even an order with a last known price that is far from spread may be suddenly filled if the trader who placed the order decides to change the order’s price.</p>
 <p>Then update ends by the list of orders to be added to “200 best LOB orders” set. Price and remaining size are provided for each order as well as an order identification number (see lines 25-34).</p>
 <table class="huxtable" style="border-collapse: collapse; margin-bottom: 2em; margin-top: 2em; width: 50%; margin-left: auto; margin-right: auto;  ">
 <caption style="caption-side: top; text-align: left;"><span id="tab:finex-extracted">Table 3.2: </span> A fragment of order table which can be extracted from Bitfinex's Raw Book and Trades websockets data provided for ETHUSD pair during 1 second. Rows are shown in the order they were received from Bitfinex.</caption><col><col><col><col><col><col><col><col><col><col><tr>
@@ -8846,7 +8846,7 @@ Figure 3.2: A graphical representation of the evolution of a market depth during
           </div>
         </div>
       </div>
-<a href="reconstruction-algorithm.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="methods.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 <a href="discussion.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>

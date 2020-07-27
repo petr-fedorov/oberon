@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>2 Reconstruction process | Order book events reconstruction from empirical data</title>
+  <meta name="description" content="2 Reconstruction process | Order book events reconstruction from empirical data" />
+  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="2 Reconstruction process | Order book events reconstruction from empirical data" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="2 Reconstruction process | Order book events reconstruction from empirical data" />
+  
+  
+  
+
+<meta name="author" content="Petr Fedorov" />
+
+
+<meta name="date" content="2020-07-27" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="index.html"/>
+<link rel="next" href="results.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#continuous-time-double-auction-and-lob"><i class="fa fa-check"></i><b>1.1</b> Continuous-time double auction and LOB</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#available-data-sets"><i class="fa fa-check"></i><b>1.2</b> Available data sets</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="reconstruction-process.html"><a href="reconstruction-process.html"><i class="fa fa-check"></i><b>2</b> Reconstruction process</a><ul>
+<li class="chapter" data-level="2.1" data-path="reconstruction-process.html"><a href="reconstruction-process.html#overview"><i class="fa fa-check"></i><b>2.1</b> Overview</a></li>
+<li class="chapter" data-level="2.2" data-path="reconstruction-process.html"><a href="reconstruction-process.html#basic-tools"><i class="fa fa-check"></i><b>2.2</b> Basic Tools</a></li>
+<li class="chapter" data-level="2.3" data-path="reconstruction-process.html"><a href="reconstruction-process.html#order-and-trade"><i class="fa fa-check"></i><b>2.3</b> Order and Trade</a></li>
+<li class="chapter" data-level="2.4" data-path="reconstruction-process.html"><a href="reconstruction-process.html#limit-order-book-lob"><i class="fa fa-check"></i><b>2.4</b> Limit Order Book (LOB)</a></li>
+<li class="chapter" data-level="2.5" data-path="reconstruction-process.html"><a href="reconstruction-process.html#extract"><i class="fa fa-check"></i><b>2.5</b> Extract</a></li>
+<li class="chapter" data-level="2.6" data-path="reconstruction-process.html"><a href="reconstruction-process.html#cleanse"><i class="fa fa-check"></i><b>2.6</b> Cleanse</a><ul>
+<li class="chapter" data-level="2.6.1" data-path="reconstruction-process.html"><a href="reconstruction-process.html#deduplicate"><i class="fa fa-check"></i><b>2.6.1</b> Deduplicate</a></li>
+<li class="chapter" data-level="2.6.2" data-path="reconstruction-process.html"><a href="reconstruction-process.html#classify"><i class="fa fa-check"></i><b>2.6.2</b> Classify</a></li>
+</ul></li>
+<li class="chapter" data-level="2.7" data-path="reconstruction-process.html"><a href="reconstruction-process.html#transmit"><i class="fa fa-check"></i><b>2.7</b> Transmit</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>3</b> Results</a><ul>
+<li class="chapter" data-level="3.1" data-path="results.html"><a href="results.html#fragments-of-extracted-events"><i class="fa fa-check"></i><b>3.1</b> Fragments of extracted events</a><ul>
+<li class="chapter" data-level="3.1.1" data-path="results.html"><a href="results.html#coinbase"><i class="fa fa-check"></i><b>3.1.1</b> Coinbase</a></li>
+<li class="chapter" data-level="3.1.2" data-path="results.html"><a href="results.html#bitstamp"><i class="fa fa-check"></i><b>3.1.2</b> Bitstamp</a></li>
+<li class="chapter" data-level="3.1.3" data-path="results.html"><a href="results.html#bitfinex"><i class="fa fa-check"></i><b>3.1.3</b> Bitfinex</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="results.html"><a href="results.html#fragments-of-cleansed-data"><i class="fa fa-check"></i><b>3.2</b> Fragments of cleansed data</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="results.html"><a href="results.html#bitstamp-1"><i class="fa fa-check"></i><b>3.2.1</b> Bitstamp</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="discussion.html"><a href="discussion.html"><i class="fa fa-check"></i><b>4</b> Discussion</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Order book events reconstruction from empirical data</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="reconstruction-process" class="section level1">
+<h1><span class="header-section-number">2</span> Reconstruction process</h1>
+<div id="overview" class="section level2">
+<h2><span class="header-section-number">2.1</span> Overview</h2>
+<p>Figure <a href="reconstruction-process.html#fig:oberon-package-overview">2.1</a> shows UML2 Activity Diagram <span class="citation">(Cook et al. 2017)</span> of two functions implemented in R package <code>oberon</code>:</p>
+<ul>
+<li><code>oberon::obtain()</code> - connects to the specified exchange, obtains available information for the specified pair and saves it as a set of JSON lines with an exchange-specific names into Messages file,</li>
+<li><code>oberon::reconstruct()</code> - takes Messages file, produced by <code>oberon::obtain()</code>, reconstructs Order Table as defined by <a href="reconstruction-process.html#def:order-table">2.12</a>, i.e. produces a set of an exchange-independent Events as defined by <a href="reconstruction-process.html#def:order-event">2.11</a>, and saves the set into Events file in CSV format.</li>
+</ul>
+<div class="figure" style="text-align: center"><span id="fig:oberon-package-overview"></span>
+<img src="Oberon%20package%20overview.png" alt="UML2 Activity Diagram  of a standalone application using Reconstruction algorithm"  />
+<p class="caption">
+Figure 2.1: UML2 Activity Diagram of a standalone application using Reconstruction algorithm
+</p>
+</div>
+<p><code>oberon::obtain()</code> subscribes to the exchange’s websocket channel(s) providing information about events and trades for the specified pair. Then it starts an era, i.e. it requests a snapshot of the order book for the specified pair and synchronises messages it’s already receiving from the websocket with the snapshot. As soon as the synchronization is completed, the snapshot itself and the messages that represents an update of the snapshot are being saved to the output file. It is important to note that messages are saved in the order of events as they had happened on the exchange, not in the order they have been received. <code>Receive and arrange messages</code> activity performs buffering and re-arranging of the messages before saving them as JSON lines.</p>
+<p>Figure <a href="reconstruction-process.html#fig:reconstruction-activity">2.2</a> shows UML2 Activity Diagram of <code>R.1 Reconstruct Order Book</code> activity of <code>oberon::reconstruct()</code> function.</p>
+<div class="figure" style="text-align: center"><span id="fig:reconstruction-activity"></span>
+<img src="R.1%20Reconstruct%20Order%20Book.png" alt="UML2 Activity Diagram  of Reconstruction algorithm"  />
+<p class="caption">
+Figure 2.2: UML2 Activity Diagram of Reconstruction algorithm
+</p>
+</div>
+<p>The activity <code>R.2 Extract</code> takes a <a href="https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html">Boost.PropertyTree</a> container with an exchange-specific data and produces one or more internal exchange-independent messages. The produced messages belong to the classes shown on figure <a href="reconstruction-process.html#fig:message-hierarchy">2.3</a>.</p>
+<div class="figure" style="text-align: center"><span id="fig:message-hierarchy"></span>
+<img src="Message%20Hierarchy.png" alt="UML2 Class Diagram of internal exchange-independent message types used by Order Book Reconstruction algorithm"  />
+<p class="caption">
+Figure 2.3: UML2 Class Diagram of internal exchange-independent message types used by Order Book Reconstruction algorithm
+</p>
+</div>
+<p>These messages are then taken by the activity <code>R.3 Cleanse</code> that performs so called <em>data cleansing</em>. According to <span class="citation">(Rahm and Do 2000)</span>:</p>
+<blockquote>
+<p><em>Data cleaning</em>, also called <em>data cleansing</em> or <em>scrubbing</em>, deals with detecting and removing errors and inconsistencies from data in order to improve the quality of data.</p>
+</blockquote>
+<p>UML2 Activity Diagram <span class="citation">(Cook et al. 2017)</span> of <code>R.3 Cleanse</code> is shown on figure <a href="reconstruction-process.html#fig:cleanse-activity">2.4</a>.</p>
+<div class="figure" style="text-align: center"><span id="fig:cleanse-activity"></span>
+<img src="R.3%20Cleanse.png" alt="UML2 Activity Diagram  of cleansing"  />
+<p class="caption">
+Figure 2.4: UML2 Activity Diagram of cleansing
+</p>
+</div>
+<p>The output of <code>R.3 Cleanse</code> is a set of zero or more messages each of which is then converted into zero or one event as defined by <a href="reconstruction-process.html#def:order-event">2.11</a> which together compose Limit Order Book as defined by <a href="reconstruction-process.html#def:lob">2.17</a>. These events are persisted by <code>R.4 Save</code> activity.</p>
+<p><code>R.3 Cleanse</code> will not produce output for a message when subsequent messages are required for cleansing. In this case the message will be kept within <code>R.3 Cleanse</code> between runs until enough subsequent messages are received. Then all kept and cleansed messages are returned together.</p>
+<p>Surprisingly, an order, an order event, a limit order book, the operations of a continuous double auction are rather complicated things if one attempts to define them rigorously. Consider, for example, a definition given in the recent book <span class="citation">(Bouchaud and Bonart 2018)</span>:</p>
+<blockquote>
+<p>An order is a commitment, declared at a given submission time, to buy or sell a given volume of an asset at no worse than a given price. An order <span class="math inline">\(x\)</span> is thus described by four attributes:</p>
+<ul>
+<li>its sign (or direction) <span class="math inline">\(\epsilon = \pm 1\)</span>, (<span class="math inline">\(\epsilon_x = +1\)</span> for buy orders; <span class="math inline">\(\epsilon_x = −1\)</span> for sell orders),</li>
+<li>its price <span class="math inline">\(p_x\)</span> ,</li>
+<li>its volume <span class="math inline">\(v_x &gt; 0\)</span>, and</li>
+<li>its submission time <span class="math inline">\(t_x\)</span>.</li>
+</ul>
+<p>We introduce the succinct notation <span class="math inline">\(x := (\epsilon_x , p_x ,v_x, t_x )\)</span>.</p>
+</blockquote>
+<p><span class="citation">(Bouchaud and Bonart 2018)</span> then continues with a description of what they call The Trade-Matching Algorithm:</p>
+<blockquote>
+<p>Whenever a trader submits a buy (respectively, sell) order <span class="math inline">\(x\)</span>, an LOB’s <em>trade-matching algorithm</em> checks whether it is possible for <span class="math inline">\(x\)</span> to match to existing sell (respectively,buy)orders <span class="math inline">\(y\)</span> such that <span class="math inline">\(p_y \leq p_x\)</span> (respectively, <span class="math inline">\(p_y \geq p_x\)</span>). If so, the matching occurs immediately and the relevant traders perform a trade for the agreed amount at the agreed price. Any portion of <span class="math inline">\(x\)</span> that does not match instead becomes active at the price <span class="math inline">\(p_x\)</span>, and it remains active until either it matches to an incoming sell (respectively, buy) order or it is cancelled. Cancellation usually occurs when the owner of an order no longer wishes to offer a trade at the stated price.</p>
+</blockquote>
+<p>The above definition and description are incomplete:</p>
+<ul>
+<li><p>According to the definition, an order <span class="math inline">\(x\)</span> seems to be an immutable entity. But according to the Trade-Matching algorithm, a portion of <span class="math inline">\(x\)</span> may become ‘active’ and it is not clear how the quality of being ‘active’ is different from the mere existence of submitted orders,</p></li>
+<li><p>At what price the trade is performed - <span class="math inline">\(p_x\)</span> or <span class="math inline">\(p_y\)</span> - is not explicitly stated,</p></li>
+<li><p>It is not stated what will happen if <span class="math inline">\(v_x \leq v_y\)</span>, etc.</p></li>
+</ul>
+<p>Below we propose stricter definitions that address these and the other similar issues while staying as close as possible to <span class="citation">(Bouchaud and Bonart 2018)</span>.</p>
+</div>
+<div id="basic-tools" class="section level2">
+<h2><span class="header-section-number">2.2</span> Basic Tools</h2>
+
+<div class="definition">
+<p><span id="def:support" class="definition"><strong>Definition 2.1  (Support)  </strong></span>Suppose <span class="math inline">\(X \subset \mathbb{R}\)</span> and <span class="math inline">\(f : X \mapsto \mathbb{R}\)</span>. The support of <span class="math inline">\(f\)</span> is defined as the closure of the subset of <span class="math inline">\(X\)</span> where <span class="math inline">\(f\)</span> is non-zero:
+<span class="math display">\[
+    \text{supp}(f) = \overline{\{x : x \in X, f(x) \neq 0 \}}
+  \]</span></p>
+</div>
+
+
+<div class="definition">
+<p><span id="def:piecewise-constant" class="definition"><strong>Definition 2.2  (Piecewise Constant Function)  </strong></span>A function <span class="math inline">\(f : \mathbb{R} \mapsto \mathbb{R}\)</span> is called a piecewise constant function if it can be written as
+<span class="math display">\[ 
+  f(t) = \sum_{T_k \in \mathcal{T} } f_k \mathbf{1}_{T_k}(t)
+\]</span>
+where</p>
+<ol style="list-style-type: lower-alpha">
+<li><p><span class="math inline">\(\mathcal{T} = \{T_k\}_{k=1}^{K}\)</span> is a set of proper intervals of <span class="math inline">\(\mathbb{R}\)</span> with endpoints <span class="math inline">\(t_{k,1} \in \mathbb{R}\)</span>, <span class="math inline">\(t_{k,2} \in \mathbb{R} \cup \{+\infty\}\)</span>, <span class="math inline">\(t_{k,1} &lt; t_{k,2}\)</span> such that <span class="math inline">\(\forall k_1 \neq k_2 : T_{k_1} \cap T_{k_2} = \emptyset\)</span>,</p></li>
+<li><span class="math inline">\(\mathbf{1}_{T_k}(\cdot)\)</span> is an indicator function of interval <span class="math inline">\(T_k\)</span>:
+<span class="math display">\[
+\mathbf{1}_{T_k}(t) = \begin{cases} 1, &amp; t \in T_k \\ 0, &amp; t \not \in T_k  \end{cases}
+\]</span></li>
+<li><span class="math inline">\(f_k \in \mathbb{R}\)</span> are constants called <em>function values</em> such that <span class="math inline">\(\forall k_1 \neq k_2 : f_{k_1} \neq f_{k_2}\)</span>
+</div></li>
+</ol>
+<p>All piece-wise constant functions we use hereafter must also have either left or right (or both) limits at every point of their domains. So in our definition of piece wise constant function set <span class="math inline">\(\mathcal{T}\)</span> does not include degenerate intervals.</p>
+
+<div class="definition">
+<p><span id="def:volume-function" class="definition"><strong>Definition 2.3  (Volume Function)  </strong></span>A function <span class="math inline">\(v : \mathbb{R} \mapsto \mathbb{R}_{\geq 0}\)</span> or <span class="math inline">\(v : \mathbb{R} \mapsto \mathbb{R}_{\leq 0}\)</span> such that</p>
+<ol style="list-style-type: lower-alpha">
+<li><span class="math inline">\(v(\cdot)\)</span> is a piecewise constant function as defined by <a href="reconstruction-process.html#def:piecewise-constant">2.2</a> with values in the set <span class="math inline">\(\{ n v_0 : n \in \mathbb{Z}\setminus \{0\} \}\)</span> where <span class="math inline">\(v_0\)</span> is a constant called <em>lot size</em>,</li>
+<li><span class="math inline">\(v(\cdot)\)</span> is either càdlàg or càglàd at each point of discontinuity</li>
+</ol>
+is called a <em>volume function</em>.
+</div>
+
+
+<div class="definition">
+<p><span id="def:fill-volume" class="definition"><strong>Definition 2.4  (Filled Volume)  </strong></span>Suppose a volume function <span class="math inline">\(v(t)\)</span> as defined by <a href="reconstruction-process.html#def:volume-function">2.3</a> is given. The function
+<span class="math display">\[
+  f_{v}(t) = \lim_{t^{&#39;} \uparrow t} v(t^{&#39;}) - v(t)
+  \]</span> is called a <em>filled volume</em> at time <span class="math inline">\(t\)</span>.</p>
+</div>
+
+
+<div class="definition">
+<p><span id="def:amended-volume" class="definition"><strong>Definition 2.5  (Amended Volume)  </strong></span>Suppose a volume function <span class="math inline">\(v(t)\)</span> as defined by <a href="reconstruction-process.html#def:volume-function">2.3</a> is given. The function
+<span class="math display">\[
+  a_{v}(t) = v(t) - \lim_{t^{&#39;} \downarrow t} v(t^{&#39;})
+\]</span> is called an <em>amended</em> volume at time <span class="math inline">\(t\)</span>.</p>
+</div>
+
+
+<div class="definition">
+<p><span id="def:price-function" class="definition"><strong>Definition 2.6  (Price Function)  </strong></span>A function <span class="math inline">\(p : \mathbb{R} \mapsto \mathbb{R}_{\geq 0}\)</span> such that</p>
+<ol style="list-style-type: lower-alpha">
+<li><span class="math inline">\(p(\cdot)\)</span> is a piecewise constant function as defined by <a href="reconstruction-process.html#def:piecewise-constant">2.2</a> with values in the set <span class="math inline">\(\{ n \vartheta : n \in \mathbb{Z}\setminus \{0\} \}\)</span> where <span class="math inline">\(\vartheta\)</span> is a constant called <em>tick size</em></li>
+<li><span class="math inline">\(p(\cdot)\)</span> is a càglàd at each point of discontinuity</li>
+</ol>
+is called a <em>price function</em>.
+</div>
+
+<p>The lot size <span class="math inline">\(v_0\)</span> and tick size <span class="math inline">\(\vartheta\)</span> are collectively called <em>resolution parameters</em>.</p>
+</div>
+<div id="order-and-trade" class="section level2">
+<h2><span class="header-section-number">2.3</span> Order and Trade</h2>
+<p>Hereafter is assumed that a single asset is traded and a single currency is used.</p>
+<p>As it has already been mentioned above an order is a commitment at a given time, to buy or sell a given volume of an asset at no worse than a given price. Figure <a href="reconstruction-process.html#fig:order-life-cycle">2.5</a> shows UML2 State Machine of High-level Order Life Cycle while the order is being processed by an exchange. The possible states an order can be in are:</p>
+<ul>
+<li><em>Taker</em> - a valid order has just been received by an exchange or its price has been changed in such a way that it may be filled immediately. This state is fleeting.</li>
+<li><em>Maker</em> - the order is open on the order book. Orders which are not fully filled or cancelled immediately enters this state. This state is lasting.</li>
+</ul>
+<div class="figure" style="text-align: center"><span id="fig:order-life-cycle"></span>
+<img src="order-life-cycle.png" alt="States of an order while it being processed by an exchange"  />
+<p class="caption">
+Figure 2.5: States of an order while it being processed by an exchange
+</p>
+</div>
+<p>An order which has ever entered Maker state is called a <a href="https://www.investopedia.com/terms/l/limitorder.asp">limit order</a>.</p>
+<p>An order which has never entered Maker state is called a <a href="https://www.investopedia.com/terms/m/marketorder.asp">market order</a>.</p>
+<p>If an order has been <em>matched</em> before entering <em>Maker</em> state or it has been <em>matched</em> after <em>price amendment</em>, then the order is sometimes called a market limit order. We always model market limit orders as a combination of an appropriate market order and a limit order that placed simultaneously.</p>
+<p>Market orders are always fleeting. To model an evolution of a limit order we use the following function:</p>
+
+<div class="definition">
+<span id="def:order" class="definition"><strong>Definition 2.7  (Order)  </strong></span>Suppose that <span class="math inline">\(i \in \mathbb{N}\)</span> is an <em>unique order identification</em>, <span class="math inline">\(v^i(t)\)</span> is a volume function as defined by <a href="reconstruction-process.html#def:volume-function">2.3</a>, <span class="math inline">\(p^i(t)\)</span> is a price function as defined by <a href="reconstruction-process.html#def:price-function">2.6</a> such that <span class="math display">\[\text{supp}\,(v^i) = \text{supp}\,(p^i)\]</span> Then a vector-valued function <span class="math inline">\(o^i : \mathbb{R} \mapsto \mathbb{R}_{&gt;0} \times \mathbb{R}\)</span> representing a commitment to buy or sell a given volume <span class="math inline">\(v^i(t)\)</span> of an asset at no worse than a given price <span class="math inline">\(p^i(t)\)</span> at a particular time <span class="math inline">\(t\)</span> with a closed form <span class="math display">\[o^i(t) = (p^i(t), v^i(t))\]</span> is called an <em>order</em>. If <span class="math inline">\(\forall t : v^i(t) \leq 0\)</span> the order is a commitment to <em>sell</em> and is also called a <em>sell order</em>. If <span class="math inline">\(\forall t : v^i(t) \geq 0\)</span> the order is a commitment to <em>buy</em> and is also called a <em>buy order</em>.
+</div>
+
+<p>Now we can define</p>
+
+<div class="definition">
+<span id="def:order-volume" class="definition"><strong>Definition 2.8  (Order Volume)  </strong></span>The function <span class="math inline">\(v^i(t)\)</span> in definition <a href="reconstruction-process.html#def:order">2.7</a> is called an <em>order volume</em>.
+</div>
+
+
+<div class="definition">
+<span id="def:order-price" class="definition"><strong>Definition 2.9  (Order Price)  </strong></span>The function <span class="math inline">\(p^i(t)\)</span> in definition <a href="reconstruction-process.html#def:order">2.7</a> is called an <em>order price</em>.
+</div>
+
+
+<div class="definition">
+<p><span id="def:trade" class="definition"><strong>Definition 2.10  (Trade)  </strong></span>Suppose an order <span class="math inline">\(o^i(t)\)</span> is given and <span class="math inline">\(\exists t_j : f_{v^i}(t_j) \neq 0\)</span>. Then a tuple <span class="math display">\[(t_j, i,p^i(t_j), f_{v^i}(t_j))\]</span> is called a <em>trade</em>. If <span class="math inline">\(f_{v^i}(t_j) &lt; 0\)</span> or, equivalently, <span class="math inline">\(i\)</span> is a sell order, then the trade is a buy trade. Otherwise it is a sell trade.</p>
+</div>
+
+<p>Note that we follow <span class="citation">(Bouchaud and Bonart 2018)</span> while modelling the actions of an order owner:</p>
+<blockquote>
+<p>… we will consider the evolution of an LOB <span class="math inline">\(\mathcal{L}(t)\)</span> as a so-called <em>càglàd process (continu à gauche, limite à droite)</em>. Informally, this means that when a new order <span class="math inline">\(x\)</span> is submitted at time <span class="math inline">\(t_x\)</span> , we regard it to be present in the LOB immediately after its arrival, but not immediately upon its arrival.</p>
+</blockquote>
+<p>In other words, definition <a href="reconstruction-process.html#def:amended-volume">2.5</a> means that when order <span class="math inline">\(v\)</span> is cancelled at time <span class="math inline">\(t\)</span>, we regard the cancellation visible in the LOB immediately after its arrival, but not immediately upon its arrival.</p>
+<p>Trades are modeled as <em>càdlàg (continue à droite, limite à gauche)</em> occurrences so they are visible immediately upon arrival.</p>
+<p>The consequence of the above is that <span class="math inline">\(v(t)\)</span> can be interpreted as a amount available for trade at time <span class="math inline">\(t\)</span> as it should and if a cancellation and a trade happen simultaneously, the trade is executed.</p>
+<p>An order can be conveniently represented in the form of a order table defined by <a href="reconstruction-process.html#def:order-table">2.12</a>.</p>
+
+<div class="definition">
+<p><span id="def:order-event" class="definition"><strong>Definition 2.11  (Order Event)  </strong></span>
+An <em>order event</em> is a tuple <span class="math inline">\((i, n, t^i_n,s^i_n, p^i_n, v^i_n,f^i_n)\)</span> where</p>
+<ol style="list-style-type: lower-alpha">
+<li><span class="math inline">\(i \in \mathbb{N}\)</span> is an <em>unique order identification</em> of the order,</li>
+<li><span class="math inline">\(n \in \{1, \ldots, N^i\}\)</span> is an <em>order event number</em>,</li>
+<li><span class="math inline">\(t^i_n \in \mathbb{R}_{&gt;0}\)</span> is an <em>event timestamp</em></li>
+<li><span class="math inline">\(s^i_n \in \{0, 1\}\)</span> is the <em>state</em> of the order after the event; <span class="math inline">\(s^i_n = 1\)</span> means <em>Active</em>, <span class="math inline">\(s^i_n = 0\)</span> means that order is done (finished) i.e. not active,</li>
+<li><span class="math inline">\(p_n^i \in \mathbb{R}_{&gt;0}\)</span> is the <em>order price</em>,</li>
+<li><span class="math inline">\(v_n^i \in \mathbb{R}\)</span> is the <em>order volume</em>,</li>
+<li><span class="math inline">\(f^i_n \in \mathbb{Z}_{\geq 0}\)</span> is a <em>trade identification number</em>; <span class="math inline">\(f^i_n &gt; 0\)</span> indicates that the event is originated by a trade. <span class="math inline">\(f^i_n = 0\)</span> means that the event is not originated by a trade.
+</div></li>
+</ol>
+
+<div class="definition">
+<p><span id="def:order-table" class="definition"><strong>Definition 2.12  (Order Table)  </strong></span>
+An <em>order table</em> is a set of <em>order events</em> as defined by <a href="reconstruction-process.html#def:order-event">2.11</a> such that</p>
+<ol start="2" style="list-style-type: lower-alpha">
+<li><span class="math inline">\(\forall i, \forall n: t^i_n &lt; t^i_{n+1}\)</span>,</li>
+<li><span class="math inline">\(\forall i : s^i_1 = 1\)</span> and <span class="math inline">\(\forall n \in \{2, \ldots, N^i\} : s^i_n = 0 \implies s^i_{n-1} = 1\)</span>,</li>
+<li><span class="math inline">\(\forall i\)</span> and <span class="math inline">\(\forall n \in \{2, \ldots, N^i\} : f^i_n = 1 \implies p^i_n = p^i_{n-1} \land |v^i_n| &lt; |v^i_{n-1}|\)</span>,</li>
+<li><span class="math inline">\(\forall i, \forall n_1, n_2: \text{sgn}(v_{n_1}^i) = \text{sgn}(v_{n_2}^i)\)</span>,
+</div></li>
+</ol>
+
+<div class="theorem">
+<p><span id="thm:equivalence" class="theorem"><strong>Theorem 2.1  </strong></span>There is one-to-one correspondance between orders as defined by <a href="reconstruction-process.html#def:order">2.7</a> and order tables as defined by <a href="reconstruction-process.html#def:order-table">2.12</a>.</p>
+</div>
+
+<p>TBD - more constraints to be added to the definition of Order Table. Otherwise the theorem can’t be proved.</p>
+</div>
+<div id="limit-order-book-lob" class="section level2">
+<h2><span class="header-section-number">2.4</span> Limit Order Book (LOB)</h2>
+<p>Typically the term <a href="https://www.investopedia.com/terms/o/order-book.asp">order book</a> refers to an electronic list of buy and sell orders for a specific security or financial instrument organized by price level. An order book lists the number of shares being bid on or offered at each price point, or market depth. Order books are used by almost every exchange to list the orders for different securities.</p>
+
+<div class="definition">
+<p><span id="def:order-book" class="definition"><strong>Definition 2.13  (Order Book)  </strong></span>A set of orders with common resolution parameters <span class="math inline">\(v_0\)</span> and <span class="math inline">\(\vartheta\)</span> <span class="math inline">\(\mathcal{O} = \{o^i(\cdot)\}_i\)</span> where <span class="math inline">\(o^i(\cdot)\)</span> is defined by <a href="reconstruction-process.html#def:order">2.7</a> is called an <em>order book</em>.</p>
+<p>A (possibly empty) subset <span class="math inline">\(\mathcal{B} =\{o^b(\cdot)\}_{v^b(\cdot) \geq 0} \subset \mathcal{O}\)</span> of buy orders is called <em>bids</em>. A (possibly empty) subset of <em>bids</em> <span class="math inline">\(\mathcal{B}(t) =\{o^b(\cdot)\}_{v^b(\cdot) \geq 0 \land p^b(t) &gt; 0} \subset \mathcal{B}\)</span> of buy orders is called <em>bids</em> at time <span class="math inline">\(t\)</span>.</p>
+A (possibly empty) subset <span class="math inline">\(\mathcal{A} =\{o^a(\cdot)\}_{v^a(\cdot) \leq 0} \subset \mathcal{O}\)</span> of sell orders is called <em>asks</em>. A (possibly empty) subset of <em>asks</em> <span class="math inline">\(\mathcal{A}(t) =\{o^a(\cdot)\}_{v^a(\cdot) \leq 0 \land p^a(t) &gt; 0} \subset \mathcal{A}\)</span> of buy orders is called <em>asks</em> at time <span class="math inline">\(t\)</span>.
+</div>
+
+<p>From definition of an order <a href="reconstruction-process.html#def:order">2.7</a> follows that <span class="math inline">\(\mathcal{O} = \mathcal{A} \cup \mathcal{B}\)</span> and <span class="math inline">\(\mathcal{A} \cap \mathcal{B} = \emptyset\)</span>.</p>
+
+<div class="definition">
+<span id="def:best-bid-price" class="definition"><strong>Definition 2.14  (Best Bid Price)  </strong></span>Suppose an order book <span class="math inline">\(\mathcal{O}\)</span> is given. The function <span class="math inline">\(b(t)\)</span> defined as:
+<span class="math display">\[
+  b_{\mathcal{O}}(t) = \begin{cases} \max_{o^b(\cdot) \in \mathcal{B}(t)} p^b(t), &amp; \text{ if } \mathcal{B}(t) \neq \emptyset \\0, &amp; \text{ otherwise }  \end{cases}
+  \]</span> is called <em>best bid price</em>.
+</div>
+
+
+<div class="definition">
+<span id="def:best-ask-price" class="definition"><strong>Definition 2.15  (Best Ask Price)  </strong></span>Suppose an order book <span class="math inline">\(\mathcal{O}\)</span> is given. The function <span class="math inline">\(a(t)\)</span> defined as:
+<span class="math display">\[
+  a_{\mathcal{O}}(t) = \begin{cases} \min_{o^a(\cdot) \in \mathcal{A}(t)} p^a(t) &amp; \text{ if } \mathcal{A}(t) \neq \emptyset \\ +\infty, &amp; \text{ otherwise } \end{cases}
+  \]</span> is called <em>best ask price</em>
+</div>
+
+
+<div class="definition">
+<span id="def:spread" class="definition"><strong>Definition 2.16  (Spread)  </strong></span>Suppose an order book <span class="math inline">\(\mathcal{O}\)</span> is given and <span class="math inline">\(a_{\mathcal{O}}(t)\)</span> and <span class="math inline">\(b_{\mathcal{O}}(t)\)</span> are its best ask price and best bid price functions as defined by <a href="reconstruction-process.html#def:best-ask-price">2.15</a> and <a href="reconstruction-process.html#def:best-bid-price">2.14</a> respectively. Then the function <span class="math display">\[
+  s_{\mathcal{O}}(t) = a_{\mathcal{O}}(t) -  b_{\mathcal{O}}(t) 
+  \]</span> is called <em>spread</em>.
+</div>
+
+
+<div class="definition">
+<span id="def:lob" class="definition"><strong>Definition 2.17  (Limit Order Book)  </strong></span>Suppose an order book <span class="math inline">\(\mathcal{L}\)</span> as defined by <a href="reconstruction-process.html#def:order-book">2.13</a> is given. Then <span class="math inline">\(\mathcal{L}\)</span> is called a <em>Limit Order Book (LOB)</em> if its spread function as defined by <a href="reconstruction-process.html#def:spread">2.16</a> is always positive:
+<span class="math display">\[ 
+  \forall t: s_{\mathcal{L}}(t) &gt; 0
+\]</span>
+</div>
+
+<p>A <a href="https://www.investopedia.com/terms/m/marketorder.asp">market order</a> is a request by an investor to buy or sell a security at the best available price at the time of order placement. The request is usually made through a broker or brokerage service and is ultimately executed by an exchange that maintains an order book. Clearly, a market order cause an exchange’s order book to be updated so market orders are modeled as <em>changes</em> of an order book.</p>
+
+<div class="definition">
+<p><span id="def:market-buy-order" class="definition"><strong>Definition 2.18  (Market Buy Order)  </strong></span>Suppose a Limit Order Book <span class="math inline">\(\mathcal{L}\)</span> is given as defined by <a href="reconstruction-process.html#def:lob">2.17</a>. Suppose that at time <span class="math inline">\(t_j\)</span> <span class="math display">\[\sum_{o^a(\cdot) \in \mathcal{A(t_j)} } f_{v^a}(t_j) &lt; 0 \]</span> Then it is said that a <em>market buy order</em> is placed and executed at time <span class="math inline">\(t_j\)</span> for <span class="math inline">\(\sum_{o^a(\cdot) \in \mathcal{A}(t_j) } |f_{v^a}(t_j)p^a(t_j)|\)</span> units of currency.</p>
+</div>
+
+
+<div class="definition">
+<p><span id="def:market-sell-order" class="definition"><strong>Definition 2.19  (Market Sell Order)  </strong></span>Suppose a Limit Order Book <span class="math inline">\(\mathcal{L}\)</span> is given as defined by <a href="reconstruction-process.html#def:lob">2.17</a>. Suppose that at time <span class="math inline">\(t_j\)</span> <span class="math display">\[\sum_{o^b(\cdot) \in \mathcal{B}(t_j) } f_{v^b}(t_j) &gt; 0 \]</span> Then it is said that a <em>market sell order</em> is placed and executed at time <span class="math inline">\(t_j\)</span> for <span class="math inline">\(\sum_{o^b(\cdot) \in \mathcal{B}(t_j) } f_{v^b}(t_j)\)</span> units of asset.</p>
+</div>
+
+<p>To make the above definitions intuitively clear, let’s consider an example. Table <a href="reconstruction-process.html#tab:example-order-table">2.1</a> contains a consolidated order table for six limit orders</p>
+<table class="huxtable" style="border-collapse: collapse; margin-bottom: 2em; margin-top: 2em; width: 90%; margin-left: 0%; margin-right: auto;  ">
+<caption style="caption-side: top; text-align: left;"><span id="tab:example-order-table">Table 2.1: </span> The sample order table contains information about six limit orders, four market orders and six trades.</caption><col><col><col><col><col><col><col><col><col><tr>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">#</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">\(i\)</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">\(n\)</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">\(t^i_n\)</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">\(s^i_n\)</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">\(p^i_n\)</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">\(v^i_n\)</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">\(f^i_n\)</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;">\(\Delta v^i_n \)</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">1</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0000000001</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">1</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">13:59:57.2</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">1</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">50</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">200</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;"></td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">2</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0000000002</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">1</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">13:59:58.0</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">1</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">80</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">-200</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;"></td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">3</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0000000002</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">2</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">13:59:58.9</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">1</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">80</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">-100</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;">-100</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">4</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0000000003</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">1</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">13:59:59.5</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">1</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">25</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">500</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;"></td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">5</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0000000001</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">2</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">14:00:00.0</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">50</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">200</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">1</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;">200</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">6</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0000000003</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">2</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">14:00:00.0</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">25</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">500</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">2</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;">500</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">7</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0000000004</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">1</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">14:00:00.0</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">1</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">25</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">-500</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;"></td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">8</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0000000005</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">1</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">14:00:00.7</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">1</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">50</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">-400</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;"></td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">9</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0000000002</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">3</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">14:00:01.2</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">80</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">-100</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;"></td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">10</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0000000006</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">1</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">14:00:01.7</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">1</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">10</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">500</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;"></td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">11</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0000000004</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">2</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">14:00:02.0</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">25</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">-500</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">3</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;">-500</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">12</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0000000005</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">2</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">14:00:02.0</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">1</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">50</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">-100</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">4</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;">-300</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">13</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0000000005</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">3</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">14:00:02.4</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">50</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">-100</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">5</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;">-100</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">14</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0000000006</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">2</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">14:00:02.4</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">1</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">60</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">400</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;">100</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">15</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0000000006</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">3</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">14:00:03.0</td>
+<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">1</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">20</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">100</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">6</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;">300</td>
+</tr>
+</table>
+
+<p>Figure <a href="reconstruction-process.html#fig:example-order-book">2.6</a> shows price and volume functions for six limit orders in table <a href="reconstruction-process.html#tab:example-order-table">2.1</a>.</p>
+<div class="figure"><span id="fig:example-order-book"></span>
+<img src="oberon_files/figure-html/example-order-book-1.png" alt="Price and Volume functions for the limit orders in table \@ref(tab:example-order-table)" width="672" />
+<p class="caption">
+Figure 2.6: Price and Volume functions for the limit orders in table <a href="reconstruction-process.html#tab:example-order-table">2.1</a>
+</p>
+</div>
+<p>It can bee seen from figure <a href="reconstruction-process.html#fig:example-order-book">2.6</a> that:</p>
+<ul>
+<li>At 13:59:57.2 order 1 to buy 200 units of the asset at price no worse than 50 per unit has been placed,</li>
+<li>At 13:59:58.0 order 2 to sell 200 units of the asset at price no worse than 80 per unit has been placed,</li>
+<li>At 13:59:58.9 the volume of order 2 has been amended (reduced by half) by the trader who placed the order,</li>
+<li>At 13:59:59.5 order 3 to buy 500 units of the asset at price no worse than 25 per unit has been placed,</li>
+<li>At 14:00:00.0 order 4 to sell 500 units of the asset at price no worse than 25 has been placed. Exactly at the same time, a market order has been placed to sell 700 units of the asset and two <em>sell</em> trades has been executed: <span class="math inline">\((\text{13:59:59.5}, 1, 50, 200)\)</span> and <span class="math inline">\((\text{13:59:59.5}, 3, 25, 500)\)</span>. Since the market order and order 4 have been placed at exactly the same time, it is very likely that order 4 has actually been placed to sell 1200 units, partially executed and the reminder (i.e. 500 units) has landed in LOB and there were no market order. Nevertheless fundamentally it is still a combination of a market order and a limit order.</li>
+<li>At 14:00:00.7 order 5 to sell 400 units of the asset at price no worse than 50 per unit has been placed,</li>
+<li>At 14:00:01.2 order 2 has been cancelled,<br />
+</li>
+<li>At 14:00:01.7 order 6 to buy 500 units of the asset at price no worse than 10 per unit has been placed,</li>
+<li>At 14:00:02.0 a market order to buy the asset for 27500 units of the currency has been placed and two buy trades have been executed: <span class="math inline">\((\text{14:00:02.0}, 4, 25, -500)\)</span> and <span class="math inline">\((\text{14:00:02.0}, 5, 50, -300)\)</span>. Alternatively, it could be a limit order to buy 800 units of the asset at price no worse than 50 that was fully executed.</li>
+<li>At 14:00:02.4 volume and price of order 6 have been amended. Its volume has been reduced by 100 units of the asset and its price increased to 60. At the same time a market buy order has been placed for 5000 units of the currency and single trade has been executed: <span class="math inline">\((\text{14:00:02.0}, 5, 50, -100)\)</span>. Most likely the change of price of order 6 has transformed it to a market limit order which was partially executed and the reminder was placed in the order book again.</li>
+<li>At 14:00:03.0 a sell market order has been placed, single trade was executed: <span class="math inline">\((\text{14:00:03.0}, 6, 60, 300)\)</span> and, simultaneously, probably as a consequence of the trade, the price of order 6 has been amended from 60 to 20. Note that trade has been executed at price 60.</li>
+</ul>
+</div>
+<div id="extract" class="section level2">
+<h2><span class="header-section-number">2.5</span> Extract</h2>
+<p>TBD</p>
+</div>
+<div id="cleanse" class="section level2">
+<h2><span class="header-section-number">2.6</span> Cleanse</h2>
+<div id="deduplicate" class="section level3">
+<h3><span class="header-section-number">2.6.1</span> Deduplicate</h3>
+<div class="figure" style="text-align: center"><span id="fig:redundant-base"></span>
+<img src="redundant0.png" alt="States of an order while it being processed by an exchange"  />
+<p class="caption">
+Figure 2.7: States of an order while it being processed by an exchange
+</p>
+</div>
+<div class="figure" style="text-align: center"><span id="fig:redundant-variant1"></span>
+<img src="redundant1.png" alt="States of an order while it being processed by an exchange"  />
+<p class="caption">
+Figure 2.8: States of an order while it being processed by an exchange
+</p>
+</div>
+<div class="figure" style="text-align: center"><span id="fig:redundant-variant2"></span>
+<img src="redundant2.png" alt="States of an order while it being processed by an exchange"  />
+<p class="caption">
+Figure 2.9: States of an order while it being processed by an exchange
+</p>
+</div>
+</div>
+<div id="classify" class="section level3">
+<h3><span class="header-section-number">2.6.2</span> Classify</h3>
+</div>
+</div>
+<div id="transmit" class="section level2">
+<h2><span class="header-section-number">2.7</span> Transmit</h2>
+<p>TBD</p>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="results.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+},
+"search": false
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
