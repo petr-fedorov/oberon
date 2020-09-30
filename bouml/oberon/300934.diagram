@@ -2,74 +2,74 @@ format 222
 
 activitycanvas 128134 activity_ref 181766 // R.3 Cleanse
   
-  xyzwh 66 32 2007 705 671
+  xyzwh 65 28 2007 677 367
   params
     parametercanvas 128262 parameter_ref 191878 // message
-        xyzwh 202 20 2008 77 25
+        xyzwh 198 16 2008 77 25
     end
     parametercanvas 128390 parameter_ref 192006 // target
-        xyzwh 732 311 2008 77 25
+        xyzwh 489 16 2008 77 25
     end
     parametercanvas 128518 parameter_ref 192134 // output
-        xyzwh 198 690 2008 77 25
+        xyzwh 703 342 2008 77 25
     end
   end
 end
 activityactioncanvas 128646 activityaction_ref 246662 // activity action Deduplicate
   
   show_opaque_action_definition default
-  xyzwh 185 196 2012 100 60
+  xyzwh 184 164 2012 100 60
   pins
     pincanvas 136838 pin_ref 305414 // target
-      xyzwh 284 208 2014 11 11 label_xy 309 203
+      xyzwh 283 176 2014 11 11 label_xy 308 171
     end
     pincanvas 136966 pin_ref 305542 // output
-      xyzwh 227 255 2014 11 11 label_xy 167 256
+      xyzwh 226 223 2014 11 11 label_xy 166 224
     end
     pincanvas 137094 pin_ref 305670 // messages
-      xyzwh 231 186 2014 11 11 label_xy 161 177
+      xyzwh 230 154 2014 11 11 label_xy 160 145
     end
   end
 end
-activityactioncanvas 130054 activityaction_ref 246918 // activity action Classify
+activityactioncanvas 130054 activityaction_ref 246918 // activity action Re-classify
   
   show_opaque_action_definition default
-  xyzwh 184 489 2012 100 60
+  xyzwh 477 244 2012 100 60
   pins
     pincanvas 130182 pin_ref 296966 // target
-      xyzwh 283 516 2014 11 11 label_xy 297 507
+      xyzwh 534 234 2014 11 11 label_xy 548 225
     end
     pincanvas 130310 pin_ref 297094 // output
-      xyzwh 228 548 2014 11 11 label_xy 246 552
+      xyzwh 521 303 2014 11 11 label_xy 539 307
     end
     pincanvas 130438 pin_ref 297222 // messages
-      xyzwh 230 479 2014 11 11 label_xy 160 468
+      xyzwh 467 266 2014 11 11 label_xy 397 255
     end
   end
 end
 activityobjectcanvas 132230 activityobject_ref 180614 // activity object this
   
-  xyzwh 493 301 2012 173 59
+  xyzwh 451 80 2012 173 59
 end
 activitynodecanvas 138502 activitynode_ref 270086 // decision
-  xyz 226 120 3005
+  xyz 225 88 3005
 end
 activityobjectcanvas 139910 activityobject_ref 193926 // activity object deduplicator
   
-  xyzwh 297 119 2012 95 45
+  xyzwh 296 87 2012 95 45
 end
 activitynodecanvas 140678 activitynode_ref 270214 // merge
-  xyz 221 287 3005
+  xyz 165 256 3005
 end
 activitynodecanvas 141446 activitynode_ref 283398 // decision
-  xyz 224 415 2019
+  xyz 226 255 2019
 end
 activityobjectcanvas 141574 activityobject_ref 200454 // activity object classifier
   
-  xyzwh 316 409 2021 95 45
+  xyzwh 491 165 2021 95 45
 end
 activitynodecanvas 142342 activitynode_ref 283526 // merge
-  xyz 222 592 2012
+  xyz 513 339 2012
 end
 flowcanvas 132742 flow_ref 313350 // <flow>
   decenter_begin 560
@@ -80,7 +80,7 @@ end
 flowcanvas 139014 flow_ref 336774 // <flow>
   decenter_begin 360
   
-  from ref 138502 z 3006 label "[else]" xyz 221 163 3006 to ref 137094
+  from ref 138502 z 3006 label "[else]" xyz 220 131 3006 to ref 137094
    write_horizontally default
 end
 flowcanvas 140038 flow_ref 337030 // <flow>
@@ -90,7 +90,7 @@ flowcanvas 140038 flow_ref 337030 // <flow>
   transformation 
   information 140166 "<<transformation>>
 Deduplicator"
-    xyzwh 455 104 2013 125 48
+    xyzwh 352 146 2013 125 48
 end
 flowcanvas 140422 flow_ref 337158 // <flow>
   decenter_end 540
@@ -105,9 +105,10 @@ flowcanvas 140550 flow_ref 337286 // <flow>
 end
 flowcanvas 140806 flow_ref 337414 // <flow>
   decenter_begin 459
+  decenter_end 513
   
-  from ref 138502 z 3006 label "[deduplicator is null]" xyz 114 130 3006 to point 108 136
-  line 141062 z 3006 to point 107 304
+  from ref 138502 z 3006 label "[deduplicator is null]" xyz 113 98 3006 to point 107 104
+  line 141062 z 3006 to point 106 272
   line 140934 z 3006 to ref 140678
    write_horizontally default
 end
@@ -123,7 +124,7 @@ flowcanvas 141702 flow_ref 351366 // <flow>
   transformation 
   information 143878 "<<transformation>>
 Classifier"
-    xyzwh 510 414 2022 125 48
+    xyzwh 601 142 2022 125 48
 end
 flowcanvas 141830 flow_ref 351494 // <flow>
   
@@ -141,10 +142,10 @@ flowcanvas 142214 flow_ref 351878 // <flow>
    write_horizontally default
 end
 flowcanvas 142470 flow_ref 352006 // <flow>
+  decenter_end 540
   
-  from ref 141446 z 2020 label "[filter is null]" xyz 137 425 2020 to point 114 430
-  line 142726 z 2020 to point 115 608
-  line 142598 z 2020 to ref 142342
+  from ref 141446 z 2020 label "[classifier is null]" xyz 198.5 317.5 2020 to point 235 357
+  line 142726 z 2020 to ref 142342
    write_horizontally default
 end
 flowcanvas 142854 flow_ref 352134 // <flow>

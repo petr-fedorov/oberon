@@ -1,6 +1,6 @@
 format 222
 "Order Book Reconstructor" // Order Book Reconstructor
-  revision 156
+  revision 159
   modified_by 6 "petr"
   // class settings
   
@@ -3843,7 +3843,7 @@ ${inlines}
 	end
       end
 
-      activityaction 246918 "Classify"
+      activityaction 246918 "Re-classify"
 	call_operation_action
 	operation_ref 590214 // handle
 	pin 296966 "target" type class_ref 441222 // MessageHandler
@@ -3918,7 +3918,7 @@ ${inlines}
 
 	flow 352006 "<flow>"
 	  on activitynode_ref 283526 // merge
-	    uml_guard "filter is null"
+	    uml_guard "classifier is null"
 	end
       end
 

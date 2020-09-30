@@ -1,0 +1,28 @@
+class Handshake_SSL_State
+!!!964358.cpp!!!	handshaked(inout stm : Coinbase) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._snapshot_state._query_snapshot_state);
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Snapshot.Query snapshot" << std::endl;
+#endif
+    stm._coinbase_state._engage_state._subscribed_state._snapshot_state._query_snapshot_state.create(stm);
+  }
+!!!964486.cpp!!!	_upper(inout stm : Coinbase) : Coinbase::AnyState
+  return &stm._coinbase_state._engage_state._subscribed_state._snapshot_state;
+!!!967558.cpp!!!	create(inout stm : Coinbase) : void
+	_doentry(stm);
+!!!967686.cpp!!!	_doentry(inout stm : Coinbase) : void
+#ifdef VERBOSE_STATE_MACHINE
+  std::cout << "DEBUG : execute entry behavior of .Coinbase.Engage.Subscribed.Snapshot.Handshake SSL" << std::endl;
+#endif
+stm.https_->async_handshake(boost::asio::ssl::stream_base::client,
+                            [&stm](const boost::system::error_code &ec) {
+                              if (ec) {
+                                stm.ec_ = ec;
+                                std::cerr << "HTTPS handshake error\n";
+                                stm.error();
+                              } else {
+                                stm.handshaked();
+                              }
+                            });

@@ -1,0 +1,7 @@
+class Output_State
+!!!963462.cpp!!!	message(inout stm : Coinbase) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+  }
+!!!963590.cpp!!!	_upper(inout stm : Coinbase) : Coinbase::AnyState
+  return &stm._coinbase_state._engage_state._subscribed_state;

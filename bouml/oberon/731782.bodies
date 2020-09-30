@@ -1,0 +1,56 @@
+class Subscribed_State
+!!!965126.cpp!!!	heartbeat(inout stm : Coinbase) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : execute activity of transition heartbeat" << std::endl;
+#endif
+if (stm.timer_->expires_from_now(seconds(3)) > 0) {
+  // We managed to cancel the timer. Start new asynchronous wait.
+  stm.timer_->async_wait([&stm](const boost::system::error_code &ec) {
+    if (ec != boost::asio::error::operation_aborted)
+      stm.timeout();
+  });
+  std::cout << stm.tree_.get<std::string>("time") << " Timer restarted\n";
+}
+
+  }
+!!!965254.cpp!!!	create(inout stm : Coinbase) : void
+  _doentry(stm);
+  {
+    stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._snapshot_state);
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Snapshot" << std::endl;
+#endif
+    stm._coinbase_state._engage_state._subscribed_state._snapshot_state.create(stm);
+  }
+!!!965382.cpp!!!	_upper(inout stm : Coinbase) : Coinbase::AnyState
+  return &stm._coinbase_state._engage_state;
+!!!965894.cpp!!!	_doentry(inout stm : Coinbase) : void
+#ifdef VERBOSE_STATE_MACHINE
+  std::cout << "DEBUG : execute entry behavior of .Coinbase.Engage.Subscribed" << std::endl;
+#endif
+stm.timer_->expires_from_now(seconds(5));
+stm.timer_->async_wait([&stm](const boost::system::error_code &ec) {
+  if (ec != boost::asio::error::operation_aborted) {
+    std::cout << "Time out!\n";
+    stm.timeout();
+  }
+});
+
+!!!976774.cpp!!!	timeout(inout stm : Coinbase) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._coinbase_state._engage_state._subscribed_state._doexit(stm);
+    stm._coinbase_state._engage_state._doexit(stm);
+    stm._set_currentState(stm._coinbase_state);
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : current state is now .Coinbase" << std::endl;
+#endif
+      stm._final();
+  }
+!!!984198.cpp!!!	_doexit(inout stm : Coinbase) : void
+#ifdef VERBOSE_STATE_MACHINE
+  std::cout << "DEBUG : execute exit behavior of .Coinbase.Engage.Subscribed" << std::endl;
+#endif
+stm.ioc_->stop();

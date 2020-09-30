@@ -1,6 +1,6 @@
 format 222
-"property_tree" // boost::property_tree
-  revision 3
+"websocket" // boost::beast::websocket
+  revision 1
   modified_by 6 "petr"
   // class settings
   
@@ -30,9 +30,8 @@ format 222
   activitydiagramsettings
    end
   
-  cpp_namespace "boost::property_tree"
-  comment "External classes from C++ Boost Property Tree library."
-  classview 154502 "external"
+  cpp_namespace "boost::beast::websocket"
+  classview 220934 "websocket"
     
     classdiagramsettings member_max_width 0 end
     
@@ -52,24 +51,15 @@ format 222
     
     activitydiagramsettings
      end
-    class 174214 "ptree"
+    class 698374 "stream"
       visibility package 
+      nformals 1
+      formal name "NextLayer" type "class" explicit_default_value ""
+        explicit_extends ""
       cpp_external cpp_decl "${name}
-#include <boost/property_tree/ptree.hpp>
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      mysql_decl ""
-      
-    end
+#include <boost/beast/websocket.hpp>
+#include <boost/beast/websocket/ssl.hpp>
 
-    class 699526 "json_parser"
-      visibility package 
-      cpp_external cpp_decl "${name}
-#include <boost/property_tree/json_parser.hpp>
 "
       java_decl ""
       php_decl ""
@@ -78,7 +68,6 @@ format 222
       explicit_switch_type ""
       mysql_decl ""
       
-      comment "namespace, not class"
     end
   end
 end

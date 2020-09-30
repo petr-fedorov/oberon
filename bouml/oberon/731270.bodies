@@ -1,0 +1,27 @@
+class Handshake_Websocket_State
+!!!961158.cpp!!!	handshaked(inout stm : Coinbase) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._coinbase_state._engage_state._initialize_state._subscribe_state);
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : current state is now .Coinbase.Engage.Initialize.Subscribe" << std::endl;
+#endif
+    stm._coinbase_state._engage_state._initialize_state._subscribe_state.create(stm);
+  }
+!!!961286.cpp!!!	create(inout stm : Coinbase) : void
+	_doentry(stm);
+!!!961414.cpp!!!	_doentry(inout stm : Coinbase) : void
+#ifdef VERBOSE_STATE_MACHINE
+  std::cout << "DEBUG : execute entry behavior of .Coinbase.Engage.Initialize.Handshake Websocket" << std::endl;
+#endif
+stm.ws_->async_handshake(stm.host_, stm.target_,
+                        [&stm](const boost::system::error_code &ec) {
+                          if (ec) {
+                            stm.ec_ = ec;
+                            stm.error();
+                          } else {
+                            stm.handshaked();
+                          }
+                        });
+!!!961542.cpp!!!	_upper(inout stm : Coinbase) : Coinbase::AnyState
+  return &stm._coinbase_state._engage_state._initialize_state;

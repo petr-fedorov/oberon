@@ -1,0 +1,24 @@
+class Snapshot_State
+!!!963718.cpp!!!	create(inout stm : Coinbase) : void
+  {
+    stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._snapshot_state._resolve_state);
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Snapshot.Resolve" << std::endl;
+#endif
+    stm._coinbase_state._engage_state._subscribed_state._snapshot_state._resolve_state.create(stm);
+  }
+!!!964870.cpp!!!	message(inout stm : Coinbase) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+  }
+!!!964998.cpp!!!	_upper(inout stm : Coinbase) : Coinbase::AnyState
+  return &stm._coinbase_state._engage_state._subscribed_state;
+!!!983942.cpp!!!	_completion(inout stm : Coinbase) : bool
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._output_state);
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Output" << std::endl;
+#endif
+    return (bool) 1;
+  }

@@ -1,0 +1,11 @@
+class Coinbase_State
+!!!916102.cpp!!!	create(inout stm : Coinbase) : void
+  {
+    stm._set_currentState(stm._coinbase_state._engage_state);
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : current state is now .Coinbase.Engage" << std::endl;
+#endif
+    stm._coinbase_state._engage_state.create(stm);
+  }
+!!!916358.cpp!!!	_upper(inout stm : Coinbase) : Coinbase::AnyState
+  return 0;

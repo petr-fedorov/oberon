@@ -20,7 +20,7 @@
     "ulong" "unsigned long" "long" "unsigned long" "${type}" "${type} &" "${type} &" "${type}"
     "float" "float" "float" "float" "${type}" "${type} &" "${type} &" "${type}"
     "double" "double" "double" "double" "${type}" "${type} &" "${type} &" "${type}"
-    "string" "string" "String" "string" "${type}" "${type} &" "${type} &" "${type}"
+    "string" "string" "String" "string" "const ${type} &" "${type} &" "${type} &" "${type}"
   
   relations_stereotypes 6 // uml cpp java pythonidl
     "sequence" "vector" "Vector" "list" "sequence"
@@ -49,8 +49,8 @@
     "@interface" "ignored" "@interface" "ignored" "ignored" "ignored"
     "stereotype" "ignored" "ignored" "ignored" "ignored" "ignored"
   
-  cpp_enum_default_type_forms "${type}" "${type} &" "${type} *" "${type}" // in out inout return
-  other_cpp_types_default_type_forms "const ${type} &" "${type} &" "${type} *" "${type}" // in out inout return
+  cpp_enum_default_type_forms "const ${type} &" "${type} &" "${type} *" "${type}" // in out inout return
+  other_cpp_types_default_type_forms "const ${type} &" "${type} &" "${type} &" "${type}" // in out inout return
 
   cpp_default_h_content "#ifndef ${NAMESPACE}_${NAME}_H
 #define ${NAMESPACE}_${NAME}_H

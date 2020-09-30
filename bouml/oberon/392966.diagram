@@ -1,0 +1,65 @@
+format 222
+
+statecanvas 128006 state_ref 211590 // Subscription
+  
+  xyzwh 144 125 2000 397 77
+end
+pseudostatecanvas 128134 pseudostate_ref 267526 // initial
+   xyz 330 41 2000
+end
+statecanvas 128390 state_ref 211718 // Snapshot
+  
+  xyzwh 225 293 2000 243 77
+end
+pseudostatecanvas 128646 pseudostate_ref 267654 // final
+   xyz 690 146 2000
+end
+statecanvas 128902 state_ref 211846 // Output
+  
+  xyzwh 182 453 2000 327 127
+end
+transitioncanvas 128262 transition_ref 392838 // <transition>
+  
+  from ref 128134 z 2001 to ref 128006
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 128518 transition_ref 392966 // <transition>
+  
+  from ref 128006 z 2001 label "subscribed" xyz 312.5 242.5 3000 to ref 128390
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 128774 transition_ref 393094 // <transition>
+  
+  from ref 128006 z 2001 label "failed" xyz 600 149 3000 to ref 128646
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129030 transition_ref 393222 // <transition>
+  
+  from ref 128390 z 2001 label "received" xyz 322 401 3000 to ref 128902
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129158 transition_ref 393350 // <transition>
+  
+  from ref 128390 z 2001 label "timeout" xyz 534 218 3000 to ref 128646
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129286 transition_ref 393478 // <transition>
+  
+  from ref 128902 z 2001 label "timeout" xyz 526.5 301 3000 to ref 128646
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129414 transition_ref 393606 // <transition>
+  
+  from ref 128390 z 2001 to point 119 290
+  line 129542 z 2001 label "full / accumulate json" xyz 64 322 3000 to point 117 369
+  line 129670 z 2001 to ref 128390
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129798 transition_ref 393734 // <transition>
+  
+  from ref 128902 z 2001 to point 111 463
+  line 129926 z 2001 label "full / output json" xyz 70 496 3000 to point 110 544
+  line 130054 z 2001 to ref 128902
+  write_horizontally default show_definition default drawing_language default
+end
+end

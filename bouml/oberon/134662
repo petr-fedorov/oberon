@@ -1,6 +1,6 @@
-format 222
+format 223
 "R package" // R package
-  revision 54
+  revision 73
   modified_by 6 "petr"
   // class settings
   
@@ -399,6 +399,3703 @@ format 222
 	flow 390790 "<flow>"
 	  on pin_ref 333830 // mode
 	end
+      end
+    end
+  end
+
+  classview 220550 "Obtain"
+    
+    classdiagramsettings member_max_width 0 end
+    
+    classcompositediagramsettings end
+    
+    collaborationdiagramsettings end
+    
+    objectdiagramsettings end
+    
+    objectcompositediagramsettings end
+    
+    sequencediagramsettings end
+    
+    statediagramsettings
+     end
+    
+    
+    activitydiagramsettings
+     end
+    class 698246 "SslStream"
+      visibility package stereotype "typedef" base_type class_ref 698118 // stream
+      nactuals 1
+      actual class class_ref 698118 // stream
+        rank 0 value class_ref 697990 // socket
+      cpp_decl "${comment}typedef ${type} ${name};
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl "${comment}typedef ${type} ${name};
+"
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 768390 // <realization>
+	relation 758278 -_-|>
+	  stereotype "bind"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 768390 // <realization>
+	  b parent class_ref 698118 // stream
+      end
+    end
+
+    class 698502 "WebsocketStream"
+      visibility package stereotype "typedef" base_type class_ref 698374 // stream
+      nactuals 1
+      actual class class_ref 698374 // stream
+        rank 0 value class_ref 698246 // SslStream
+      cpp_decl "${comment}typedef ${type} ${name};
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl "${comment}typedef ${type} ${name};
+"
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 768518 // <realization>
+	relation 758406 -_-|>
+	  stereotype "bind"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 768518 // <realization>
+	  b parent class_ref 698374 // stream
+      end
+    end
+
+    state 218374 "Coinbase"
+      stereotype "machine"
+      statediagram 399494 "Coinbase"
+	statediagramsettings show_trans_definition yes
+	 end
+	size A4
+      end
+
+      pseudostate 274182 initial ""
+	transition 418822 "<transition>"
+	  on state_ref 233222 // Engage
+	  external 
+	end
+      end
+
+      state 233222 "Engage"
+	  uml_on_entry "register signal handler"
+	  uml_on_exit "stop io_context"
+	  cpp_on_entry "stm.signal_set_->async_wait([&stm](const boost::system::error_code &ec,
+                                   int signal_number) {
+  if (!ec) {
+    std::cout << \"Got signal!\\n\";
+    stm.stop();
+  }
+});
+"
+	  cpp_on_exit "stm.ioc_->stop();"
+	state 219526 "Initialize"
+	  state 218758 "Handshake SSL"
+	      cpp_on_entry "stm.ws_->next_layer().async_handshake(
+    boost::asio::ssl::stream_base::client,
+    [&stm](const boost::system::error_code &ec) {
+      if (ec) {
+        stm.ec_ = ec;
+        stm.error();
+      } else {
+        stm.handshaked();
+      }
+    });
+"
+	    transition 400902 "handshaked"
+	      on state_ref 218886 // Handshake Websocket
+		uml_trigger "handshaked"
+		cpp_trigger "handshaked"
+	      external 
+	    end
+	  end
+
+	  state 218886 "Handshake Websocket"
+	      cpp_on_entry "stm.ws_->async_handshake(stm.host_, stm.target_,
+                        [&stm](const boost::system::error_code &ec) {
+                          if (ec) {
+                            stm.ec_ = ec;
+                            stm.error();
+                          } else {
+                            stm.handshaked();
+                          }
+                        });
+"
+	    transition 401286 "handshaked"
+	      on state_ref 219014 // Subscribe
+		uml_trigger "handshaked"
+		cpp_trigger "handshaked"
+	      external 
+	    end
+	  end
+
+	  state 219014 "Subscribe"
+	      cpp_on_entry "using namespace boost::property_tree;
+ptree tree;
+std::ostringstream request;
+tree.put(\"type\", \"subscribe\");
+
+tree.add_child(\"product_ids\", stm.products_);
+tree.add_child(\"channels\", stm.channels_);
+
+write_json(request, tree, false);
+std::cout << \"Request: \" << request.str() << \"\\n\";
+stm.ws_->async_write(
+    boost::asio::buffer(request.str()),
+    [&stm](const boost::system::error_code &ec, std::size_t bytes_transferred) {
+  if (ec)
+    stm.error();
+  else {
+    // Read a message into our buffer
+    stm.ws_->async_read(stm.buffer_, [&stm](const boost::system::error_code &ec,
+                                            std::size_t bytes_transferred) {
+      stm.dispatchJson(ec);
+    });
+      }
+});
+"
+	    transition 441862 "subscribed"
+	      on pseudostate_ref 301446 // final 
+		uml_trigger "subscribed"
+		cpp_trigger "subscribed"
+	      external 
+	    end
+	  end
+
+	  state 218630 "Connect"
+	      cpp_on_entry "// Make the connection on the IP address we get from a lookup
+boost::asio::async_connect(stm.ws_->next_layer().next_layer(), stm.results_.begin(),
+                           stm.results_.end(),
+                           [&stm](const boost::system::error_code &ec,
+                                  decltype(stm.results_.begin()) iter) {
+                             if (ec) {
+                               stm.ec_ = ec;
+                               stm.error();
+                             } else {
+                               stm.address_ = iter->endpoint().address();
+                               stm.connected();
+                               }
+                           });
+"
+	    transition 400774 "connected"
+	      on state_ref 218758 // Handshake SSL
+		uml_trigger "connected"
+		cpp_trigger "connected"
+	      external 
+	    end
+	  end
+
+	  state 218502 "Resolve"
+	      uml_on_entry "launch resolution"
+	      cpp_on_entry "stm.resolver_->async_resolve(
+    stm.host_, stm.port_,
+    [&stm](const boost::system::error_code &ec,
+           boost::asio::ip::tcp::resolver::results_type results) {
+      if (ec) {
+        stm.ec_ = ec;
+        stm.error();
+      } else {
+        stm.results_ = results;
+        stm.resolved();
+      }
+    });
+"
+	    transition 400518 "resolved"
+	      on state_ref 218630 // Connect
+		uml_trigger "resolved"
+		cpp_trigger "resolved"
+	      external 
+	    end
+	  end
+
+	  pseudostate 274694 initial ""
+	    transition 402182 "<transition>"
+	      on state_ref 218502 // Resolve
+	      external 
+	    end
+	  end
+
+	  pseudostate 301446 final ""
+	  end
+
+	  transition 441990 "<transition>"
+	    on state_ref 226694 // Subscribed
+	    external 
+	  end
+	end
+
+	state 226694 "Subscribed"
+	    uml_on_entry "start deadline_timer"
+	    uml_on_exit "stop io_context"
+	    cpp_on_entry "stm.timer_->expires_from_now(seconds(5));
+stm.timer_->async_wait([&stm](const boost::system::error_code &ec) {
+  if (ec != boost::asio::error::operation_aborted) {
+    std::cout << \"Time out!\\n\";
+    stm.timeout();
+  }
+});
+
+"
+	    cpp_on_exit "stm.ioc_->stop();"
+	  state 219782 "Output"
+	    transition 441734 "message"
+	      on state_ref 219782 // Output
+		uml_trigger "message"
+		uml_expr "save message"
+		cpp_trigger "message"
+	    end
+	  end
+
+	  state 219142 "Snapshot"
+	    state 233350 "Start new era"
+		uml_on_entry "save new era, snapshot and queued messages"
+		cpp_on_entry "std::cout << \"HTTP snapshot received\\n\";
+"
+	      transition 441478 "<transition>"
+		on pseudostate_ref 301318 // final 
+		external 
+	      end
+	    end
+
+	    pseudostate 274438 initial ""
+	      transition 401926 "<transition>"
+		on state_ref 219270 // Resolve
+		external 
+	      end
+	    end
+
+	    state 219270 "Resolve"
+		uml_on_entry "launch resolution"
+		cpp_on_entry "stm.resolver_->async_resolve(
+    stm.https_host_, stm.https_port_,
+    [&stm](const boost::system::error_code &ec,
+           boost::asio::ip::tcp::resolver::results_type results) {
+      if (ec) {
+      stm.ec_ = ec;
+        stm.error();
+      } else {
+        stm.results_ = results;
+        stm.resolved();
+      }
+    });
+"
+	      transition 403590 "resolved"
+		on state_ref 219910 // Connect
+		  uml_trigger "resolved"
+		  cpp_trigger "resolved"
+		external 
+	      end
+	    end
+
+	    state 219910 "Connect"
+		uml_on_entry "launch connection"
+		cpp_on_entry "boost::asio::async_connect(stm.https_->next_layer(), stm.results_.begin(),
+                           stm.results_.end(),
+                           [&stm](const boost::system::error_code &ec,
+                                  decltype(stm.results_)::iterator iter) {
+                             if (ec) {
+                               stm.ec_ = ec;
+                               stm.error();
+                             } else {
+                               std::cout << \"IP: \" << iter->endpoint().address().to_string() << \" Port: \" << iter->endpoint().port() << \"\\n\"; 
+                               stm.https_address_ = iter->endpoint().address();
+                               stm.connected();
+                             }
+                           });
+"
+	      transition 403718 "connected"
+		on state_ref 220038 // Handshake SSL
+		  uml_trigger "connected"
+		  cpp_trigger "connected"
+		external 
+	      end
+	    end
+
+	    state 220038 "Handshake SSL"
+		uml_on_entry "launch SSL handshake"
+		cpp_on_entry "stm.https_->async_handshake(boost::asio::ssl::stream_base::client,
+                            [&stm](const boost::system::error_code &ec) {
+                              if (ec) {
+                                stm.ec_ = ec;
+                                std::cerr << \"HTTPS handshake error\\n\";
+                                stm.error();
+                              } else {
+                                stm.handshaked();
+                              }
+                            });
+"
+	      transition 403846 "handshaked"
+		on state_ref 220166 // Query snapshot
+		  uml_trigger "handshaked"
+		  cpp_trigger "handshaked"
+		external 
+	      end
+	    end
+
+	    state 220166 "Query snapshot"
+		uml_on_entry "request an order book snapshot"
+		cpp_on_entry "namespace http=boost::beast::http;
+stm.https_req_.method(http::verb::get);
+stm.https_req_.target(stm.https_target_ + \"/\" + stm.product_ + \"/book?level=3\");
+stm.https_req_.set(http::field::host, stm.https_host_);
+stm.https_req_.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
+std::cout << \"HTTP GET \" << stm.https_req_.target() << \"\\n\";
+http::async_write(
+    *stm.https_, stm.https_req_,
+    [&stm](const boost::system::error_code &ec, std::size_t bytes_transferred) {
+      if (ec) {
+        stm.ec_ = ec;
+        stm.error();
+      } else {
+        http::async_read(*stm.https_, stm.https_buffer_, stm.https_res_,
+                         [&stm](const boost::system::error_code &ec,
+                                std::size_t bytes_transferred) {
+                           if (ec) {
+                             stm.ec_ = ec;
+                             stm.error();
+                           } else {
+                             // std::cout << stm.https_res_.body() << \"\\n\";
+                             std::istringstream is {stm.https_res_.body()};
+                             read_json(is, stm.snapshot_tree_);
+                             stm.snapshot_seq_number_ = stm.snapshot_tree_.get<long>(\"sequence\");
+                             // stm.snapshot_seq_number_ = stm.first_seq_number_;
+                             std::cout << \"Snapshot sequence number: \"
+                                       << stm.snapshot_seq_number_ << \"\\n\";
+                             // stm.https_buffer_.consume(stm.https_buffer_.size());
+                             stm.snapshot();
+                           }
+                         });
+      }
+    });
+"
+	      transition 426630 "snapshot"
+		on pseudostate_ref 294406 // choice 
+		  uml_trigger "snapshot"
+		  cpp_trigger "snapshot"
+		external 
+	      end
+	    end
+
+	    pseudostate 294406 choice ""
+	      transition 426758 "fresh"
+		on state_ref 233350 // Start new era
+		  uml_guard "fresh"
+		  cpp_guard "/*stm.snapshot_seq_number_ >= stm.first_seq_number_ &&
+ stm.snapshot_seq_number_ <= stm.last_seq_number_*/ true
+"
+		external 
+	      end
+
+	      transition 426886 "stale"
+		on state_ref 220166 // Query snapshot
+		  uml_guard "stale"
+		  cpp_guard "/*!(stm.snapshot_seq_number_ >= stm.first_seq_number_ &&
+ stm.snapshot_seq_number_ <= stm.last_seq_number_)*/ false
+"
+		  cpp_expr "std::cout << \"Stale snapshot, re-quering ...\\n\";
+"
+		external 
+	      end
+	    end
+
+	    transition 434950 "<transition>"
+	      on state_ref 219142 // Snapshot
+		uml_trigger "message"
+		uml_guard "queue message"
+		cpp_trigger "message"
+	    end
+
+	    pseudostate 301318 final ""
+	    end
+
+	    transition 441606 "<transition>"
+	      on state_ref 219782 // Output
+	      external 
+	    end
+	  end
+
+	  transition 411526 "heartbeat"
+	    on state_ref 226694 // Subscribed
+	      uml_trigger "heartbeat"
+	      uml_guard "restart timer"
+	      cpp_trigger "heartbeat"
+	      cpp_expr "if (stm.timer_->expires_from_now(seconds(3)) > 0) {
+  // We managed to cancel the timer. Start new asynchronous wait.
+  stm.timer_->async_wait([&stm](const boost::system::error_code &ec) {
+    if (ec != boost::asio::error::operation_aborted)
+      stm.timeout();
+  });
+  std::cout << stm.tree_.get<std::string>(\"time\") << \" Timer restarted\\n\";
+}
+
+"
+	  end
+
+	  pseudostate 281350 initial ""
+	    transition 411654 "<transition>"
+	      on state_ref 219142 // Snapshot
+	      external 
+	    end
+	  end
+
+	  transition 427526 "timeout"
+	    on pseudostate_ref 274310 // final 
+	      uml_trigger "timeout"
+	      cpp_trigger "timeout"
+	    external 
+	  end
+	end
+
+	pseudostate 287878 initial ""
+	  transition 426374 "<transition>"
+	    on state_ref 219526 // Initialize
+	    external 
+	  end
+	end
+
+	transition 418950 "error"
+	  on pseudostate_ref 274310 // final 
+	    uml_trigger "error"
+	    cpp_trigger "error"
+	    cpp_expr "std::cerr << stm.ec_.message() << \"\\n\";
+"
+	  external 
+	end
+
+	transition 426502 "stop"
+	  on pseudostate_ref 274310 // final 
+	    uml_trigger "stop"
+	    cpp_trigger "stop"
+	  external 
+	end
+      end
+
+      pseudostate 274310 final ""
+      end
+    end
+
+    class 712966 "Coinbase"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      ncouples 1
+      key "STM generated" value ""
+      comment " implement the state machine Coinbase"
+      class 713094 "AnyState"
+	abstract visibility protected 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " Mother class of all the classes representing states"
+	operation 914950 "~AnyState"
+	  force_body_gen cpp_virtual public explicit_return_type ""
+	  nparams 0
+	  cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	end
+
+	operation 915078 "_upper"
+	  abstract force_body_gen cpp_virtual public return_type class_ref 713094 // AnyState
+	  nparams 1
+	    param inout name "stm" type class_ref 712966 // Coinbase
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} &${)}${const}${volatile}${throw}${abstract};
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " return the upper state"
+	end
+
+	operation 915206 "_do"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 712966 // Coinbase
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} &${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} &${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " perform the 'do activity'"
+	end
+
+	operation 915974 "create"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 712966 // Coinbase
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} &${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} &${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	end
+
+	operation 917766 "error"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 712966 // Coinbase
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " the current state doesn't manage the event error, give it to the upper state"
+	end
+
+	operation 918150 "resolved"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 712966 // Coinbase
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " the current state doesn't manage the event resolved, give it to the upper state"
+	end
+
+	operation 919686 "connected"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 712966 // Coinbase
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " the current state doesn't manage the event connected, give it to the upper state"
+	end
+
+	operation 921990 "handshaked"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 712966 // Coinbase
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " the current state doesn't manage the event handshaked, give it to the upper state"
+	end
+
+	operation 922758 "subscribed"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 712966 // Coinbase
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " the current state doesn't manage the event subscribed, give it to the upper state"
+	end
+
+	operation 925702 "heartbeat"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 712966 // Coinbase
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " the current state doesn't manage the event heartbeat, give it to the upper state"
+	end
+
+	operation 926598 "snapshot"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 712966 // Coinbase
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " the current state doesn't manage the event snapshot, give it to the upper state"
+	end
+
+	operation 927750 "message"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 712966 // Coinbase
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " the current state doesn't manage the event message, give it to the upper state"
+	end
+
+	operation 974854 "stop"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 712966 // Coinbase
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " the current state doesn't manage the event stop, give it to the upper state"
+	end
+
+	operation 976646 "timeout"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 712966 // Coinbase
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " the current state doesn't manage the event timeout, give it to the upper state"
+	end
+
+	operation 983302 "_doentry"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 712966 // Coinbase
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} &${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} &${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " performs the 'entry activity'"
+	end
+
+	operation 983430 "_doexit"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 712966 // Coinbase
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} &${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} &${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " performs the 'exit activity'"
+	end
+      end
+
+      class 713222 "Coinbase_State"
+	visibility protected 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " implement the state Coinbase"
+	class 730886 "Engage_State"
+	  visibility public 
+	  cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	  java_decl ""
+	  php_decl ""
+	  python_2_2 python_decl ""
+	  idl_decl ""
+	  explicit_switch_type ""
+	  mysql_decl ""
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " implement the state Engage"
+	  class 731014 "Initialize_State"
+	    visibility public 
+	    cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	    java_decl ""
+	    php_decl ""
+	    python_2_2 python_decl ""
+	    idl_decl ""
+	    explicit_switch_type ""
+	    mysql_decl ""
+	    
+	    ncouples 1
+	    key "STM generated" value ""
+	    comment " implement the state Initialize"
+	    class 731142 "Handshake_SSL_State"
+	      visibility public 
+	      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	      java_decl ""
+	      php_decl ""
+	      python_2_2 python_decl ""
+	      idl_decl ""
+	      explicit_switch_type ""
+	      mysql_decl ""
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " implement the state Handshake SSL"
+	      operation 959110 "~Handshake_SSL_State"
+		force_body_gen cpp_virtual public explicit_return_type ""
+		nparams 0
+		cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+		cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+	      end
+
+	      classrelation 818438 // <generalisation>
+		relation 808326 ---|>
+		  a public
+		    cpp default "${type}"
+		    classrelation_ref 818438 // <generalisation>
+		  b parent class_ref 713094 // AnyState
+	      end
+
+	      operation 960646 "handshaked"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event handshaked"
+	      end
+
+	      operation 960774 "create"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event create"
+	      end
+
+	      operation 960902 "_doentry"
+		force_body_gen public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " perform the 'entry behavior'"
+	      end
+
+	      operation 961030 "_upper"
+		force_body_gen cpp_virtual public return_type class_ref 713094 // AnyState
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " returns the state containing the current"
+	      end
+	    end
+
+	    class 731654 "Resolve_State"
+	      visibility public 
+	      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	      java_decl ""
+	      php_decl ""
+	      python_2_2 python_decl ""
+	      idl_decl ""
+	      explicit_switch_type ""
+	      mysql_decl ""
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " implement the state Resolve"
+	      operation 959622 "~Resolve_State"
+		force_body_gen cpp_virtual public explicit_return_type ""
+		nparams 0
+		cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+		cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+	      end
+
+	      classrelation 819462 // <generalisation>
+		relation 809350 ---|>
+		  a public
+		    cpp default "${type}"
+		    classrelation_ref 819462 // <generalisation>
+		  b parent class_ref 713094 // AnyState
+	      end
+
+	      operation 962694 "resolved"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event resolved"
+	      end
+
+	      operation 962822 "create"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event create"
+	      end
+
+	      operation 962950 "_doentry"
+		force_body_gen public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " perform the 'entry behavior'"
+	      end
+
+	      operation 963078 "_upper"
+		force_body_gen cpp_virtual public return_type class_ref 713094 // AnyState
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " returns the state containing the current"
+	      end
+	    end
+
+	    class 731526 "Connect_State"
+	      visibility public 
+	      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	      java_decl ""
+	      php_decl ""
+	      python_2_2 python_decl ""
+	      idl_decl ""
+	      explicit_switch_type ""
+	      mysql_decl ""
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " implement the state Connect"
+	      operation 959494 "~Connect_State"
+		force_body_gen cpp_virtual public explicit_return_type ""
+		nparams 0
+		cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+		cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+	      end
+
+	      classrelation 819206 // <generalisation>
+		relation 809094 ---|>
+		  a public
+		    cpp default "${type}"
+		    classrelation_ref 819206 // <generalisation>
+		  b parent class_ref 713094 // AnyState
+	      end
+
+	      operation 962182 "connected"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event connected"
+	      end
+
+	      operation 962310 "create"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event create"
+	      end
+
+	      operation 962438 "_doentry"
+		force_body_gen public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " perform the 'entry behavior'"
+	      end
+
+	      operation 962566 "_upper"
+		force_body_gen cpp_virtual public return_type class_ref 713094 // AnyState
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " returns the state containing the current"
+	      end
+	    end
+
+	    class 731398 "Subscribe_State"
+	      visibility public 
+	      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	      java_decl ""
+	      php_decl ""
+	      python_2_2 python_decl ""
+	      idl_decl ""
+	      explicit_switch_type ""
+	      mysql_decl ""
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " implement the state Subscribe"
+	      operation 959366 "~Subscribe_State"
+		force_body_gen cpp_virtual public explicit_return_type ""
+		nparams 0
+		cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+		cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+	      end
+
+	      classrelation 818950 // <generalisation>
+		relation 808838 ---|>
+		  a public
+		    cpp default "${type}"
+		    classrelation_ref 818950 // <generalisation>
+		  b parent class_ref 713094 // AnyState
+	      end
+
+	      operation 961670 "subscribed"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event subscribed"
+	      end
+
+	      operation 961798 "create"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event create"
+	      end
+
+	      operation 961926 "_doentry"
+		force_body_gen public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " perform the 'entry behavior'"
+	      end
+
+	      operation 962054 "_upper"
+		force_body_gen cpp_virtual public return_type class_ref 713094 // AnyState
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " returns the state containing the current"
+	      end
+	    end
+
+	    class 731270 "Handshake_Websocket_State"
+	      visibility public 
+	      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	      java_decl ""
+	      php_decl ""
+	      python_2_2 python_decl ""
+	      idl_decl ""
+	      explicit_switch_type ""
+	      mysql_decl ""
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " implement the state Handshake Websocket"
+	      operation 959238 "~Handshake_Websocket_State"
+		force_body_gen cpp_virtual public explicit_return_type ""
+		nparams 0
+		cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+		cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+	      end
+
+	      classrelation 818694 // <generalisation>
+		relation 808582 ---|>
+		  a public
+		    cpp default "${type}"
+		    classrelation_ref 818694 // <generalisation>
+		  b parent class_ref 713094 // AnyState
+	      end
+
+	      operation 961158 "handshaked"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event handshaked"
+	      end
+
+	      operation 961286 "create"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event create"
+	      end
+
+	      operation 961414 "_doentry"
+		force_body_gen public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " perform the 'entry behavior'"
+	      end
+
+	      operation 961542 "_upper"
+		force_body_gen cpp_virtual public return_type class_ref 713094 // AnyState
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " returns the state containing the current"
+	      end
+	    end
+
+	    operation 958982 "~Initialize_State"
+	      force_body_gen cpp_virtual public explicit_return_type ""
+	      nparams 0
+	      cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	    end
+
+	    attribute 648582 "_handshake_ssl_state"
+	      public type class_ref 731142 // Handshake_SSL_State
+	      cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	      java_decl ""
+	      php_decl ""
+	      python_decl ""
+	      idl_decl ""
+	      mysql_decl ""
+	      MysqlColumn
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " memorize the instance of the state Handshake SSL, internal"
+	    end
+
+	    attribute 648710 "_handshake_websocket_state"
+	      public type class_ref 731270 // Handshake_Websocket_State
+	      cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	      java_decl ""
+	      php_decl ""
+	      python_decl ""
+	      idl_decl ""
+	      mysql_decl ""
+	      MysqlColumn
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " memorize the instance of the state Handshake Websocket, internal"
+	    end
+
+	    attribute 648838 "_subscribe_state"
+	      public type class_ref 731398 // Subscribe_State
+	      cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	      java_decl ""
+	      php_decl ""
+	      python_decl ""
+	      idl_decl ""
+	      mysql_decl ""
+	      MysqlColumn
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " memorize the instance of the state Subscribe, internal"
+	    end
+
+	    attribute 648966 "_connect_state"
+	      public type class_ref 731526 // Connect_State
+	      cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	      java_decl ""
+	      php_decl ""
+	      python_decl ""
+	      idl_decl ""
+	      mysql_decl ""
+	      MysqlColumn
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " memorize the instance of the state Connect, internal"
+	    end
+
+	    attribute 649094 "_resolve_state"
+	      public type class_ref 731654 // Resolve_State
+	      cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	      java_decl ""
+	      php_decl ""
+	      python_decl ""
+	      idl_decl ""
+	      mysql_decl ""
+	      MysqlColumn
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " memorize the instance of the state Resolve, internal"
+	    end
+
+	    classrelation 818310 // <generalisation>
+	      relation 808198 ---|>
+		a public
+		  cpp default "${type}"
+		  classrelation_ref 818310 // <generalisation>
+		b parent class_ref 713094 // AnyState
+	    end
+
+	    operation 963206 "create"
+	      force_body_gen cpp_virtual public explicit_return_type "void"
+	      nparams 1
+	        param inout name "stm" type class_ref 712966 // Coinbase
+	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " to manage the event create"
+	    end
+
+	    operation 963334 "_upper"
+	      force_body_gen cpp_virtual public return_type class_ref 713094 // AnyState
+	      nparams 1
+	        param inout name "stm" type class_ref 712966 // Coinbase
+	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " returns the state containing the current"
+	    end
+
+	    operation 983686 "_completion"
+	      force_body_gen cpp_virtual public explicit_return_type "bool"
+	      nparams 1
+	        param inout name "stm" type class_ref 712966 // Coinbase
+	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	    end
+	  end
+
+	  class 731782 "Subscribed_State"
+	    visibility public 
+	    cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	    java_decl ""
+	    php_decl ""
+	    python_2_2 python_decl ""
+	    idl_decl ""
+	    explicit_switch_type ""
+	    mysql_decl ""
+	    
+	    ncouples 1
+	    key "STM generated" value ""
+	    comment " implement the state Subscribed"
+	    class 731910 "Output_State"
+	      visibility public 
+	      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	      java_decl ""
+	      php_decl ""
+	      python_2_2 python_decl ""
+	      idl_decl ""
+	      explicit_switch_type ""
+	      mysql_decl ""
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " implement the state Output"
+	      operation 959878 "~Output_State"
+		force_body_gen cpp_virtual public explicit_return_type ""
+		nparams 0
+		cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+		cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+	      end
+
+	      classrelation 819974 // <generalisation>
+		relation 809862 ---|>
+		  a public
+		    cpp default "${type}"
+		    classrelation_ref 819974 // <generalisation>
+		  b parent class_ref 713094 // AnyState
+	      end
+
+	      operation 963462 "message"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event message"
+	      end
+
+	      operation 963590 "_upper"
+		force_body_gen cpp_virtual public return_type class_ref 713094 // AnyState
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " returns the state containing the current"
+	      end
+	    end
+
+	    class 732038 "Snapshot_State"
+	      visibility public 
+	      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	      java_decl ""
+	      php_decl ""
+	      python_2_2 python_decl ""
+	      idl_decl ""
+	      explicit_switch_type ""
+	      mysql_decl ""
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " implement the state Snapshot"
+	      class 732166 "Resolve_State"
+		visibility public 
+		cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+		java_decl ""
+		php_decl ""
+		python_2_2 python_decl ""
+		idl_decl ""
+		explicit_switch_type ""
+		mysql_decl ""
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " implement the state Resolve"
+		operation 960134 "~Resolve_State"
+		  force_body_gen cpp_virtual public explicit_return_type ""
+		  nparams 0
+		  cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		end
+
+		classrelation 820358 // <generalisation>
+		  relation 810246 ---|>
+		    a public
+		      cpp default "${type}"
+		      classrelation_ref 820358 // <generalisation>
+		    b parent class_ref 713094 // AnyState
+		end
+
+		operation 963846 "resolved"
+		  force_body_gen cpp_virtual public explicit_return_type "void"
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " to manage the event resolved"
+		end
+
+		operation 963974 "_upper"
+		  force_body_gen cpp_virtual public return_type class_ref 713094 // AnyState
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " returns the state containing the current"
+		end
+
+		operation 967046 "create"
+		  force_body_gen cpp_virtual public explicit_return_type "void"
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " to manage the event create"
+		end
+
+		operation 967174 "_doentry"
+		  force_body_gen public explicit_return_type "void"
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " perform the 'entry behavior'"
+		end
+	      end
+
+	      class 732550 "Query_snapshot_State"
+		visibility public 
+		cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+		java_decl ""
+		php_decl ""
+		python_2_2 python_decl ""
+		idl_decl ""
+		explicit_switch_type ""
+		mysql_decl ""
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " implement the state Query snapshot"
+		operation 960518 "~Query_snapshot_State"
+		  force_body_gen cpp_virtual public explicit_return_type ""
+		  nparams 0
+		  cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		end
+
+		classrelation 821126 // <generalisation>
+		  relation 811014 ---|>
+		    a public
+		      cpp default "${type}"
+		      classrelation_ref 821126 // <generalisation>
+		    b parent class_ref 713094 // AnyState
+		end
+
+		operation 964614 "snapshot"
+		  force_body_gen cpp_virtual public explicit_return_type "void"
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " to manage the event snapshot"
+		end
+
+		operation 964742 "_upper"
+		  force_body_gen cpp_virtual public return_type class_ref 713094 // AnyState
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " returns the state containing the current"
+		end
+
+		operation 967814 "create"
+		  force_body_gen cpp_virtual public explicit_return_type "void"
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " to manage the event create"
+		end
+
+		operation 967942 "_doentry"
+		  force_body_gen public explicit_return_type "void"
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " perform the 'entry behavior'"
+		end
+	      end
+
+	      class 732422 "Handshake_SSL_State"
+		visibility public 
+		cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+		java_decl ""
+		php_decl ""
+		python_2_2 python_decl ""
+		idl_decl ""
+		explicit_switch_type ""
+		mysql_decl ""
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " implement the state Handshake SSL"
+		operation 960390 "~Handshake_SSL_State"
+		  force_body_gen cpp_virtual public explicit_return_type ""
+		  nparams 0
+		  cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		end
+
+		classrelation 820870 // <generalisation>
+		  relation 810758 ---|>
+		    a public
+		      cpp default "${type}"
+		      classrelation_ref 820870 // <generalisation>
+		    b parent class_ref 713094 // AnyState
+		end
+
+		operation 964358 "handshaked"
+		  force_body_gen cpp_virtual public explicit_return_type "void"
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " to manage the event handshaked"
+		end
+
+		operation 964486 "_upper"
+		  force_body_gen cpp_virtual public return_type class_ref 713094 // AnyState
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " returns the state containing the current"
+		end
+
+		operation 967558 "create"
+		  force_body_gen cpp_virtual public explicit_return_type "void"
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " to manage the event create"
+		end
+
+		operation 967686 "_doentry"
+		  force_body_gen public explicit_return_type "void"
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " perform the 'entry behavior'"
+		end
+	      end
+
+	      class 732294 "Connect_State"
+		visibility public 
+		cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+		java_decl ""
+		php_decl ""
+		python_2_2 python_decl ""
+		idl_decl ""
+		explicit_switch_type ""
+		mysql_decl ""
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " implement the state Connect"
+		operation 960262 "~Connect_State"
+		  force_body_gen cpp_virtual public explicit_return_type ""
+		  nparams 0
+		  cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		end
+
+		classrelation 820614 // <generalisation>
+		  relation 810502 ---|>
+		    a public
+		      cpp default "${type}"
+		      classrelation_ref 820614 // <generalisation>
+		    b parent class_ref 713094 // AnyState
+		end
+
+		operation 964102 "connected"
+		  force_body_gen cpp_virtual public explicit_return_type "void"
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " to manage the event connected"
+		end
+
+		operation 964230 "_upper"
+		  force_body_gen cpp_virtual public return_type class_ref 713094 // AnyState
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " returns the state containing the current"
+		end
+
+		operation 967302 "create"
+		  force_body_gen cpp_virtual public explicit_return_type "void"
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " to manage the event create"
+		end
+
+		operation 967430 "_doentry"
+		  force_body_gen public explicit_return_type "void"
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " perform the 'entry behavior'"
+		end
+	      end
+
+	      class 740358 "Start_new_era_State"
+		visibility public 
+		cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+		java_decl ""
+		php_decl ""
+		python_2_2 python_decl ""
+		idl_decl ""
+		explicit_switch_type ""
+		mysql_decl ""
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " implement the state Start new era"
+		operation 975622 "~Start_new_era_State"
+		  force_body_gen cpp_virtual public explicit_return_type ""
+		  nparams 0
+		  cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		end
+
+		classrelation 829318 // <generalisation>
+		  relation 819206 ---|>
+		    a public
+		      cpp default "${type}"
+		      classrelation_ref 829318 // <generalisation>
+		    b parent class_ref 713094 // AnyState
+		end
+
+		operation 976134 "create"
+		  force_body_gen cpp_virtual public explicit_return_type "void"
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " to manage the event create"
+		end
+
+		operation 976262 "_doentry"
+		  force_body_gen public explicit_return_type "void"
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " perform the 'entry behavior'"
+		end
+
+		operation 976390 "_upper"
+		  force_body_gen cpp_virtual public return_type class_ref 713094 // AnyState
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " returns the state containing the current"
+		end
+
+		operation 983814 "_completion"
+		  force_body_gen cpp_virtual public explicit_return_type "bool"
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		end
+	      end
+
+	      operation 960006 "~Snapshot_State"
+		force_body_gen cpp_virtual public explicit_return_type ""
+		nparams 0
+		cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+		cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+	      end
+
+	      attribute 649606 "_resolve_state"
+		public type class_ref 732166 // Resolve_State
+		cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+		java_decl ""
+		php_decl ""
+		python_decl ""
+		idl_decl ""
+		mysql_decl ""
+		MysqlColumn
+		ncouples 1
+		key "STM generated" value ""
+		comment " memorize the instance of the state Resolve, internal"
+	      end
+
+	      attribute 649734 "_connect_state"
+		public type class_ref 732294 // Connect_State
+		cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+		java_decl ""
+		php_decl ""
+		python_decl ""
+		idl_decl ""
+		mysql_decl ""
+		MysqlColumn
+		ncouples 1
+		key "STM generated" value ""
+		comment " memorize the instance of the state Connect, internal"
+	      end
+
+	      attribute 649862 "_handshake_ssl_state"
+		public type class_ref 732422 // Handshake_SSL_State
+		cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+		java_decl ""
+		php_decl ""
+		python_decl ""
+		idl_decl ""
+		mysql_decl ""
+		MysqlColumn
+		ncouples 1
+		key "STM generated" value ""
+		comment " memorize the instance of the state Handshake SSL, internal"
+	      end
+
+	      attribute 649990 "_query_snapshot_state"
+		public type class_ref 732550 // Query_snapshot_State
+		cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+		java_decl ""
+		php_decl ""
+		python_decl ""
+		idl_decl ""
+		mysql_decl ""
+		MysqlColumn
+		ncouples 1
+		key "STM generated" value ""
+		comment " memorize the instance of the state Query snapshot, internal"
+	      end
+
+	      classrelation 820230 // <generalisation>
+		relation 810118 ---|>
+		  a public
+		    cpp default "${type}"
+		    classrelation_ref 820230 // <generalisation>
+		  b parent class_ref 713094 // AnyState
+	      end
+
+	      operation 963718 "create"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event create"
+	      end
+
+	      operation 964870 "message"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event message"
+	      end
+
+	      operation 964998 "_upper"
+		force_body_gen cpp_virtual public return_type class_ref 713094 // AnyState
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " returns the state containing the current"
+	      end
+
+	      attribute 658182 "_start_new_era_state"
+		public type class_ref 740358 // Start_new_era_State
+		cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+		java_decl ""
+		php_decl ""
+		python_decl ""
+		idl_decl ""
+		mysql_decl ""
+		MysqlColumn
+		ncouples 1
+		key "STM generated" value ""
+		comment " memorize the instance of the state Start new era, internal"
+	      end
+
+	      operation 983942 "_completion"
+		force_body_gen cpp_virtual public explicit_return_type "bool"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+	      end
+	    end
+
+	    operation 959750 "~Subscribed_State"
+	      force_body_gen cpp_virtual public explicit_return_type ""
+	      nparams 0
+	      cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	    end
+
+	    attribute 649350 "_output_state"
+	      public type class_ref 731910 // Output_State
+	      cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	      java_decl ""
+	      php_decl ""
+	      python_decl ""
+	      idl_decl ""
+	      mysql_decl ""
+	      MysqlColumn
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " memorize the instance of the state Output, internal"
+	    end
+
+	    attribute 649478 "_snapshot_state"
+	      public type class_ref 732038 // Snapshot_State
+	      cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	      java_decl ""
+	      php_decl ""
+	      python_decl ""
+	      idl_decl ""
+	      mysql_decl ""
+	      MysqlColumn
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " memorize the instance of the state Snapshot, internal"
+	    end
+
+	    classrelation 819846 // <generalisation>
+	      relation 809734 ---|>
+		a public
+		  cpp default "${type}"
+		  classrelation_ref 819846 // <generalisation>
+		b parent class_ref 713094 // AnyState
+	    end
+
+	    operation 965126 "heartbeat"
+	      force_body_gen cpp_virtual public explicit_return_type "void"
+	      nparams 1
+	        param inout name "stm" type class_ref 712966 // Coinbase
+	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " to manage the event heartbeat"
+	    end
+
+	    operation 965254 "create"
+	      force_body_gen cpp_virtual public explicit_return_type "void"
+	      nparams 1
+	        param inout name "stm" type class_ref 712966 // Coinbase
+	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " to manage the event create"
+	    end
+
+	    operation 965382 "_upper"
+	      force_body_gen cpp_virtual public return_type class_ref 713094 // AnyState
+	      nparams 1
+	        param inout name "stm" type class_ref 712966 // Coinbase
+	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " returns the state containing the current"
+	    end
+
+	    operation 965894 "_doentry"
+	      force_body_gen public explicit_return_type "void"
+	      nparams 1
+	        param inout name "stm" type class_ref 712966 // Coinbase
+	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " perform the 'entry behavior'"
+	    end
+
+	    operation 976774 "timeout"
+	      force_body_gen cpp_virtual public explicit_return_type "void"
+	      nparams 1
+	        param inout name "stm" type class_ref 712966 // Coinbase
+	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " to manage the event timeout"
+	    end
+
+	    operation 984198 "_doexit"
+	      force_body_gen public explicit_return_type "void"
+	      nparams 1
+	        param inout name "stm" type class_ref 712966 // Coinbase
+	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " perform the 'exit behavior'"
+	    end
+	  end
+
+	  operation 958854 "~Engage_State"
+	    force_body_gen cpp_virtual public explicit_return_type ""
+	    nparams 0
+	    cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	    cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	    
+	    
+	    
+	    
+	    ncouples 1
+	    key "STM generated" value ""
+	  end
+
+	  attribute 648454 "_initialize_state"
+	    public type class_ref 731014 // Initialize_State
+	    cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    java_decl ""
+	    php_decl ""
+	    python_decl ""
+	    idl_decl ""
+	    mysql_decl ""
+	    MysqlColumn
+	    ncouples 1
+	    key "STM generated" value ""
+	    comment " memorize the instance of the state Initialize, internal"
+	  end
+
+	  attribute 649222 "_subscribed_state"
+	    public type class_ref 731782 // Subscribed_State
+	    cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    java_decl ""
+	    php_decl ""
+	    python_decl ""
+	    idl_decl ""
+	    mysql_decl ""
+	    MysqlColumn
+	    ncouples 1
+	    key "STM generated" value ""
+	    comment " memorize the instance of the state Subscribed, internal"
+	  end
+
+	  classrelation 818182 // <generalisation>
+	    relation 808070 ---|>
+	      a public
+		cpp default "${type}"
+		classrelation_ref 818182 // <generalisation>
+	      b parent class_ref 713094 // AnyState
+	  end
+
+	  operation 965510 "create"
+	    force_body_gen cpp_virtual public explicit_return_type "void"
+	    nparams 1
+	      param inout name "stm" type class_ref 712966 // Coinbase
+	    cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	    cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	    
+	    
+	    
+	    
+	    ncouples 1
+	    key "STM generated" value ""
+	    comment " to manage the event create"
+	  end
+
+	  operation 965638 "error"
+	    force_body_gen cpp_virtual public explicit_return_type "void"
+	    nparams 1
+	      param inout name "stm" type class_ref 712966 // Coinbase
+	    cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	    cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	    
+	    
+	    
+	    
+	    ncouples 1
+	    key "STM generated" value ""
+	    comment " to manage the event error"
+	  end
+
+	  operation 965766 "_upper"
+	    force_body_gen cpp_virtual public return_type class_ref 713094 // AnyState
+	    nparams 1
+	      param inout name "stm" type class_ref 712966 // Coinbase
+	    cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	    cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	    
+	    
+	    
+	    
+	    ncouples 1
+	    key "STM generated" value ""
+	    comment " returns the state containing the current"
+	  end
+
+	  operation 974982 "stop"
+	    force_body_gen cpp_virtual public explicit_return_type "void"
+	    nparams 1
+	      param inout name "stm" type class_ref 712966 // Coinbase
+	    cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	    cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	    
+	    
+	    
+	    
+	    ncouples 1
+	    key "STM generated" value ""
+	    comment " to manage the event stop"
+	  end
+
+	  operation 975110 "_doexit"
+	    force_body_gen public explicit_return_type "void"
+	    nparams 1
+	      param inout name "stm" type class_ref 712966 // Coinbase
+	    cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	    cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	    
+	    
+	    
+	    
+	    ncouples 1
+	    key "STM generated" value ""
+	    comment " perform the 'exit behavior'"
+	  end
+
+	  operation 990726 "_doentry"
+	    force_body_gen public explicit_return_type "void"
+	    nparams 1
+	      param inout name "stm" type class_ref 712966 // Coinbase
+	    cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	    cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	    
+	    
+	    
+	    
+	    ncouples 1
+	    key "STM generated" value ""
+	    comment " perform the 'entry behavior'"
+	  end
+	end
+
+	operation 915334 "~Coinbase_State"
+	  force_body_gen cpp_virtual public explicit_return_type ""
+	  nparams 0
+	  cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	end
+
+	classrelation 782214 // <generalisation>
+	  relation 772102 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 782214 // <generalisation>
+	    b parent class_ref 713094 // AnyState
+	end
+
+	operation 916102 "create"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 712966 // Coinbase
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " to manage the event create"
+	end
+
+	operation 916358 "_upper"
+	  force_body_gen cpp_virtual public return_type class_ref 713094 // AnyState
+	  nparams 1
+	    param inout name "stm" type class_ref 712966 // Coinbase
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} &${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} &${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " returns the state containing the current"
+	end
+
+	attribute 648326 "_engage_state"
+	  public type class_ref 730886 // Engage_State
+	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " memorize the instance of the state Engage, internal"
+	end
+      end
+
+      attribute 626438 "products_"
+	private type class_ref 174214 // ptree
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 657670 "product_"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 626310 "channels_"
+	private type class_ref 174214 // ptree
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 626054 "buffer_"
+	private type class_ref 698630 // multi_buffer
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 657286 "https_buffer_"
+	private type class_ref 739334 // flat_buffer
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 617222 "host_"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 617606 "port_"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 617094 "target_"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 650374 "https_host_"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 650502 "https_port_"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 650630 "https_target_"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 657414 "https_req_"
+	private type class_ref 740230 // HttpRequestWithEmptyBody
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 657542 "https_res_"
+	private type class_ref 739974 // HttpResponseWithStringBody
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 617478 "ec_"
+	private type class_ref 699270 // error_code
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 617734 "results_"
+	private type class_ref 699142 // results_type
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 617990 "address_"
+	private type class_ref 713862 // address
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 650758 "https_address_"
+	private type class_ref 713862 // address
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 641798 "tree_"
+	private type class_ref 174214 // ptree
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 664710 "snapshot_tree_"
+	private type class_ref 174214 // ptree
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 657798 "first_seq_number_"
+	private explicit_type "long"
+	init_value "0"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 657926 "last_seq_number_"
+	private explicit_type "long"
+	init_value "0"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 664838 "snapshot_seq_number_"
+	private explicit_type "long"
+	init_value "0"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 616454 "_coinbase_state"
+	protected type class_ref 713222 // Coinbase_State
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	ncouples 1
+	key "STM generated" value ""
+	comment " memorize the instance of the state Coinbase, internal"
+      end
+
+      operation 915590 "Coinbase"
+	force_body_gen public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+      end
+
+      operation 917382 "Coinbase"
+	public explicit_return_type ""
+	nparams 9
+	  param inout name "ioc" type class_ref 698758 // io_context
+	  param in name "host" explicit_type "string"
+	  param in name "port" explicit_type "string"
+	  param in name "target" explicit_type "string"
+	  param in name "https_host" explicit_type "string"
+	  param in name "https_port" explicit_type "string"
+	  param in name "https_target" explicit_type "string"
+	  param in name "product" explicit_type "string"
+	  param in name "channel" explicit_type "string"
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}std::shared_ptr<${t0}> ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}, const ${t4} & ${p4}${v4}, const ${t5} & ${p5}${v5}, const ${t6} & ${p6}${v6}, const ${t7} & ${p7}${v7}, const ${t8} & ${p8}${v8}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}std::shared_ptr<${t0}> ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, const ${t4} & ${p4}, const ${t5} & ${p5}, const ${t6} & ${p6}, const ${t7} & ${p7}, const ${t8} & ${p8}${)}${volatile}${throw} : _current_state{0}, ioc_{ioc}, host_{host}, port_{port}, target_{target}, https_host_{https_host}, https_port_{https_port}, https_target_{https_target}, product_{product} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 915718 "~Coinbase"
+	force_body_gen cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+      end
+
+      operation 915846 "create"
+	force_body_gen public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " the operation you call to signal the event create"
+      end
+
+      classrelation 782598 // <dependency>
+	relation 772486 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 782598 // <dependency>
+	  b parent class_ref 713222 // Coinbase_State
+      end
+
+      operation 916486 "doActivity"
+	force_body_gen public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " to execute the current state 'do activity'"
+      end
+
+      operation 916614 "_set_currentState"
+	force_body_gen cpp_inline protected explicit_return_type "void"
+	nparams 1
+	  param inout name "st" type class_ref 713094 // AnyState
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " change the current state, internal"
+      end
+
+      operation 916742 "_final"
+	force_body_gen protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " execution done, internal"
+      end
+
+      classrelation 782726 // _current_state (<directional aggregation>)
+	relation 772614 o-->
+	  a role_name "_current_state" protected
+	    comment " contains the current state, internal"
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 782726 // _current_state (<directional aggregation>)
+	  b parent class_ref 713094 // AnyState
+      end
+
+      operation 917638 "error"
+	force_body_gen public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " the operation you call to signal the event error"
+      end
+
+      operation 918022 "resolved"
+	force_body_gen public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " the operation you call to signal the event resolved"
+      end
+
+      classrelation 783494 // resolver_ (<directional composition>)
+	relation 773382 *-->
+	  a role_name "resolver_" private
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::unique_ptr<${type}> ${name}${value};
+"
+	    classrelation_ref 783494 // resolver_ (<directional composition>)
+	  b parent class_ref 697862 // resolver
+      end
+
+      classrelation 783622 // ws_ (<directional composition>)
+	relation 773510 *-->
+	  a role_name "ws_" private
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::unique_ptr<${type}> ${name}${value};
+"
+	    classrelation_ref 783622 // ws_ (<directional composition>)
+	  b parent class_ref 698502 // WebsocketStream
+      end
+
+      classrelation 783750 // ctx_ (<directional composition>)
+	relation 773638 *-->
+	  a role_name "ctx_" private
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::unique_ptr<${type}> ${name}${value};
+"
+	    classrelation_ref 783750 // ctx_ (<directional composition>)
+	  b parent class_ref 698886 // context
+      end
+
+      operation 919558 "connected"
+	force_body_gen public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " the operation you call to signal the event connected"
+      end
+
+      operation 921862 "handshaked"
+	force_body_gen public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " the operation you call to signal the event handshaked"
+      end
+
+      operation 922630 "subscribed"
+	force_body_gen public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " the operation you call to signal the event subscribed"
+      end
+
+      operation 925574 "heartbeat"
+	force_body_gen public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " the operation you call to signal the event heartbeat"
+      end
+
+      operation 926470 "snapshot"
+	force_body_gen public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " the operation you call to signal the event snapshot"
+      end
+
+      operation 927622 "message"
+	force_body_gen public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " the operation you call to signal the event message"
+      end
+
+      operation 935302 "dispatchJson"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "ec" type class_ref 699270 // error_code
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 793862 // timer_ (<directional composition>)
+	relation 783750 *-->
+	  a role_name "timer_" private
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::unique_ptr<${type}> ${name}${value};
+"
+	    classrelation_ref 793862 // timer_ (<directional composition>)
+	  b parent class_ref 706310 // deadline_timer
+      end
+
+      classrelation 811654 // https_ (<directional composition>)
+	relation 801542 *-->
+	  a role_name "https_" private
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::unique_ptr<${type}> ${name}${value};
+"
+	    classrelation_ref 811654 // https_ (<directional composition>)
+	  b parent class_ref 698246 // SslStream
+      end
+
+      classrelation 818566 // <dependency>
+	relation 808454 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 818566 // <dependency>
+	  b parent class_ref 731142 // Handshake_SSL_State
+      end
+
+      classrelation 818822 // <dependency>
+	relation 808710 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 818822 // <dependency>
+	  b parent class_ref 731270 // Handshake_Websocket_State
+      end
+
+      classrelation 819078 // <dependency>
+	relation 808966 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 819078 // <dependency>
+	  b parent class_ref 731398 // Subscribe_State
+      end
+
+      classrelation 819334 // <dependency>
+	relation 809222 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 819334 // <dependency>
+	  b parent class_ref 731526 // Connect_State
+      end
+
+      classrelation 819590 // <dependency>
+	relation 809478 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 819590 // <dependency>
+	  b parent class_ref 731654 // Resolve_State
+      end
+
+      classrelation 819718 // <dependency>
+	relation 809606 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 819718 // <dependency>
+	  b parent class_ref 731014 // Initialize_State
+      end
+
+      classrelation 820102 // <dependency>
+	relation 809990 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 820102 // <dependency>
+	  b parent class_ref 731910 // Output_State
+      end
+
+      classrelation 820486 // <dependency>
+	relation 810374 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 820486 // <dependency>
+	  b parent class_ref 732166 // Resolve_State
+      end
+
+      classrelation 820742 // <dependency>
+	relation 810630 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 820742 // <dependency>
+	  b parent class_ref 732294 // Connect_State
+      end
+
+      classrelation 820998 // <dependency>
+	relation 810886 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 820998 // <dependency>
+	  b parent class_ref 732422 // Handshake_SSL_State
+      end
+
+      classrelation 821254 // <dependency>
+	relation 811142 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 821254 // <dependency>
+	  b parent class_ref 732550 // Query_snapshot_State
+      end
+
+      classrelation 821382 // <dependency>
+	relation 811270 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 821382 // <dependency>
+	  b parent class_ref 732038 // Snapshot_State
+      end
+
+      classrelation 821510 // <dependency>
+	relation 811398 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 821510 // <dependency>
+	  b parent class_ref 731782 // Subscribed_State
+      end
+
+      classrelation 821638 // <dependency>
+	relation 811526 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 821638 // <dependency>
+	  b parent class_ref 730886 // Engage_State
+      end
+
+      classrelation 821766 // ioc_ (<directional composition>)
+	relation 811654 *-->
+	  a role_name "ioc_" private
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::shared_ptr<${type}> ${name}${value};
+"
+	    classrelation_ref 821766 // ioc_ (<directional composition>)
+	  b parent class_ref 698758 // io_context
+      end
+
+      classrelation 822406 // https_ctx_ (<directional composition>)
+	relation 812294 *-->
+	  a role_name "https_ctx_" private
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::unique_ptr<${type}> ${name}${value};
+"
+	    classrelation_ref 822406 // https_ctx_ (<directional composition>)
+	  b parent class_ref 698886 // context
+      end
+
+      operation 974726 "stop"
+	force_body_gen public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " the operation you call to signal the event stop"
+      end
+
+      attribute 658054 "bad_seq_number_"
+	private explicit_type "bool"
+	init_value "false"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      classrelation 829446 // <dependency>
+	relation 819334 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 829446 // <dependency>
+	  b parent class_ref 740358 // Start_new_era_State
+      end
+
+      operation 976518 "timeout"
+	force_body_gen public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " the operation you call to signal the event timeout"
+      end
+
+      classrelation 836102 // signal_set_ (<directional composition>)
+	relation 825990 *-->
+	  a role_name "signal_set_" private
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::unique_ptr<${type}> ${name}${value};
+"
+	    classrelation_ref 836102 // signal_set_ (<directional composition>)
+	  b parent class_ref 746886 // signal_set
+      end
+    end
+
+    classdiagram 399622 "Coinbase"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
+    class 739974 "HttpResponseWithStringBody"
+      visibility package stereotype "typedef" base_type class_ref 739462 // response
+      nactuals 1
+      actual class class_ref 739462 // response
+        rank 0 value class_ref 739846 // string_body
+      cpp_decl "${comment}typedef ${type} ${name};
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl "${comment}typedef ${type} ${name};
+"
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 829062 // <realization>
+	relation 818950 -_-|>
+	  stereotype "bind"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 829062 // <realization>
+	  b parent class_ref 739462 // response
+      end
+    end
+
+    class 740230 "HttpRequestWithEmptyBody"
+      visibility package 
+      nactuals 1
+      actual class class_ref 739590 // request
+        rank 0 value class_ref 740102 // empty_body
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 829190 // <realization>
+	relation 819078 -_-|>
+	  stereotype "bind"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 829190 // <realization>
+	  b parent class_ref 739590 // request
       end
     end
   end
@@ -1123,7 +4820,11 @@ List events2image(DataFrame events, NumericVector min_price, NumericVector max_p
   // std::streambuf *coutbuf = std::cout.rdbuf();
   std::cout.rdbuf(Rcpp::Rcout.rdbuf());
   oberon::R::RDepthImage r {min_price[0], max_price[0], tick_size[0], start[0], end[0]};
-  return r.run<std::deci>(events);
+  if(sampling_period[0] == \"deci\") return r.run<std::deci>(events);
+  if(sampling_period[0] == \"centi\") return r.run<std::centi>(events);
+  if(sampling_period[0] == \"milli\") return r.run<std::milli>(events);
+  // if(sampling_period[0] == \"micro\") return r.run<std::micro>(events);
+  return r.run<std::ratio<1,1>>(events);
 }
 "
     end
@@ -1224,6 +4925,80 @@ ${namespace_end}"
       associated_elems
 	class_ref 677894 // RDepthImage
 	class_ref 590470 // RStore
+      end
+    end
+
+    artifact 246406 "obtain"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+#include \"root_certificates.hpp\"
+#include <boost/asio/connect.hpp>
+#include <boost/property_tree/json_parser.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+using boost::posix_time::seconds;
+${includes}
+${namespace_start}
+${members}
+${namespace_end}
+
+int main(int argc, char **argv) {
+  namespace ssl = boost::asio::ssl;
+  namespace websocket = boost::beast::websocket;
+  // Check command line arguments.
+  if (argc != 7) {
+    std::cerr << \"Usage: obtain <host> <port> <target> <https_host> <https_port> <https_target> \\n\"
+              << \"Example:\\n\"
+              << \"    obtain ws-feed.pro.coinbase.com 443 / api.pro.coinbase.com 80 / \\n\";
+    return EXIT_FAILURE;
+  }
+  auto const host = argv[1];
+  auto const port = argv[2];
+  auto const target = argv[3];
+  auto const https_host = argv[4];
+  auto const https_port = argv[5];
+  auto const https_target = argv[6];
+
+  // The io_context is required for all I/O
+  std::shared_ptr<boost::asio::io_context> ioc = std::make_shared<boost::asio::io_context>();
+
+/*  // The SSL context is required, and holds certificates
+  ssl::context ctx{ssl::context::tlsv12_client};
+  ctx.set_options(ssl::context_base::no_tlsv1);
+
+  // This holds the root certificate used for verification
+  load_root_certificates(ctx);
+
+  // Launch the asynchronous operation
+  std::make_shared<oberon::R::CoinbaseWebSocketSession>(ioc, ctx, \"BTC-USD\",
+                                                        \"full\")
+      ->run(host, port, target);
+*/
+  oberon::R::Coinbase coinbase {ioc, host, port, target, https_host, https_port, https_target, \"BTC-USD\", \"full\"};
+  coinbase.create();
+  // Run the I/O service. The call will return when
+  // the socket is closed.
+  ioc->run();
+
+  return EXIT_SUCCESS;
+}
+"
+      associated_elems
+	class_ref 698246 // SslStream
+	class_ref 698502 // WebsocketStream
+	class_ref 739974 // HttpResponseWithStringBody
+	class_ref 740230 // HttpRequestWithEmptyBody
+	class_ref 712966 // Coinbase
       end
     end
   end
