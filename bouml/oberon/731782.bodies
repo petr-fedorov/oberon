@@ -1,7 +1,6 @@
 class Subscribed_State
 !!!965126.cpp!!!	heartbeat(inout stm : Coinbase) : void
   {
-    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
 #ifdef VERBOSE_STATE_MACHINE
     std::cout << "DEBUG : execute activity of transition heartbeat" << std::endl;
 #endif
@@ -42,7 +41,6 @@ stm.timer_->async_wait([&stm](const boost::system::error_code &ec) {
   {
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
     stm._coinbase_state._engage_state._subscribed_state._doexit(stm);
-    stm._coinbase_state._engage_state._doexit(stm);
     stm._set_currentState(stm._coinbase_state);
 #ifdef VERBOSE_STATE_MACHINE
     std::cout << "DEBUG : current state is now .Coinbase" << std::endl;
@@ -53,4 +51,7 @@ stm.timer_->async_wait([&stm](const boost::system::error_code &ec) {
 #ifdef VERBOSE_STATE_MACHINE
   std::cout << "DEBUG : execute exit behavior of .Coinbase.Engage.Subscribed" << std::endl;
 #endif
-stm.ioc_->stop();
+stm.timer_->cancel();
+stm.ws_->next_layer().next_layer().shutdown(boost::asio::ip::tcp::socket::shutdown_both);
+stm.ws_->next_layer().next_layer().close();
+

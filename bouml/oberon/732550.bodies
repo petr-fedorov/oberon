@@ -6,8 +6,8 @@ class Query_snapshot_State
 #ifdef VERBOSE_STATE_MACHINE
     std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Snapshot" << std::endl;
 #endif
-    if (/*stm.snapshot_seq_number_ >= stm.first_seq_number_ &&
- stm.snapshot_seq_number_ <= stm.last_seq_number_*/ true
+    if (stm.snapshot_seq_number_ >= stm.first_seq_number_ &&
+ stm.snapshot_seq_number_ <= stm.last_seq_number_
 ) {
       stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._snapshot_state._start_new_era_state);
 #ifdef VERBOSE_STATE_MACHINE
@@ -15,8 +15,8 @@ class Query_snapshot_State
 #endif
       stm._coinbase_state._engage_state._subscribed_state._snapshot_state._start_new_era_state.create(stm);
     }
-    else if (/*!(stm.snapshot_seq_number_ >= stm.first_seq_number_ &&
- stm.snapshot_seq_number_ <= stm.last_seq_number_)*/ false
+    else if (!(stm.snapshot_seq_number_ >= stm.first_seq_number_ &&
+ stm.snapshot_seq_number_ == stm.last_seq_number_)
 ) {
 #ifdef VERBOSE_STATE_MACHINE
       std::cout << "DEBUG : execute activity of transition stale" << std::endl;
@@ -37,36 +37,37 @@ std::cout << "Stale snapshot, re-quering ...\n";
 #ifdef VERBOSE_STATE_MACHINE
   std::cout << "DEBUG : execute entry behavior of .Coinbase.Engage.Subscribed.Snapshot.Query snapshot" << std::endl;
 #endif
-namespace http=boost::beast::http;
-stm.https_req_.method(http::verb::get);
-stm.https_req_.target(stm.https_target_ + "/" + stm.product_ + "/book?level=3");
-stm.https_req_.set(http::field::host, stm.https_host_);
-stm.https_req_.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
+namespace http = boost::beast::http;
 std::cout << "HTTP GET " << stm.https_req_.target() << "\n";
-http::async_write(
-    *stm.https_, stm.https_req_,
-    [&stm](const boost::system::error_code &ec, std::size_t bytes_transferred) {
-      if (ec) {
-        stm.ec_ = ec;
-        stm.error();
-      } else {
-        http::async_read(*stm.https_, stm.https_buffer_, stm.https_res_,
-                         [&stm](const boost::system::error_code &ec,
-                                std::size_t bytes_transferred) {
-                           if (ec) {
-                             stm.ec_ = ec;
-                             stm.error();
-                           } else {
-                             // std::cout << stm.https_res_.body() << "\n";
-                             std::istringstream is {stm.https_res_.body()};
-                             read_json(is, stm.snapshot_tree_);
-                             stm.snapshot_seq_number_ = stm.snapshot_tree_.get<long>("sequence");
-                             // stm.snapshot_seq_number_ = stm.first_seq_number_;
-                             std::cout << "Snapshot sequence number: "
-                                       << stm.snapshot_seq_number_ << "\n";
-                             // stm.https_buffer_.consume(stm.https_buffer_.size());
-                             stm.snapshot();
-                           }
-                         });
-      }
-    });
+http::async_write(*stm.https_, stm.https_req_,
+                  [&stm](const boost::system::error_code &ec,
+                         std::size_t bytes_transferred) {
+                    if (ec) {
+                      stm.ec_ = ec;
+                      stm.error();
+                    } else {
+                      http::async_read(
+                          *stm.https_, stm.https_buffer_, stm.https_res_,
+                          [&stm](const boost::system::error_code &ec,
+                                 std::size_t bytes_transferred) {
+                            if (ec) {
+                              stm.ec_ = ec;
+                              stm.error();
+                            } else {
+                              // std::cout << stm.https_res_.body() << "\n";
+                              std::istringstream is{stm.https_res_.body()};
+                              stm.https_res_.body().clear();
+                              stm.snapshot_tree_.clear();
+                              read_json(is, stm.snapshot_tree_);
+                              stm.snapshot_seq_number_ =
+                                  stm.snapshot_tree_.get<long>("sequence");
+                              // stm.snapshot_seq_number_ =
+                              // stm.first_seq_number_;
+                              std::cout << "Snapshot sequence number: "
+                                        << stm.snapshot_seq_number_ << "\n";
+                              // stm.https_buffer_.consume(stm.https_buffer_.size());
+                              stm.snapshot();
+                            }
+                          });
+                    }
+                  });

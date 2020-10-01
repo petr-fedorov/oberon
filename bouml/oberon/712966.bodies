@@ -21,7 +21,7 @@ if (!SSL_set_tlsext_host_name(ws_->next_layer().native_handle(),
   std::cerr << ec.message() << "\n";
 }
 
-if (!SSL_set_tlsext_host_name(https_->native_handle(), https_host_.c_str())) {
+if (!SSL_set_tlsext_host_name(https_->native_handle(), https_host.c_str())) {
   boost::system::error_code ec{static_cast<int>(::ERR_get_error()),
                                boost::asio::error::get_ssl_category()};
   std::cerr << ec.message() << "\n";
@@ -41,6 +41,12 @@ SSL_CTX_set_keylog_callback(https_ctx_->native_handle(),
   f.close();
       });
 */
+namespace http = boost::beast::http;
+https_req_.method(http::verb::get);
+https_req_.target(https_target + "/" + product + "/book?level=3");
+https_req_.set(http::field::host, https_host);
+https_req_.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
+
 using namespace boost::property_tree;
 ptree p, h, c;
 
@@ -131,8 +137,9 @@ return (_current_state != 0);
 !!!935302.cpp!!!	dispatchJson(in ec : error_code) : void
 // boost::ignore_unused(bytes_transferred);
 using namespace boost::property_tree;
+bool is_running = false;
 if (ec)
-  error();
+  is_running = error();
 else {
   stringstream m;
   m << boost::beast::buffers(buffer_.data());
@@ -140,23 +147,18 @@ else {
   read_json(m, tree_);
 
   buffer_.consume(buffer_.size());
-  ws_->async_read(buffer_, [this](const boost::system::error_code &ec,
-                                  std::size_t bytes_transferred) {
-    boost::ignore_unused(bytes_transferred);
-    this->dispatchJson(ec);
-  });
-  std::cout << m.str() << std::endl;
+  // std::cout << m.str() << std::endl;
   std::string msg_type{tree_.get<std::string>("type")};
   try {
     auto seq_number = tree_.get<long>("sequence");
 
     if (msg_type == "heartbeat") {
       if (seq_number == last_seq_number_)
-        heartbeat();
+        is_running = heartbeat();
       else {
         std::cout << "Heartbeat: Expected " << last_seq_number_ << " but got "
                   << seq_number << "\n";
-        error();
+        is_running = error();
       }
     } else {
 
@@ -168,23 +170,31 @@ else {
 
       if (seq_number == last_seq_number_ + 1) {
         last_seq_number_ = seq_number;
-        message();
+        is_running = message();
       } else {
-        std::cout << "Message : Expected " << last_seq_number_ + 1 << " but got "
-                  << seq_number << "\n";
-        error();
+        std::cout << "Message : Expected " << last_seq_number_ + 1
+                  << " but got " << seq_number << "\n";
+        is_running = error();
       }
     }
   } catch (const boost::property_tree::ptree_error &e) {
     if (msg_type == "error") {
       std::cout << tree_.get<std::string>("message") << std::endl;
-      error();
+      is_running = error();
     } else if (msg_type == "subscriptions")
-      subscribed();
+      is_running = subscribed();
     else
-      error();
+      is_running = error();
   };
 }
+if(is_running) {
+  ws_->async_read(buffer_, [this](const boost::system::error_code &ec,
+                                  std::size_t bytes_transferred) {
+    boost::ignore_unused(bytes_transferred);
+    this->dispatchJson(ec);
+  });
+}
+
 !!!974726.cpp!!!	stop() : bool
   if (_current_state != 0) {
 #ifdef VERBOSE_STATE_MACHINE

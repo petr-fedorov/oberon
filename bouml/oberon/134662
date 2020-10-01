@@ -1,6 +1,6 @@
 format 223
 "R package" // R package
-  revision 73
+  revision 76
   modified_by 6 "petr"
   // class settings
   
@@ -490,16 +490,14 @@ format 223
 
       state 233222 "Engage"
 	  uml_on_entry "register signal handler"
-	  uml_on_exit "stop io_context"
 	  cpp_on_entry "stm.signal_set_->async_wait([&stm](const boost::system::error_code &ec,
                                    int signal_number) {
   if (!ec) {
-    std::cout << \"Got signal!\\n\";
+    std::cout << \"\\nTermination requested ... \\n\";
     stm.stop();
   }
 });
 "
-	  cpp_on_exit "stm.ioc_->stop();"
 	state 219526 "Initialize"
 	  state 218758 "Handshake SSL"
 	      cpp_on_entry "stm.ws_->next_layer().async_handshake(
@@ -637,7 +635,7 @@ boost::asio::async_connect(stm.ws_->next_layer().next_layer(), stm.results_.begi
 
 	state 226694 "Subscribed"
 	    uml_on_entry "start deadline_timer"
-	    uml_on_exit "stop io_context"
+	    uml_on_exit "close websocket"
 	    cpp_on_entry "stm.timer_->expires_from_now(seconds(5));
 stm.timer_->async_wait([&stm](const boost::system::error_code &ec) {
   if (ec != boost::asio::error::operation_aborted) {
@@ -647,7 +645,11 @@ stm.timer_->async_wait([&stm](const boost::system::error_code &ec) {
 });
 
 "
-	    cpp_on_exit "stm.ioc_->stop();"
+	    cpp_on_exit "stm.timer_->cancel();
+stm.ws_->next_layer().next_layer().shutdown(boost::asio::ip::tcp::socket::shutdown_both);
+stm.ws_->next_layer().next_layer().close();
+
+"
 	  state 219782 "Output"
 	    transition 441734 "message"
 	      on state_ref 219782 // Output
@@ -658,6 +660,9 @@ stm.timer_->async_wait([&stm](const boost::system::error_code &ec) {
 	  end
 
 	  state 219142 "Snapshot"
+	      uml_on_exit "close http socket"
+	      cpp_on_exit "stm.https_->next_layer().shutdown(boost::asio::ip::tcp::socket::shutdown_both);
+stm.https_->next_layer().close();"
 	    state 233350 "Start new era"
 		uml_on_entry "save new era, snapshot and queued messages"
 		cpp_on_entry "std::cout << \"HTTP snapshot received\\n\";
@@ -745,39 +750,40 @@ stm.timer_->async_wait([&stm](const boost::system::error_code &ec) {
 
 	    state 220166 "Query snapshot"
 		uml_on_entry "request an order book snapshot"
-		cpp_on_entry "namespace http=boost::beast::http;
-stm.https_req_.method(http::verb::get);
-stm.https_req_.target(stm.https_target_ + \"/\" + stm.product_ + \"/book?level=3\");
-stm.https_req_.set(http::field::host, stm.https_host_);
-stm.https_req_.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
+		cpp_on_entry "namespace http = boost::beast::http;
 std::cout << \"HTTP GET \" << stm.https_req_.target() << \"\\n\";
-http::async_write(
-    *stm.https_, stm.https_req_,
-    [&stm](const boost::system::error_code &ec, std::size_t bytes_transferred) {
-      if (ec) {
-        stm.ec_ = ec;
-        stm.error();
-      } else {
-        http::async_read(*stm.https_, stm.https_buffer_, stm.https_res_,
-                         [&stm](const boost::system::error_code &ec,
-                                std::size_t bytes_transferred) {
-                           if (ec) {
-                             stm.ec_ = ec;
-                             stm.error();
-                           } else {
-                             // std::cout << stm.https_res_.body() << \"\\n\";
-                             std::istringstream is {stm.https_res_.body()};
-                             read_json(is, stm.snapshot_tree_);
-                             stm.snapshot_seq_number_ = stm.snapshot_tree_.get<long>(\"sequence\");
-                             // stm.snapshot_seq_number_ = stm.first_seq_number_;
-                             std::cout << \"Snapshot sequence number: \"
-                                       << stm.snapshot_seq_number_ << \"\\n\";
-                             // stm.https_buffer_.consume(stm.https_buffer_.size());
-                             stm.snapshot();
-                           }
-                         });
-      }
-    });
+http::async_write(*stm.https_, stm.https_req_,
+                  [&stm](const boost::system::error_code &ec,
+                         std::size_t bytes_transferred) {
+                    if (ec) {
+                      stm.ec_ = ec;
+                      stm.error();
+                    } else {
+                      http::async_read(
+                          *stm.https_, stm.https_buffer_, stm.https_res_,
+                          [&stm](const boost::system::error_code &ec,
+                                 std::size_t bytes_transferred) {
+                            if (ec) {
+                              stm.ec_ = ec;
+                              stm.error();
+                            } else {
+                              // std::cout << stm.https_res_.body() << \"\\n\";
+                              std::istringstream is{stm.https_res_.body()};
+                              stm.https_res_.body().clear();
+                              stm.snapshot_tree_.clear();
+                              read_json(is, stm.snapshot_tree_);
+                              stm.snapshot_seq_number_ =
+                                  stm.snapshot_tree_.get<long>(\"sequence\");
+                              // stm.snapshot_seq_number_ =
+                              // stm.first_seq_number_;
+                              std::cout << \"Snapshot sequence number: \"
+                                        << stm.snapshot_seq_number_ << \"\\n\";
+                              // stm.https_buffer_.consume(stm.https_buffer_.size());
+                              stm.snapshot();
+                            }
+                          });
+                    }
+                  });
 "
 	      transition 426630 "snapshot"
 		on pseudostate_ref 294406 // choice 
@@ -791,8 +797,8 @@ http::async_write(
 	      transition 426758 "fresh"
 		on state_ref 233350 // Start new era
 		  uml_guard "fresh"
-		  cpp_guard "/*stm.snapshot_seq_number_ >= stm.first_seq_number_ &&
- stm.snapshot_seq_number_ <= stm.last_seq_number_*/ true
+		  cpp_guard "stm.snapshot_seq_number_ >= stm.first_seq_number_ &&
+ stm.snapshot_seq_number_ <= stm.last_seq_number_
 "
 		external 
 	      end
@@ -800,8 +806,8 @@ http::async_write(
 	      transition 426886 "stale"
 		on state_ref 220166 // Query snapshot
 		  uml_guard "stale"
-		  cpp_guard "/*!(stm.snapshot_seq_number_ >= stm.first_seq_number_ &&
- stm.snapshot_seq_number_ <= stm.last_seq_number_)*/ false
+		  cpp_guard "!(stm.snapshot_seq_number_ >= stm.first_seq_number_ &&
+ stm.snapshot_seq_number_ == stm.last_seq_number_)
 "
 		  cpp_expr "std::cout << \"Stale snapshot, re-quering ...\\n\";
 "
@@ -2808,6 +2814,24 @@ ${inlines}
 		ncouples 1
 		key "STM generated" value ""
 	      end
+
+	      operation 997254 "_doexit"
+		force_body_gen public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " perform the 'exit behavior'"
+	      end
 	    end
 
 	    operation 959750 "~Subscribed_State"
@@ -3099,24 +3123,6 @@ ${inlines}
 	    comment " to manage the event stop"
 	  end
 
-	  operation 975110 "_doexit"
-	    force_body_gen public explicit_return_type "void"
-	    nparams 1
-	      param inout name "stm" type class_ref 712966 // Coinbase
-	    cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-	    cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	    
-	    
-	    
-	    
-	    ncouples 1
-	    key "STM generated" value ""
-	    comment " perform the 'exit behavior'"
-	  end
-
 	  operation 990726 "_doentry"
 	    force_body_gen public explicit_return_type "void"
 	    nparams 1
@@ -3332,18 +3338,6 @@ ${inlines}
 	MysqlColumn
       end
 
-      attribute 650630 "https_target_"
-	private explicit_type "string"
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-      end
-
       attribute 657414 "https_req_"
 	private type class_ref 740230 // HttpRequestWithEmptyBody
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
@@ -3524,7 +3518,7 @@ ${inlines}
 	  param in name "channel" explicit_type "string"
 	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}std::shared_ptr<${t0}> ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}, const ${t4} & ${p4}${v4}, const ${t5} & ${p5}${v5}, const ${t6} & ${p6}${v6}, const ${t7} & ${p7}${v7}, const ${t8} & ${p8}${v8}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}std::shared_ptr<${t0}> ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, const ${t4} & ${p4}, const ${t5} & ${p5}, const ${t6} & ${p6}, const ${t7} & ${p7}, const ${t8} & ${p8}${)}${volatile}${throw} : _current_state{0}, ioc_{ioc}, host_{host}, port_{port}, target_{target}, https_host_{https_host}, https_port_{https_port}, https_target_{https_target}, product_{product} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}std::shared_ptr<${t0}> ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, const ${t4} & ${p4}, const ${t5} & ${p5}, const ${t6} & ${p6}, const ${t7} & ${p7}, const ${t8} & ${p8}${)}${volatile}${throw} : _current_state{0},host_{host}, port_{port}, target_{target},  product_{product}, https_host_ {https_host}, https_port_{https_port} {
   ${body}}
 "
 	
@@ -3957,15 +3951,6 @@ ${inlines}
 	    cpp default "${type}"
 	    classrelation_ref 821638 // <dependency>
 	  b parent class_ref 730886 // Engage_State
-      end
-
-      classrelation 821766 // ioc_ (<directional composition>)
-	relation 811654 *-->
-	  a role_name "ioc_" private
-	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::shared_ptr<${type}> ${name}${value};
-"
-	    classrelation_ref 821766 // ioc_ (<directional composition>)
-	  b parent class_ref 698758 // io_context
       end
 
       classrelation 822406 // https_ctx_ (<directional composition>)

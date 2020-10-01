@@ -9,16 +9,22 @@ class Snapshot_State
   }
 !!!964870.cpp!!!	message(inout stm : Coinbase) : void
   {
-    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
   }
 !!!964998.cpp!!!	_upper(inout stm : Coinbase) : Coinbase::AnyState
   return &stm._coinbase_state._engage_state._subscribed_state;
 !!!983942.cpp!!!	_completion(inout stm : Coinbase) : bool
   {
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._coinbase_state._engage_state._subscribed_state._snapshot_state._doexit(stm);
     stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._output_state);
 #ifdef VERBOSE_STATE_MACHINE
     std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Output" << std::endl;
 #endif
     return (bool) 1;
   }
+!!!997254.cpp!!!	_doexit(inout stm : Coinbase) : void
+#ifdef VERBOSE_STATE_MACHINE
+  std::cout << "DEBUG : execute exit behavior of .Coinbase.Engage.Subscribed.Snapshot" << std::endl;
+#endif
+stm.https_->next_layer().shutdown(boost::asio::ip::tcp::socket::shutdown_both);
+stm.https_->next_layer().close();
