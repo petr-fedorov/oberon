@@ -11,6 +11,7 @@ class Engage_State
 !!!965638.cpp!!!	error(inout stm : Coinbase) : void
   {
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._coinbase_state._engage_state._doexit(stm);
 #ifdef VERBOSE_STATE_MACHINE
     std::cout << "DEBUG : execute activity of transition error" << std::endl;
 #endif
@@ -26,6 +27,7 @@ std::cerr << stm.ec_.message() << "\n";
 !!!974982.cpp!!!	stop(inout stm : Coinbase) : void
   {
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._coinbase_state._engage_state._doexit(stm);
     stm._set_currentState(stm._coinbase_state);
 #ifdef VERBOSE_STATE_MACHINE
     std::cout << "DEBUG : current state is now .Coinbase" << std::endl;
@@ -43,3 +45,9 @@ stm.signal_set_->async_wait([&stm](const boost::system::error_code &ec,
     stm.stop();
   }
 });
+!!!1003782.cpp!!!	_doexit(inout stm : Coinbase) : void
+#ifdef VERBOSE_STATE_MACHINE
+  std::cout << "DEBUG : execute exit behavior of .Coinbase.Engage" << std::endl;
+#endif
+stm.f_.close();
+stm.signal_set_->cancel();

@@ -9,6 +9,11 @@ class Snapshot_State
   }
 !!!964870.cpp!!!	message(inout stm : Coinbase) : void
   {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : execute activity of transition queue_message" << std::endl;
+#endif
+stm.messages_.push_back(std::move(stm.tree_));
+std::cout << "Seq no: " << stm.last_seq_number_ << " Queue size: " << stm.messages_.size() << "\n";
   }
 !!!964998.cpp!!!	_upper(inout stm : Coinbase) : Coinbase::AnyState
   return &stm._coinbase_state._engage_state._subscribed_state;

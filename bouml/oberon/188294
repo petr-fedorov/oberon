@@ -1,6 +1,6 @@
 format 223
-"asio" // boost::asio
-  revision 6
+"io_context" // boost::asio::io_context
+  revision 2
   modified_by 6 "petr"
   // class settings
   
@@ -30,12 +30,8 @@ format 223
   activitydiagramsettings
    end
   
-  cpp_namespace "boost::asio"
-  package_ref 167942 // ssl
-
-  package_ref 168582 // ip
-
-  classview 221190 "asio"
+  cpp_namespace "boost::asio::io_context"
+  classview 247430 "io_context"
     
     classdiagramsettings member_max_width 0 end
     
@@ -55,38 +51,10 @@ format 223
     
     activitydiagramsettings
      end
-    class 698758 "io_context"
+    class 753414 "strand"
       visibility package 
       cpp_external cpp_decl "${name}
-#include <boost/asio/io_context.hpp>
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      mysql_decl ""
-      
-    end
-
-    class 706310 "deadline_timer"
-      visibility package 
-      cpp_external cpp_decl "${name}
-#include <boost/asio/deadline_timer.hpp>
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      mysql_decl ""
-      
-    end
-
-    class 746886 "signal_set"
-      visibility package 
-      cpp_external cpp_decl "${name}
-#include <boost/asio/signal_set.hpp>
+#include <boost/asio/io_context_strand.hpp>
 "
       java_decl ""
       php_decl ""
@@ -97,6 +65,4 @@ format 223
       
     end
   end
-
-  package_ref 188294 // io_context
 end

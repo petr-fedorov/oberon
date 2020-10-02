@@ -1,6 +1,13 @@
 class Output_State
 !!!963462.cpp!!!	message(inout stm : Coinbase) : void
   {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : execute activity of transition message" << std::endl;
+#endif
+#ifdef VERBOSE_STATE_MACHINE
+std::cout << "Seq no=" << stm.last_seq_number_ << "\n";
+#endif
+boost::property_tree::write_json(stm.f_, *stm.tree_, false);
   }
 !!!963590.cpp!!!	_upper(inout stm : Coinbase) : Coinbase::AnyState
   return &stm._coinbase_state._engage_state._subscribed_state;

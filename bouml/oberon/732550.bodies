@@ -9,11 +9,11 @@ class Query_snapshot_State
     if (stm.snapshot_seq_number_ >= stm.first_seq_number_ &&
  stm.snapshot_seq_number_ <= stm.last_seq_number_
 ) {
-      stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._snapshot_state._start_new_era_state);
+      stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._snapshot_state._save_snapshot_state);
 #ifdef VERBOSE_STATE_MACHINE
-      std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Snapshot.Start new era" << std::endl;
+      std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Snapshot.Save snapshot" << std::endl;
 #endif
-      stm._coinbase_state._engage_state._subscribed_state._snapshot_state._start_new_era_state.create(stm);
+      stm._coinbase_state._engage_state._subscribed_state._snapshot_state._save_snapshot_state.create(stm);
     }
     else if (!(stm.snapshot_seq_number_ >= stm.first_seq_number_ &&
  stm.snapshot_seq_number_ == stm.last_seq_number_)

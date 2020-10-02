@@ -89,3 +89,12 @@ class AnyState
   else
     std::cout << "DEBUG : transition timeout not expected" << std::endl;
 #endif
+!!!1010566.cpp!!!	saved(inout stm : Coinbase) : void
+  AnyState * st = _upper(stm);
+
+  if (st != 0)
+    st->saved(stm);
+#ifdef VERBOSE_STATE_MACHINE
+  else
+    std::cout << "DEBUG : transition saved not expected" << std::endl;
+#endif

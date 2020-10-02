@@ -1,7 +1,7 @@
 class Coinbase
 !!!915590.cpp!!!	Coinbase()
   _current_state = 0;
-!!!917382.cpp!!!	Coinbase(inout ioc : io_context, in host : string, in port : string, in target : string, in https_host : string, in https_port : string, in https_target : string, in product : string, in channel : string)
+!!!917382.cpp!!!	Coinbase(inout ioc : io_context, in host : string, in port : string, in target : string, in https_host : string, in https_port : string, in https_target : string, in product : string, in channel : string, in file_name : string)
 ctx_ = std::make_unique<boost::asio::ssl::context>(
     boost::asio::ssl::context::sslv23_client);
 https_ctx_ = std::make_unique<boost::asio::ssl::context>(
@@ -143,14 +143,14 @@ if (ec)
 else {
   stringstream m;
   m << boost::beast::buffers(buffer_.data());
-  tree_.clear();
-  read_json(m, tree_);
+  tree_ = std::move(make_unique<ptree>());
+  read_json(m, *tree_);
 
   buffer_.consume(buffer_.size());
   // std::cout << m.str() << std::endl;
-  std::string msg_type{tree_.get<std::string>("type")};
+  std::string msg_type{tree_->get<std::string>("type")};
   try {
-    auto seq_number = tree_.get<long>("sequence");
+    auto seq_number = tree_->get<long>("sequence");
 
     if (msg_type == "heartbeat") {
       if (seq_number == last_seq_number_)
@@ -179,7 +179,7 @@ else {
     }
   } catch (const boost::property_tree::ptree_error &e) {
     if (msg_type == "error") {
-      std::cout << tree_.get<std::string>("message") << std::endl;
+      std::cout << tree_->get<std::string>("message") << std::endl;
       is_running = error();
     } else if (msg_type == "subscriptions")
       is_running = subscribed();
@@ -209,5 +209,13 @@ if(is_running) {
     std::cout << "DEBUG : fire trigger timeout" << std::endl;
 #endif
     _current_state->timeout(*this);
+  }
+  return (_current_state != 0);
+!!!1010438.cpp!!!	saved() : bool
+  if (_current_state != 0) {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : fire trigger saved" << std::endl;
+#endif
+    _current_state->saved(*this);
   }
   return (_current_state != 0);

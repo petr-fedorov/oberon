@@ -4,13 +4,13 @@ class Subscribed_State
 #ifdef VERBOSE_STATE_MACHINE
     std::cout << "DEBUG : execute activity of transition heartbeat" << std::endl;
 #endif
-if (stm.timer_->expires_from_now(seconds(3)) > 0) {
+if (stm.timer_->expires_from_now(seconds(2)) > 0) {
   // We managed to cancel the timer. Start new asynchronous wait.
   stm.timer_->async_wait([&stm](const boost::system::error_code &ec) {
     if (ec != boost::asio::error::operation_aborted)
       stm.timeout();
   });
-  std::cout << stm.tree_.get<std::string>("time") << " Timer restarted\n";
+  std::cout << stm.tree_->get<std::string>("time") << " Timer restarted\n";
 }
 
   }
@@ -41,6 +41,7 @@ stm.timer_->async_wait([&stm](const boost::system::error_code &ec) {
   {
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
     stm._coinbase_state._engage_state._subscribed_state._doexit(stm);
+    stm._coinbase_state._engage_state._doexit(stm);
     stm._set_currentState(stm._coinbase_state);
 #ifdef VERBOSE_STATE_MACHINE
     std::cout << "DEBUG : current state is now .Coinbase" << std::endl;

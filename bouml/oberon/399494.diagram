@@ -31,7 +31,7 @@ statecanvas 130310 state_ref 219142 // Snapshot
   xyzwh 72.9039 512.517 2065 687 373
 end
 pseudostatecanvas 130694 pseudostate_ref 274438 // initial 
-   xyz 127.482 584.833 2070
+   xyz 112.482 612.833 2070
 end
 statecanvas 130822 state_ref 219270 // Resolve
   
@@ -74,18 +74,18 @@ end
 pseudostatecanvas 141446 pseudostate_ref 287878 // initial 
    xyz 387.873 136.786 2021
 end
-statecanvas 141958 state_ref 233350 // Start new era
+statecanvas 141958 state_ref 233350 // Save snapshot
   
-  xyzwh 373.308 773.158 2084 359 93
+  xyzwh 295.308 770.158 2084 147 85
 end
 pseudostatecanvas 144262 pseudostate_ref 294406 // choice 
    xyz 177.383 794.7 2070
 end
-pseudostatecanvas 148998 pseudostate_ref 301318 // final 
-   xyz 252.582 827.112 2070
-end
 pseudostatecanvas 149894 pseudostate_ref 301446 // final 
    xyz 462.341 305.483 2065
+end
+pseudostatecanvas 151046 pseudostate_ref 307974 // final 
+   xyz 555 799 2070
 end
 transitioncanvas 128774 transition_ref 400518 // resolved
   
@@ -131,7 +131,7 @@ transitioncanvas 136326 transition_ref 403718 // connected
 end
 transitioncanvas 136454 transition_ref 403846 // handshaked
   
-  from ref 135814 z 2077 label "handshaked" xyz 429 741 2077 to ref 135942
+  from ref 135814 z 2077 label "handshaked" xyz 437 706 2077 to ref 135942
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 139142 transition_ref 411526 // heartbeat
@@ -178,7 +178,7 @@ transitioncanvas 144390 transition_ref 426630 // snapshot
 end
 transitioncanvas 144518 transition_ref 426758 // fresh
   
-  from ref 144262 z 2085 label "[fresh]" xyz 269 804 2085 to ref 141958
+  from ref 144262 z 2085 label "[fresh]" xyz 227 803 2085 to ref 141958
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 144646 transition_ref 426886 // stale
@@ -191,19 +191,13 @@ transitioncanvas 146054 transition_ref 427526 // timeout
   from ref 139014 z 2055 label "timeout" xyz 387 1092 2055 to ref 128390
   write_horizontally default show_definition default drawing_language default
 end
-transitioncanvas 148614 transition_ref 434950 // <transition>
+transitioncanvas 148614 transition_ref 434950 // queue_message
   decenter_begin 394
   decenter_end 126
   
   from ref 130310 z 2066 to point 339.5 486
   line 148742 z 2066 label "message [queue message]" xyz 178 479 2066 to point 158 487.5
   line 148870 z 2066 to ref 130310
-  write_horizontally default show_definition default drawing_language default
-end
-transitioncanvas 149126 transition_ref 441478 // <transition>
-  decenter_begin 731
-  
-  from ref 141958 z 2085 to ref 148998
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 149254 transition_ref 441606 // <transition>
@@ -233,6 +227,11 @@ transitioncanvas 150150 transition_ref 441990 // <transition>
   decenter_end 501
   
   from ref 131974 z 2061 to ref 139014
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 151430 transition_ref 449158 // saved
+  
+  from ref 141958 z 2085 label "saved" xyz 478 802 2085 to ref 151046
   write_horizontally default show_definition default drawing_language default
 end
 preferred_whz 0 0 0.5
