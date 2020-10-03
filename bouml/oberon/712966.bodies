@@ -2,24 +2,12 @@ class Coinbase
 !!!915590.cpp!!!	Coinbase()
   _current_state = 0;
 !!!917382.cpp!!!	Coinbase(inout ioc : io_context, in host : string, in port : string, in target : string, in https_host : string, in https_port : string, in https_target : string, in product : string, in channel : string, in file_name : string)
-ctx_ = std::make_unique<boost::asio::ssl::context>(
-    boost::asio::ssl::context::sslv23_client);
 https_ctx_ = std::make_unique<boost::asio::ssl::context>(
     boost::asio::ssl::context::sslv23_client);
-load_root_certificates(*ctx_);
 load_root_certificates(*https_ctx_);
-resolver_ = std::make_unique<boost::asio::ip::tcp::resolver>(*ioc);
-ws_ = std::make_unique<WebsocketStream>(*ioc, *ctx_);
 timer_ = std::make_unique<boost::asio::deadline_timer>(*ioc);
 https_ = std::make_unique<SslStream>(*ioc, *https_ctx_);
 signal_set_ = std::make_unique<boost::asio::signal_set>(*ioc, SIGINT, SIGTERM);
-
-if (!SSL_set_tlsext_host_name(ws_->next_layer().native_handle(),
-                              host_.c_str())) {
-  boost::system::error_code ec{static_cast<int>(::ERR_get_error()),
-                               boost::asio::error::get_ssl_category()};
-  std::cerr << ec.message() << "\n";
-}
 
 if (!SSL_set_tlsext_host_name(https_->native_handle(), https_host.c_str())) {
   boost::system::error_code ec{static_cast<int>(::ERR_get_error()),
@@ -28,12 +16,6 @@ if (!SSL_set_tlsext_host_name(https_->native_handle(), https_host.c_str())) {
 }
 
 /*
-SSL_CTX_set_keylog_callback(ctx_->native_handle(),
-      [](const SSL *ssl, const char *line) {
-  ofstream f{"./key.txt", ios_base::app };
-  f << line << "\n";
-  f.close();
-      });
 SSL_CTX_set_keylog_callback(https_ctx_->native_handle(),
       [](const SSL *ssl, const char *line) {
   ofstream f{"./key.txt", ios_base::app};
@@ -70,60 +52,12 @@ return (_current_state != 0);
 #ifdef VERBOSE_STATE_MACHINE
     std::cout << "DEBUG : final state reached" << std::endl;
 #endif
-!!!917638.cpp!!!	error() : bool
-  if (_current_state != 0) {
-#ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : fire trigger error" << std::endl;
-#endif
-    _current_state->error(*this);
-  }
-  return (_current_state != 0);
-!!!918022.cpp!!!	resolved() : bool
-  if (_current_state != 0) {
-#ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : fire trigger resolved" << std::endl;
-#endif
-    _current_state->resolved(*this);
-  }
-  return (_current_state != 0);
-!!!919558.cpp!!!	connected() : bool
-  if (_current_state != 0) {
-#ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : fire trigger connected" << std::endl;
-#endif
-    _current_state->connected(*this);
-  }
-  return (_current_state != 0);
-!!!921862.cpp!!!	handshaked() : bool
-  if (_current_state != 0) {
-#ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : fire trigger handshaked" << std::endl;
-#endif
-    _current_state->handshaked(*this);
-  }
-  return (_current_state != 0);
-!!!922630.cpp!!!	subscribed() : bool
-  if (_current_state != 0) {
-#ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : fire trigger subscribed" << std::endl;
-#endif
-    _current_state->subscribed(*this);
-  }
-  return (_current_state != 0);
 !!!925574.cpp!!!	heartbeat() : bool
   if (_current_state != 0) {
 #ifdef VERBOSE_STATE_MACHINE
     std::cout << "DEBUG : fire trigger heartbeat" << std::endl;
 #endif
     _current_state->heartbeat(*this);
-  }
-  return (_current_state != 0);
-!!!926470.cpp!!!	snapshot() : bool
-  if (_current_state != 0) {
-#ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : fire trigger snapshot" << std::endl;
-#endif
-    _current_state->snapshot(*this);
   }
   return (_current_state != 0);
 !!!927622.cpp!!!	message() : bool
@@ -137,9 +71,12 @@ return (_current_state != 0);
 !!!935302.cpp!!!	dispatchJson(in ec : error_code) : void
 // boost::ignore_unused(bytes_transferred);
 using namespace boost::property_tree;
-bool is_running = false;
-if (ec)
-  is_running = error();
+if (ec) {
+  ec_ = ec;
+  error_message_ = ec.message();
+  std::cout << "dispatchJson: " << error_message_ << "\n";
+  failure();
+}
 else {
   stringstream m;
   m << boost::beast::buffers(buffer_.data());
@@ -153,12 +90,12 @@ else {
     auto seq_number = tree_->get<long>("sequence");
 
     if (msg_type == "heartbeat") {
-      if (seq_number == last_seq_number_)
-        is_running = heartbeat();
+      if (seq_number == last_seq_number_ || !last_seq_number_)
+        heartbeat();
       else {
         std::cout << "Heartbeat: Expected " << last_seq_number_ << " but got "
                   << seq_number << "\n";
-        is_running = error();
+        failure();
       }
     } else {
 
@@ -170,29 +107,22 @@ else {
 
       if (seq_number == last_seq_number_ + 1) {
         last_seq_number_ = seq_number;
-        is_running = message();
+        message();
       } else {
         std::cout << "Message : Expected " << last_seq_number_ + 1
                   << " but got " << seq_number << "\n";
-        is_running = error();
+        failure();
       }
     }
   } catch (const boost::property_tree::ptree_error &e) {
     if (msg_type == "error") {
       std::cout << tree_->get<std::string>("message") << std::endl;
-      is_running = error();
+      failure();
     } else if (msg_type == "subscriptions")
-      is_running = subscribed();
+      success();
     else
-      is_running = error();
+      failure();
   };
-}
-if(is_running) {
-  ws_->async_read(buffer_, [this](const boost::system::error_code &ec,
-                                  std::size_t bytes_transferred) {
-    boost::ignore_unused(bytes_transferred);
-    this->dispatchJson(ec);
-  });
 }
 
 !!!974726.cpp!!!	stop() : bool
@@ -211,11 +141,19 @@ if(is_running) {
     _current_state->timeout(*this);
   }
   return (_current_state != 0);
-!!!1010438.cpp!!!	saved() : bool
+!!!1027078.cpp!!!	success() : bool
   if (_current_state != 0) {
 #ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : fire trigger saved" << std::endl;
+    std::cout << "DEBUG : fire trigger success" << std::endl;
 #endif
-    _current_state->saved(*this);
+    _current_state->success(*this);
+  }
+  return (_current_state != 0);
+!!!1027974.cpp!!!	failure() : bool
+  if (_current_state != 0) {
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : fire trigger failure" << std::endl;
+#endif
+    _current_state->failure(*this);
   }
   return (_current_state != 0);

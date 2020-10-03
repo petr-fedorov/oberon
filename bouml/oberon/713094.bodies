@@ -1,49 +1,4 @@
 class AnyState
-!!!917766.cpp!!!	error(inout stm : Coinbase) : void
-  AnyState * st = _upper(stm);
-
-  if (st != 0)
-    st->error(stm);
-#ifdef VERBOSE_STATE_MACHINE
-  else
-    std::cout << "DEBUG : transition error not expected" << std::endl;
-#endif
-!!!918150.cpp!!!	resolved(inout stm : Coinbase) : void
-  AnyState * st = _upper(stm);
-
-  if (st != 0)
-    st->resolved(stm);
-#ifdef VERBOSE_STATE_MACHINE
-  else
-    std::cout << "DEBUG : transition resolved not expected" << std::endl;
-#endif
-!!!919686.cpp!!!	connected(inout stm : Coinbase) : void
-  AnyState * st = _upper(stm);
-
-  if (st != 0)
-    st->connected(stm);
-#ifdef VERBOSE_STATE_MACHINE
-  else
-    std::cout << "DEBUG : transition connected not expected" << std::endl;
-#endif
-!!!921990.cpp!!!	handshaked(inout stm : Coinbase) : void
-  AnyState * st = _upper(stm);
-
-  if (st != 0)
-    st->handshaked(stm);
-#ifdef VERBOSE_STATE_MACHINE
-  else
-    std::cout << "DEBUG : transition handshaked not expected" << std::endl;
-#endif
-!!!922758.cpp!!!	subscribed(inout stm : Coinbase) : void
-  AnyState * st = _upper(stm);
-
-  if (st != 0)
-    st->subscribed(stm);
-#ifdef VERBOSE_STATE_MACHINE
-  else
-    std::cout << "DEBUG : transition subscribed not expected" << std::endl;
-#endif
 !!!925702.cpp!!!	heartbeat(inout stm : Coinbase) : void
   AnyState * st = _upper(stm);
 
@@ -52,15 +7,6 @@ class AnyState
 #ifdef VERBOSE_STATE_MACHINE
   else
     std::cout << "DEBUG : transition heartbeat not expected" << std::endl;
-#endif
-!!!926598.cpp!!!	snapshot(inout stm : Coinbase) : void
-  AnyState * st = _upper(stm);
-
-  if (st != 0)
-    st->snapshot(stm);
-#ifdef VERBOSE_STATE_MACHINE
-  else
-    std::cout << "DEBUG : transition snapshot not expected" << std::endl;
 #endif
 !!!927750.cpp!!!	message(inout stm : Coinbase) : void
   AnyState * st = _upper(stm);
@@ -89,12 +35,21 @@ class AnyState
   else
     std::cout << "DEBUG : transition timeout not expected" << std::endl;
 #endif
-!!!1010566.cpp!!!	saved(inout stm : Coinbase) : void
+!!!1027206.cpp!!!	success(inout stm : Coinbase) : void
   AnyState * st = _upper(stm);
 
   if (st != 0)
-    st->saved(stm);
+    st->success(stm);
 #ifdef VERBOSE_STATE_MACHINE
   else
-    std::cout << "DEBUG : transition saved not expected" << std::endl;
+    std::cout << "DEBUG : transition success not expected" << std::endl;
+#endif
+!!!1028102.cpp!!!	failure(inout stm : Coinbase) : void
+  AnyState * st = _upper(stm);
+
+  if (st != 0)
+    st->failure(stm);
+#ifdef VERBOSE_STATE_MACHINE
+  else
+    std::cout << "DEBUG : transition failure not expected" << std::endl;
 #endif

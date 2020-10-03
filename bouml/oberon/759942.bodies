@@ -1,79 +1,101 @@
 class Save_snapshot_State
-!!!1010694.cpp!!!	saved(inout stm : Coinbase) : void
+!!!1010822.cpp!!!	create(inout stm : Coinbase) : void
+	_doentry(stm);
+	_do(stm);
+!!!1010950.cpp!!!	_doentry(inout stm : Coinbase) : void
+#ifdef VERBOSE_STATE_MACHINE
+  std::cout << "DEBUG : execute entry behavior of .Coinbase.Engage.Subscribed.Snapshot.Save snapshot" << std::endl;
+#endif
+auto iter = stm.messages_.begin();
+for (; iter != stm.messages_.end() &&
+       (*iter)->get<long>("sequence") != stm.snapshot_seq_number_;
+     stm.messages_.erase(iter++))
+  ;
+!!!1011078.cpp!!!	_upper(inout stm : Coinbase) : Coinbase::AnyState
+  return &stm._coinbase_state._engage_state._subscribed_state._snapshot_state;
+!!!1017862.cpp!!!	_doexit(inout stm : Coinbase) : void
+#ifdef VERBOSE_STATE_MACHINE
+  std::cout << "DEBUG : execute exit behavior of .Coinbase.Engage.Subscribed.Snapshot.Save snapshot" << std::endl;
+#endif
+stm.stop_thread_.store(true);
+stm.thread_.join();
+!!!1017990.cpp!!!	_do(inout stm : Coinbase) : void
+#ifdef VERBOSE_STATE_MACHINE
+  std::cout << "DEBUG : execute do behavior of .Coinbase.Engage.Subscribed.Snapshot.Save snapshot" << std::endl;
+#endif
+if (stm.messages_.size()) {
+  auto era_time = stm.messages_.front()->get<string>("time");
+  auto product_id = stm.messages_.front()->get<string>("product_id");
+
+  // Start new era in another thread since it takes a long time ...
+  stm.thread_ = std::thread {[&stm, era_time, product_id]() {
+    stm.stop_thread_.store(false);
+    try {
+      boost::property_tree::ptree era;
+      era.put<string>("type", "era");
+      era.put<string>("time", era_time);
+      era.put<string>("product_id", product_id);
+      boost::property_tree::write_json(stm.f_, era, false);
+
+      boost::property_tree::ptree order_tree;
+
+      for (auto iter = stm.snapshot_tree_.get_child("bids").begin();
+           iter != stm.snapshot_tree_.get_child("bids").end() &&!stm.stop_thread_; ++iter) {
+        order_tree.clear();
+        order_tree.put<string>("time", era_time);
+        order_tree.put<string>("product_id", product_id);
+        order_tree.put<string>("type", "open");
+        order_tree.put<string>("side", "buy");
+
+        auto iter2 = iter->second.begin();
+        order_tree.put<string>("price", iter2++->second.get_value<string>());
+        order_tree.put<string>("remaining_size",
+                               iter2++->second.get_value<string>());
+        order_tree.put<string>("order_id", iter2++->second.get_value<string>());
+        boost::property_tree::write_json(stm.f_, order_tree, false);
+      }
+      for (auto iter = stm.snapshot_tree_.get_child("asks").begin();
+           iter != stm.snapshot_tree_.get_child("asks").end() && !stm.stop_thread_; ++iter) {
+        order_tree.clear();
+        order_tree.put<string>("time", era_time);
+        order_tree.put<string>("product_id", product_id);
+        order_tree.put<string>("type", "open");
+        order_tree.put<string>("side", "sell");
+
+        auto iter2 = iter->second.begin();
+        order_tree.put<string>("price", iter2++->second.get_value<string>());
+        order_tree.put<string>("remaining_size",
+                               iter2++->second.get_value<string>());
+        order_tree.put<string>("order_id", iter2++->second.get_value<string>());
+        boost::property_tree::write_json(stm.f_, order_tree, false);
+      }
+      if (!stm.stop_thread_) // We don't care too much about race condition here
+        boost::asio::post([&stm]() { stm.success(); });
+      else
+        boost::asio::post([&stm]() {
+          stm.error_message_ = "Snapshot saved has been stopped, exiting ...";
+          stm.failure();
+        });
+    } catch (...) {
+      boost::asio::post([&stm]() {
+        stm.error_message_ = "Snapshot saved failed due to an exception, exiting ...";
+        stm.failure();
+      });
+    }
+  }};
+}
+
+!!!1028358.cpp!!!	success(inout stm : Coinbase) : void
   {
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._coinbase_state._engage_state._subscribed_state._snapshot_state._save_snapshot_state._doexit(stm);
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : execute activity of transition success" << std::endl;
+#endif
+
     stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._snapshot_state);
 #ifdef VERBOSE_STATE_MACHINE
     std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Snapshot" << std::endl;
 #endif
       stm._coinbase_state._engage_state._subscribed_state._snapshot_state._completion(stm);
   }
-!!!1010822.cpp!!!	create(inout stm : Coinbase) : void
-	_doentry(stm);
-!!!1010950.cpp!!!	_doentry(inout stm : Coinbase) : void
-#ifdef VERBOSE_STATE_MACHINE
-  std::cout << "DEBUG : execute entry behavior of .Coinbase.Engage.Subscribed.Snapshot.Save snapshot" << std::endl;
-#endif
-
-std::size_t i = 0;
-while (stm.messages_[i]->get<long>("sequence") != stm.snapshot_seq_number_ &&
-       i < stm.messages_.size())
-  ++i;
-
-if (i < stm.messages_.size()) {
-  // Start new era in another thread since it takes a long time ...
-  std::thread starter{[&stm, i]() {
-    auto seq_no = stm.messages_[i]->get<long>("sequence");
-    auto era_time = stm.messages_[i]->get<string>("time");
-    auto product_id = stm.messages_[i]->get<string>("product_id");
-
-    boost::property_tree::ptree era;
-    era.put<string>("type", "era");
-    era.put<string>("time", era_time);
-    era.put<string>("product_id", product_id);
-    boost::property_tree::write_json(stm.f_, era, false);
-
-    boost::property_tree::ptree order_tree;
-
-    for (auto iter = stm.snapshot_tree_.get_child("bids").begin();
-         iter != stm.snapshot_tree_.get_child("bids").end(); ++iter) {
-      order_tree.clear();
-      order_tree.put<string>("time", era_time);
-      order_tree.put<string>("product_id", product_id);
-      order_tree.put<string>("type", "open");
-      order_tree.put<string>("side", "buy");
-
-      auto iter2 = iter->second.begin();
-      order_tree.put<string>("price", iter2++->second.get_value<string>());
-      order_tree.put<string>("remaining_size",
-                             iter2++->second.get_value<string>());
-      order_tree.put<string>("order_id", iter2++->second.get_value<string>());
-      boost::property_tree::write_json(stm.f_, order_tree, false);
-    }
-    for (auto iter = stm.snapshot_tree_.get_child("asks").begin();
-         iter != stm.snapshot_tree_.get_child("asks").end(); ++iter) {
-      order_tree.clear();
-      order_tree.put<string>("time", era_time);
-      order_tree.put<string>("product_id", product_id);
-      order_tree.put<string>("type", "open");
-      order_tree.put<string>("side", "sell");
-
-      auto iter2 = iter->second.begin();
-      order_tree.put<string>("price", iter2++->second.get_value<string>());
-      order_tree.put<string>("remaining_size",
-                             iter2++->second.get_value<string>());
-      order_tree.put<string>("order_id", iter2++->second.get_value<string>());
-      boost::property_tree::write_json(stm.f_, order_tree, false);
-    }
-    boost::asio::post([&stm, i]() {
-      // snapshot already INCLUDES the message with sequence number stm.snapshot_seq_number_, i.e. stm.messages_[i]
-      // so start from the next one
-      for (auto j = i+1; j < stm.messages_.size(); ++j)
-        boost::property_tree::write_json(stm.f_, *stm.messages_[j], false);
-      stm.saved();
-    });
-  }};
-  starter.detach();
-}
-!!!1011078.cpp!!!	_upper(inout stm : Coinbase) : Coinbase::AnyState
-  return &stm._coinbase_state._engage_state._subscribed_state._snapshot_state;

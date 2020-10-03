@@ -1,5 +1,6 @@
 class Initialize_State
 !!!963206.cpp!!!	create(inout stm : Coinbase) : void
+  _doentry(stm);
   {
     stm._set_currentState(stm._coinbase_state._engage_state._initialize_state._resolve_state);
 #ifdef VERBOSE_STATE_MACHINE
@@ -18,4 +19,44 @@ class Initialize_State
 #endif
     stm._coinbase_state._engage_state._subscribed_state.create(stm);
     return (bool) 1;
+  }
+!!!1025542.cpp!!!	_doentry(inout stm : Coinbase) : void
+#ifdef VERBOSE_STATE_MACHINE
+  std::cout << "DEBUG : execute entry behavior of .Coinbase.Engage.Initialize" << std::endl;
+#endif
+stm.ctx_ = std::make_unique<boost::asio::ssl::context>(
+    boost::asio::ssl::context::sslv23_client);
+load_root_certificates(*stm.ctx_);
+stm.resolver_ = std::make_unique<boost::asio::ip::tcp::resolver>(*stm.ioc_);
+stm.ws_ = std::make_unique<WebsocketStream>(*stm.ioc_, *stm.ctx_);
+
+if (!SSL_set_tlsext_host_name(stm.ws_->next_layer().native_handle(),
+                              stm.host_.c_str())) {
+  boost::system::error_code ec{static_cast<int>(::ERR_get_error()),
+                               boost::asio::error::get_ssl_category()};
+  std::cerr << ec.message() << "\n";
+}
+/*
+SSL_CTX_set_keylog_callback(stm.ctx_->native_handle(),
+      [](const SSL *ssl, const char *line) {
+  ofstream f{"./key.txt", ios_base::app };
+  f << line << "\n";
+  f.close();
+      });
+*/
+!!!1028230.cpp!!!	failure(inout stm : Coinbase) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._coinbase_state._engage_state._doexit(stm);
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : execute activity of transition failure" << std::endl;
+#endif
+#ifdef VERBOSE_STATE_MACHINE
+std::cout << stm.error_message_ << "\n";
+#endif
+    stm._set_currentState(stm._coinbase_state);
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : current state is now .Coinbase" << std::endl;
+#endif
+      stm._final();
   }

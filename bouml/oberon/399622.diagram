@@ -2,7 +2,7 @@ format 223
 
 classcanvas 128006 class_ref 712966 // Coinbase
   classdiagramsettings member_max_width 0 end
-  xyz 159 48 2000
+  xyz 152 123 2000
 end
 classcanvas 128134 class_ref 697862 // resolver
   classdiagramsettings member_max_width 0 end
@@ -48,14 +48,22 @@ classcanvas 131590 class_ref 174214 // ptree
   classdiagramsettings member_max_width 0 end
   xyz 475 35 2000
 end
+classcanvas 132102 class_ref 697734 // enable_shared_from_this
+  classdiagramsettings member_max_width 0 end
+  xyz 148 16 2005
+end
+classcanvas 132614 class_ref 698758 // io_context
+  classdiagramsettings member_max_width 0 end
+  xyz 493 540 2015
+end
 relationcanvas 128518 relation_ref 773382 // <directional composition>
   from ref 128006 z 2001 to ref 128134
-  role_a_pos 432 305 3000 no_role_b
+  role_a_pos 432 308 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 128774 relation_ref 773510 // <directional composition>
   from ref 128006 z 2001 to ref 128646
-  role_a_pos 422 408 3000 no_role_b
+  role_a_pos 422 416 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 129030 relation_ref 773638 // <directional composition>
@@ -68,12 +76,12 @@ relationcanvas 129030 relation_ref 773638 // <directional composition>
 end
 relationcanvas 129286 relation_ref 783750 // <directional composition>
   from ref 128006 z 2001 to ref 129158
-  role_a_pos 394 475 3000 no_role_b
+  role_a_pos 394 484 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 129542 relation_ref 801542 // <directional composition>
   from ref 128006 z 2011 to ref 129414
-  role_a_pos 410 582 3000 no_role_b
+  role_a_pos 410 589 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 129926 relation_ref 812294 // <directional composition>
@@ -95,14 +103,14 @@ relationcanvas 131206 relation_ref 819078 // <realization>
 end
 relationcanvas 131462 relation_ref 825990 // <directional composition>
   from ref 128006 z 2001 to ref 131334
-  role_a_pos 516 894 3000 no_role_b
+  role_a_pos 514 894 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 131718 relation_ref 832518 // <directional composition>
   decenter_begin 10
-  from ref 128006 z 2001 stereotype "<<vector>>" xyz 356 55 3000 to ref 131590
-  role_a_pos 403 32 3000 no_role_b
-  multiplicity_a_pos 459 65 3000 no_multiplicity_b
+  from ref 128006 z 2001 stereotype "<<list>>" xyz 361 95 3000 to ref 131590
+  role_a_pos 403 35 3000 no_role_b
+  multiplicity_a_pos 459 68 3000 no_multiplicity_b
 end
 relationcanvas 131846 relation_ref 832646 // <directional composition>
   decenter_begin 70
@@ -111,5 +119,15 @@ relationcanvas 131846 relation_ref 832646 // <directional composition>
   line 131974 z 2001 to ref 131590
   role_a_pos 505 86 3000 no_role_b
   multiplicity_a_pos 478 86 3000 no_multiplicity_b
+end
+relationcanvas 132230 relation_ref 845958 // <realization>
+  from ref 128006 z 2006 label "<T->Coinbase>" max_width 255 xyz 184 81 2006 stereotype "<<bind>>" xyz 200 99 3000 to ref 132102
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 132742 relation_ref 846598 // <directional composition>
+  from ref 128006 z 2016 to ref 132614
+  role_a_pos 460 533 3000 no_role_b
+  no_multiplicity_a no_multiplicity_b
 end
 end

@@ -1,13 +1,4 @@
 class Connect_State
-!!!962182.cpp!!!	connected(inout stm : Coinbase) : void
-  {
-    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
-    stm._set_currentState(stm._coinbase_state._engage_state._initialize_state._handshake_ssl_state);
-#ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : current state is now .Coinbase.Engage.Initialize.Handshake SSL" << std::endl;
-#endif
-    stm._coinbase_state._engage_state._initialize_state._handshake_ssl_state.create(stm);
-  }
 !!!962310.cpp!!!	create(inout stm : Coinbase) : void
 	_doentry(stm);
 !!!962438.cpp!!!	_doentry(inout stm : Coinbase) : void
@@ -21,11 +12,20 @@ boost::asio::async_connect(stm.ws_->next_layer().next_layer(), stm.results_.begi
                                   decltype(stm.results_.begin()) iter) {
                              if (ec) {
                                stm.ec_ = ec;
-                               stm.error();
+                               stm.failure();
                              } else {
                                stm.address_ = iter->endpoint().address();
-                               stm.connected();
+                               stm.success();
                                }
                            });
 !!!962566.cpp!!!	_upper(inout stm : Coinbase) : Coinbase::AnyState
   return &stm._coinbase_state._engage_state._initialize_state;
+!!!1027718.cpp!!!	success(inout stm : Coinbase) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._coinbase_state._engage_state._initialize_state._handshake_ssl_state);
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : current state is now .Coinbase.Engage.Initialize.Handshake SSL" << std::endl;
+#endif
+    stm._coinbase_state._engage_state._initialize_state._handshake_ssl_state.create(stm);
+  }

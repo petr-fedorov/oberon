@@ -1,6 +1,6 @@
 format 223
 "R package" // R package
-  revision 80
+  revision 83
   modified_by 6 "petr"
   // class settings
   
@@ -501,46 +501,72 @@ format 223
 	  cpp_on_exit "stm.f_.close();
 stm.signal_set_->cancel();"
 	state 219526 "Initialize"
+	    uml_on_entry "create websocket"
+	    cpp_on_entry "stm.ctx_ = std::make_unique<boost::asio::ssl::context>(
+    boost::asio::ssl::context::sslv23_client);
+load_root_certificates(*stm.ctx_);
+stm.resolver_ = std::make_unique<boost::asio::ip::tcp::resolver>(*stm.ioc_);
+stm.ws_ = std::make_unique<WebsocketStream>(*stm.ioc_, *stm.ctx_);
+
+if (!SSL_set_tlsext_host_name(stm.ws_->next_layer().native_handle(),
+                              stm.host_.c_str())) {
+  boost::system::error_code ec{static_cast<int>(::ERR_get_error()),
+                               boost::asio::error::get_ssl_category()};
+  std::cerr << ec.message() << \"\\n\";
+}
+/*
+SSL_CTX_set_keylog_callback(stm.ctx_->native_handle(),
+      [](const SSL *ssl, const char *line) {
+  ofstream f{\"./key.txt\", ios_base::app };
+  f << line << \"\\n\";
+  f.close();
+      });
+*/
+"
 	  state 218758 "Handshake SSL"
+	      uml_on_entry "launch"
 	      cpp_on_entry "stm.ws_->next_layer().async_handshake(
     boost::asio::ssl::stream_base::client,
     [&stm](const boost::system::error_code &ec) {
       if (ec) {
         stm.ec_ = ec;
-        stm.error();
+        stm.failure();
       } else {
-        stm.handshaked();
+        stm.success();
       }
     });
 "
-	    transition 400902 "handshaked"
+	    transition 400902 "success"
 	      on state_ref 218886 // Handshake Websocket
-		uml_trigger "handshaked"
-		cpp_trigger "handshaked"
+		uml_trigger "success"
+		cpp_trigger "success"
 	      external 
 	    end
 	  end
 
 	  state 218886 "Handshake Websocket"
+	      uml_on_entry "launch"
 	      cpp_on_entry "stm.ws_->async_handshake(stm.host_, stm.target_,
                         [&stm](const boost::system::error_code &ec) {
                           if (ec) {
                             stm.ec_ = ec;
-                            stm.error();
+                            stm.error_message_ = ec.message();
+                            stm.failure();
                           } else {
-                            stm.handshaked();
+                            stm.success();
                           }
                         });
 "
-	    transition 401286 "handshaked"
+	    transition 401286 "success"
 	      on state_ref 219014 // Subscribe
-		uml_trigger "handshaked"
-		cpp_trigger "handshaked"
+		uml_trigger "success"
+		cpp_trigger "success"
 	      external 
 	    end
 	  end
 
 	  state 219014 "Subscribe"
+	      uml_on_entry "launch"
 	      cpp_on_entry "using namespace boost::property_tree;
 ptree tree;
 std::ostringstream request;
@@ -555,7 +581,7 @@ stm.ws_->async_write(
     boost::asio::buffer(request.str()),
     [&stm](const boost::system::error_code &ec, std::size_t bytes_transferred) {
   if (ec)
-    stm.error();
+    stm.failure();
   else {
     // Read a message into our buffer
     stm.ws_->async_read(stm.buffer_, [&stm](const boost::system::error_code &ec,
@@ -565,15 +591,16 @@ stm.ws_->async_write(
       }
 });
 "
-	    transition 441862 "subscribed"
+	    transition 441862 "success"
 	      on pseudostate_ref 301446 // final 
-		uml_trigger "subscribed"
-		cpp_trigger "subscribed"
+		uml_trigger "success"
+		cpp_trigger "success"
 	      external 
 	    end
 	  end
 
 	  state 218630 "Connect"
+	      uml_on_entry "launch"
 	      cpp_on_entry "// Make the connection on the IP address we get from a lookup
 boost::asio::async_connect(stm.ws_->next_layer().next_layer(), stm.results_.begin(),
                            stm.results_.end(),
@@ -581,40 +608,42 @@ boost::asio::async_connect(stm.ws_->next_layer().next_layer(), stm.results_.begi
                                   decltype(stm.results_.begin()) iter) {
                              if (ec) {
                                stm.ec_ = ec;
-                               stm.error();
+                               stm.failure();
                              } else {
                                stm.address_ = iter->endpoint().address();
-                               stm.connected();
+                               stm.success();
                                }
                            });
 "
-	    transition 400774 "connected"
+	    transition 400774 "success"
 	      on state_ref 218758 // Handshake SSL
-		uml_trigger "connected"
-		cpp_trigger "connected"
+		uml_trigger "success"
+		cpp_trigger "success"
 	      external 
 	    end
 	  end
 
 	  state 218502 "Resolve"
-	      uml_on_entry "launch resolution"
+	      uml_on_entry "launch"
 	      cpp_on_entry "stm.resolver_->async_resolve(
     stm.host_, stm.port_,
     [&stm](const boost::system::error_code &ec,
            boost::asio::ip::tcp::resolver::results_type results) {
       if (ec) {
         stm.ec_ = ec;
-        stm.error();
+        stm.error_message_=ec.message();
+	std::cout << \"Can't resolve!\\n\";
+        stm.failure();
       } else {
         stm.results_ = results;
-        stm.resolved();
+        stm.success();
       }
     });
 "
-	    transition 400518 "resolved"
+	    transition 400518 "success"
 	      on state_ref 218630 // Connect
-		uml_trigger "resolved"
-		cpp_trigger "resolved"
+		uml_trigger "success"
+		cpp_trigger "success"
 	      external 
 	    end
 	  end
@@ -633,12 +662,32 @@ boost::asio::async_connect(stm.ws_->next_layer().next_layer(), stm.results_.begi
 	    on state_ref 226694 // Subscribed
 	    external 
 	  end
+
+	  transition 455814 "failure"
+	    on pseudostate_ref 314502 // final 
+	      uml_trigger "failure"
+	      cpp_trigger "failure"
+	      cpp_expr "#ifdef VERBOSE_STATE_MACHINE
+std::cout << stm.error_message_ << \"\\n\";
+#endif
+"
+	    external 
+	  end
 	end
 
 	state 226694 "Subscribed"
-	    uml_on_entry "start deadline_timer"
-	    uml_on_exit "close websocket"
-	    cpp_on_entry "stm.timer_->expires_from_now(seconds(5));
+	    uml_on_entry "start read websocket, start timer"
+	    uml_on_exit "cancel timer, close w+ebsocket, clear queued msgs"
+	    cpp_on_entry "stm.first_seq_number_ = 0;
+stm.last_seq_number_ = 0;
+stm.snapshot_seq_number_ = 0;
+stm.ws_->async_read(stm.buffer_, [&stm](const boost::system::error_code &ec,
+                                std::size_t bytes_transferred) {
+  boost::ignore_unused(bytes_transferred);
+  stm.dispatchJson(ec);
+});
+
+stm.timer_->expires_from_now(seconds(5));
 stm.timer_->async_wait([&stm](const boost::system::error_code &ec) {
   if (ec != boost::asio::error::operation_aborted) {
     std::cout << \"Time out!\\n\";
@@ -646,13 +695,23 @@ stm.timer_->async_wait([&stm](const boost::system::error_code &ec) {
   }
 });
 
+
+
 "
 	    cpp_on_exit "stm.timer_->cancel();
 stm.ws_->next_layer().next_layer().shutdown(boost::asio::ip::tcp::socket::shutdown_both);
+stm.ws_->next_layer().next_layer().cancel();
 stm.ws_->next_layer().next_layer().close();
+
 
 "
 	  state 219782 "Output"
+	      uml_on_entry "save queued msgs"
+	      cpp_on_entry "stm.messages_.erase(stm.messages_.begin());
+for (auto &message: stm.messages_)
+  boost::property_tree::write_json(stm.f_, *message, false);
+
+"
 	    transition 441734 "message"
 	      on state_ref 219782 // Output
 		uml_trigger "message"
@@ -662,6 +721,12 @@ stm.ws_->next_layer().next_layer().close();
 std::cout << \"Seq no=\" << stm.last_seq_number_ << \"\\n\";
 #endif
 boost::property_tree::write_json(stm.f_, *stm.tree_, false);
+stm.ws_->async_read(stm.buffer_, [&stm](const boost::system::error_code &ec,
+                                    std::size_t bytes_transferred) {
+  boost::ignore_unused(bytes_transferred);
+  stm.dispatchJson(ec);
+});
+
 "
 	    end
 	  end
@@ -671,73 +736,86 @@ boost::property_tree::write_json(stm.f_, *stm.tree_, false);
 	      cpp_on_exit "stm.https_->next_layer().shutdown(boost::asio::ip::tcp::socket::shutdown_both);
 stm.https_->next_layer().close();"
 	    state 233350 "Save snapshot"
-		uml_on_entry "save asynch"
-		cpp_on_entry "
-std::size_t i = 0;
-while (stm.messages_[i]->get<long>(\"sequence\") != stm.snapshot_seq_number_ &&
-       i < stm.messages_.size())
-  ++i;
-
-if (i < stm.messages_.size()) {
-  // Start new era in another thread since it takes a long time ...
-  std::thread starter{[&stm, i]() {
-    auto seq_no = stm.messages_[i]->get<long>(\"sequence\");
-    auto era_time = stm.messages_[i]->get<string>(\"time\");
-    auto product_id = stm.messages_[i]->get<string>(\"product_id\");
-
-    boost::property_tree::ptree era;
-    era.put<string>(\"type\", \"era\");
-    era.put<string>(\"time\", era_time);
-    era.put<string>(\"product_id\", product_id);
-    boost::property_tree::write_json(stm.f_, era, false);
-
-    boost::property_tree::ptree order_tree;
-
-    for (auto iter = stm.snapshot_tree_.get_child(\"bids\").begin();
-         iter != stm.snapshot_tree_.get_child(\"bids\").end(); ++iter) {
-      order_tree.clear();
-      order_tree.put<string>(\"time\", era_time);
-      order_tree.put<string>(\"product_id\", product_id);
-      order_tree.put<string>(\"type\", \"open\");
-      order_tree.put<string>(\"side\", \"buy\");
-
-      auto iter2 = iter->second.begin();
-      order_tree.put<string>(\"price\", iter2++->second.get_value<string>());
-      order_tree.put<string>(\"remaining_size\",
-                             iter2++->second.get_value<string>());
-      order_tree.put<string>(\"order_id\", iter2++->second.get_value<string>());
-      boost::property_tree::write_json(stm.f_, order_tree, false);
-    }
-    for (auto iter = stm.snapshot_tree_.get_child(\"asks\").begin();
-         iter != stm.snapshot_tree_.get_child(\"asks\").end(); ++iter) {
-      order_tree.clear();
-      order_tree.put<string>(\"time\", era_time);
-      order_tree.put<string>(\"product_id\", product_id);
-      order_tree.put<string>(\"type\", \"open\");
-      order_tree.put<string>(\"side\", \"sell\");
-
-      auto iter2 = iter->second.begin();
-      order_tree.put<string>(\"price\", iter2++->second.get_value<string>());
-      order_tree.put<string>(\"remaining_size\",
-                             iter2++->second.get_value<string>());
-      order_tree.put<string>(\"order_id\", iter2++->second.get_value<string>());
-      boost::property_tree::write_json(stm.f_, order_tree, false);
-    }
-    boost::asio::post([&stm, i]() {
-      // snapshot already INCLUDES the message with sequence number stm.snapshot_seq_number_, i.e. stm.messages_[i]
-      // so start from the next one
-      for (auto j = i+1; j < stm.messages_.size(); ++j)
-        boost::property_tree::write_json(stm.f_, *stm.messages_[j], false);
-      stm.saved();
-    });
-  }};
-  starter.detach();
-}
+		uml_on_entry "remove obsolete msgs from queue"
+		uml_on_exit "stop doActivity thread, if any"
+		uml_do_activity "save snapshot into the file"
+		cpp_on_entry "auto iter = stm.messages_.begin();
+for (; iter != stm.messages_.end() &&
+       (*iter)->get<long>(\"sequence\") != stm.snapshot_seq_number_;
+     stm.messages_.erase(iter++))
+  ;
 "
-	      transition 449158 "saved"
+		cpp_on_exit "stm.stop_thread_.store(true);
+stm.thread_.join();"
+		cpp_do_activity "if (stm.messages_.size()) {
+  auto era_time = stm.messages_.front()->get<string>(\"time\");
+  auto product_id = stm.messages_.front()->get<string>(\"product_id\");
+
+  // Start new era in another thread since it takes a long time ...
+  stm.thread_ = std::thread {[&stm, era_time, product_id]() {
+    stm.stop_thread_.store(false);
+    try {
+      boost::property_tree::ptree era;
+      era.put<string>(\"type\", \"era\");
+      era.put<string>(\"time\", era_time);
+      era.put<string>(\"product_id\", product_id);
+      boost::property_tree::write_json(stm.f_, era, false);
+
+      boost::property_tree::ptree order_tree;
+
+      for (auto iter = stm.snapshot_tree_.get_child(\"bids\").begin();
+           iter != stm.snapshot_tree_.get_child(\"bids\").end() &&!stm.stop_thread_; ++iter) {
+        order_tree.clear();
+        order_tree.put<string>(\"time\", era_time);
+        order_tree.put<string>(\"product_id\", product_id);
+        order_tree.put<string>(\"type\", \"open\");
+        order_tree.put<string>(\"side\", \"buy\");
+
+        auto iter2 = iter->second.begin();
+        order_tree.put<string>(\"price\", iter2++->second.get_value<string>());
+        order_tree.put<string>(\"remaining_size\",
+                               iter2++->second.get_value<string>());
+        order_tree.put<string>(\"order_id\", iter2++->second.get_value<string>());
+        boost::property_tree::write_json(stm.f_, order_tree, false);
+      }
+      for (auto iter = stm.snapshot_tree_.get_child(\"asks\").begin();
+           iter != stm.snapshot_tree_.get_child(\"asks\").end() && !stm.stop_thread_; ++iter) {
+        order_tree.clear();
+        order_tree.put<string>(\"time\", era_time);
+        order_tree.put<string>(\"product_id\", product_id);
+        order_tree.put<string>(\"type\", \"open\");
+        order_tree.put<string>(\"side\", \"sell\");
+
+        auto iter2 = iter->second.begin();
+        order_tree.put<string>(\"price\", iter2++->second.get_value<string>());
+        order_tree.put<string>(\"remaining_size\",
+                               iter2++->second.get_value<string>());
+        order_tree.put<string>(\"order_id\", iter2++->second.get_value<string>());
+        boost::property_tree::write_json(stm.f_, order_tree, false);
+      }
+      if (!stm.stop_thread_) // We don't care too much about race condition here
+        boost::asio::post([&stm]() { stm.success(); });
+      else
+        boost::asio::post([&stm]() {
+          stm.error_message_ = \"Snapshot saved has been stopped, exiting ...\";
+          stm.failure();
+        });
+    } catch (...) {
+      boost::asio::post([&stm]() {
+        stm.error_message_ = \"Snapshot saved failed due to an exception, exiting ...\";
+        stm.failure();
+      });
+    }
+  }};
+}
+
+"
+	      transition 449158 "success"
 		on pseudostate_ref 307974 // final 
-		  uml_trigger "saved"
-		  cpp_trigger "saved"
+		  uml_trigger "success"
+		  cpp_trigger "success"
+		  cpp_expr "
+"
 		external 
 	      end
 	    end
@@ -750,75 +828,77 @@ if (i < stm.messages_.size()) {
 	    end
 
 	    state 219270 "Resolve"
-		uml_on_entry "launch resolution"
+		uml_on_entry "launch"
 		cpp_on_entry "stm.resolver_->async_resolve(
     stm.https_host_, stm.https_port_,
     [&stm](const boost::system::error_code &ec,
            boost::asio::ip::tcp::resolver::results_type results) {
       if (ec) {
-      stm.ec_ = ec;
-        stm.error();
+        stm.ec_ = ec;
+        stm.error_message_ = ec.message();
+        stm.failure();
       } else {
         stm.results_ = results;
-        stm.resolved();
+        stm.success();
       }
     });
 "
-	      transition 403590 "resolved"
+	      transition 403590 "success"
 		on state_ref 219910 // Connect
-		  uml_trigger "resolved"
-		  cpp_trigger "resolved"
+		  uml_trigger "success"
+		  cpp_trigger "success"
 		external 
 	      end
 	    end
 
 	    state 219910 "Connect"
-		uml_on_entry "launch connection"
+		uml_on_entry "launch"
 		cpp_on_entry "boost::asio::async_connect(stm.https_->next_layer(), stm.results_.begin(),
                            stm.results_.end(),
                            [&stm](const boost::system::error_code &ec,
                                   decltype(stm.results_)::iterator iter) {
                              if (ec) {
                                stm.ec_ = ec;
-                               stm.error();
+                               stm.error_message_ = ec.message();
+                               stm.failure();
                              } else {
                                std::cout << \"IP: \" << iter->endpoint().address().to_string() << \" Port: \" << iter->endpoint().port() << \"\\n\"; 
                                stm.https_address_ = iter->endpoint().address();
-                               stm.connected();
+                               stm.success();
                              }
                            });
 "
-	      transition 403718 "connected"
+	      transition 403718 "sucess"
 		on state_ref 220038 // Handshake SSL
-		  uml_trigger "connected"
-		  cpp_trigger "connected"
+		  uml_trigger "success"
+		  cpp_trigger "success"
 		external 
 	      end
 	    end
 
 	    state 220038 "Handshake SSL"
-		uml_on_entry "launch SSL handshake"
+		uml_on_entry "launch"
 		cpp_on_entry "stm.https_->async_handshake(boost::asio::ssl::stream_base::client,
                             [&stm](const boost::system::error_code &ec) {
                               if (ec) {
                                 stm.ec_ = ec;
-                                std::cerr << \"HTTPS handshake error\\n\";
-                                stm.error();
+                                stm.error_message_ = ec.message();
+                                stm.failure();
                               } else {
-                                stm.handshaked();
+                                stm.success();
                               }
                             });
 "
-	      transition 403846 "handshaked"
+	      transition 403846 "success"
 		on state_ref 220166 // Query snapshot
-		  uml_trigger "handshaked"
-		  cpp_trigger "handshaked"
+		  uml_trigger "success"
+		  cpp_trigger "success"
 		external 
 	      end
 	    end
 
 	    state 220166 "Query snapshot"
-		uml_on_entry "request an order book snapshot"
+		uml_on_entry "launch"
 		cpp_on_entry "namespace http = boost::beast::http;
 std::cout << \"HTTP GET \" << stm.https_req_.target() << \"\\n\";
 http::async_write(*stm.https_, stm.https_req_,
@@ -826,7 +906,8 @@ http::async_write(*stm.https_, stm.https_req_,
                          std::size_t bytes_transferred) {
                     if (ec) {
                       stm.ec_ = ec;
-                      stm.error();
+                      stm.error_message_ = ec.message();
+                      stm.failure();
                     } else {
                       http::async_read(
                           *stm.https_, stm.https_buffer_, stm.https_res_,
@@ -834,7 +915,8 @@ http::async_write(*stm.https_, stm.https_req_,
                                  std::size_t bytes_transferred) {
                             if (ec) {
                               stm.ec_ = ec;
-                              stm.error();
+                              stm.error_message_ = ec.message();
+                              stm.failure();
                             } else {
                               // std::cout << stm.https_res_.body() << \"\\n\";
                               std::istringstream is{stm.https_res_.body()};
@@ -848,16 +930,16 @@ http::async_write(*stm.https_, stm.https_req_,
                               std::cout << \"Snapshot sequence number: \"
                                         << stm.snapshot_seq_number_ << \"\\n\";
                               // stm.https_buffer_.consume(stm.https_buffer_.size());
-                              stm.snapshot();
+                              stm.success();
                             }
                           });
                     }
                   });
 "
-	      transition 426630 "snapshot"
+	      transition 426630 "success"
 		on pseudostate_ref 294406 // choice 
-		  uml_trigger "snapshot"
-		  cpp_trigger "snapshot"
+		  uml_trigger "success"
+		  cpp_trigger "success"
 		external 
 	      end
 	    end
@@ -891,6 +973,12 @@ http::async_write(*stm.https_, stm.https_req_,
 		cpp_trigger "message"
 		cpp_expr "stm.messages_.push_back(std::move(stm.tree_));
 std::cout << \"Seq no: \" << stm.last_seq_number_ << \" Queue size: \" << stm.messages_.size() << \"\\n\";
+stm.ws_->async_read(stm.buffer_, [&stm](const boost::system::error_code &ec,
+                                std::size_t bytes_transferred) {
+  boost::ignore_unused(bytes_transferred);
+  stm.dispatchJson(ec);
+});
+
 "
 	    end
 
@@ -903,6 +991,43 @@ std::cout << \"Seq no: \" << stm.last_seq_number_ << \" Queue size: \" << stm.me
 	    end
 
 	    pseudostate 307974 final ""
+	    end
+
+	    transition 463238 "failure"
+	      on state_ref 239878 // Failed
+		uml_trigger "failure"
+		cpp_trigger "failure"
+	      external 
+	    end
+
+	    state 240134 "Failed"
+	      transition 464006 "success"
+		on state_ref 239878 // Failed
+		  uml_trigger "success"
+		  cpp_trigger "success"
+		external 
+	      end
+
+	      transition 464134 "failure"
+		on state_ref 239878 // Failed
+		  uml_trigger "failure"
+		  cpp_trigger "failure"
+		external 
+	      end
+
+	      transition 464262 "message"
+		on state_ref 239878 // Failed
+		  uml_trigger "message"
+		  cpp_trigger "message"
+		external 
+	      end
+	    end
+
+	    transition 463878 "timeout"
+	      on state_ref 240134 // Failed
+		uml_trigger "timeout"
+		cpp_trigger "timeout"
+	      external 
 	    end
 	  end
 
@@ -917,8 +1042,13 @@ std::cout << \"Seq no: \" << stm.last_seq_number_ << \" Queue size: \" << stm.me
     if (ec != boost::asio::error::operation_aborted)
       stm.timeout();
   });
-  std::cout << stm.tree_->get<std::string>(\"time\") << \" Timer restarted\\n\";
 }
+std::cout << stm.tree_->get<std::string>(\"time\") << \" Timer restarted\\n\";
+stm.ws_->async_read(stm.buffer_, [&stm](const boost::system::error_code &ec,
+                                    std::size_t bytes_transferred) {
+  boost::ignore_unused(bytes_transferred);
+  stm.dispatchJson(ec);
+});
 
 "
 	  end
@@ -930,11 +1060,61 @@ std::cout << \"Seq no: \" << stm.last_seq_number_ << \" Queue size: \" << stm.me
 	    end
 	  end
 
-	  transition 427526 "timeout"
-	    on pseudostate_ref 274310 // final 
+	  transition 456070 "failure"
+	    on state_ref 219526 // Initialize
+	      uml_trigger "failure"
+	      cpp_trigger "failure"
+	    external 
+	  end
+
+	  state 239878 "Failed"
+	    transition 462854 "heartbeat"
+	      on state_ref 240006 // Restart
+		uml_trigger "heartbeat"
+		cpp_trigger "heartbeat"
+	      external 
+	    end
+
+	    transition 462982 "message"
+	      on state_ref 240006 // Restart
+		uml_trigger "message"
+		cpp_trigger "message"
+	      external 
+	    end
+
+	    transition 463366 "success"
+	      on state_ref 240006 // Restart
+		uml_trigger "success"
+		cpp_trigger "success"
+	      external 
+	    end
+
+	    transition 463750 "failure"
+	      on state_ref 240006 // Restart
+		uml_trigger "failure"
+		cpp_trigger "failure"
+	      external 
+	    end
+
+	    transition 464518 "timeout"
+	      on state_ref 239878 // Failed
+		uml_trigger "timeout"
+		cpp_trigger "timeout"
+	    end
+	  end
+
+	  transition 462726 "timeout"
+	    on state_ref 239878 // Failed
 	      uml_trigger "timeout"
 	      cpp_trigger "timeout"
 	    external 
+	  end
+
+	  state 240006 "Restart"
+	    transition 463110 "restarting"
+	      on state_ref 219526 // Initialize
+	      external 
+	    end
 	  end
 	end
 
@@ -945,29 +1125,23 @@ std::cout << \"Seq no: \" << stm.last_seq_number_ << \" Queue size: \" << stm.me
 	  end
 	end
 
-	transition 418950 "error"
-	  on pseudostate_ref 274310 // final 
-	    uml_trigger "error"
-	    cpp_trigger "error"
-	    cpp_expr "std::cerr << stm.ec_.message() << \"\\n\";
-"
-	  external 
-	end
-
-	transition 426502 "stop"
-	  on pseudostate_ref 274310 // final 
+	transition 455942 "stop"
+	  on pseudostate_ref 314502 // final 
 	    uml_trigger "stop"
 	    cpp_trigger "stop"
 	  external 
 	end
       end
 
-      pseudostate 274310 final ""
+      pseudostate 314502 final ""
       end
     end
 
     class 712966 "Coinbase"
       visibility package 
+      nactuals 1
+      actual class class_ref 697734 // enable_shared_from_this
+        rank 0 value class_ref 712966 // Coinbase
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -1064,96 +1238,6 @@ ${inlines}
 	  key "STM generated" value ""
 	end
 
-	operation 917766 "error"
-	  force_body_gen cpp_virtual public explicit_return_type "void"
-	  nparams 1
-	    param inout name "stm" type class_ref 712966 // Coinbase
-	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	  ncouples 1
-	  key "STM generated" value ""
-	  comment " the current state doesn't manage the event error, give it to the upper state"
-	end
-
-	operation 918150 "resolved"
-	  force_body_gen cpp_virtual public explicit_return_type "void"
-	  nparams 1
-	    param inout name "stm" type class_ref 712966 // Coinbase
-	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	  ncouples 1
-	  key "STM generated" value ""
-	  comment " the current state doesn't manage the event resolved, give it to the upper state"
-	end
-
-	operation 919686 "connected"
-	  force_body_gen cpp_virtual public explicit_return_type "void"
-	  nparams 1
-	    param inout name "stm" type class_ref 712966 // Coinbase
-	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	  ncouples 1
-	  key "STM generated" value ""
-	  comment " the current state doesn't manage the event connected, give it to the upper state"
-	end
-
-	operation 921990 "handshaked"
-	  force_body_gen cpp_virtual public explicit_return_type "void"
-	  nparams 1
-	    param inout name "stm" type class_ref 712966 // Coinbase
-	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	  ncouples 1
-	  key "STM generated" value ""
-	  comment " the current state doesn't manage the event handshaked, give it to the upper state"
-	end
-
-	operation 922758 "subscribed"
-	  force_body_gen cpp_virtual public explicit_return_type "void"
-	  nparams 1
-	    param inout name "stm" type class_ref 712966 // Coinbase
-	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	  ncouples 1
-	  key "STM generated" value ""
-	  comment " the current state doesn't manage the event subscribed, give it to the upper state"
-	end
-
 	operation 925702 "heartbeat"
 	  force_body_gen cpp_virtual public explicit_return_type "void"
 	  nparams 1
@@ -1170,24 +1254,6 @@ ${inlines}
 	  ncouples 1
 	  key "STM generated" value ""
 	  comment " the current state doesn't manage the event heartbeat, give it to the upper state"
-	end
-
-	operation 926598 "snapshot"
-	  force_body_gen cpp_virtual public explicit_return_type "void"
-	  nparams 1
-	    param inout name "stm" type class_ref 712966 // Coinbase
-	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	  ncouples 1
-	  key "STM generated" value ""
-	  comment " the current state doesn't manage the event snapshot, give it to the upper state"
 	end
 
 	operation 927750 "message"
@@ -1280,7 +1346,7 @@ ${inlines}
 	  comment " performs the 'exit activity'"
 	end
 
-	operation 1010566 "saved"
+	operation 1027206 "success"
 	  force_body_gen cpp_virtual public explicit_return_type "void"
 	  nparams 1
 	    param inout name "stm" type class_ref 712966 // Coinbase
@@ -1295,7 +1361,25 @@ ${inlines}
 	  
 	  ncouples 1
 	  key "STM generated" value ""
-	  comment " the current state doesn't manage the event saved, give it to the upper state"
+	  comment " the current state doesn't manage the event success, give it to the upper state"
+	end
+
+	operation 1028102 "failure"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 712966 // Coinbase
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " the current state doesn't manage the event failure, give it to the upper state"
 	end
       end
 
@@ -1387,24 +1471,6 @@ ${inlines}
 		  b parent class_ref 713094 // AnyState
 	      end
 
-	      operation 960646 "handshaked"
-		force_body_gen cpp_virtual public explicit_return_type "void"
-		nparams 1
-		  param inout name "stm" type class_ref 712966 // Coinbase
-		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-		
-		
-		
-		
-		ncouples 1
-		key "STM generated" value ""
-		comment " to manage the event handshaked"
-	      end
-
 	      operation 960774 "create"
 		force_body_gen cpp_virtual public explicit_return_type "void"
 		nparams 1
@@ -1458,6 +1524,24 @@ ${inlines}
 		key "STM generated" value ""
 		comment " returns the state containing the current"
 	      end
+
+	      operation 1027334 "success"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event success"
+	      end
 	    end
 
 	    class 731654 "Resolve_State"
@@ -1498,24 +1582,6 @@ ${inlines}
 		    cpp default "${type}"
 		    classrelation_ref 819462 // <generalisation>
 		  b parent class_ref 713094 // AnyState
-	      end
-
-	      operation 962694 "resolved"
-		force_body_gen cpp_virtual public explicit_return_type "void"
-		nparams 1
-		  param inout name "stm" type class_ref 712966 // Coinbase
-		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-		
-		
-		
-		
-		ncouples 1
-		key "STM generated" value ""
-		comment " to manage the event resolved"
 	      end
 
 	      operation 962822 "create"
@@ -1571,6 +1637,24 @@ ${inlines}
 		key "STM generated" value ""
 		comment " returns the state containing the current"
 	      end
+
+	      operation 1027846 "success"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event success"
+	      end
 	    end
 
 	    class 731526 "Connect_State"
@@ -1611,24 +1695,6 @@ ${inlines}
 		    cpp default "${type}"
 		    classrelation_ref 819206 // <generalisation>
 		  b parent class_ref 713094 // AnyState
-	      end
-
-	      operation 962182 "connected"
-		force_body_gen cpp_virtual public explicit_return_type "void"
-		nparams 1
-		  param inout name "stm" type class_ref 712966 // Coinbase
-		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-		
-		
-		
-		
-		ncouples 1
-		key "STM generated" value ""
-		comment " to manage the event connected"
 	      end
 
 	      operation 962310 "create"
@@ -1684,6 +1750,24 @@ ${inlines}
 		key "STM generated" value ""
 		comment " returns the state containing the current"
 	      end
+
+	      operation 1027718 "success"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event success"
+	      end
 	    end
 
 	    class 731398 "Subscribe_State"
@@ -1724,24 +1808,6 @@ ${inlines}
 		    cpp default "${type}"
 		    classrelation_ref 818950 // <generalisation>
 		  b parent class_ref 713094 // AnyState
-	      end
-
-	      operation 961670 "subscribed"
-		force_body_gen cpp_virtual public explicit_return_type "void"
-		nparams 1
-		  param inout name "stm" type class_ref 712966 // Coinbase
-		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-		
-		
-		
-		
-		ncouples 1
-		key "STM generated" value ""
-		comment " to manage the event subscribed"
 	      end
 
 	      operation 961798 "create"
@@ -1797,6 +1863,24 @@ ${inlines}
 		key "STM generated" value ""
 		comment " returns the state containing the current"
 	      end
+
+	      operation 1027590 "success"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event success"
+	      end
 	    end
 
 	    class 731270 "Handshake_Websocket_State"
@@ -1837,24 +1921,6 @@ ${inlines}
 		    cpp default "${type}"
 		    classrelation_ref 818694 // <generalisation>
 		  b parent class_ref 713094 // AnyState
-	      end
-
-	      operation 961158 "handshaked"
-		force_body_gen cpp_virtual public explicit_return_type "void"
-		nparams 1
-		  param inout name "stm" type class_ref 712966 // Coinbase
-		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-		
-		
-		
-		
-		ncouples 1
-		key "STM generated" value ""
-		comment " to manage the event handshaked"
 	      end
 
 	      operation 961286 "create"
@@ -1909,6 +1975,24 @@ ${inlines}
 		ncouples 1
 		key "STM generated" value ""
 		comment " returns the state containing the current"
+	      end
+
+	      operation 1027462 "success"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event success"
 	      end
 	    end
 
@@ -2063,6 +2147,42 @@ ${inlines}
 	      ncouples 1
 	      key "STM generated" value ""
 	    end
+
+	    operation 1025542 "_doentry"
+	      force_body_gen public explicit_return_type "void"
+	      nparams 1
+	        param inout name "stm" type class_ref 712966 // Coinbase
+	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " perform the 'entry behavior'"
+	    end
+
+	    operation 1028230 "failure"
+	      force_body_gen cpp_virtual public explicit_return_type "void"
+	      nparams 1
+	        param inout name "stm" type class_ref 712966 // Coinbase
+	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " to manage the event failure"
+	    end
 	  end
 
 	  class 731782 "Subscribed_State"
@@ -2156,6 +2276,285 @@ ${inlines}
 		key "STM generated" value ""
 		comment " returns the state containing the current"
 	      end
+
+	      operation 1018118 "create"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event create"
+	      end
+
+	      operation 1018246 "_doentry"
+		force_body_gen public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " perform the 'entry behavior'"
+	      end
+	    end
+
+	    class 773382 "Restart_State"
+	      visibility public 
+	      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	      java_decl ""
+	      php_decl ""
+	      python_2_2 python_decl ""
+	      idl_decl ""
+	      explicit_switch_type ""
+	      mysql_decl ""
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " implement the state Restart"
+	      operation 1026566 "~Restart_State"
+		force_body_gen cpp_virtual public explicit_return_type ""
+		nparams 0
+		cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+		cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+	      end
+
+	      classrelation 856838 // <generalisation>
+		relation 846726 ---|>
+		  a public
+		    cpp default "${type}"
+		    classrelation_ref 856838 // <generalisation>
+		  b parent class_ref 713094 // AnyState
+	      end
+
+	      operation 1026694 "_completion"
+		force_body_gen cpp_virtual public explicit_return_type "bool"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+	      end
+
+	      operation 1026822 "create"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event create"
+	      end
+
+	      operation 1026950 "_upper"
+		force_body_gen cpp_virtual public return_type class_ref 713094 // AnyState
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " returns the state containing the current"
+	      end
+	    end
+
+	    class 773766 "Failed_State"
+	      visibility public 
+	      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	      java_decl ""
+	      php_decl ""
+	      python_2_2 python_decl ""
+	      idl_decl ""
+	      explicit_switch_type ""
+	      mysql_decl ""
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " implement the state Failed"
+	      operation 1030406 "~Failed_State"
+		force_body_gen cpp_virtual public explicit_return_type ""
+		nparams 0
+		cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+		cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+	      end
+
+	      classrelation 857606 // <generalisation>
+		relation 847494 ---|>
+		  a public
+		    cpp default "${type}"
+		    classrelation_ref 857606 // <generalisation>
+		  b parent class_ref 713094 // AnyState
+	      end
+
+	      operation 1031046 "heartbeat"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event heartbeat"
+	      end
+
+	      operation 1031174 "message"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event message"
+	      end
+
+	      operation 1031302 "success"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event success"
+	      end
+
+	      operation 1031430 "failure"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event failure"
+	      end
+
+	      operation 1031558 "timeout"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event timeout"
+	      end
+
+	      operation 1031686 "_upper"
+		force_body_gen cpp_virtual public return_type class_ref 713094 // AnyState
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " returns the state containing the current"
+	      end
 	    end
 
 	    class 732038 "Snapshot_State"
@@ -2214,24 +2613,6 @@ ${inlines}
 		    b parent class_ref 713094 // AnyState
 		end
 
-		operation 963846 "resolved"
-		  force_body_gen cpp_virtual public explicit_return_type "void"
-		  nparams 1
-		    param inout name "stm" type class_ref 712966 // Coinbase
-		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-		  
-		  
-		  
-		  
-		  ncouples 1
-		  key "STM generated" value ""
-		  comment " to manage the event resolved"
-		end
-
 		operation 963974 "_upper"
 		  force_body_gen cpp_virtual public return_type class_ref 713094 // AnyState
 		  nparams 1
@@ -2285,6 +2666,137 @@ ${inlines}
 		  key "STM generated" value ""
 		  comment " perform the 'entry behavior'"
 		end
+
+		operation 1028486 "success"
+		  force_body_gen cpp_virtual public explicit_return_type "void"
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " to manage the event success"
+		end
+	      end
+
+	      class 773638 "Failed_State"
+		visibility public 
+		cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+		java_decl ""
+		php_decl ""
+		python_2_2 python_decl ""
+		idl_decl ""
+		explicit_switch_type ""
+		mysql_decl ""
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " implement the state Failed"
+		operation 1030278 "~Failed_State"
+		  force_body_gen cpp_virtual public explicit_return_type ""
+		  nparams 0
+		  cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		end
+
+		classrelation 857350 // <generalisation>
+		  relation 847238 ---|>
+		    a public
+		      cpp default "${type}"
+		      classrelation_ref 857350 // <generalisation>
+		    b parent class_ref 713094 // AnyState
+		end
+
+		operation 1030534 "success"
+		  force_body_gen cpp_virtual public explicit_return_type "void"
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " to manage the event success"
+		end
+
+		operation 1030662 "failure"
+		  force_body_gen cpp_virtual public explicit_return_type "void"
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " to manage the event failure"
+		end
+
+		operation 1030790 "message"
+		  force_body_gen cpp_virtual public explicit_return_type "void"
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " to manage the event message"
+		end
+
+		operation 1030918 "_upper"
+		  force_body_gen cpp_virtual public return_type class_ref 713094 // AnyState
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " returns the state containing the current"
+		end
 	      end
 
 	      class 732550 "Query_snapshot_State"
@@ -2325,24 +2837,6 @@ ${inlines}
 		      cpp default "${type}"
 		      classrelation_ref 821126 // <generalisation>
 		    b parent class_ref 713094 // AnyState
-		end
-
-		operation 964614 "snapshot"
-		  force_body_gen cpp_virtual public explicit_return_type "void"
-		  nparams 1
-		    param inout name "stm" type class_ref 712966 // Coinbase
-		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-		  
-		  
-		  
-		  
-		  ncouples 1
-		  key "STM generated" value ""
-		  comment " to manage the event snapshot"
 		end
 
 		operation 964742 "_upper"
@@ -2398,6 +2892,24 @@ ${inlines}
 		  key "STM generated" value ""
 		  comment " perform the 'entry behavior'"
 		end
+
+		operation 1028870 "success"
+		  force_body_gen cpp_virtual public explicit_return_type "void"
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " to manage the event success"
+		end
 	      end
 
 	      class 732422 "Handshake_SSL_State"
@@ -2438,24 +2950,6 @@ ${inlines}
 		      cpp default "${type}"
 		      classrelation_ref 820870 // <generalisation>
 		    b parent class_ref 713094 // AnyState
-		end
-
-		operation 964358 "handshaked"
-		  force_body_gen cpp_virtual public explicit_return_type "void"
-		  nparams 1
-		    param inout name "stm" type class_ref 712966 // Coinbase
-		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-		  
-		  
-		  
-		  
-		  ncouples 1
-		  key "STM generated" value ""
-		  comment " to manage the event handshaked"
 		end
 
 		operation 964486 "_upper"
@@ -2511,6 +3005,24 @@ ${inlines}
 		  key "STM generated" value ""
 		  comment " perform the 'entry behavior'"
 		end
+
+		operation 1028742 "success"
+		  force_body_gen cpp_virtual public explicit_return_type "void"
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " to manage the event success"
+		end
 	      end
 
 	      class 732294 "Connect_State"
@@ -2551,24 +3063,6 @@ ${inlines}
 		      cpp default "${type}"
 		      classrelation_ref 820614 // <generalisation>
 		    b parent class_ref 713094 // AnyState
-		end
-
-		operation 964102 "connected"
-		  force_body_gen cpp_virtual public explicit_return_type "void"
-		  nparams 1
-		    param inout name "stm" type class_ref 712966 // Coinbase
-		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-		  
-		  
-		  
-		  
-		  ncouples 1
-		  key "STM generated" value ""
-		  comment " to manage the event connected"
 		end
 
 		operation 964230 "_upper"
@@ -2624,6 +3118,24 @@ ${inlines}
 		  key "STM generated" value ""
 		  comment " perform the 'entry behavior'"
 		end
+
+		operation 1028614 "success"
+		  force_body_gen cpp_virtual public explicit_return_type "void"
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " to manage the event success"
+		end
 	      end
 
 	      class 759942 "Save_snapshot_State"
@@ -2664,24 +3176,6 @@ ${inlines}
 		      cpp default "${type}"
 		      classrelation_ref 849414 // <generalisation>
 		    b parent class_ref 713094 // AnyState
-		end
-
-		operation 1010694 "saved"
-		  force_body_gen cpp_virtual public explicit_return_type "void"
-		  nparams 1
-		    param inout name "stm" type class_ref 712966 // Coinbase
-		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-		  
-		  
-		  
-		  
-		  ncouples 1
-		  key "STM generated" value ""
-		  comment " to manage the event saved"
 		end
 
 		operation 1010822 "create"
@@ -2736,6 +3230,60 @@ ${inlines}
 		  ncouples 1
 		  key "STM generated" value ""
 		  comment " returns the state containing the current"
+		end
+
+		operation 1017862 "_doexit"
+		  force_body_gen public explicit_return_type "void"
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " perform the 'exit behavior'"
+		end
+
+		operation 1017990 "_do"
+		  force_body_gen cpp_virtual public explicit_return_type "void"
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " perform the 'do activity'"
+		end
+
+		operation 1028358 "success"
+		  force_body_gen cpp_virtual public explicit_return_type "void"
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " to manage the event success"
 		end
 	      end
 
@@ -2926,6 +3474,57 @@ ${inlines}
 		key "STM generated" value ""
 		comment " memorize the instance of the state Save snapshot, internal"
 	      end
+
+	      operation 1028998 "failure"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event failure"
+	      end
+
+	      operation 1030150 "timeout"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event timeout"
+	      end
+
+	      attribute 691846 "_failed_state"
+		public type class_ref 773638 // Failed_State
+		cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+		java_decl ""
+		php_decl ""
+		python_decl ""
+		idl_decl ""
+		mysql_decl ""
+		MysqlColumn
+		ncouples 1
+		key "STM generated" value ""
+		comment " memorize the instance of the state Failed, internal"
+	      end
 	    end
 
 	    operation 959750 "~Subscribed_State"
@@ -3089,6 +3688,54 @@ ${inlines}
 	      key "STM generated" value ""
 	      comment " perform the 'exit behavior'"
 	    end
+
+	    attribute 691590 "_restart_state"
+	      public type class_ref 773382 // Restart_State
+	      cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	      java_decl ""
+	      php_decl ""
+	      python_decl ""
+	      idl_decl ""
+	      mysql_decl ""
+	      MysqlColumn
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " memorize the instance of the state Restart, internal"
+	    end
+
+	    operation 1029126 "failure"
+	      force_body_gen cpp_virtual public explicit_return_type "void"
+	      nparams 1
+	        param inout name "stm" type class_ref 712966 // Coinbase
+	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " to manage the event failure"
+	    end
+
+	    attribute 691974 "_failed_state"
+	      public type class_ref 773766 // Failed_State
+	      cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	      java_decl ""
+	      php_decl ""
+	      python_decl ""
+	      idl_decl ""
+	      mysql_decl ""
+	      MysqlColumn
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " memorize the instance of the state Failed, internal"
+	    end
 	  end
 
 	  operation 958854 "~Engage_State"
@@ -3161,24 +3808,6 @@ ${inlines}
 	    ncouples 1
 	    key "STM generated" value ""
 	    comment " to manage the event create"
-	  end
-
-	  operation 965638 "error"
-	    force_body_gen cpp_virtual public explicit_return_type "void"
-	    nparams 1
-	      param inout name "stm" type class_ref 712966 // Coinbase
-	    cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-	    cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	    
-	    
-	    
-	    
-	    ncouples 1
-	    key "STM generated" value ""
-	    comment " to manage the event error"
 	  end
 
 	  operation 965766 "_upper"
@@ -3631,7 +4260,7 @@ ${inlines}
 	  param in name "file_name" explicit_type "string"
 	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}std::shared_ptr<${t0}> ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}, const ${t4} & ${p4}${v4}, const ${t5} & ${p5}${v5}, const ${t6} & ${p6}${v6}, const ${t7} & ${p7}${v7}, const ${t8} & ${p8}${v8}, const ${t9} & ${p9}${v9}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}std::shared_ptr<${t0}> ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, const ${t4} & ${p4}, const ${t5} & ${p5}, const ${t6} & ${p6}, const ${t7} & ${p7}, const ${t8} & ${p8}, const ${t9} & ${p9}${)}${volatile}${throw} : _current_state{0},host_{host}, port_{port}, target_{target},  product_{product}, https_host_ {https_host}, https_port_{https_port}, f_{file_name} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}std::shared_ptr<${t0}> ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, const ${t4} & ${p4}, const ${t5} & ${p5}, const ${t6} & ${p6}, const ${t7} & ${p7}, const ${t8} & ${p8}, const ${t9} & ${p9}${)}${volatile}${throw} : _current_state{0},ioc_{ioc}, host_{host}, port_{port}, target_{target},  product_{product}, https_host_ {https_host}, https_port_{https_port}, f_{file_name} {
   ${body}}
 "
 	
@@ -3744,40 +4373,6 @@ ${inlines}
 	  b parent class_ref 713094 // AnyState
       end
 
-      operation 917638 "error"
-	force_body_gen public explicit_return_type "bool"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-	ncouples 1
-	key "STM generated" value ""
-	comment " the operation you call to signal the event error"
-      end
-
-      operation 918022 "resolved"
-	force_body_gen public explicit_return_type "bool"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-	ncouples 1
-	key "STM generated" value ""
-	comment " the operation you call to signal the event resolved"
-      end
-
       classrelation 783494 // resolver_ (<directional composition>)
 	relation 773382 *-->
 	  a role_name "resolver_" private
@@ -3805,57 +4400,6 @@ ${inlines}
 	  b parent class_ref 698886 // context
       end
 
-      operation 919558 "connected"
-	force_body_gen public explicit_return_type "bool"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-	ncouples 1
-	key "STM generated" value ""
-	comment " the operation you call to signal the event connected"
-      end
-
-      operation 921862 "handshaked"
-	force_body_gen public explicit_return_type "bool"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-	ncouples 1
-	key "STM generated" value ""
-	comment " the operation you call to signal the event handshaked"
-      end
-
-      operation 922630 "subscribed"
-	force_body_gen public explicit_return_type "bool"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-	ncouples 1
-	key "STM generated" value ""
-	comment " the operation you call to signal the event subscribed"
-      end
-
       operation 925574 "heartbeat"
 	force_body_gen public explicit_return_type "bool"
 	nparams 0
@@ -3871,23 +4415,6 @@ ${inlines}
 	ncouples 1
 	key "STM generated" value ""
 	comment " the operation you call to signal the event heartbeat"
-      end
-
-      operation 926470 "snapshot"
-	force_body_gen public explicit_return_type "bool"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-	ncouples 1
-	key "STM generated" value ""
-	comment " the operation you call to signal the event snapshot"
       end
 
       operation 927622 "message"
@@ -4133,7 +4660,7 @@ ${inlines}
 
       classrelation 842630 // messages_ (<directional composition>)
 	relation 832518 *-->
-	  stereotype "vector"
+	  stereotype "list"
 	  a role_name "messages_" multiplicity "*" private
 	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<std::unique_ptr<${type}>> ${name}${value};
 "
@@ -4150,7 +4677,79 @@ ${inlines}
 	  b parent class_ref 174214 // ptree
       end
 
-      operation 1010438 "saved"
+      classrelation 849542 // <dependency>
+	relation 839430 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 849542 // <dependency>
+	  b parent class_ref 759942 // Save_snapshot_State
+      end
+
+      attribute 684422 "thread_"
+	private type class_ref 766470 // thread
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 684550 "stop_thread_"
+	private type class_ref 766598 // atomic_bool
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 684678 "error_message_"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      classrelation 856070 // <realization>
+	relation 845958 -_-|>
+	  stereotype "bind"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 856070 // <realization>
+	  b parent class_ref 697734 // enable_shared_from_this
+      end
+
+      classrelation 856710 // ioc_ (<directional composition>)
+	relation 846598 *-->
+	  a role_name "ioc_" private
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::shared_ptr<${type}> ${name}${value};
+"
+	    classrelation_ref 856710 // ioc_ (<directional composition>)
+	  b parent class_ref 698758 // io_context
+      end
+
+      classrelation 856966 // <dependency>
+	relation 846854 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 856966 // <dependency>
+	  b parent class_ref 773382 // Restart_State
+      end
+
+      operation 1027078 "success"
 	force_body_gen public explicit_return_type "bool"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
@@ -4164,16 +4763,42 @@ ${inlines}
 	
 	ncouples 1
 	key "STM generated" value ""
-	comment " the operation you call to signal the event saved"
+	comment " the operation you call to signal the event success"
       end
 
-      classrelation 849542 // <dependency>
-	relation 839430 -_->
+      operation 1027974 "failure"
+	force_body_gen public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " the operation you call to signal the event failure"
+      end
+
+      classrelation 857478 // <dependency>
+	relation 847366 -_->
 	  stereotype "friend"
 	  a public
 	    cpp default "${type}"
-	    classrelation_ref 849542 // <dependency>
-	  b parent class_ref 759942 // Save_snapshot_State
+	    classrelation_ref 857478 // <dependency>
+	  b parent class_ref 773638 // Failed_State
+      end
+
+      classrelation 857734 // <dependency>
+	relation 847622 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 857734 // <dependency>
+	  b parent class_ref 773766 // Failed_State
       end
     end
 

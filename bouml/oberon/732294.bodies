@@ -1,13 +1,4 @@
 class Connect_State
-!!!964102.cpp!!!	connected(inout stm : Coinbase) : void
-  {
-    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
-    stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._snapshot_state._handshake_ssl_state);
-#ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Snapshot.Handshake SSL" << std::endl;
-#endif
-    stm._coinbase_state._engage_state._subscribed_state._snapshot_state._handshake_ssl_state.create(stm);
-  }
 !!!964230.cpp!!!	_upper(inout stm : Coinbase) : Coinbase::AnyState
   return &stm._coinbase_state._engage_state._subscribed_state._snapshot_state;
 !!!967302.cpp!!!	create(inout stm : Coinbase) : void
@@ -22,10 +13,20 @@ boost::asio::async_connect(stm.https_->next_layer(), stm.results_.begin(),
                                   decltype(stm.results_)::iterator iter) {
                              if (ec) {
                                stm.ec_ = ec;
-                               stm.error();
+                               stm.error_message_ = ec.message();
+                               stm.failure();
                              } else {
                                std::cout << "IP: " << iter->endpoint().address().to_string() << " Port: " << iter->endpoint().port() << "\n"; 
                                stm.https_address_ = iter->endpoint().address();
-                               stm.connected();
+                               stm.success();
                              }
                            });
+!!!1028614.cpp!!!	success(inout stm : Coinbase) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._snapshot_state._handshake_ssl_state);
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Snapshot.Handshake SSL" << std::endl;
+#endif
+    stm._coinbase_state._engage_state._subscribed_state._snapshot_state._handshake_ssl_state.create(stm);
+  }

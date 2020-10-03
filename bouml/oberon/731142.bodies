@@ -1,13 +1,4 @@
 class Handshake_SSL_State
-!!!960646.cpp!!!	handshaked(inout stm : Coinbase) : void
-  {
-    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
-    stm._set_currentState(stm._coinbase_state._engage_state._initialize_state._handshake_websocket_state);
-#ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : current state is now .Coinbase.Engage.Initialize.Handshake Websocket" << std::endl;
-#endif
-    stm._coinbase_state._engage_state._initialize_state._handshake_websocket_state.create(stm);
-  }
 !!!960774.cpp!!!	create(inout stm : Coinbase) : void
 	_doentry(stm);
 !!!960902.cpp!!!	_doentry(inout stm : Coinbase) : void
@@ -19,10 +10,19 @@ stm.ws_->next_layer().async_handshake(
     [&stm](const boost::system::error_code &ec) {
       if (ec) {
         stm.ec_ = ec;
-        stm.error();
+        stm.failure();
       } else {
-        stm.handshaked();
+        stm.success();
       }
     });
 !!!961030.cpp!!!	_upper(inout stm : Coinbase) : Coinbase::AnyState
   return &stm._coinbase_state._engage_state._initialize_state;
+!!!1027334.cpp!!!	success(inout stm : Coinbase) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._coinbase_state._engage_state._initialize_state._handshake_websocket_state);
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : current state is now .Coinbase.Engage.Initialize.Handshake Websocket" << std::endl;
+#endif
+    stm._coinbase_state._engage_state._initialize_state._handshake_websocket_state.create(stm);
+  }

@@ -1,13 +1,4 @@
 class Subscribe_State
-!!!961670.cpp!!!	subscribed(inout stm : Coinbase) : void
-  {
-    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
-    stm._set_currentState(stm._coinbase_state._engage_state._initialize_state);
-#ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : current state is now .Coinbase.Engage.Initialize" << std::endl;
-#endif
-      stm._coinbase_state._engage_state._initialize_state._completion(stm);
-  }
 !!!961798.cpp!!!	create(inout stm : Coinbase) : void
 	_doentry(stm);
 !!!961926.cpp!!!	_doentry(inout stm : Coinbase) : void
@@ -28,7 +19,7 @@ stm.ws_->async_write(
     boost::asio::buffer(request.str()),
     [&stm](const boost::system::error_code &ec, std::size_t bytes_transferred) {
   if (ec)
-    stm.error();
+    stm.failure();
   else {
     // Read a message into our buffer
     stm.ws_->async_read(stm.buffer_, [&stm](const boost::system::error_code &ec,
@@ -39,3 +30,12 @@ stm.ws_->async_write(
 });
 !!!962054.cpp!!!	_upper(inout stm : Coinbase) : Coinbase::AnyState
   return &stm._coinbase_state._engage_state._initialize_state;
+!!!1027590.cpp!!!	success(inout stm : Coinbase) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._coinbase_state._engage_state._initialize_state);
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : current state is now .Coinbase.Engage.Initialize" << std::endl;
+#endif
+      stm._coinbase_state._engage_state._initialize_state._completion(stm);
+  }

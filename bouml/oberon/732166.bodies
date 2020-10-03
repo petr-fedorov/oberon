@@ -1,13 +1,4 @@
 class Resolve_State
-!!!963846.cpp!!!	resolved(inout stm : Coinbase) : void
-  {
-    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
-    stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._snapshot_state._connect_state);
-#ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Snapshot.Connect" << std::endl;
-#endif
-    stm._coinbase_state._engage_state._subscribed_state._snapshot_state._connect_state.create(stm);
-  }
 !!!963974.cpp!!!	_upper(inout stm : Coinbase) : Coinbase::AnyState
   return &stm._coinbase_state._engage_state._subscribed_state._snapshot_state;
 !!!967046.cpp!!!	create(inout stm : Coinbase) : void
@@ -21,10 +12,20 @@ stm.resolver_->async_resolve(
     [&stm](const boost::system::error_code &ec,
            boost::asio::ip::tcp::resolver::results_type results) {
       if (ec) {
-      stm.ec_ = ec;
-        stm.error();
+        stm.ec_ = ec;
+        stm.error_message_ = ec.message();
+        stm.failure();
       } else {
         stm.results_ = results;
-        stm.resolved();
+        stm.success();
       }
     });
+!!!1028486.cpp!!!	success(inout stm : Coinbase) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._snapshot_state._connect_state);
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Snapshot.Connect" << std::endl;
+#endif
+    stm._coinbase_state._engage_state._subscribed_state._snapshot_state._connect_state.create(stm);
+  }

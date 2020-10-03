@@ -10,8 +10,13 @@ if (stm.timer_->expires_from_now(seconds(2)) > 0) {
     if (ec != boost::asio::error::operation_aborted)
       stm.timeout();
   });
-  std::cout << stm.tree_->get<std::string>("time") << " Timer restarted\n";
 }
+std::cout << stm.tree_->get<std::string>("time") << " Timer restarted\n";
+stm.ws_->async_read(stm.buffer_, [&stm](const boost::system::error_code &ec,
+                                    std::size_t bytes_transferred) {
+  boost::ignore_unused(bytes_transferred);
+  stm.dispatchJson(ec);
+});
 
   }
 !!!965254.cpp!!!	create(inout stm : Coinbase) : void
@@ -29,6 +34,15 @@ if (stm.timer_->expires_from_now(seconds(2)) > 0) {
 #ifdef VERBOSE_STATE_MACHINE
   std::cout << "DEBUG : execute entry behavior of .Coinbase.Engage.Subscribed" << std::endl;
 #endif
+stm.first_seq_number_ = 0;
+stm.last_seq_number_ = 0;
+stm.snapshot_seq_number_ = 0;
+stm.ws_->async_read(stm.buffer_, [&stm](const boost::system::error_code &ec,
+                                std::size_t bytes_transferred) {
+  boost::ignore_unused(bytes_transferred);
+  stm.dispatchJson(ec);
+});
+
 stm.timer_->expires_from_now(seconds(5));
 stm.timer_->async_wait([&stm](const boost::system::error_code &ec) {
   if (ec != boost::asio::error::operation_aborted) {
@@ -37,16 +51,15 @@ stm.timer_->async_wait([&stm](const boost::system::error_code &ec) {
   }
 });
 
+
+
 !!!976774.cpp!!!	timeout(inout stm : Coinbase) : void
   {
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
-    stm._coinbase_state._engage_state._subscribed_state._doexit(stm);
-    stm._coinbase_state._engage_state._doexit(stm);
-    stm._set_currentState(stm._coinbase_state);
+    stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._failed_state);
 #ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : current state is now .Coinbase" << std::endl;
+    std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Failed" << std::endl;
 #endif
-      stm._final();
   }
 !!!984198.cpp!!!	_doexit(inout stm : Coinbase) : void
 #ifdef VERBOSE_STATE_MACHINE
@@ -54,5 +67,17 @@ stm.timer_->async_wait([&stm](const boost::system::error_code &ec) {
 #endif
 stm.timer_->cancel();
 stm.ws_->next_layer().next_layer().shutdown(boost::asio::ip::tcp::socket::shutdown_both);
+stm.ws_->next_layer().next_layer().cancel();
 stm.ws_->next_layer().next_layer().close();
 
+
+!!!1029126.cpp!!!	failure(inout stm : Coinbase) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._coinbase_state._engage_state._subscribed_state._doexit(stm);
+    stm._set_currentState(stm._coinbase_state._engage_state._initialize_state);
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : current state is now .Coinbase.Engage.Initialize" << std::endl;
+#endif
+    stm._coinbase_state._engage_state._initialize_state.create(stm);
+  }

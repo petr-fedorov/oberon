@@ -8,20 +8,6 @@ class Engage_State
 #endif
     stm._coinbase_state._engage_state._initialize_state.create(stm);
   }
-!!!965638.cpp!!!	error(inout stm : Coinbase) : void
-  {
-    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
-    stm._coinbase_state._engage_state._doexit(stm);
-#ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : execute activity of transition error" << std::endl;
-#endif
-std::cerr << stm.ec_.message() << "\n";
-    stm._set_currentState(stm._coinbase_state);
-#ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : current state is now .Coinbase" << std::endl;
-#endif
-      stm._final();
-  }
 !!!965766.cpp!!!	_upper(inout stm : Coinbase) : Coinbase::AnyState
   return &stm._coinbase_state;
 !!!974982.cpp!!!	stop(inout stm : Coinbase) : void
