@@ -1,6 +1,6 @@
 format 223
 "R package" // R package
-  revision 85
+  revision 88
   modified_by 6 "petr"
   // class settings
   
@@ -473,6 +473,11 @@ format 223
       end
     end
 
+    classdiagram 399622 "Coinbase"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
     state 218374 "Coinbase"
       stereotype "machine"
       statediagram 399494 "Coinbase"
@@ -498,8 +503,7 @@ format 223
       }
     }));
 "
-	  cpp_on_exit "stm.f_.close();
-stm.signal_set_->cancel();"
+	  cpp_on_exit "stm.signal_set_->cancel();"
 	state 219526 "Initialize"
 	    uml_on_entry "create websocket"
 	    cpp_on_entry "stm.ctx_ = std::make_unique<boost::asio::ssl::context>(
@@ -720,7 +724,7 @@ stm.messages_.clear();
 	      uml_on_entry "save queued msgs"
 	      cpp_on_entry "stm.messages_.erase(stm.messages_.begin());
 for (auto &message: stm.messages_)
-  boost::property_tree::write_json(stm.f_, *message, false);
+  boost::property_tree::write_json(*stm.f_, *message, false);
 
 "
 	    transition 441734 "message"
@@ -731,7 +735,7 @@ for (auto &message: stm.messages_)
 		cpp_expr "#ifdef VERBOSE_STATE_MACHINE
 std::cout << \"Seq no=\" << stm.last_seq_number_ << \"\\n\";
 #endif
-boost::property_tree::write_json(stm.f_, *stm.tree_, false);
+boost::property_tree::write_json(*stm.f_, *stm.tree_, false);
 stm.ws_->async_read(stm.buffer_,
                     boost::asio::bind_executor(
                         *stm.rtc_, [&stm](const boost::system::error_code &ec,
@@ -744,11 +748,34 @@ stm.ws_->async_read(stm.buffer_,
 	  end
 
 	  state 219142 "Snapshot"
-	      uml_on_exit "close http socket"
-	      cpp_on_exit "stm.https_->next_layer().shutdown(boost::asio::ip::tcp::socket::shutdown_both);
-stm.https_->next_layer().close();"
+	      uml_on_entry "create https stream"
+	      uml_on_exit "close https stream"
+	      cpp_on_entry "stm.https_ctx_ = std::make_unique<boost::asio::ssl::context>(
+    boost::asio::ssl::context::sslv23_client);
+load_root_certificates(*stm.https_ctx_);
+stm.https_ = std::make_unique<SslStream>(*stm.ioc_, *stm.https_ctx_);
+
+if (!SSL_set_tlsext_host_name(stm.https_->native_handle(), stm.https_host_.c_str())) {
+  boost::system::error_code ec{static_cast<int>(::ERR_get_error()),
+                               boost::asio::error::get_ssl_category()};
+  std::cerr << ec.message() << \"\\n\";
+}
+
+/*
+SSL_CTX_set_keylog_callback(stm.https_ctx_->native_handle(),
+      [](const SSL *ssl, const char *line) {
+  ofstream f{\"./key_https.txt\", ios_base::app};
+  f << line << \"\\n\";
+  f.close();
+      });
+*/
+
+"
+	      cpp_on_exit "stm.https_->next_layer().close(stm.ec_);
+if(stm.ec_)
+ std::cout << \"Https closing error: \" << stm.ec_.message() << \"\\n\";"
 	    state 233350 "Save snapshot"
-		uml_on_entry "remove obsolete msgs from queue"
+		uml_on_entry "remove obsolete msgs"
 		uml_on_exit "stop doActivity thread, if any"
 		uml_do_activity "save snapshot into the file"
 		cpp_on_entry "auto iter = stm.messages_.begin();
@@ -771,7 +798,7 @@ stm.thread_.join();"
       era.put<string>(\"type\", \"era\");
       era.put<string>(\"time\", era_time);
       era.put<string>(\"product_id\", product_id);
-      boost::property_tree::write_json(stm.f_, era, false);
+      boost::property_tree::write_json(*stm.f_, era, false);
 
       boost::property_tree::ptree order_tree;
 
@@ -790,7 +817,7 @@ stm.thread_.join();"
         order_tree.put<string>(\"remaining_size\",
                                iter2++->second.get_value<string>());
         order_tree.put<string>(\"order_id\", iter2++->second.get_value<string>());
-        boost::property_tree::write_json(stm.f_, order_tree, false);
+        boost::property_tree::write_json(*stm.f_, order_tree, false);
       }
       for (auto iter = stm.snapshot_tree_.get_child(\"asks\").begin();
            iter != stm.snapshot_tree_.get_child(\"asks\").end() &&
@@ -807,7 +834,7 @@ stm.thread_.join();"
         order_tree.put<string>(\"remaining_size\",
                                iter2++->second.get_value<string>());
         order_tree.put<string>(\"order_id\", iter2++->second.get_value<string>());
-        boost::property_tree::write_json(stm.f_, order_tree, false);
+        boost::property_tree::write_json(*stm.f_, order_tree, false);
       }
       if (!stm.stop_thread_) // We don't care too much about race condition here
         boost::asio::post(
@@ -934,36 +961,12 @@ http::async_write(
             stm.error_message_ = ec.message();
             stm.failure();
           } else {
-            http::async_read(
-                *stm.https_, stm.https_buffer_, stm.https_res_,
-                boost::asio::bind_executor(
-                    *stm.rtc_, [&stm](const boost::system::error_code &ec,
-                                      std::size_t bytes_transferred) {
-                      if (ec) {
-                        stm.ec_ = ec;
-                        stm.error_message_ = ec.message();
-                        stm.failure();
-                      } else {
-                        // std::cout << stm.https_res_.body() << \"\\n\";
-                        std::istringstream is{stm.https_res_.body()};
-                        stm.https_res_.body().clear();
-                        stm.snapshot_tree_.clear();
-                        read_json(is, stm.snapshot_tree_);
-                        stm.snapshot_seq_number_ =
-                            stm.snapshot_tree_.get<long>(\"sequence\");
-                        // stm.snapshot_seq_number_ =
-                        // stm.first_seq_number_;
-                        std::cout << \"Snapshot sequence number: \"
-                                  << stm.snapshot_seq_number_ << \"\\n\";
-                        // stm.https_buffer_.consume(stm.https_buffer_.size());
-                        stm.success();
-                      }
-                    }));
+            stm.success();
           }
         }));
 "
-	      transition 426630 "success"
-		on pseudostate_ref 294406 // choice 
+	      transition 478342 "success"
+		on state_ref 246662 // Read Snapshot
 		  uml_trigger "success"
 		  cpp_trigger "success"
 		external 
@@ -1063,6 +1066,46 @@ stm.ws_->async_read(stm.buffer_,
 		uml_trigger "timeout"
 		cpp_trigger "timeout"
 	      external 
+	    end
+
+	    state 246662 "Read Snapshot"
+		uml_on_entry "launch"
+		cpp_on_entry "boost::beast::http::async_read(
+    *stm.https_, stm.https_buffer_, stm.https_res_,
+    boost::asio::bind_executor(*stm.rtc_,
+                               [&stm](const boost::system::error_code &ec,
+                                      std::size_t bytes_transferred) {
+                                 if (ec) {
+                                   stm.ec_ = ec;
+                                   stm.error_message_ = ec.message();
+                                   std::cout << stm.error_message_ << \"\\n\";
+                                   stm.failure();
+                                 } else {
+                                   // std::cout << stm.https_res_.body() <<
+                                   // \"\\n\";
+                                   std::istringstream is{stm.https_res_.body()};
+                                   stm.https_res_.body().clear();
+                                   stm.snapshot_tree_.clear();
+                                   read_json(is, stm.snapshot_tree_);
+                                   stm.snapshot_seq_number_ =
+                                       stm.snapshot_tree_.get<long>(\"sequence\");
+                                   // stm.snapshot_seq_number_ =
+                                   // stm.first_seq_number_;
+                                   std::cout << \"Snapshot sequence number: \"
+                                             << stm.snapshot_seq_number_
+                                             << \"\\n\";
+                                   // stm.https_buffer_.consume(stm.https_buffer_.size());
+                                   stm.success();
+                                 }
+                               }));
+
+"
+	      transition 478470 "success"
+		on pseudostate_ref 294406 // choice 
+		  uml_trigger "success"
+		  cpp_trigger "success"
+		external 
+	      end
 	    end
 	  end
 
@@ -2629,6 +2672,119 @@ ${inlines}
 		end
 	      end
 
+	      class 786822 "Read_Snapshot_State"
+		visibility public 
+		cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+		java_decl ""
+		php_decl ""
+		python_2_2 python_decl ""
+		idl_decl ""
+		explicit_switch_type ""
+		mysql_decl ""
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " implement the state Read Snapshot"
+		operation 1044998 "~Read_Snapshot_State"
+		  force_body_gen cpp_virtual public explicit_return_type ""
+		  nparams 0
+		  cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		end
+
+		classrelation 877318 // <generalisation>
+		  relation 867206 ---|>
+		    a public
+		      cpp default "${type}"
+		      classrelation_ref 877318 // <generalisation>
+		    b parent class_ref 713094 // AnyState
+		end
+
+		operation 1045126 "success"
+		  force_body_gen cpp_virtual public explicit_return_type "void"
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " to manage the event success"
+		end
+
+		operation 1045254 "_upper"
+		  force_body_gen cpp_virtual public return_type class_ref 713094 // AnyState
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " returns the state containing the current"
+		end
+
+		operation 1045510 "create"
+		  force_body_gen cpp_virtual public explicit_return_type "void"
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " to manage the event create"
+		end
+
+		operation 1045638 "_doentry"
+		  force_body_gen public explicit_return_type "void"
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " perform the 'entry behavior'"
+		end
+	      end
+
 	      class 773638 "Failed_State"
 		visibility public 
 		cpp_decl "${comment}${template}class ${name}${inherit} {
@@ -3486,6 +3642,39 @@ ${inlines}
 		key "STM generated" value ""
 		comment " memorize the instance of the state Failed, internal"
 	      end
+
+	      attribute 698502 "_read_snapshot_state"
+		public type class_ref 786822 // Read_Snapshot_State
+		cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+		java_decl ""
+		php_decl ""
+		python_decl ""
+		idl_decl ""
+		mysql_decl ""
+		MysqlColumn
+		ncouples 1
+		key "STM generated" value ""
+		comment " memorize the instance of the state Read Snapshot, internal"
+	      end
+
+	      operation 1045382 "_doentry"
+		force_body_gen public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " perform the 'entry behavior'"
+	      end
 	    end
 
 	    operation 959750 "~Subscribed_State"
@@ -4166,18 +4355,6 @@ ${inlines}
 	MysqlColumn
       end
 
-      attribute 671366 "f_"
-	private explicit_type "std::ofstream"
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-      end
-
       attribute 616454 "_coinbase_state"
 	protected type class_ref 713222 // Coinbase_State
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
@@ -4221,10 +4398,10 @@ ${inlines}
 	  param in name "https_target" explicit_type "string"
 	  param in name "product" explicit_type "string"
 	  param in name "channel" explicit_type "string"
-	  param in name "file_name" explicit_type "string"
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}std::shared_ptr<${t0}> ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}, const ${t4} & ${p4}${v4}, const ${t5} & ${p5}${v5}, const ${t6} & ${p6}${v6}, const ${t7} & ${p7}${v7}, const ${t8} & ${p8}${v8}, const ${t9} & ${p9}${v9}${)}${volatile}${throw};
+	  param inout name "f" type class_ref 780294 // ostream
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}std::shared_ptr< ${t0} > ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}, const ${t4} & ${p4}${v4}, const ${t5} & ${p5}${v5}, const ${t6} & ${p6}${v6}, const ${t7} & ${p7}${v7}, const ${t8} & ${p8}${v8}, std::shared_ptr<${t9}> ${p9}${v9}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}std::shared_ptr<${t0}> ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, const ${t4} & ${p4}, const ${t5} & ${p5}, const ${t6} & ${p6}, const ${t7} & ${p7}, const ${t8} & ${p8}, const ${t9} & ${p9}${)}${volatile}${throw} : _current_state{0},ioc_{ioc}, host_{host}, port_{port}, target_{target},  product_{product}, https_host_ {https_host}, https_port_{https_port}, f_{file_name} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}std::shared_ptr< ${t0} > ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, const ${t4} & ${p4}, const ${t5} & ${p5}, const ${t6} & ${p6}, const ${t7} & ${p7}, const ${t8} & ${p8}, std::shared_ptr<${t9}> ${p9}${)}${volatile}${throw} : _current_state{0},ioc_{ioc}, host_{host}, port_{port}, target_{target},  product_{product}, https_host_ {https_host}, https_port_{https_port}, f_{f} {
   ${body}}
 "
 	
@@ -4765,11 +4942,24 @@ ${inlines}
 	    classrelation_ref 864262 // rtc_ (<directional composition>)
 	  b parent class_ref 753414 // strand
       end
-    end
 
-    classdiagram 399622 "Coinbase"
-      classdiagramsettings member_max_width 0 end
-      size A4
+      classrelation 870790 // f_ (<directional composition>)
+	relation 860678 *-->
+	  a role_name "f_" private
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::shared_ptr<${type}> ${name}${value};
+"
+	    classrelation_ref 870790 // f_ (<directional composition>)
+	  b parent class_ref 780294 // ostream
+      end
+
+      classrelation 877446 // <dependency>
+	relation 867334 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 877446 // <dependency>
+	  b parent class_ref 786822 // Read_Snapshot_State
+      end
     end
 
     class 739974 "HttpResponseWithStringBody"
@@ -5697,13 +5887,15 @@ int main(int argc, char **argv) {
 
   // The io_context is required for all I/O
   std::shared_ptr<boost::asio::io_context> ioc = std::make_shared<boost::asio::io_context>();
-  oberon::R::Coinbase coinbase {ioc, host, port, target, https_host, https_port, https_target, \"BTC-USD\", \"full\", argv[7]};
+  std::shared_ptr<std::ofstream> f {std::make_shared<std::ofstream>(argv[7])};
+  oberon::R::Coinbase coinbase {ioc, host, port, target, https_host, https_port, https_target, \"BTC-USD\", \"full\", f};
   coinbase.create();
   // Run the I/O service. The call will return when
   // the socket is closed.
   std::thread t {[&ioc]() { ioc->run(); }};
   ioc->run();
   t.join();
+  f->close();
 
   return EXIT_SUCCESS;
 }

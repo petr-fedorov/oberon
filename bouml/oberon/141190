@@ -1,6 +1,6 @@
-format 222
+format 223
 "Order Book Reconstructor" // Order Book Reconstructor
-  revision 159
+  revision 160
   modified_by 6 "petr"
   // class settings
   
@@ -67,17 +67,17 @@ format 222
 	size A4
       end
 
-      pseudostate 134534 initial 
+      pseudostate 134534 initial ""
 	transition 218758 "<transition>"
 	  on state_ref 170886 // Active
 	  external 
 	end
       end
 
-      pseudostate 134662 final 
+      pseudostate 134662 final ""
       end
 
-      pseudostate 176646 choice 
+      pseudostate 176646 choice ""
 	transition 217350 "<transition>"
 	  on state_ref 134918 // Maker
 	    uml_guard "is maker"
@@ -93,16 +93,16 @@ format 222
 	end
       end
 
-      pseudostate 176774 choice 
+      pseudostate 176774 choice ""
 	transition 217734 "<transition>"
-	  on pseudostate_ref 176646 // choice
+	  on pseudostate_ref 176646 // choice 
 	    uml_guard "remaining.size > 0"
 	    cpp_guard "stm.getRemainingSize() > 0"
 	  external 
 	end
 
 	transition 217862 "<transition>"
-	  on pseudostate_ref 134662 // final
+	  on pseudostate_ref 134662 // final 
 	    uml_guard "remaining.size = 0"
 	    uml_expr "done filled"
 	    cpp_guard "stm.getRemainingSize() <= 0"
@@ -115,7 +115,7 @@ format 222
 	state 134918 "Maker"
 	    cpp_on_entry "enterMaker();"
 	  transition 219270 "<transition>"
-	    on pseudostate_ref 176646 // choice
+	    on pseudostate_ref 176646 // choice 
 	      uml_trigger "price advanced"
 	      cpp_trigger "priceAdvanced"
 	    external 
@@ -138,22 +138,22 @@ format 222
 	end
 
 	transition 218374 "<transition>"
-	  on pseudostate_ref 176774 // choice
+	  on pseudostate_ref 176774 // choice 
 	    uml_trigger "filled"
 	    cpp_trigger "filled"
 	  external 
 	end
 
-	pseudostate 176902 junction 
+	pseudostate 176902 junction ""
 	  transition 267014 "<transition>"
-	    on pseudostate_ref 176646 // choice
+	    on pseudostate_ref 176646 // choice 
 	      uml_trigger "received"
 	    external 
 	  end
 	end
 
 	transition 219142 "<transition>"
-	  on pseudostate_ref 134662 // final
+	  on pseudostate_ref 134662 // final 
 	    uml_trigger "fully canceled"
 	    uml_expr "done canceled"
 	    cpp_trigger "fullyCanceled"
@@ -161,27 +161,27 @@ format 222
 	  external 
 	end
 
-	pseudostate 241286 shallow_history 
+	pseudostate 241286 shallow_history ""
 	  transition 350598 "<transition>"
-	    on pseudostate_ref 176646 // choice
+	    on pseudostate_ref 176646 // choice 
 	    external 
 	  end
 	end
 
 	transition 350086 "<transition>"
-	  on pseudostate_ref 241286 // shallow_history
+	  on pseudostate_ref 241286 // shallow_history 
 	    uml_trigger "price receded"
 	  external 
 	end
 
 	transition 350214 "<transition>"
-	  on pseudostate_ref 241286 // shallow_history
+	  on pseudostate_ref 241286 // shallow_history 
 	    uml_trigger "volume incremented"
 	  external 
 	end
 
 	transition 350342 "<transition>"
-	  on pseudostate_ref 241286 // shallow_history
+	  on pseudostate_ref 241286 // shallow_history 
 	    uml_trigger "partially canceled"
 	  external 
 	end
@@ -1073,7 +1073,7 @@ ${items}};
       state 184710 "Wait"
 	comment "Waits for an arrival of a message or timeout"
 	transition 247942 "Stop"
-	  on pseudostate_ref 198918 // final
+	  on pseudostate_ref 198918 // final 
 	    uml_trigger "stop"
 	    cpp_trigger "stop"
 	  external 
@@ -1098,7 +1098,7 @@ stm.episode_.push_back(std::unique_ptr<ExchangeMessage>(ptr));
 	end
       end
 
-      pseudostate 183430 initial 
+      pseudostate 183430 initial ""
 	comment "Description"
 	transition 307846 "<transition>"
 	  on state_ref 184710 // Wait
@@ -1106,7 +1106,7 @@ stm.episode_.push_back(std::unique_ptr<ExchangeMessage>(ptr));
 	end
       end
 
-      pseudostate 198918 final 
+      pseudostate 198918 final ""
       end
 
       state 191366 "Deduplicate"
@@ -1173,7 +1173,7 @@ stm.contamination_period_[1] = Timestamp();"
 	end
 
 	transition 308998 "stop"
-	  on pseudostate_ref 228230 // final
+	  on pseudostate_ref 228230 // final 
 	    uml_trigger "stop"
 	    cpp_trigger "stop"
 	  external 
@@ -1189,7 +1189,7 @@ stm.contamination_period_[1] = Timestamp();"
 	end
       end
 
-      pseudostate 162054 initial 
+      pseudostate 162054 initial ""
 	transition 209926 "<transition>"
 	  on state_ref 157190 // Pristine
 	  external 
@@ -1285,11 +1285,11 @@ stm.contamination_period_[1] = Timestamp();
 	  external 
 	end
 
-	pseudostate 234758 shallow_history 
+	pseudostate 234758 shallow_history ""
 	end
 
 	transition 322054 "message"
-	  on pseudostate_ref 234758 // shallow_history
+	  on pseudostate_ref 234758 // shallow_history 
 	    uml_trigger "message"
 	    uml_expr "save message"
 	    cpp_trigger "message"
@@ -1302,7 +1302,7 @@ stm.deferred_.push_back(std::unique_ptr<ExchangeMessage>(ptr));
 	end
 
 	transition 322182 "elapsed, ignored"
-	  on pseudostate_ref 234758 // shallow_history
+	  on pseudostate_ref 234758 // shallow_history 
 	    uml_trigger "elapsed"
 	    uml_guard "wait duration NOT exceeded"
 	    cpp_trigger "elapsed"
@@ -1314,7 +1314,7 @@ stm.deferred_.push_back(std::unique_ptr<ExchangeMessage>(ptr));
 	end
       end
 
-      pseudostate 228230 final 
+      pseudostate 228230 final ""
       end
     end
 
@@ -6696,7 +6696,7 @@ catch (...) {};"
 	  end
 
 	  transition 379526 "failure"
-	    on pseudostate_ref 260870 // exit_point
+	    on pseudostate_ref 260870 // exit_point exit
 	      uml_guard "failure"
 	      cpp_guard "std::isnan(stm.previous_size_)"
 	    external 
@@ -6717,7 +6717,7 @@ catch (...) {};"
 	  end
 
 	  transition 379398 "failure"
-	    on pseudostate_ref 260870 // exit_point
+	    on pseudostate_ref 260870 // exit_point exit
 	      uml_guard "failure"
 	      cpp_guard "std::isnan(stm.previous_size_)"
 	    external 
@@ -6750,7 +6750,7 @@ else
 	end
       end
 
-      pseudostate 260998 initial 
+      pseudostate 260998 initial ""
 	transition 379782 "<transition>"
 	  on state_ref 198022 // Wait
 	  external 

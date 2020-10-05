@@ -35,7 +35,7 @@ if (stm.messages_.size()) {
       era.put<string>("type", "era");
       era.put<string>("time", era_time);
       era.put<string>("product_id", product_id);
-      boost::property_tree::write_json(stm.f_, era, false);
+      boost::property_tree::write_json(*stm.f_, era, false);
 
       boost::property_tree::ptree order_tree;
 
@@ -54,7 +54,7 @@ if (stm.messages_.size()) {
         order_tree.put<string>("remaining_size",
                                iter2++->second.get_value<string>());
         order_tree.put<string>("order_id", iter2++->second.get_value<string>());
-        boost::property_tree::write_json(stm.f_, order_tree, false);
+        boost::property_tree::write_json(*stm.f_, order_tree, false);
       }
       for (auto iter = stm.snapshot_tree_.get_child("asks").begin();
            iter != stm.snapshot_tree_.get_child("asks").end() &&
@@ -71,7 +71,7 @@ if (stm.messages_.size()) {
         order_tree.put<string>("remaining_size",
                                iter2++->second.get_value<string>());
         order_tree.put<string>("order_id", iter2++->second.get_value<string>());
-        boost::property_tree::write_json(stm.f_, order_tree, false);
+        boost::property_tree::write_json(*stm.f_, order_tree, false);
       }
       if (!stm.stop_thread_) // We don't care too much about race condition here
         boost::asio::post(

@@ -1,29 +1,11 @@
 class Coinbase
 !!!915590.cpp!!!	Coinbase()
   _current_state = 0;
-!!!917382.cpp!!!	Coinbase(inout ioc : io_context, in host : string, in port : string, in target : string, in https_host : string, in https_port : string, in https_target : string, in product : string, in channel : string, in file_name : string)
+!!!917382.cpp!!!	Coinbase(inout ioc : io_context, in host : string, in port : string, in target : string, in https_host : string, in https_port : string, in https_target : string, in product : string, in channel : string, inout f : ostream)
 rtc_ = std::make_unique<boost::asio::io_context::strand>(*ioc);
-https_ctx_ = std::make_unique<boost::asio::ssl::context>(
-    boost::asio::ssl::context::sslv23_client);
-load_root_certificates(*https_ctx_);
 timer_ = std::make_unique<boost::asio::deadline_timer>(*ioc);
-https_ = std::make_unique<SslStream>(*ioc, *https_ctx_);
 signal_set_ = std::make_unique<boost::asio::signal_set>(*ioc, SIGINT, SIGTERM);
 
-if (!SSL_set_tlsext_host_name(https_->native_handle(), https_host.c_str())) {
-  boost::system::error_code ec{static_cast<int>(::ERR_get_error()),
-                               boost::asio::error::get_ssl_category()};
-  std::cerr << ec.message() << "\n";
-}
-
-/*
-SSL_CTX_set_keylog_callback(https_ctx_->native_handle(),
-      [](const SSL *ssl, const char *line) {
-  ofstream f{"./key.txt", ios_base::app};
-  f << line << "\n";
-  f.close();
-      });
-*/
 namespace http = boost::beast::http;
 https_req_.method(http::verb::get);
 https_req_.target(https_target + "/" + product + "/book?level=3");
