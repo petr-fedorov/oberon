@@ -1,6 +1,6 @@
 format 223
 "R package" // R package
-  revision 83
+  revision 85
   modified_by 6 "petr"
   // class settings
   
@@ -490,13 +490,13 @@ format 223
 
       state 233222 "Engage"
 	  uml_on_entry "register signal handler"
-	  cpp_on_entry "stm.signal_set_->async_wait([&stm](const boost::system::error_code &ec,
-                                   int signal_number) {
-  if (!ec) {
-    std::cout << \"\\nTermination requested ... \\n\";
-    stm.stop();
-  }
-});
+	  cpp_on_entry "stm.signal_set_->async_wait(boost::asio::bind_executor(
+    *stm.rtc_, [&stm](const boost::system::error_code &ec, int signal_number) {
+      if (!ec) {
+        std::cout << \"\\nTermination requested ... \\n\";
+        stm.stop();
+      }
+    }));
 "
 	  cpp_on_exit "stm.f_.close();
 stm.signal_set_->cancel();"
@@ -527,14 +527,15 @@ SSL_CTX_set_keylog_callback(stm.ctx_->native_handle(),
 	      uml_on_entry "launch"
 	      cpp_on_entry "stm.ws_->next_layer().async_handshake(
     boost::asio::ssl::stream_base::client,
-    [&stm](const boost::system::error_code &ec) {
-      if (ec) {
-        stm.ec_ = ec;
-        stm.failure();
-      } else {
-        stm.success();
-      }
-    });
+    boost::asio::bind_executor(*stm.rtc_,
+                               [&stm](const boost::system::error_code &ec) {
+                                 if (ec) {
+                                   stm.ec_ = ec;
+                                   stm.failure();
+                                 } else {
+                                   stm.success();
+                                 }
+                               }));
 "
 	    transition 400902 "success"
 	      on state_ref 218886 // Handshake Websocket
@@ -546,16 +547,18 @@ SSL_CTX_set_keylog_callback(stm.ctx_->native_handle(),
 
 	  state 218886 "Handshake Websocket"
 	      uml_on_entry "launch"
-	      cpp_on_entry "stm.ws_->async_handshake(stm.host_, stm.target_,
-                        [&stm](const boost::system::error_code &ec) {
-                          if (ec) {
-                            stm.ec_ = ec;
-                            stm.error_message_ = ec.message();
-                            stm.failure();
-                          } else {
-                            stm.success();
-                          }
-                        });
+	      cpp_on_entry "stm.ws_->async_handshake(
+    stm.host_, stm.target_,
+    boost::asio::bind_executor(*stm.rtc_,
+                               [&stm](const boost::system::error_code &ec) {
+                                 if (ec) {
+                                   stm.ec_ = ec;
+                                   stm.error_message_ = ec.message();
+                                   stm.failure();
+                                 } else {
+                                   stm.success();
+                                 }
+                               }));
 "
 	    transition 401286 "success"
 	      on state_ref 219014 // Subscribe
@@ -577,19 +580,22 @@ tree.add_child(\"channels\", stm.channels_);
 
 write_json(request, tree, false);
 std::cout << \"Request: \" << request.str() << \"\\n\";
-stm.ws_->async_write(
-    boost::asio::buffer(request.str()),
-    [&stm](const boost::system::error_code &ec, std::size_t bytes_transferred) {
-  if (ec)
-    stm.failure();
-  else {
-    // Read a message into our buffer
-    stm.ws_->async_read(stm.buffer_, [&stm](const boost::system::error_code &ec,
-                                            std::size_t bytes_transferred) {
-      stm.dispatchJson(ec);
-    });
-      }
-});
+stm.ws_->async_write(boost::asio::buffer(request.str()),
+                     boost::asio::bind_executor(
+                         *stm.rtc_, [&stm](const boost::system::error_code &ec,
+                                           std::size_t bytes_transferred) {
+                           if (ec)
+                             stm.failure();
+                           else {
+                             // Read a message into our buffer
+                             stm.ws_->async_read(
+                                 stm.buffer_,
+                                 [&stm](const boost::system::error_code &ec,
+                                        std::size_t bytes_transferred) {
+                                   stm.dispatchJson(ec);
+                                 });
+                           }
+                         }));
 "
 	    transition 441862 "success"
 	      on pseudostate_ref 301446 // final 
@@ -602,18 +608,20 @@ stm.ws_->async_write(
 	  state 218630 "Connect"
 	      uml_on_entry "launch"
 	      cpp_on_entry "// Make the connection on the IP address we get from a lookup
-boost::asio::async_connect(stm.ws_->next_layer().next_layer(), stm.results_.begin(),
-                           stm.results_.end(),
-                           [&stm](const boost::system::error_code &ec,
-                                  decltype(stm.results_.begin()) iter) {
-                             if (ec) {
-                               stm.ec_ = ec;
-                               stm.failure();
-                             } else {
-                               stm.address_ = iter->endpoint().address();
-                               stm.success();
-                               }
-                           });
+boost::asio::async_connect(
+    stm.ws_->next_layer().next_layer(), stm.results_.begin(),
+    stm.results_.end(),
+    boost::asio::bind_executor(*stm.rtc_,
+                               [&stm](const boost::system::error_code &ec,
+                                      decltype(stm.results_.begin()) iter) {
+                                 if (ec) {
+                                   stm.ec_ = ec;
+                                   stm.failure();
+                                 } else {
+                                   stm.address_ = iter->endpoint().address();
+                                   stm.success();
+                                 }
+                               }));
 "
 	    transition 400774 "success"
 	      on state_ref 218758 // Handshake SSL
@@ -627,18 +635,20 @@ boost::asio::async_connect(stm.ws_->next_layer().next_layer(), stm.results_.begi
 	      uml_on_entry "launch"
 	      cpp_on_entry "stm.resolver_->async_resolve(
     stm.host_, stm.port_,
-    [&stm](const boost::system::error_code &ec,
-           boost::asio::ip::tcp::resolver::results_type results) {
-      if (ec) {
-        stm.ec_ = ec;
-        stm.error_message_=ec.message();
-	std::cout << \"Can't resolve!\\n\";
-        stm.failure();
-      } else {
-        stm.results_ = results;
-        stm.success();
-      }
-    });
+    boost::asio::bind_executor(
+        *stm.rtc_,
+        [&stm](const boost::system::error_code &ec,
+               boost::asio::ip::tcp::resolver::results_type results) {
+          if (ec) {
+            stm.ec_ = ec;
+            stm.error_message_ = ec.message();
+            std::cout << \"Can't resolve!\\n\";
+            stm.failure();
+          } else {
+            stm.results_ = results;
+            stm.success();
+          }
+        }));
 "
 	    transition 400518 "success"
 	      on state_ref 218630 // Connect
@@ -681,27 +691,28 @@ std::cout << stm.error_message_ << \"\\n\";
 	    cpp_on_entry "stm.first_seq_number_ = 0;
 stm.last_seq_number_ = 0;
 stm.snapshot_seq_number_ = 0;
-stm.ws_->async_read(stm.buffer_, [&stm](const boost::system::error_code &ec,
-                                std::size_t bytes_transferred) {
-  boost::ignore_unused(bytes_transferred);
-  stm.dispatchJson(ec);
-});
+stm.ws_->async_read(stm.buffer_,
+                    boost::asio::bind_executor(
+                        *stm.rtc_, [&stm](const boost::system::error_code &ec,
+                                          std::size_t bytes_transferred) {
+                          boost::ignore_unused(bytes_transferred);
+                          stm.dispatchJson(ec);
+                        }));
 
 stm.timer_->expires_from_now(seconds(5));
-stm.timer_->async_wait([&stm](const boost::system::error_code &ec) {
-  if (ec != boost::asio::error::operation_aborted) {
-    std::cout << \"Time out!\\n\";
-    stm.timeout();
-  }
-});
-
-
-
+stm.timer_->async_wait(boost::asio::bind_executor(
+    *stm.rtc_, [&stm](const boost::system::error_code &ec) {
+      if (ec != boost::asio::error::operation_aborted) {
+        std::cout << \"Time out!\\n\";
+        stm.timeout();
+      }
+    }));
 "
 	    cpp_on_exit "stm.timer_->cancel();
 stm.ws_->next_layer().next_layer().shutdown(boost::asio::ip::tcp::socket::shutdown_both);
 stm.ws_->next_layer().next_layer().cancel();
 stm.ws_->next_layer().next_layer().close();
+stm.messages_.clear();
 
 
 "
@@ -721,12 +732,13 @@ for (auto &message: stm.messages_)
 std::cout << \"Seq no=\" << stm.last_seq_number_ << \"\\n\";
 #endif
 boost::property_tree::write_json(stm.f_, *stm.tree_, false);
-stm.ws_->async_read(stm.buffer_, [&stm](const boost::system::error_code &ec,
-                                    std::size_t bytes_transferred) {
-  boost::ignore_unused(bytes_transferred);
-  stm.dispatchJson(ec);
-});
-
+stm.ws_->async_read(stm.buffer_,
+                    boost::asio::bind_executor(
+                        *stm.rtc_, [&stm](const boost::system::error_code &ec,
+                                          std::size_t bytes_transferred) {
+                          boost::ignore_unused(bytes_transferred);
+                          stm.dispatchJson(ec);
+                        }));
 "
 	    end
 	  end
@@ -752,7 +764,7 @@ stm.thread_.join();"
   auto product_id = stm.messages_.front()->get<string>(\"product_id\");
 
   // Start new era in another thread since it takes a long time ...
-  stm.thread_ = std::thread {[&stm, era_time, product_id]() {
+  stm.thread_ = std::thread{[&stm, era_time, product_id]() {
     stm.stop_thread_.store(false);
     try {
       boost::property_tree::ptree era;
@@ -764,7 +776,9 @@ stm.thread_.join();"
       boost::property_tree::ptree order_tree;
 
       for (auto iter = stm.snapshot_tree_.get_child(\"bids\").begin();
-           iter != stm.snapshot_tree_.get_child(\"bids\").end() &&!stm.stop_thread_; ++iter) {
+           iter != stm.snapshot_tree_.get_child(\"bids\").end() &&
+           !stm.stop_thread_;
+           ++iter) {
         order_tree.clear();
         order_tree.put<string>(\"time\", era_time);
         order_tree.put<string>(\"product_id\", product_id);
@@ -779,7 +793,9 @@ stm.thread_.join();"
         boost::property_tree::write_json(stm.f_, order_tree, false);
       }
       for (auto iter = stm.snapshot_tree_.get_child(\"asks\").begin();
-           iter != stm.snapshot_tree_.get_child(\"asks\").end() && !stm.stop_thread_; ++iter) {
+           iter != stm.snapshot_tree_.get_child(\"asks\").end() &&
+           !stm.stop_thread_;
+           ++iter) {
         order_tree.clear();
         order_tree.put<string>(\"time\", era_time);
         order_tree.put<string>(\"product_id\", product_id);
@@ -794,21 +810,22 @@ stm.thread_.join();"
         boost::property_tree::write_json(stm.f_, order_tree, false);
       }
       if (!stm.stop_thread_) // We don't care too much about race condition here
-        boost::asio::post([&stm]() { stm.success(); });
+        boost::asio::post(
+            boost::asio::bind_executor(*stm.rtc_, [&stm]() { stm.success(); }));
       else
-        boost::asio::post([&stm]() {
+        boost::asio::post(boost::asio::bind_executor(*stm.rtc_, [&stm]() {
           stm.error_message_ = \"Snapshot saved has been stopped, exiting ...\";
           stm.failure();
-        });
+        }));
     } catch (...) {
-      boost::asio::post([&stm]() {
-        stm.error_message_ = \"Snapshot saved failed due to an exception, exiting ...\";
+      boost::asio::post(boost::asio::bind_executor(*stm.rtc_, [&stm]() {
+        stm.error_message_ =
+            \"Snapshot saved failed due to an exception, exiting ...\";
         stm.failure();
-      });
+      }));
     }
   }};
 }
-
 "
 	      transition 449158 "success"
 		on pseudostate_ref 307974 // final 
@@ -831,17 +848,19 @@ stm.thread_.join();"
 		uml_on_entry "launch"
 		cpp_on_entry "stm.resolver_->async_resolve(
     stm.https_host_, stm.https_port_,
-    [&stm](const boost::system::error_code &ec,
-           boost::asio::ip::tcp::resolver::results_type results) {
-      if (ec) {
-        stm.ec_ = ec;
-        stm.error_message_ = ec.message();
-        stm.failure();
-      } else {
-        stm.results_ = results;
-        stm.success();
-      }
-    });
+    boost::asio::bind_executor(
+        *stm.rtc_,
+        [&stm](const boost::system::error_code &ec,
+               boost::asio::ip::tcp::resolver::results_type results) {
+          if (ec) {
+            stm.ec_ = ec;
+            stm.error_message_ = ec.message();
+            stm.failure();
+          } else {
+            stm.results_ = results;
+            stm.success();
+          }
+        }));
 "
 	      transition 403590 "success"
 		on state_ref 219910 // Connect
@@ -853,20 +872,22 @@ stm.thread_.join();"
 
 	    state 219910 "Connect"
 		uml_on_entry "launch"
-		cpp_on_entry "boost::asio::async_connect(stm.https_->next_layer(), stm.results_.begin(),
-                           stm.results_.end(),
-                           [&stm](const boost::system::error_code &ec,
-                                  decltype(stm.results_)::iterator iter) {
-                             if (ec) {
-                               stm.ec_ = ec;
-                               stm.error_message_ = ec.message();
-                               stm.failure();
-                             } else {
-                               std::cout << \"IP: \" << iter->endpoint().address().to_string() << \" Port: \" << iter->endpoint().port() << \"\\n\"; 
-                               stm.https_address_ = iter->endpoint().address();
-                               stm.success();
-                             }
-                           });
+		cpp_on_entry "boost::asio::async_connect(
+    stm.https_->next_layer(), stm.results_.begin(), stm.results_.end(),
+    boost::asio::bind_executor(
+        *stm.rtc_, [&stm](const boost::system::error_code &ec,
+                          decltype(stm.results_)::iterator iter) {
+          if (ec) {
+            stm.ec_ = ec;
+            stm.error_message_ = ec.message();
+            stm.failure();
+          } else {
+            std::cout << \"IP: \" << iter->endpoint().address().to_string()
+                      << \" Port: \" << iter->endpoint().port() << \"\\n\";
+            stm.https_address_ = iter->endpoint().address();
+            stm.success();
+          }
+        }));
 "
 	      transition 403718 "sucess"
 		on state_ref 220038 // Handshake SSL
@@ -878,16 +899,18 @@ stm.thread_.join();"
 
 	    state 220038 "Handshake SSL"
 		uml_on_entry "launch"
-		cpp_on_entry "stm.https_->async_handshake(boost::asio::ssl::stream_base::client,
-                            [&stm](const boost::system::error_code &ec) {
-                              if (ec) {
-                                stm.ec_ = ec;
-                                stm.error_message_ = ec.message();
-                                stm.failure();
-                              } else {
-                                stm.success();
-                              }
-                            });
+		cpp_on_entry "stm.https_->async_handshake(
+    boost::asio::ssl::stream_base::client,
+    boost::asio::bind_executor(*stm.rtc_,
+                               [&stm](const boost::system::error_code &ec) {
+                                 if (ec) {
+                                   stm.ec_ = ec;
+                                   stm.error_message_ = ec.message();
+                                   stm.failure();
+                                 } else {
+                                   stm.success();
+                                 }
+                               }));
 "
 	      transition 403846 "success"
 		on state_ref 220166 // Query snapshot
@@ -901,40 +924,43 @@ stm.thread_.join();"
 		uml_on_entry "launch"
 		cpp_on_entry "namespace http = boost::beast::http;
 std::cout << \"HTTP GET \" << stm.https_req_.target() << \"\\n\";
-http::async_write(*stm.https_, stm.https_req_,
-                  [&stm](const boost::system::error_code &ec,
-                         std::size_t bytes_transferred) {
-                    if (ec) {
-                      stm.ec_ = ec;
-                      stm.error_message_ = ec.message();
-                      stm.failure();
-                    } else {
-                      http::async_read(
-                          *stm.https_, stm.https_buffer_, stm.https_res_,
-                          [&stm](const boost::system::error_code &ec,
-                                 std::size_t bytes_transferred) {
-                            if (ec) {
-                              stm.ec_ = ec;
-                              stm.error_message_ = ec.message();
-                              stm.failure();
-                            } else {
-                              // std::cout << stm.https_res_.body() << \"\\n\";
-                              std::istringstream is{stm.https_res_.body()};
-                              stm.https_res_.body().clear();
-                              stm.snapshot_tree_.clear();
-                              read_json(is, stm.snapshot_tree_);
-                              stm.snapshot_seq_number_ =
-                                  stm.snapshot_tree_.get<long>(\"sequence\");
-                              // stm.snapshot_seq_number_ =
-                              // stm.first_seq_number_;
-                              std::cout << \"Snapshot sequence number: \"
-                                        << stm.snapshot_seq_number_ << \"\\n\";
-                              // stm.https_buffer_.consume(stm.https_buffer_.size());
-                              stm.success();
-                            }
-                          });
-                    }
-                  });
+http::async_write(
+    *stm.https_, stm.https_req_,
+    boost::asio::bind_executor(
+        *stm.rtc_, [&stm](const boost::system::error_code &ec,
+                          std::size_t bytes_transferred) {
+          if (ec) {
+            stm.ec_ = ec;
+            stm.error_message_ = ec.message();
+            stm.failure();
+          } else {
+            http::async_read(
+                *stm.https_, stm.https_buffer_, stm.https_res_,
+                boost::asio::bind_executor(
+                    *stm.rtc_, [&stm](const boost::system::error_code &ec,
+                                      std::size_t bytes_transferred) {
+                      if (ec) {
+                        stm.ec_ = ec;
+                        stm.error_message_ = ec.message();
+                        stm.failure();
+                      } else {
+                        // std::cout << stm.https_res_.body() << \"\\n\";
+                        std::istringstream is{stm.https_res_.body()};
+                        stm.https_res_.body().clear();
+                        stm.snapshot_tree_.clear();
+                        read_json(is, stm.snapshot_tree_);
+                        stm.snapshot_seq_number_ =
+                            stm.snapshot_tree_.get<long>(\"sequence\");
+                        // stm.snapshot_seq_number_ =
+                        // stm.first_seq_number_;
+                        std::cout << \"Snapshot sequence number: \"
+                                  << stm.snapshot_seq_number_ << \"\\n\";
+                        // stm.https_buffer_.consume(stm.https_buffer_.size());
+                        stm.success();
+                      }
+                    }));
+          }
+        }));
 "
 	      transition 426630 "success"
 		on pseudostate_ref 294406 // choice 
@@ -972,13 +998,15 @@ http::async_write(*stm.https_, stm.https_req_,
 		uml_guard "queue message"
 		cpp_trigger "message"
 		cpp_expr "stm.messages_.push_back(std::move(stm.tree_));
-std::cout << \"Seq no: \" << stm.last_seq_number_ << \" Queue size: \" << stm.messages_.size() << \"\\n\";
-stm.ws_->async_read(stm.buffer_, [&stm](const boost::system::error_code &ec,
-                                std::size_t bytes_transferred) {
-  boost::ignore_unused(bytes_transferred);
-  stm.dispatchJson(ec);
-});
-
+std::cout << \"Seq no: \" << stm.last_seq_number_
+          << \" Queue size: \" << stm.messages_.size() << \"\\n\";
+stm.ws_->async_read(stm.buffer_,
+                    boost::asio::bind_executor(
+                        *stm.rtc_, [&stm](const boost::system::error_code &ec,
+                                          std::size_t bytes_transferred) {
+                          boost::ignore_unused(bytes_transferred);
+                          stm.dispatchJson(ec);
+                        }));
 "
 	    end
 
@@ -1021,6 +1049,13 @@ stm.ws_->async_read(stm.buffer_, [&stm](const boost::system::error_code &ec,
 		  cpp_trigger "message"
 		external 
 	      end
+
+	      transition 471686 "heartbeat"
+		on state_ref 239878 // Failed
+		  uml_trigger "heartbeat"
+		  cpp_trigger "heartbeat"
+		external 
+	      end
 	    end
 
 	    transition 463878 "timeout"
@@ -1038,18 +1073,20 @@ stm.ws_->async_read(stm.buffer_, [&stm](const boost::system::error_code &ec,
 	      cpp_trigger "heartbeat"
 	      cpp_expr "if (stm.timer_->expires_from_now(seconds(2)) > 0) {
   // We managed to cancel the timer. Start new asynchronous wait.
-  stm.timer_->async_wait([&stm](const boost::system::error_code &ec) {
-    if (ec != boost::asio::error::operation_aborted)
-      stm.timeout();
-  });
+  stm.timer_->async_wait(boost::asio::bind_executor(
+      *stm.rtc_, [&stm](const boost::system::error_code &ec) {
+        if (ec != boost::asio::error::operation_aborted)
+          stm.timeout();
+      }));
 }
 std::cout << stm.tree_->get<std::string>(\"time\") << \" Timer restarted\\n\";
-stm.ws_->async_read(stm.buffer_, [&stm](const boost::system::error_code &ec,
-                                    std::size_t bytes_transferred) {
-  boost::ignore_unused(bytes_transferred);
-  stm.dispatchJson(ec);
-});
-
+stm.ws_->async_read(stm.buffer_,
+                    boost::asio::bind_executor(
+                        *stm.rtc_, [&stm](const boost::system::error_code &ec,
+                                          std::size_t bytes_transferred) {
+                          boost::ignore_unused(bytes_transferred);
+                          stm.dispatchJson(ec);
+                        }));
 "
 	  end
 
@@ -1068,38 +1105,38 @@ stm.ws_->async_read(stm.buffer_, [&stm](const boost::system::error_code &ec,
 	  end
 
 	  state 239878 "Failed"
-	    transition 462854 "heartbeat"
-	      on state_ref 240006 // Restart
-		uml_trigger "heartbeat"
-		cpp_trigger "heartbeat"
-	      external 
+	    transition 464518 "timeout"
+	      on state_ref 239878 // Failed
+		uml_trigger "timeout"
+		cpp_trigger "timeout"
 	    end
 
-	    transition 462982 "message"
-	      on state_ref 240006 // Restart
-		uml_trigger "message"
-		cpp_trigger "message"
-	      external 
-	    end
-
-	    transition 463366 "success"
-	      on state_ref 240006 // Restart
-		uml_trigger "success"
-		cpp_trigger "success"
-	      external 
-	    end
-
-	    transition 463750 "failure"
-	      on state_ref 240006 // Restart
+	    transition 471174 "failure"
+	      on pseudostate_ref 321030 // junction 
 		uml_trigger "failure"
 		cpp_trigger "failure"
 	      external 
 	    end
 
-	    transition 464518 "timeout"
-	      on state_ref 239878 // Failed
-		uml_trigger "timeout"
-		cpp_trigger "timeout"
+	    transition 471302 "message"
+	      on pseudostate_ref 321030 // junction 
+		uml_trigger "message"
+		cpp_trigger "message"
+	      external 
+	    end
+
+	    transition 471430 "heartbeat"
+	      on pseudostate_ref 321030 // junction 
+		uml_trigger "heartbeat"
+		cpp_trigger "heartbeat"
+	      external 
+	    end
+
+	    transition 471814 "success"
+	      on pseudostate_ref 321030 // junction 
+		uml_trigger "success"
+		cpp_trigger "success"
+	      external 
 	    end
 	  end
 
@@ -1110,8 +1147,8 @@ stm.ws_->async_read(stm.buffer_, [&stm](const boost::system::error_code &ec,
 	    external 
 	  end
 
-	  state 240006 "Restart"
-	    transition 463110 "restarting"
+	  pseudostate 321030 junction ""
+	    transition 471558 "<transition>"
 	      on state_ref 219526 // Initialize
 	      external 
 	    end
@@ -2314,100 +2351,6 @@ ${inlines}
 	      end
 	    end
 
-	    class 773382 "Restart_State"
-	      visibility public 
-	      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-	      java_decl ""
-	      php_decl ""
-	      python_2_2 python_decl ""
-	      idl_decl ""
-	      explicit_switch_type ""
-	      mysql_decl ""
-	      
-	      ncouples 1
-	      key "STM generated" value ""
-	      comment " implement the state Restart"
-	      operation 1026566 "~Restart_State"
-		force_body_gen cpp_virtual public explicit_return_type ""
-		nparams 0
-		cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
-"
-		cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
-  ${body}}
-"
-		
-		
-		
-		
-		ncouples 1
-		key "STM generated" value ""
-	      end
-
-	      classrelation 856838 // <generalisation>
-		relation 846726 ---|>
-		  a public
-		    cpp default "${type}"
-		    classrelation_ref 856838 // <generalisation>
-		  b parent class_ref 713094 // AnyState
-	      end
-
-	      operation 1026694 "_completion"
-		force_body_gen cpp_virtual public explicit_return_type "bool"
-		nparams 1
-		  param inout name "stm" type class_ref 712966 // Coinbase
-		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-		
-		
-		
-		
-		ncouples 1
-		key "STM generated" value ""
-	      end
-
-	      operation 1026822 "create"
-		force_body_gen cpp_virtual public explicit_return_type "void"
-		nparams 1
-		  param inout name "stm" type class_ref 712966 // Coinbase
-		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-		
-		
-		
-		
-		ncouples 1
-		key "STM generated" value ""
-		comment " to manage the event create"
-	      end
-
-	      operation 1026950 "_upper"
-		force_body_gen cpp_virtual public return_type class_ref 713094 // AnyState
-		nparams 1
-		  param inout name "stm" type class_ref 712966 // Coinbase
-		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-		cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-		
-		
-		
-		
-		ncouples 1
-		key "STM generated" value ""
-		comment " returns the state containing the current"
-	      end
-	    end
-
 	    class 773766 "Failed_State"
 	      visibility public 
 	      cpp_decl "${comment}${template}class ${name}${inherit} {
@@ -2484,24 +2427,6 @@ ${inlines}
 		comment " to manage the event message"
 	      end
 
-	      operation 1031302 "success"
-		force_body_gen cpp_virtual public explicit_return_type "void"
-		nparams 1
-		  param inout name "stm" type class_ref 712966 // Coinbase
-		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-		
-		
-		
-		
-		ncouples 1
-		key "STM generated" value ""
-		comment " to manage the event success"
-	      end
-
 	      operation 1031430 "failure"
 		force_body_gen cpp_virtual public explicit_return_type "void"
 		nparams 1
@@ -2554,6 +2479,24 @@ ${inlines}
 		ncouples 1
 		key "STM generated" value ""
 		comment " returns the state containing the current"
+	      end
+
+	      operation 1038470 "success"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Coinbase
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event success"
 	      end
 	    end
 
@@ -2796,6 +2739,24 @@ ${inlines}
 		  ncouples 1
 		  key "STM generated" value ""
 		  comment " returns the state containing the current"
+		end
+
+		operation 1038342 "heartbeat"
+		  force_body_gen cpp_virtual public explicit_return_type "void"
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Coinbase
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " to manage the event heartbeat"
 		end
 	      end
 
@@ -3689,21 +3650,6 @@ ${inlines}
 	      comment " perform the 'exit behavior'"
 	    end
 
-	    attribute 691590 "_restart_state"
-	      public type class_ref 773382 // Restart_State
-	      cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	      java_decl ""
-	      php_decl ""
-	      python_decl ""
-	      idl_decl ""
-	      mysql_decl ""
-	      MysqlColumn
-	      ncouples 1
-	      key "STM generated" value ""
-	      comment " memorize the instance of the state Restart, internal"
-	    end
-
 	    operation 1029126 "failure"
 	      force_body_gen cpp_virtual public explicit_return_type "void"
 	      nparams 1
@@ -3735,6 +3681,24 @@ ${inlines}
 	      ncouples 1
 	      key "STM generated" value ""
 	      comment " memorize the instance of the state Failed, internal"
+	    end
+
+	    operation 1038214 "_junction1"
+	      force_body_gen public explicit_return_type "void"
+	      nparams 1
+	        param inout name "stm" type class_ref 712966 // Coinbase
+	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " implement a junction, through an operation because shared, internal"
 	    end
 	  end
 
@@ -4740,15 +4704,6 @@ ${inlines}
 	  b parent class_ref 698758 // io_context
       end
 
-      classrelation 856966 // <dependency>
-	relation 846854 -_->
-	  stereotype "friend"
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 856966 // <dependency>
-	  b parent class_ref 773382 // Restart_State
-      end
-
       operation 1027078 "success"
 	force_body_gen public explicit_return_type "bool"
 	nparams 0
@@ -4799,6 +4754,16 @@ ${inlines}
 	    cpp default "${type}"
 	    classrelation_ref 857734 // <dependency>
 	  b parent class_ref 773766 // Failed_State
+      end
+
+      classrelation 864262 // rtc_ (<directional composition>)
+	relation 854150 *-->
+	  a role_name "rtc_" private
+	    comment "The processing of events by a StateMachine executed in this strand to enforce run-to-completion paradigm even if the io_context is multi-threading"
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::unique_ptr<${type}> ${name}${value};
+"
+	    classrelation_ref 864262 // rtc_ (<directional composition>)
+	  b parent class_ref 753414 // strand
       end
     end
 
@@ -5736,7 +5701,9 @@ int main(int argc, char **argv) {
   coinbase.create();
   // Run the I/O service. The call will return when
   // the socket is closed.
+  std::thread t {[&ioc]() { ioc->run(); }};
   ioc->run();
+  t.join();
 
   return EXIT_SUCCESS;
 }

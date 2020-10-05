@@ -15,19 +15,22 @@ tree.add_child("channels", stm.channels_);
 
 write_json(request, tree, false);
 std::cout << "Request: " << request.str() << "\n";
-stm.ws_->async_write(
-    boost::asio::buffer(request.str()),
-    [&stm](const boost::system::error_code &ec, std::size_t bytes_transferred) {
-  if (ec)
-    stm.failure();
-  else {
-    // Read a message into our buffer
-    stm.ws_->async_read(stm.buffer_, [&stm](const boost::system::error_code &ec,
-                                            std::size_t bytes_transferred) {
-      stm.dispatchJson(ec);
-    });
-      }
-});
+stm.ws_->async_write(boost::asio::buffer(request.str()),
+                     boost::asio::bind_executor(
+                         *stm.rtc_, [&stm](const boost::system::error_code &ec,
+                                           std::size_t bytes_transferred) {
+                           if (ec)
+                             stm.failure();
+                           else {
+                             // Read a message into our buffer
+                             stm.ws_->async_read(
+                                 stm.buffer_,
+                                 [&stm](const boost::system::error_code &ec,
+                                        std::size_t bytes_transferred) {
+                                   stm.dispatchJson(ec);
+                                 });
+                           }
+                         }));
 !!!962054.cpp!!!	_upper(inout stm : Coinbase) : Coinbase::AnyState
   return &stm._coinbase_state._engage_state._initialize_state;
 !!!1027590.cpp!!!	success(inout stm : Coinbase) : void

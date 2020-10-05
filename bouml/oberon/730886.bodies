@@ -24,13 +24,13 @@ class Engage_State
 #ifdef VERBOSE_STATE_MACHINE
   std::cout << "DEBUG : execute entry behavior of .Coinbase.Engage" << std::endl;
 #endif
-stm.signal_set_->async_wait([&stm](const boost::system::error_code &ec,
-                                   int signal_number) {
-  if (!ec) {
-    std::cout << "\nTermination requested ... \n";
-    stm.stop();
-  }
-});
+stm.signal_set_->async_wait(boost::asio::bind_executor(
+    *stm.rtc_, [&stm](const boost::system::error_code &ec, int signal_number) {
+      if (!ec) {
+        std::cout << "\nTermination requested ... \n";
+        stm.stop();
+      }
+    }));
 !!!1003782.cpp!!!	_doexit(inout stm : Coinbase) : void
 #ifdef VERBOSE_STATE_MACHINE
   std::cout << "DEBUG : execute exit behavior of .Coinbase.Engage" << std::endl;

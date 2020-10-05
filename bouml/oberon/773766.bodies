@@ -2,41 +2,41 @@ class Failed_State
 !!!1031046.cpp!!!	heartbeat(inout stm : Coinbase) : void
   {
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
-    stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._restart_state);
+    stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state);
 #ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Restart" << std::endl;
+    std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed" << std::endl;
 #endif
-    stm._coinbase_state._engage_state._subscribed_state._restart_state.create(stm);
+    stm._coinbase_state._engage_state._subscribed_state._junction1(stm);
   }
 !!!1031174.cpp!!!	message(inout stm : Coinbase) : void
   {
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
-    stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._restart_state);
+    stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state);
 #ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Restart" << std::endl;
+    std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed" << std::endl;
 #endif
-    stm._coinbase_state._engage_state._subscribed_state._restart_state.create(stm);
-  }
-!!!1031302.cpp!!!	success(inout stm : Coinbase) : void
-  {
-    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
-    stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._restart_state);
-#ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Restart" << std::endl;
-#endif
-    stm._coinbase_state._engage_state._subscribed_state._restart_state.create(stm);
+    stm._coinbase_state._engage_state._subscribed_state._junction1(stm);
   }
 !!!1031430.cpp!!!	failure(inout stm : Coinbase) : void
   {
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
-    stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._restart_state);
+    stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state);
 #ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Restart" << std::endl;
+    std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed" << std::endl;
 #endif
-    stm._coinbase_state._engage_state._subscribed_state._restart_state.create(stm);
+    stm._coinbase_state._engage_state._subscribed_state._junction1(stm);
   }
 !!!1031558.cpp!!!	timeout(inout stm : Coinbase) : void
   {
   }
 !!!1031686.cpp!!!	_upper(inout stm : Coinbase) : Coinbase::AnyState
   return &stm._coinbase_state._engage_state._subscribed_state;
+!!!1038470.cpp!!!	success(inout stm : Coinbase) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state);
+#ifdef VERBOSE_STATE_MACHINE
+    std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed" << std::endl;
+#endif
+    stm._coinbase_state._engage_state._subscribed_state._junction1(stm);
+  }

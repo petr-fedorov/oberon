@@ -7,14 +7,15 @@ class Handshake_SSL_State
 #endif
 stm.ws_->next_layer().async_handshake(
     boost::asio::ssl::stream_base::client,
-    [&stm](const boost::system::error_code &ec) {
-      if (ec) {
-        stm.ec_ = ec;
-        stm.failure();
-      } else {
-        stm.success();
-      }
-    });
+    boost::asio::bind_executor(*stm.rtc_,
+                               [&stm](const boost::system::error_code &ec) {
+                                 if (ec) {
+                                   stm.ec_ = ec;
+                                   stm.failure();
+                                 } else {
+                                   stm.success();
+                                 }
+                               }));
 !!!961030.cpp!!!	_upper(inout stm : Coinbase) : Coinbase::AnyState
   return &stm._coinbase_state._engage_state._initialize_state;
 !!!1027334.cpp!!!	success(inout stm : Coinbase) : void

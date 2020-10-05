@@ -9,17 +9,19 @@ class Resolve_State
 #endif
 stm.resolver_->async_resolve(
     stm.https_host_, stm.https_port_,
-    [&stm](const boost::system::error_code &ec,
-           boost::asio::ip::tcp::resolver::results_type results) {
-      if (ec) {
-        stm.ec_ = ec;
-        stm.error_message_ = ec.message();
-        stm.failure();
-      } else {
-        stm.results_ = results;
-        stm.success();
-      }
-    });
+    boost::asio::bind_executor(
+        *stm.rtc_,
+        [&stm](const boost::system::error_code &ec,
+               boost::asio::ip::tcp::resolver::results_type results) {
+          if (ec) {
+            stm.ec_ = ec;
+            stm.error_message_ = ec.message();
+            stm.failure();
+          } else {
+            stm.results_ = results;
+            stm.success();
+          }
+        }));
 !!!1028486.cpp!!!	success(inout stm : Coinbase) : void
   {
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);

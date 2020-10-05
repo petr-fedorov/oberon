@@ -13,13 +13,15 @@ class Snapshot_State
     std::cout << "DEBUG : execute activity of transition queue_message" << std::endl;
 #endif
 stm.messages_.push_back(std::move(stm.tree_));
-std::cout << "Seq no: " << stm.last_seq_number_ << " Queue size: " << stm.messages_.size() << "\n";
-stm.ws_->async_read(stm.buffer_, [&stm](const boost::system::error_code &ec,
-                                std::size_t bytes_transferred) {
-  boost::ignore_unused(bytes_transferred);
-  stm.dispatchJson(ec);
-});
-
+std::cout << "Seq no: " << stm.last_seq_number_
+          << " Queue size: " << stm.messages_.size() << "\n";
+stm.ws_->async_read(stm.buffer_,
+                    boost::asio::bind_executor(
+                        *stm.rtc_, [&stm](const boost::system::error_code &ec,
+                                          std::size_t bytes_transferred) {
+                          boost::ignore_unused(bytes_transferred);
+                          stm.dispatchJson(ec);
+                        }));
   }
 !!!964998.cpp!!!	_upper(inout stm : Coinbase) : Coinbase::AnyState
   return &stm._coinbase_state._engage_state._subscribed_state;

@@ -7,18 +7,20 @@ class Resolve_State
 #endif
 stm.resolver_->async_resolve(
     stm.host_, stm.port_,
-    [&stm](const boost::system::error_code &ec,
-           boost::asio::ip::tcp::resolver::results_type results) {
-      if (ec) {
-        stm.ec_ = ec;
-        stm.error_message_=ec.message();
-	std::cout << "Can't resolve!\n";
-        stm.failure();
-      } else {
-        stm.results_ = results;
-        stm.success();
-      }
-    });
+    boost::asio::bind_executor(
+        *stm.rtc_,
+        [&stm](const boost::system::error_code &ec,
+               boost::asio::ip::tcp::resolver::results_type results) {
+          if (ec) {
+            stm.ec_ = ec;
+            stm.error_message_ = ec.message();
+            std::cout << "Can't resolve!\n";
+            stm.failure();
+          } else {
+            stm.results_ = results;
+            stm.success();
+          }
+        }));
 !!!963078.cpp!!!	_upper(inout stm : Coinbase) : Coinbase::AnyState
   return &stm._coinbase_state._engage_state._initialize_state;
 !!!1027846.cpp!!!	success(inout stm : Coinbase) : void

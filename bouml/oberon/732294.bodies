@@ -7,20 +7,22 @@ class Connect_State
 #ifdef VERBOSE_STATE_MACHINE
   std::cout << "DEBUG : execute entry behavior of .Coinbase.Engage.Subscribed.Snapshot.Connect" << std::endl;
 #endif
-boost::asio::async_connect(stm.https_->next_layer(), stm.results_.begin(),
-                           stm.results_.end(),
-                           [&stm](const boost::system::error_code &ec,
-                                  decltype(stm.results_)::iterator iter) {
-                             if (ec) {
-                               stm.ec_ = ec;
-                               stm.error_message_ = ec.message();
-                               stm.failure();
-                             } else {
-                               std::cout << "IP: " << iter->endpoint().address().to_string() << " Port: " << iter->endpoint().port() << "\n"; 
-                               stm.https_address_ = iter->endpoint().address();
-                               stm.success();
-                             }
-                           });
+boost::asio::async_connect(
+    stm.https_->next_layer(), stm.results_.begin(), stm.results_.end(),
+    boost::asio::bind_executor(
+        *stm.rtc_, [&stm](const boost::system::error_code &ec,
+                          decltype(stm.results_)::iterator iter) {
+          if (ec) {
+            stm.ec_ = ec;
+            stm.error_message_ = ec.message();
+            stm.failure();
+          } else {
+            std::cout << "IP: " << iter->endpoint().address().to_string()
+                      << " Port: " << iter->endpoint().port() << "\n";
+            stm.https_address_ = iter->endpoint().address();
+            stm.success();
+          }
+        }));
 !!!1028614.cpp!!!	success(inout stm : Coinbase) : void
   {
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);

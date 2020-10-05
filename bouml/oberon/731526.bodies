@@ -6,18 +6,20 @@ class Connect_State
   std::cout << "DEBUG : execute entry behavior of .Coinbase.Engage.Initialize.Connect" << std::endl;
 #endif
 // Make the connection on the IP address we get from a lookup
-boost::asio::async_connect(stm.ws_->next_layer().next_layer(), stm.results_.begin(),
-                           stm.results_.end(),
-                           [&stm](const boost::system::error_code &ec,
-                                  decltype(stm.results_.begin()) iter) {
-                             if (ec) {
-                               stm.ec_ = ec;
-                               stm.failure();
-                             } else {
-                               stm.address_ = iter->endpoint().address();
-                               stm.success();
-                               }
-                           });
+boost::asio::async_connect(
+    stm.ws_->next_layer().next_layer(), stm.results_.begin(),
+    stm.results_.end(),
+    boost::asio::bind_executor(*stm.rtc_,
+                               [&stm](const boost::system::error_code &ec,
+                                      decltype(stm.results_.begin()) iter) {
+                                 if (ec) {
+                                   stm.ec_ = ec;
+                                   stm.failure();
+                                 } else {
+                                   stm.address_ = iter->endpoint().address();
+                                   stm.success();
+                                 }
+                               }));
 !!!962566.cpp!!!	_upper(inout stm : Coinbase) : Coinbase::AnyState
   return &stm._coinbase_state._engage_state._initialize_state;
 !!!1027718.cpp!!!	success(inout stm : Coinbase) : void

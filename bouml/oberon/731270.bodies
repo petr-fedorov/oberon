@@ -5,16 +5,18 @@ class Handshake_Websocket_State
 #ifdef VERBOSE_STATE_MACHINE
   std::cout << "DEBUG : execute entry behavior of .Coinbase.Engage.Initialize.Handshake Websocket" << std::endl;
 #endif
-stm.ws_->async_handshake(stm.host_, stm.target_,
-                        [&stm](const boost::system::error_code &ec) {
-                          if (ec) {
-                            stm.ec_ = ec;
-                            stm.error_message_ = ec.message();
-                            stm.failure();
-                          } else {
-                            stm.success();
-                          }
-                        });
+stm.ws_->async_handshake(
+    stm.host_, stm.target_,
+    boost::asio::bind_executor(*stm.rtc_,
+                               [&stm](const boost::system::error_code &ec) {
+                                 if (ec) {
+                                   stm.ec_ = ec;
+                                   stm.error_message_ = ec.message();
+                                   stm.failure();
+                                 } else {
+                                   stm.success();
+                                 }
+                               }));
 !!!961542.cpp!!!	_upper(inout stm : Coinbase) : Coinbase::AnyState
   return &stm._coinbase_state._engage_state._initialize_state;
 !!!1027462.cpp!!!	success(inout stm : Coinbase) : void

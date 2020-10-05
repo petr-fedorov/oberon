@@ -2,6 +2,7 @@ class Coinbase
 !!!915590.cpp!!!	Coinbase()
   _current_state = 0;
 !!!917382.cpp!!!	Coinbase(inout ioc : io_context, in host : string, in port : string, in target : string, in https_host : string, in https_port : string, in https_target : string, in product : string, in channel : string, in file_name : string)
+rtc_ = std::make_unique<boost::asio::io_context::strand>(*ioc);
 https_ctx_ = std::make_unique<boost::asio::ssl::context>(
     boost::asio::ssl::context::sslv23_client);
 load_root_certificates(*https_ctx_);

@@ -7,16 +7,18 @@ class Handshake_SSL_State
 #ifdef VERBOSE_STATE_MACHINE
   std::cout << "DEBUG : execute entry behavior of .Coinbase.Engage.Subscribed.Snapshot.Handshake SSL" << std::endl;
 #endif
-stm.https_->async_handshake(boost::asio::ssl::stream_base::client,
-                            [&stm](const boost::system::error_code &ec) {
-                              if (ec) {
-                                stm.ec_ = ec;
-                                stm.error_message_ = ec.message();
-                                stm.failure();
-                              } else {
-                                stm.success();
-                              }
-                            });
+stm.https_->async_handshake(
+    boost::asio::ssl::stream_base::client,
+    boost::asio::bind_executor(*stm.rtc_,
+                               [&stm](const boost::system::error_code &ec) {
+                                 if (ec) {
+                                   stm.ec_ = ec;
+                                   stm.error_message_ = ec.message();
+                                   stm.failure();
+                                 } else {
+                                   stm.success();
+                                 }
+                               }));
 !!!1028742.cpp!!!	success(inout stm : Coinbase) : void
   {
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
