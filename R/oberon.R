@@ -19,6 +19,13 @@ reconstruct <- function(exchange=c("Coinbase", "Bitstamp", "Bitfinex"), source1,
 }
 
 #' @export
+
+obtain <- function(exchange=c("Coinbase", "Bitstamp", "Bitfinex"), product, file.name) {
+  exchange <- match.arg(exchange)
+  obtainCoinbase(product, file.name)
+}
+
+#' @export
 grid <- function(events, min.price, max.price, tick.size, start, end, sampling.period=c("unus","deci", "centi", "milli", "micro")) {
   output <- events2image(events, min.price, max.price, tick.size, start, end, sampling.period)
 }

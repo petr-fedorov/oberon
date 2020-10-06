@@ -14,7 +14,9 @@ tree.add_child("product_ids", stm.products_);
 tree.add_child("channels", stm.channels_);
 
 write_json(request, tree, false);
+#ifdef DEBUG
 std::cout << "Request: " << request.str() << "\n";
+#endif
 stm.ws_->async_write(boost::asio::buffer(request.str()),
                      boost::asio::bind_executor(
                          *stm.rtc_, [&stm](const boost::system::error_code &ec,

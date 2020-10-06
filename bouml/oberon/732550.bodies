@@ -8,7 +8,9 @@ class Query_snapshot_State
   std::cout << "DEBUG : execute entry behavior of .Coinbase.Engage.Subscribed.Snapshot.Query snapshot" << std::endl;
 #endif
 namespace http = boost::beast::http;
+#ifdef DEBUG
 std::cout << "HTTP GET " << stm.https_req_.target() << "\n";
+#endif
 http::async_write(
     *stm.https_, stm.https_req_,
     boost::asio::bind_executor(

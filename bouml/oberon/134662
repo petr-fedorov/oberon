@@ -1,6 +1,6 @@
 format 223
 "R package" // R package
-  revision 88
+  revision 90
   modified_by 6 "petr"
   // class settings
   
@@ -481,13 +481,13 @@ format 223
     state 218374 "Coinbase"
       stereotype "machine"
       statediagram 399494 "Coinbase"
-	statediagramsettings show_trans_definition yes
+	statediagramsettings show_trans_definition yes draw_all_relations yes
 	 end
 	size A4
       end
 
       pseudostate 274182 initial ""
-	transition 418822 "<transition>"
+	transition 485126 "<transition>"
 	  on state_ref 233222 // Engage
 	  external 
 	end
@@ -583,7 +583,9 @@ tree.add_child(\"product_ids\", stm.products_);
 tree.add_child(\"channels\", stm.channels_);
 
 write_json(request, tree, false);
+#ifdef DEBUG
 std::cout << \"Request: \" << request.str() << \"\\n\";
+#endif
 stm.ws_->async_write(boost::asio::buffer(request.str()),
                      boost::asio::bind_executor(
                          *stm.rtc_, [&stm](const boost::system::error_code &ec,
@@ -646,7 +648,9 @@ boost::asio::async_connect(
           if (ec) {
             stm.ec_ = ec;
             stm.error_message_ = ec.message();
+#ifdef DEBUG
             std::cout << \"Can't resolve!\\n\";
+#endif
             stm.failure();
           } else {
             stm.results_ = results;
@@ -707,7 +711,9 @@ stm.timer_->expires_from_now(seconds(5));
 stm.timer_->async_wait(boost::asio::bind_executor(
     *stm.rtc_, [&stm](const boost::system::error_code &ec) {
       if (ec != boost::asio::error::operation_aborted) {
+#ifdef DEBUG
         std::cout << \"Time out!\\n\";
+#endif
         stm.timeout();
       }
     }));
@@ -732,7 +738,7 @@ for (auto &message: stm.messages_)
 		uml_trigger "message"
 		uml_expr "save message"
 		cpp_trigger "message"
-		cpp_expr "#ifdef VERBOSE_STATE_MACHINE
+		cpp_expr "#ifdef DEBUG
 std::cout << \"Seq no=\" << stm.last_seq_number_ << \"\\n\";
 #endif
 boost::property_tree::write_json(*stm.f_, *stm.tree_, false);
@@ -772,8 +778,11 @@ SSL_CTX_set_keylog_callback(stm.https_ctx_->native_handle(),
 
 "
 	      cpp_on_exit "stm.https_->next_layer().close(stm.ec_);
+#ifdef DEBUG
 if(stm.ec_)
- std::cout << \"Https closing error: \" << stm.ec_.message() << \"\\n\";"
+ std::cout << \"Https closing error: \" << stm.ec_.message() << \"\\n\";
+#endif
+"
 	    state 233350 "Save snapshot"
 		uml_on_entry "remove obsolete msgs"
 		uml_on_exit "stop doActivity thread, if any"
@@ -909,8 +918,10 @@ stm.thread_.join();"
             stm.error_message_ = ec.message();
             stm.failure();
           } else {
+#ifdef DEBUG
             std::cout << \"IP: \" << iter->endpoint().address().to_string()
                       << \" Port: \" << iter->endpoint().port() << \"\\n\";
+#endif
             stm.https_address_ = iter->endpoint().address();
             stm.success();
           }
@@ -950,7 +961,9 @@ stm.thread_.join();"
 	    state 220166 "Query snapshot"
 		uml_on_entry "launch"
 		cpp_on_entry "namespace http = boost::beast::http;
+#ifdef DEBUG
 std::cout << \"HTTP GET \" << stm.https_req_.target() << \"\\n\";
+#endif
 http::async_write(
     *stm.https_, stm.https_req_,
     boost::asio::bind_executor(
@@ -989,7 +1002,7 @@ http::async_write(
 		  cpp_guard "!(stm.snapshot_seq_number_ >= stm.first_seq_number_ &&
  stm.snapshot_seq_number_ == stm.last_seq_number_)
 "
-		  cpp_expr "std::cout << \"Stale snapshot, re-quering ...\\n\";
+		  cpp_expr "
 "
 		external 
 	      end
@@ -1001,8 +1014,10 @@ http::async_write(
 		uml_guard "queue message"
 		cpp_trigger "message"
 		cpp_expr "stm.messages_.push_back(std::move(stm.tree_));
+#ifdef DEBUG
 std::cout << \"Seq no: \" << stm.last_seq_number_
           << \" Queue size: \" << stm.messages_.size() << \"\\n\";
+#endif
 stm.ws_->async_read(stm.buffer_,
                     boost::asio::bind_executor(
                         *stm.rtc_, [&stm](const boost::system::error_code &ec,
@@ -1089,12 +1104,12 @@ stm.ws_->async_read(stm.buffer_,
                                    read_json(is, stm.snapshot_tree_);
                                    stm.snapshot_seq_number_ =
                                        stm.snapshot_tree_.get<long>(\"sequence\");
-                                   // stm.snapshot_seq_number_ =
-                                   // stm.first_seq_number_;
+#ifdef DEBUG
                                    std::cout << \"Snapshot sequence number: \"
                                              << stm.snapshot_seq_number_
                                              << \"\\n\";
-                                   // stm.https_buffer_.consume(stm.https_buffer_.size());
+#endif
+                                   stm.https_buffer_.consume(stm.https_buffer_.size());
                                    stm.success();
                                  }
                                }));
@@ -1122,7 +1137,9 @@ stm.ws_->async_read(stm.buffer_,
           stm.timeout();
       }));
 }
+#ifdef DEBUG
 std::cout << stm.tree_->get<std::string>(\"time\") << \" Timer restarted\\n\";
+#endif
 stm.ws_->async_read(stm.buffer_,
                     boost::asio::bind_executor(
                         *stm.rtc_, [&stm](const boost::system::error_code &ec,
@@ -1199,7 +1216,7 @@ stm.ws_->async_read(stm.buffer_,
 	end
 
 	pseudostate 287878 initial ""
-	  transition 426374 "<transition>"
+	  transition 485382 "<transition>"
 	    on state_ref 219526 // Initialize
 	    external 
 	  end
@@ -1211,6 +1228,7 @@ stm.ws_->async_read(stm.buffer_,
 	    cpp_trigger "stop"
 	  external 
 	end
+
       end
 
       pseudostate 314502 final ""
@@ -4034,6 +4052,7 @@ ${inlines}
 	    key "STM generated" value ""
 	    comment " perform the 'exit behavior'"
 	  end
+
 	end
 
 	operation 915334 "~Coinbase_State"
@@ -4960,6 +4979,7 @@ ${inlines}
 	    classrelation_ref 877446 // <dependency>
 	  b parent class_ref 786822 // Read_Snapshot_State
       end
+
     end
 
     class 739974 "HttpResponseWithStringBody"
@@ -5689,14 +5709,16 @@ ${inlines}
     //deployment diagram settings
     deploymentdiagramsettings
      end
-    artifact 187526 "main.cpp"
-      stereotype "text"
+    artifact 187526 "main"
+      stereotype "source"
       cpp_src "#include \"rcoinbase.h\"
 #include \"rbitstamp.h\"
 #include \"rbitfinex.h\"
 #include \"rcommon.h\"
+#include \"obtain.h\"
 #include <Rcpp.h>
 #include <iostream>
+#include <fstream>
 #include <chrono>
 #include <ratio>
 
@@ -5740,7 +5762,34 @@ List events2image(DataFrame events, NumericVector min_price, NumericVector max_p
   // if(sampling_period[0] == \"micro\") return r.run<std::micro>(events);
   return r.run<std::ratio<1,1>>(events);
 }
+
+// [[Rcpp::export]]
+void obtainCoinbase(CharacterVector product, CharacterVector file_name) {
+  namespace ssl = boost::asio::ssl;
+  namespace websocket = boost::beast::websocket;
+  std::string host{\"ws-feed.pro.coinbase.com\"};
+  std::string port{\"443\"};
+  std::string target{\"/\"};
+  std::string https_host{\"api.pro.coinbase.com\"};
+  std::string https_port{\"443\"};
+  std::string https_target{\"/products\"};
+  std::string channel{\"full\"};
+  std::cout.rdbuf(Rcpp::Rcout.rdbuf());
+  // The io_context is required for all I/O
+  std::shared_ptr<boost::asio::io_context> ioc = std::make_shared<boost::asio::io_context>();
+
+  std::shared_ptr<std::ofstream> f{std::make_shared<std::ofstream>(file_name[0])};
+  oberon::R::Coinbase coinbase (ioc, host, port, target, https_host, https_port, https_target,std::string {product[0]},channel, std::static_pointer_cast<std::ostream>(f));
+  coinbase.create();
+  // Run the I/O service. The call will return when
+  // the socket is closed.
+  ioc->run();
+  f->close();
+
+}
 "
+      associated_elems
+      end
     end
 
     artifact 207110 "rcoinbase"
@@ -5867,7 +5916,7 @@ ${includes}
 ${namespace_start}
 ${members}
 ${namespace_end}
-
+/*
 int main(int argc, char **argv) {
   namespace ssl = boost::asio::ssl;
   namespace websocket = boost::beast::websocket;
@@ -5899,6 +5948,7 @@ int main(int argc, char **argv) {
 
   return EXIT_SUCCESS;
 }
+*/
 "
       associated_elems
 	class_ref 698246 // SslStream

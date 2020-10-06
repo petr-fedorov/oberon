@@ -21,7 +21,7 @@ class Read_Snapshot_State
 #ifdef VERBOSE_STATE_MACHINE
       std::cout << "DEBUG : execute activity of transition stale" << std::endl;
 #endif
-std::cout << "Stale snapshot, re-quering ...\n";
+
       stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._snapshot_state._query_snapshot_state);
 #ifdef VERBOSE_STATE_MACHINE
       std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Snapshot.Query snapshot" << std::endl;
@@ -56,12 +56,12 @@ boost::beast::http::async_read(
                                    read_json(is, stm.snapshot_tree_);
                                    stm.snapshot_seq_number_ =
                                        stm.snapshot_tree_.get<long>("sequence");
-                                   // stm.snapshot_seq_number_ =
-                                   // stm.first_seq_number_;
+#ifdef DEBUG
                                    std::cout << "Snapshot sequence number: "
                                              << stm.snapshot_seq_number_
                                              << "\n";
-                                   // stm.https_buffer_.consume(stm.https_buffer_.size());
+#endif
+                                   stm.https_buffer_.consume(stm.https_buffer_.size());
                                    stm.success();
                                  }
                                }));

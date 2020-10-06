@@ -17,8 +17,10 @@ boost::asio::async_connect(
             stm.error_message_ = ec.message();
             stm.failure();
           } else {
+#ifdef DEBUG
             std::cout << "IP: " << iter->endpoint().address().to_string()
                       << " Port: " << iter->endpoint().port() << "\n";
+#endif
             stm.https_address_ = iter->endpoint().address();
             stm.success();
           }

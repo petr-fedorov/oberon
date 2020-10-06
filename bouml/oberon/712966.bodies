@@ -56,8 +56,10 @@ return (_current_state != 0);
 using namespace boost::property_tree;
 if (ec) {
   ec_ = ec;
-  error_message_ = ec.message();
-  std::cout << "dispatchJson: " << error_message_ << "\n";
+  error_message_ = "dispatchJson(): " + ec.message();
+#ifdef DEBUG
+  std::cout << error_message_ << "\n";
+#endif
   failure();
 }
 else {
@@ -76,8 +78,10 @@ else {
       if (seq_number == last_seq_number_ || !last_seq_number_)
         heartbeat();
       else {
+#ifdef DEBUG
         std::cout << "Heartbeat: Expected " << last_seq_number_ << " but got "
                   << seq_number << "\n";
+#endif
         failure();
       }
     } else {
@@ -85,21 +89,27 @@ else {
       if (!first_seq_number_) {
         first_seq_number_ = seq_number;
         last_seq_number_ = seq_number - 1;
+#ifdef DEBUG
         std::cout << "First sequence number : " << first_seq_number_ << "\n";
+#endif
       }
 
       if (seq_number == last_seq_number_ + 1) {
         last_seq_number_ = seq_number;
         message();
       } else {
+#ifdef DEBUG
         std::cout << "Message : Expected " << last_seq_number_ + 1
                   << " but got " << seq_number << "\n";
+#endif
         failure();
       }
     }
   } catch (const boost::property_tree::ptree_error &e) {
     if (msg_type == "error") {
+#ifdef DEBUG
       std::cout << tree_->get<std::string>("message") << std::endl;
+#endif
       failure();
     } else if (msg_type == "subscriptions")
       success();

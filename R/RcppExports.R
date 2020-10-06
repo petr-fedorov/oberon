@@ -17,3 +17,7 @@ events2image <- function(events, min_price, max_price, tick_size, start, end, sa
     .Call(`_oberon_events2image`, events, min_price, max_price, tick_size, start, end, sampling_period)
 }
 
+obtainCoinbase <- function(product, file_name) {
+    invisible(.Call(`_oberon_obtainCoinbase`, product, file_name))
+}
+

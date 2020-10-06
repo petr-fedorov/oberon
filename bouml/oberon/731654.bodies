@@ -14,7 +14,9 @@ stm.resolver_->async_resolve(
           if (ec) {
             stm.ec_ = ec;
             stm.error_message_ = ec.message();
+#ifdef DEBUG
             std::cout << "Can't resolve!\n";
+#endif
             stm.failure();
           } else {
             stm.results_ = results;
