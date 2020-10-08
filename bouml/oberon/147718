@@ -1,6 +1,6 @@
 format 223
 "Standalone application" // Standalone application
-  revision 40
+  revision 43
   modified_by 6 "petr"
   // class settings
   
@@ -30,10 +30,10 @@ format 223
   activitydiagramsettings
    end
   
-  cpp_h_dir "standalone"
-  cpp_src_dir "standalone"
+  cpp_h_dir "cpp"
+  cpp_src_dir "cpp"
   cpp_namespace "oberon::standalone"
-  usecaseview 134534 "Activity diagrams"
+  usecaseview 134534 "Diagrams"
     
     usecasediagramsettings end
     
@@ -64,8 +64,8 @@ format 223
       parameter 148998 "exchange_name" explicit_type "string"
 	 multiplicity "1" unordered 
 	in
-	flow 243846 "S.1.4"
-	  on pin_ref 237830 // exchange_name
+	flow 408070 "S.1.2"
+	  on pin_ref 349318 // exchange_name
 	end
       end
 
@@ -73,45 +73,45 @@ format 223
 	 multiplicity "1" unordered 
 	in
 	comment "S.1 Standalone Application"
-	flow 243718 "S.1.3"
-	  on pin_ref 237958 // pair_name
+	flow 408198 "S.1.3"
+	  on pin_ref 349446 // pair_name
 	end
       end
 
       parameter 149254 "destination" explicit_type "string"
 	 multiplicity "1" unordered 
 	in
-	flow 243590 "S.1.10"
-	  on pin_ref 238470 // destination
+	flow 408326 "S.1.4"
+	  on pin_ref 349958 // destination
 	end
       end
 
-      activityaction 192390 "S.5 Receive messages"
-	call_behavior_action
-	no_behavior
-	pin 213126 "websocket" explicit_type "Websocket"
+      activityaction 192390 "Receive messages"
+	call_operation_action
+	synchronous operation_ref 1058694 // run
+	pin 350086 "target" type class_ref 793350 // Receiver
 	   multiplicity "1" unordered 
 	  in
 	end
 
-	pin 213254 "message" type class_ref 174214 // ptree
-	   multiplicity "1" unordered 
+	pin 350470 "ptree" type class_ref 174214 // ptree
+	   multiplicity "*" fifo 
 	  out stream
-	  flow 314502 "<flow>"
-	    on activityobject_ref 180870 // activity object buffer
+	  flow 407302 "S.1.12"
+	    on pin_ref 348678 // ptree
 	  end
 	end
       end
 
       activitynode 189958 initial_node ""
 	flow 244230 "S.1.1"
-	  on activityaction_ref 213638 // activity action S.7 Initialize
+	  on activityaction_ref 213638 // activity action Create active objects
 	end
       end
 
       activityaction 193542 "Stop request"
 	accept_event_action
-	flow 219782 "S.1.13"
+	flow 219782 "S.1.14"
 	  on activitynode_ref 190086 // activity_final
 	end
       end
@@ -120,118 +120,117 @@ format 223
       end
 
       interruptibleactivityregion 141062 ""
-	activityaction 213638 "S.7 Initialize"
+	activityaction 213638 "Create active objects"
 	  call_behavior_action
-	  no_behavior
-	  pin 237830 "exchange_name" explicit_type "string"
-	     multiplicity "1" unordered 
-	    in
-	  end
-
-	  pin 237958 "pair_name" explicit_type "string"
-	     multiplicity "1" unordered 
-	    in
-	  end
-
-	  pin 238086 "delay" explicit_type "double"
-	     multiplicity "1" unordered 
-	    in
-	  end
-
-	  pin 238214 "reconstructor" type class_ref 202630 // Reconstructor
-	     multiplicity "1" unordered 
-	    out
-	    flow 329862 "<flow>"
-	      on activityobject_ref 187398 // activity object reconstructor
-	    end
-	  end
-
-	  pin 238342 "websocket" explicit_type ""
-	     multiplicity "1" unordered 
-	    out
-	    flow 243974 "S.1.5"
-	      on pin_ref 213126 // websocket
-	    end
-	  end
-
-	  pin 238470 "destination" explicit_type "string"
-	     multiplicity "1" unordered 
-	    in
-	  end
-
+	  synchronous activity_ref 168710 // S.2 Initialize
 	  flow 272646 "S.1.6"
 	    on activitynode_ref 229382 // fork
+	  end
+
+	  pin 349318 "exchange_name" explicit_type "string"
+	     multiplicity "1" unordered 
+	    in
+	  end
+
+	  pin 349446 "pair_name" explicit_type "string"
+	     multiplicity "1" unordered 
+	    in
+	  end
+
+	  pin 349702 "reconstructor" type class_ref 202630 // Reconstructor
+	     multiplicity "1" unordered 
+	    out
+	    flow 407686 "S.1.7"
+	      on pin_ref 349062 // target
+	    end
+	  end
+
+	  pin 349830 "receiver" explicit_type ""
+	     multiplicity "1" unordered 
+	    out
+	    flow 407558 "S.1.5"
+	      on pin_ref 350086 // target
+	    end
+	  end
+
+	  pin 349958 "destination" explicit_type ""
+	     multiplicity "1" unordered 
+	    in
+	  end
+
+	  pin 350854 "store" type class_ref 231302 // Store
+	     multiplicity "1" unordered 
+	    out
+	    flow 407942 "S.1.8"
+	      on pin_ref 350598 // target
+	    end
 	  end
 	end
 
 	activitynode 229382 fork ""
-	  flow 272902 "S.1.7"
-	    on activityaction_ref 192390 // activity action S.5 Receive messages
+	  flow 272902 "S.1.9"
+	    on activityaction_ref 192390 // activity action Receive messages
 	  end
 
-	  flow 315142 "S.1.8"
-	    on activityaction_ref 247302 // activity action R.1 Reconstruct Order Book
+	  flow 315142 "S.1.11"
+	    on activityaction_ref 247302 // activity action Reconstruct Order Book
 	  end
-	end
 
-	activityobject 180870 "buffer"
-	   type class_ref 174214 // ptree
-	   multiplicity "*" fifo 
-	  flow 314886 "<flow>"
-	    on pin_ref 298118 // 
+	  flow 407814 "S.1.10"
+	    on activityaction_ref 288774 // activity action Store events
 	  end
 	end
 
-	activityaction 247302 "R.1 Reconstruct Order Book"
-	  call_operation_action
-	  operation_ref 188550 // process
-	  pin 297990 "target" type class_ref 202630 // Reconstructor
-	     multiplicity "1" unordered 
-	    in
+	activityaction 247302 "Reconstruct Order Book"
+	  call_behavior_action
+	  synchronous activity_ref 175238 // R.1 Reconstruct Order Book
+	  pin 348678 "ptree" type class_ref 174214 // ptree
+	     multiplicity "*" lifo 
+	    in stream
 	  end
 
-	  pin 298118 "" type class_ref 174214 // ptree
-	     multiplicity "1" unordered 
-	    in
-	  end
-
-	  pin 298246 "" type class_ref 472838 // time_order_error
+	  pin 348806 "time_order_error" type class_ref 472838 // time_order_error
 	     multiplicity "1" unordered is_control
 	    out exception
-	    flow 314630 "<flow>"
+	    flow 409094 "<flow>"
 	      on activitynode_ref 190086 // activity_final
 	    end
 	  end
 
-	  flow 314758 "<flow>"
-	    on activityaction_ref 247302 // activity action R.1 Reconstruct Order Book
+	  pin 348934 "logic_error" explicit_type ""
+	    unordered is_control
+	    out exception
+	    flow 408966 "<flow>"
+	      on activitynode_ref 190086 // activity_final
+	    end
 	  end
 
-	  pin 319110 "logic_error" explicit_type ""
-	     multiplicity "1" unordered is_control
-	    out exception
-	    flow 374278 "<flow>"
-	      on activitynode_ref 190086 // activity_final
+	  pin 349062 "target" type class_ref 486278 // ReconstructorImplementation
+	     multiplicity "1" unordered 
+	    in
+	  end
+
+	  pin 349190 "events" explicit_type ""
+	     multiplicity "*" ordered 
+	    out stream
+	    flow 407430 "S.1.13"
+	      on pin_ref 350726 // events
 	    end
 	  end
 	end
 
-	activityobject 187398 "reconstructor"
-	  stereotype "datastore"
-	   explicit_type ""
-	   multiplicity "1" unordered 
-	  flow 329990 "<flow>"
-	    on pin_ref 297990 // target
+	activityaction 288774 "Store events"
+	  call_behavior_action
+	  synchronous activity_ref 201734 // S.3 Store
+	  pin 350598 "target" type class_ref 231302 // Store
+	     multiplicity "1" unordered 
+	    in
 	  end
-	end
-      end
 
-      parameter 158086 "delay" explicit_type "double"
-	 multiplicity "1" unordered 
-	in
-	comment "S.1 Standalone Application "
-	flow 243462 "S.1.9"
-	  on pin_ref 238086 // delay
+	  pin 350726 "events" type class_ref 230406 // Event
+	     multiplicity "*" fifo 
+	    in stream
+	  end
 	end
       end
 
@@ -242,8 +241,8 @@ format 223
       end
     end
 
-    activity 168710 "S.7 Initialize"
-      activitydiagram 221830 "S.7 Initialize"
+    activity 168710 "S.2 Initialize"
+      activitydiagram 221830 "S.2 Initialize"
 	activitydiagramsettings
 	 end
 	size A4
@@ -265,20 +264,12 @@ format 223
 	end
       end
 
-      parameter 164998 "delay" explicit_type "double"
-	 multiplicity "1" unordered 
-	in
-	flow 244742 "S.7.5"
-	  on pin_ref 239238 // delay
-	end
-      end
-
       parameter 165126 "reconstructor" type class_ref 202630 // Reconstructor
 	 multiplicity "1" unordered 
 	out
       end
 
-      parameter 165254 "websocket" explicit_type ""
+      parameter 165254 "receiver" explicit_type ""
 	 multiplicity "1" unordered 
 	out
       end
@@ -378,11 +369,6 @@ format 223
 	  in
 	end
 
-	pin 239238 "delay" explicit_type "double"
-	   multiplicity "1" unordered 
-	  in
-	end
-
 	flow 251782 "S.7.15"
 	  on activityaction_ref 213510 // activity action S.7 Subscribe
 	end
@@ -401,11 +387,11 @@ format 223
 	  in
 	end
 
-	pin 237702 "websocket" explicit_type "Websocket"
+	pin 237702 "receiver" explicit_type "Websocket"
 	   multiplicity "1" unordered 
 	  out
 	  flow 243206 "S.7.12"
-	    on parameter_ref 165254 // websocket
+	    on parameter_ref 165254 // receiver
 	  end
 	end
       end
@@ -416,191 +402,673 @@ format 223
 	end
       end
     end
+
+    activity 201734 "S.3 Store"
+      parameter 225926 "store" type class_ref 231302 // Store
+	 multiplicity "1" unordered 
+	in
+      end
+
+      parameter 226054 "events" type class_ref 230406 // Event
+	 multiplicity "*" fifo 
+	in stream
+      end
+    end
+
+    activity 175238 "R.1 Reconstruct Order Book"
+      specification operation_ref 188550 // process
+      activitydiagram 274822 "R.1 Reconstruct Order Book"
+	activitydiagramsettings
+	 end
+	size A4
+      end
+
+      parameter 178694 "ptree" type class_ref 174214 // ptree
+	 multiplicity "1" unordered 
+	in stream
+	flow 290310 "<flow>"
+	  on pin_ref 282118 // 
+	end
+      end
+
+      parameter 178822 "time_order_error" type class_ref 472838 // time_order_error
+	 multiplicity "1" unordered is_control
+	out exception
+      end
+
+      parameter 198918 "logic_error" explicit_type ""
+	unordered 
+	out exception
+      end
+
+      activityaction 226950 "R.2 Extract"
+	call_operation_action
+	operation_ref 576006 // extract
+	pin 281862 "target" type class_ref 486278 // ReconstructorImplementation
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 281990 "message" type class_ref 245766 // Message
+	   multiplicity "1..*" fifo is_control
+	  return
+	  flow 290054 "<flow>"
+	    on activitynode_ref 236166 // decision
+	  end
+	end
+
+	pin 282118 "" type class_ref 174214 // ptree
+	   multiplicity "1" unordered 
+	  in
+	end
+      end
+
+      parameter 185350 "target" type class_ref 486278 // ReconstructorImplementation
+	 multiplicity "1" unordered 
+	in
+	flow 281734 "<flow>"
+	  on activityobject_ref 154502 // activity object this
+	end
+      end
+
+      activitynode 236166 decision ""
+	flow 280582 "<flow>"
+	  on parameter_ref 178822 // time_order_error
+	    uml_guard "wrong time order"
+	end
+
+	flow 344198 "<flow>"
+	  on activitynode_ref 276742 // decision
+	    uml_guard "correct time order"
+	end
+      end
+
+      activityobject 154502 "this"
+	stereotype "datastore"
+	 type class_ref 486278 // ReconstructorImplementation
+	unordered 
+	flow 290182 "<flow>"
+	  on pin_ref 281862 // target
+	end
+
+	flow 305414 "<flow>"
+	  on pin_ref 289414 // target
+	      uml_transformation "To be defined"
+	end
+
+	flow 314374 "<flow>"
+	  on pin_ref 297606 // target
+	end
+
+	flow 315398 "<flow>"
+	  on pin_ref 298374 // target
+	end
+
+	flow 344326 "<flow>"
+	  on activitynode_ref 276742 // decision
+	      uml_transformation "extract.only"
+	end
+      end
+
+      activityaction 240006 "To be defined"
+	call_operation_action
+	synchronous operation_ref 590214 // handle
+	pin 289414 "target" type class_ref 441222 // MessageHandler
+	  unordered 
+	  in
+	end
+
+	pin 289542 "output" type class_ref 245766 // Message
+	   multiplicity "*" unordered 
+	  return
+	end
+
+	pin 289670 "messages" type class_ref 245766 // Message
+	  unordered is_control
+	  in
+	end
+      end
+
+      activityaction 247174 "R.3 Cleanse"
+	call_operation_action
+	synchronous operation_ref 641798 // cleanse
+	pin 297606 "target" type class_ref 486278 // ReconstructorImplementation
+	  unordered 
+	  in
+	end
+
+	pin 297734 "output" type class_ref 245766 // Message
+	   multiplicity "*" fifo is_control
+	  return
+	  flow 344710 "<flow>"
+	    on activitynode_ref 276870 // merge
+	  end
+	end
+
+	pin 297862 "message" type class_ref 245766 // Message
+	   multiplicity "1..*" unordered is_control
+	  in
+	end
+
+	pin 318982 "logic_error" explicit_type ""
+	  unordered 
+	  out exception
+	  flow 374150 "<flow>"
+	    on parameter_ref 198918 // logic_error
+	  end
+	end
+      end
+
+      activityaction 247430 "R.4 Transmit"
+	call_operation_action
+	synchronous operation_ref 641926 // transmit
+	pin 298374 "target" type class_ref 486278 // ReconstructorImplementation
+	  unordered 
+	  in
+	end
+
+	pin 298502 "messages" type class_ref 245766 // Message
+	   multiplicity "*" unordered is_control
+	  in
+	end
+
+	pin 333318 "events" explicit_type ""
+	   multiplicity "*" unordered 
+	  out
+	  flow 390278 "<flow>"
+	    on parameter_ref 212614 // events
+	  end
+	end
+
+	flow 408582 "<flow>"
+	  on activitynode_ref 310534 // merge
+	end
+      end
+
+      activitynode 276742 decision ""
+	flow 344454 "<flow>"
+	  on pin_ref 297862 // message
+	    uml_guard "not extract.only"
+	end
+
+	flow 344582 "<flow>"
+	  on activitynode_ref 276870 // merge
+	    uml_guard "extract.only"
+	end
+      end
+
+      activitynode 276870 merge ""
+	flow 344838 "<flow>"
+	  on pin_ref 298502 // messages
+	end
+      end
+
+      parameter 212614 "events" explicit_type ""
+	 multiplicity "*" ordered 
+	out stream
+      end
+
+      activitynode 310534 merge ""
+	flow 408838 "<flow>"
+	  on activityaction_ref 226950 // activity action R.2 Extract
+	end
+      end
+
+      activitynode 310662 initial_node ""
+	flow 408710 "<flow>"
+	  on activitynode_ref 310534 // merge
+	end
+      end
+    end
+
+    activity 181894 "R.2 Extract"
+      specification operation_ref 576006 // extract
+    end
+
+    activity 181766 "R.3 Cleanse"
+      specification operation_ref 641798 // cleanse
+      activitydiagram 300934 "R.3 Cleanse"
+	activitydiagramsettings
+	 end
+	size A4
+      end
+
+      parameter 191878 "message" type class_ref 245766 // Message
+	 multiplicity "1" unordered is_control
+	in
+	flow 374406 "<flow>"
+	  on activitynode_ref 270086 // decision
+	end
+      end
+
+      parameter 192006 "target" type class_ref 486278 // ReconstructorImplementation
+	 multiplicity "1" unordered 
+	in
+	flow 313350 "<flow>"
+	  on activityobject_ref 180614 // activity object this
+	end
+      end
+
+      parameter 192134 "output" type class_ref 245766 // Message
+	 multiplicity "*" fifo is_control
+	out
+      end
+
+      activityaction 246662 "Deduplicate"
+	call_operation_action
+	operation_ref 590214 // handle
+	pin 305414 "target" type class_ref 441222 // MessageHandler
+	  unordered 
+	  in
+	end
+
+	pin 305542 "output" type class_ref 245766 // Message
+	   multiplicity "*" unordered is_control
+	  return
+	  flow 337542 "<flow>"
+	    on activitynode_ref 270214 // merge
+	  end
+	end
+
+	pin 305670 "messages" type class_ref 245766 // Message
+	   multiplicity "*" unordered is_control
+	  in
+	end
+      end
+
+      activityaction 246918 "Re-classify"
+	call_operation_action
+	operation_ref 590214 // handle
+	pin 296966 "target" type class_ref 441222 // MessageHandler
+	  unordered 
+	  in
+	end
+
+	pin 297094 "output" type class_ref 245766 // Message
+	   multiplicity "*" unordered 
+	  return
+	  flow 352134 "<flow>"
+	    on activitynode_ref 283526 // merge
+	  end
+	end
+
+	pin 297222 "messages" type class_ref 245766 // Message
+	   multiplicity "*" unordered is_control
+	  in
+	end
+      end
+
+      activityobject 180614 "this"
+	stereotype "datastore"
+	 type class_ref 486278 // ReconstructorImplementation
+	unordered 
+	flow 337030 "<flow>"
+	  on activityobject_ref 193926 // activity object deduplicator
+	      uml_transformation "Deduplicator"
+	end
+
+	flow 351366 "<flow>"
+	  on activityobject_ref 200454 // activity object classifier
+	      uml_transformation "Classifier"
+	end
+      end
+
+      activitynode 270086 decision ""
+	flow 336774 "<flow>"
+	  on pin_ref 305670 // messages
+	    uml_guard "else"
+	end
+
+	flow 337414 "<flow>"
+	  on activitynode_ref 270214 // merge
+	    uml_guard "deduplicator is null"
+	end
+      end
+
+      activityobject 193926 "deduplicator"
+	stereotype "datastore"
+	 explicit_type ""
+	unordered 
+	flow 337158 "<flow>"
+	  on activitynode_ref 270086 // decision
+	end
+
+	flow 337286 "<flow>"
+	  on pin_ref 305414 // target
+	end
+      end
+
+      activitynode 270214 merge ""
+	flow 374534 "<flow>"
+	  on activitynode_ref 283398 // decision
+	end
+      end
+
+      activitynode 283398 decision ""
+	flow 351878 "<flow>"
+	  on pin_ref 297222 // messages
+	end
+
+	flow 352006 "<flow>"
+	  on activitynode_ref 283526 // merge
+	    uml_guard "classifier is null"
+	end
+      end
+
+      activityobject 200454 "classifier"
+	stereotype "datastore"
+	 explicit_type ""
+	unordered 
+	flow 351494 "<flow>"
+	  on activitynode_ref 283398 // decision
+	end
+
+	flow 351622 "<flow>"
+	  on pin_ref 296966 // target
+	end
+      end
+
+      activitynode 283526 merge ""
+	flow 374662 "<flow>"
+	  on parameter_ref 192134 // output
+	end
+      end
+    end
+
+    activity 182022 "R.4 Transmit"
+      specification operation_ref 641926 // transmit
+      activitydiagram 301062 "R.4 Transmit"
+	activitydiagramsettings
+	 end
+	size A4
+      end
+
+      parameter 192262 "messages" type class_ref 245766 // Message
+	 multiplicity "*" fifo is_control
+	in
+	flow 352646 "<flow>"
+	  on pin_ref 312454 // messages
+	end
+      end
+
+      parameter 192390 "target" type class_ref 486278 // ReconstructorImplementation
+	 multiplicity "1" unordered 
+	in
+	flow 352518 "<flow>"
+	  on activityobject_ref 200582 // activity object this
+	end
+      end
+
+      activityaction 247046 "Transmit to store"
+	call_operation_action
+	synchronous operation_ref 225286 // transmit
+	pin 297350 "target" type class_ref 231302 // Store
+	  unordered 
+	  in
+	end
+
+	pin 297478 "event" type class_ref 230406 // Event
+	   multiplicity "0..1" unordered is_control
+	  in
+	end
+      end
+
+      activityaction 260486 "Generate event numbers"
+	call_operation_action
+	operation_ref 590214 // handle
+	pin 312198 "target" type class_ref 441222 // MessageHandler
+	  unordered 
+	  in
+	end
+
+	pin 312326 "output" type class_ref 245766 // Message
+	   multiplicity "*" fifo is_control
+	  return
+	  flow 360582 "<flow>"
+	    on pin_ref 297478 // event
+		uml_transformation "to event"
+	  end
+	end
+
+	pin 312454 "messages" type class_ref 245766 // Message
+	   multiplicity "*" unordered is_control
+	  in
+	end
+      end
+
+      activityobject 200582 "this"
+	stereotype "datastore"
+	 type class_ref 486278 // ReconstructorImplementation
+	 multiplicity "1" unordered 
+	flow 352902 "<flow>"
+	  on pin_ref 312198 // target
+	      uml_transformation "generator"
+	end
+
+	flow 353030 "<flow>"
+	  on pin_ref 297350 // target
+	      uml_transformation "store"
+	end
+      end
+    end
+
+    state 134662 "Order"
+      stereotype "machine"
+      statediagram 215302 "Order Implementation"
+	statediagramsettings show_trans_definition yes
+	 drawing_language c++ end
+	size A4
+      end
+
+      statediagram 254854 "Order Life Cycle Overview"
+	statediagramsettings show_trans_definition yes
+	 drawing_language uml end
+	size A4
+      end
+
+      pseudostate 134534 initial ""
+	transition 218758 "<transition>"
+	  on state_ref 170886 // Active
+	  external 
+	end
+      end
+
+      pseudostate 134662 final ""
+      end
+
+      pseudostate 176646 choice ""
+	transition 217350 "<transition>"
+	  on state_ref 134918 // Maker
+	    uml_guard "is maker"
+	    cpp_guard "stm.isMaker()"
+	  external 
+	end
+
+	transition 217478 "<transition>"
+	  on state_ref 134790 // Taker
+	    uml_guard "is taker"
+	    cpp_guard "!stm.isMaker()"
+	  external 
+	end
+      end
+
+      pseudostate 176774 choice ""
+	transition 217734 "<transition>"
+	  on pseudostate_ref 176646 // choice 
+	    uml_guard "remaining.size > 0"
+	    cpp_guard "stm.getRemainingSize() > 0"
+	  external 
+	end
+
+	transition 217862 "<transition>"
+	  on pseudostate_ref 134662 // final 
+	    uml_guard "remaining.size = 0"
+	    uml_expr "done filled"
+	    cpp_guard "stm.getRemainingSize() <= 0"
+	    cpp_expr "doneFilled();"
+	  external 
+	end
+      end
+
+      state 170886 "Active"
+	state 134918 "Maker"
+	    cpp_on_entry "enterMaker();"
+	  transition 219270 "<transition>"
+	    on pseudostate_ref 176646 // choice 
+	      uml_trigger "price advanced"
+	      cpp_trigger "priceAdvanced"
+	    external 
+	  end
+
+	  transition 267142 "<transition>"
+	    on state_ref 134918 // Maker
+	      uml_trigger "opened"
+	  end
+	end
+
+	state 134790 "Taker"
+	    cpp_on_entry "enterTaker();"
+	  transition 134918 "opened"
+	    on state_ref 134918 // Maker
+	      uml_trigger "opened"
+	      cpp_trigger "opened"
+	    external 
+	  end
+	end
+
+	transition 218374 "<transition>"
+	  on pseudostate_ref 176774 // choice 
+	    uml_trigger "filled"
+	    cpp_trigger "filled"
+	  external 
+	end
+
+	pseudostate 176902 junction ""
+	  transition 267014 "<transition>"
+	    on pseudostate_ref 176646 // choice 
+	      uml_trigger "received"
+	    external 
+	  end
+	end
+
+	transition 219142 "<transition>"
+	  on pseudostate_ref 134662 // final 
+	    uml_trigger "fully canceled"
+	    uml_expr "done canceled"
+	    cpp_trigger "fullyCanceled"
+	    cpp_expr "doneCanceled();"
+	  external 
+	end
+
+	pseudostate 241286 shallow_history ""
+	  transition 350598 "<transition>"
+	    on pseudostate_ref 176646 // choice 
+	    external 
+	  end
+	end
+
+	transition 350086 "<transition>"
+	  on pseudostate_ref 241286 // shallow_history 
+	    uml_trigger "price receded"
+	  external 
+	end
+
+	transition 350214 "<transition>"
+	  on pseudostate_ref 241286 // shallow_history 
+	    uml_trigger "volume incremented"
+	  external 
+	end
+
+	transition 350342 "<transition>"
+	  on pseudostate_ref 241286 // shallow_history 
+	    uml_trigger "partially canceled"
+	  external 
+	end
+      end
+    end
   end
 
-  classview 154246 "Standalone application"
-    
-    classdiagramsettings member_max_width 0 end
-    
-    classcompositediagramsettings end
-    
-    collaborationdiagramsettings end
-    
-    objectdiagramsettings end
-    
-    objectcompositediagramsettings end
-    
-    sequencediagramsettings end
-    
-    statediagramsettings
-     end
-    
-    
-    activitydiagramsettings
-     end
-    associated_deployment_view deploymentview_ref 160774 // Source files
-    classdiagram 208774 "Store"
-      classdiagramsettings member_max_width 0 end
-      size A4
-    end
+  package_ref 194822 // Receiver
 
-    class 229510 "File"
-      visibility package 
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      mysql_decl ""
-      
-      operation 232070 "transmit"
-	cpp_virtual public explicit_return_type "void"
-	nparams 1
-	  param in name "event" type class_ref 230406 // Event
-	multiplicity "1"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
+  package_ref 141190 // Reconstructor
 
-      classrelation 190470 // <generalisation>
-	relation 190342 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 190470 // <generalisation>
-	  b parent class_ref 231302 // Store
-      end
-    end
-
-    class 229638 "Database"
-      visibility package 
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      mysql_decl ""
-      
-      operation 231942 "transmit"
-	cpp_virtual public explicit_return_type "void"
-	nparams 1
-	  param in name "event" type class_ref 230406 // Event
-	multiplicity "1"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      classrelation 190342 // <generalisation>
-	relation 190214 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 190342 // <generalisation>
-	  b parent class_ref 231302 // Store
-      end
-    end
-
-    class 237830 "Process"
-      visibility package 
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      mysql_decl ""
-      
-      classrelation 197254 // <generalisation>
-	relation 197126 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 197254 // <generalisation>
-	  b parent class_ref 231302 // Store
-      end
-
-      operation 252038 "transmit"
-	cpp_virtual public explicit_return_type "void"
-	nparams 1
-	  param in name "event" type class_ref 230406 // Event
-	multiplicity "1"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-    end
-  end
+  package_ref 201606 // Store
 
   deploymentview 160774 "Source files"
     //deployment diagram settings
     deploymentdiagramsettings
      end
-    artifact 173702 "general"
+    artifact 173702 "main"
       stereotype "source"
-      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
-#define ${NAMESPACE}_${NAME}_H
+      cpp_src "#include <thread>
+#include \"root_certificates.h\"
+#include \"receiver_coinbase.h\"
+#include <boost/beast.hpp>
+#include <boost/asio/connect.hpp>
+#include <boost/asio/bind_executor.hpp>
+#include <boost/property_tree/json_parser.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+using boost::posix_time::seconds;
 
-${comment}
-${includes}
-${declarations}
-${namespace_start}
-${definition}
-${namespace_end}
-#endif
+
+int main(int argc, char **argv) {
+  namespace ssl = boost::asio::ssl;
+  namespace websocket = boost::beast::websocket;
+  // Check command line arguments.
+  if (argc != 8) {
+    std::cerr << \"Usage: obtain <host> <port> <target> <https_host> <https_port> <https_target> path\\n\"
+              << \"Example:\\n\"
+              << \"    obtain ws-feed.pro.coinbase.com 443 / api.pro.coinbase.com 80 / ./output.txt\\n\";
+    return EXIT_FAILURE;
+  }
+  auto const host = argv[1];
+  auto const port = argv[2];
+  auto const target = argv[3];
+  auto const https_host = argv[4];
+  auto const https_port = argv[5];
+  auto const https_target = argv[6];
+
+  // The io_context is required for all I/O
+  std::shared_ptr<boost::asio::io_context> ioc = std::make_shared<boost::asio::io_context>();
+  std::shared_ptr<std::ofstream> f {std::make_shared<std::ofstream>(argv[7])};
+  oberon::receiver::Coinbase coinbase {ioc, host, port, target, https_host, https_port, https_target, \"BTC-USD\", \"full\", f};
+  coinbase.create();
+  // Run the I/O service. The call will return when
+  // the socket is closed.
+  std::thread t {[&ioc]() { ioc->run(); }};
+  ioc->run();
+  t.join();
+  f->close();
+
+  return EXIT_SUCCESS;
+}
 "
-      cpp_src "${comment}
-${includes}
-${namespace_start}
-${members}
-${namespace_end}"
       associated_elems
       end
     end
 
-    artifact 174214 "standalone"
+    artifact 174214 "oberon"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 173702 // general
+	artifact_ref 173702 // main
+	artifact_ref 246406 // receiver_coinbase
+	artifact_ref 260102 // receiver_common
       end
       ncouples 10
-      key "genpro pro" value "/home/petr/repos/oberon/cpp/oberon.pro"
+      key "genpro pro" value "/tmp/oberon/cpp/oberon.pro"
       key "genpro path" value "/home/petr/repos/oberon/cpp"
-      key "genpro target" value "/home/petr/repos/oberon/cpp/oberon"
+      key "genpro target" value "/tmp/oberon/cpp/oberon"
       key "genpro tmplt" value "app"
       key "genpro config" value "debug warn_on qt"
-      key "genpro defines" value "WITHCPP WITHJAVA WITHPHP WITHPYTHON WITHIDL WITHMYSQL"
+      key "genpro defines" value "VERBOSE_STATE_MACHINE"
       key "genpro includepath" value ""
       key "genpro dependpath" value ""
       key "genpro objectsdir" value ""
-      key "genpro footer" value "QT += network  qt3support"
+      key "genpro footer" value "CONFIG += console c++11
+CONFIG -= app_bundle
+CONFIG += thread
+CONFIG -= qt
+LIBS +=-lboost_system -lssl -lcrypto"
     end
   end
 end

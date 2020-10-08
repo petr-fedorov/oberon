@@ -1,6 +1,6 @@
 format 223
 
-activitycanvas 128518 activity_ref 168710 // S.7 Initialize
+activitycanvas 128518 activity_ref 168710 // S.2 Initialize
   
   xyzwh 75 96 2007 665 449
   params
@@ -10,13 +10,10 @@ activitycanvas 128518 activity_ref 168710 // S.7 Initialize
     parametercanvas 128774 parameter_ref 164870 // pair_name
         xyzwh 24 391 2008 103 25
     end
-    parametercanvas 128902 parameter_ref 164998 // delay
-        xyzwh 389 532 2008 103 25
-    end
     parametercanvas 129030 parameter_ref 165126 // reconstructor
         xyzwh 688 424 2008 103 25
     end
-    parametercanvas 129158 parameter_ref 165254 // websocket
+    parametercanvas 129158 parameter_ref 165254 // receiver
         xyzwh 688 283 2008 103 25
     end
     parametercanvas 129286 parameter_ref 165382 // destination
@@ -68,9 +65,6 @@ activityactioncanvas 130054 activityaction_ref 213382 // activity action S.7 Cre
     pincanvas 134022 pin_ref 239110 // store
       xyzwh 389 418 2014 11 11 label_xy 403 407
     end
-    pincanvas 134150 pin_ref 239238 // delay
-      xyzwh 434 487 2014 11 11 label_xy 455 494
-    end
   end
 end
 activityactioncanvas 130182 activityaction_ref 213510 // activity action S.7 Subscribe
@@ -84,7 +78,7 @@ activityactioncanvas 130182 activityaction_ref 213510 // activity action S.7 Sub
     pincanvas 132742 pin_ref 237574 // exchange_name
       xyzwh 508 282 2014 11 11 label_xy 399 273
     end
-    pincanvas 132870 pin_ref 237702 // websocket
+    pincanvas 132870 pin_ref 237702 // receiver
       xyzwh 617 290 2014 11 11 label_xy 624 268
     end
   end
@@ -154,11 +148,6 @@ end
 flowcanvas 134662 flow_ref 244614 // S.7.11
   
   from ref 130694 z 2015 label "S.7.11" xyz 375 323 2015 to ref 134022
-   write_horizontally default
-end
-flowcanvas 134790 flow_ref 244742 // S.7.5
-  
-  from ref 128902 z 2015 label "S.7.5" xyz 425 508 2015 to ref 134150
    write_horizontally default
 end
 flowcanvas 134918 flow_ref 244870 // S.7.13

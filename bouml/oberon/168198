@@ -1,6 +1,6 @@
 format 223
 "asio" // boost::asio
-  revision 7
+  revision 8
   modified_by 6 "petr"
   // class settings
   
@@ -67,6 +67,19 @@ format 223
       explicit_switch_type ""
       mysql_decl ""
       
+      operation 1052166 "run"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
     end
 
     class 706310 "deadline_timer"

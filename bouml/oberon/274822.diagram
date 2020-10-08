@@ -5,7 +5,7 @@ activitycanvas 128006 activity_ref 175238 // R.1 Reconstruct Order Book
   xyzwh 21 44 2000 763 301
   params
     parametercanvas 128134 parameter_ref 178694 // ptree
-        xyzwh 45 332 2002 117 25
+        xyzwh 45 332 2002 117 25 label_xy 83 356
     end
     parametercanvas 128262 parameter_ref 178822 // time_order_error
         xyzwh 204 332 2002 117 25 label_xy 204 314
@@ -17,7 +17,7 @@ activitycanvas 128006 activity_ref 175238 // R.1 Reconstruct Order Book
         xyzwh 493 332 2002 117 25 label_xy 497 315
     end
     parametercanvas 150022 parameter_ref 212614 // events
-        xyzwh 661 332 2002 117 25
+        xyzwh 660 332 2002 117 25 label_xy 709 356
     end
   end
 end
@@ -27,7 +27,7 @@ activityactioncanvas 128646 activityaction_ref 226950 // activity action R.2 Ext
   xyzwh 61 190 2005 100 60
   pins
     pincanvas 139910 pin_ref 281862 // target
-      xyzwh 110 180 2007 11 11 label_xy 67 172
+      xyzwh 149 180 2007 11 11 label_xy 167 177
     end
     pincanvas 140038 pin_ref 281990 // message
       xyzwh 160 212 2007 11 11 label_xy 167 224
@@ -85,6 +85,12 @@ end
 activitynodecanvas 148486 activitynode_ref 276870 // merge
   xyz 582 290 2005
 end
+activitynodecanvas 150790 activitynode_ref 310534 // merge
+  xyz 76 105 2013
+end
+activitynodecanvas 151046 activitynode_ref 310662 // initial_node
+  xyz 30 117 2005
+end
 flowcanvas 130310 flow_ref 280582 // <flow>
   
   from ref 130054 z 2006 label "[wrong time order]" xyz 214 269 2006 to ref 128262
@@ -103,7 +109,8 @@ flowcanvas 140294 flow_ref 290054 // <flow>
 end
 flowcanvas 140422 flow_ref 290182 // <flow>
   
-  from ref 132998 z 2008 to ref 139910
+  from ref 132998 z 2008 to point 224 111
+  line 151814 z 2008 to ref 139910
    write_horizontally default
 end
 flowcanvas 140550 flow_ref 290310 // <flow>
@@ -119,7 +126,7 @@ flowcanvas 147206 flow_ref 314374 // <flow>
 end
 flowcanvas 147846 flow_ref 315398 // <flow>
   
-  from ref 132998 z 2008 to point 683 102
+  from ref 132998 z 2008 to point 685 112
   line 149638 z 2008 to ref 147462
    write_horizontally default
 end
@@ -169,6 +176,28 @@ flowcanvas 150278 flow_ref 390278 // <flow>
   decenter_end 769
   
   from ref 150150 z 2008 to ref 150022
+   write_horizontally default
+end
+flowcanvas 150918 flow_ref 408582 // <flow>
+  decenter_begin 750
+  decenter_end 459
+  
+  from ref 147334 z 2014 to point 740 62
+  line 151430 z 2014 to point 281 64
+  line 151686 z 2014 to ref 150790
+   write_horizontally default
+end
+flowcanvas 151174 flow_ref 408710 // <flow>
+  decenter_end 567
+  
+  from ref 151046 z 2014 to ref 150790
+   write_horizontally default
+end
+flowcanvas 151302 flow_ref 408838 // <flow>
+  decenter_begin 520
+  decenter_end 290
+  
+  from ref 150790 z 2014 to ref 128646
    write_horizontally default
 end
 line 149382 -_-_
