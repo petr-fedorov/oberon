@@ -1,6 +1,6 @@
 format 223
 "Receiver" // Standalone application::Receiver
-  revision 4
+  revision 6
   modified_by 6 "petr"
   // class settings
   
@@ -172,8 +172,8 @@ ${members}};
       explicit_switch_type ""
       mysql_decl ""
       
-      operation 1058694 "run"
-	cpp_virtual public explicit_return_type "void"
+      operation 1058694 "create"
+	cpp_virtual public explicit_return_type "bool"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -186,6 +186,118 @@ ${members}};
 	
       end
     end
+
+    class 799878 "ExchangeMessageProcessor"
+      abstract visibility package stereotype "interface"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl "${comment}${@}${visibility}${static}interface ${name}${extends} {
+${members}}
+"
+      php_decl "${comment}interface ${name}${extends} {
+${members}}
+"
+      python_2_2 python_decl ""
+      idl_decl "${comment}${abstract}${local}interface ${name}${inherit} {
+${members}};
+"
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      operation 1065222 "process"
+	abstract cpp_virtual public explicit_return_type "void"
+	nparams 1
+	  param in name "message" type class_ref 174214 // ptree
+	multiplicity "1"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	
+	
+      end
+    end
+
+    class 800006 "File"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 890502 // <realization>
+	relation 880390 -_-|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 890502 // <realization>
+	  b parent class_ref 799878 // ExchangeMessageProcessor
+      end
+
+      operation 1065350 "process"
+	cpp_virtual public explicit_return_type "void"
+	nparams 1
+	  param in name "message" type class_ref 174214 // ptree
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      attribute 705030 "f_"
+	private type class_ref 800134 // ofstream
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      operation 1065478 "File"
+	cpp_inline public explicit_return_type ""
+	nparams 1
+	  param in name "name" explicit_type "string"
+	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw}: f_{name} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1065606 "~File"
+	cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+    end
+
   end
 
   classview 220550 "Coinbase"
@@ -465,7 +577,7 @@ stm.messages_.clear();
 	      uml_on_entry "save queued msgs"
 	      cpp_on_entry "stm.messages_.erase(stm.messages_.begin());
 for (auto &message: stm.messages_)
-  boost::property_tree::write_json(*stm.f_, *message, false);
+  stm.f_->process(*message);
 
 "
 	    transition 441734 "message"
@@ -476,7 +588,7 @@ for (auto &message: stm.messages_)
 		cpp_expr "#ifdef DEBUG
 std::cout << \"Seq no=\" << stm.last_seq_number_ << \"\\n\";
 #endif
-boost::property_tree::write_json(*stm.f_, *stm.tree_, false);
+stm.f_->process(*stm.tree_);
 stm.ws_->async_read(stm.buffer_,
                     boost::asio::bind_executor(
                         *stm.rtc_, [&stm](const boost::system::error_code &ec,
@@ -542,7 +654,7 @@ stm.thread_.join();"
       era.put<string>(\"type\", \"era\");
       era.put<string>(\"time\", era_time);
       era.put<string>(\"product_id\", product_id);
-      boost::property_tree::write_json(*stm.f_, era, false);
+      stm.f_->process(era);
 
       boost::property_tree::ptree order_tree;
 
@@ -561,7 +673,7 @@ stm.thread_.join();"
         order_tree.put<string>(\"remaining_size\",
                                iter2++->second.get_value<string>());
         order_tree.put<string>(\"order_id\", iter2++->second.get_value<string>());
-        boost::property_tree::write_json(*stm.f_, order_tree, false);
+        stm.f_->process(order_tree);
       }
       for (auto iter = stm.snapshot_tree_.get_child(\"asks\").begin();
            iter != stm.snapshot_tree_.get_child(\"asks\").end() &&
@@ -578,7 +690,7 @@ stm.thread_.join();"
         order_tree.put<string>(\"remaining_size\",
                                iter2++->second.get_value<string>());
         order_tree.put<string>(\"order_id\", iter2++->second.get_value<string>());
-        boost::property_tree::write_json(*stm.f_, order_tree, false);
+        stm.f_->process(order_tree);
       }
       if (!stm.stop_thread_) // We don't care too much about race condition here
         boost::asio::post(
@@ -4150,8 +4262,8 @@ ${inlines}
 	  param in name "https_target" explicit_type "string"
 	  param in name "product" explicit_type "string"
 	  param in name "channel" explicit_type "string"
-	  param inout name "f" type class_ref 780294 // ostream
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}std::shared_ptr< ${t0} > ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}, const ${t4} & ${p4}${v4}, const ${t5} & ${p5}${v5}, const ${t6} & ${p6}${v6}, const ${t7} & ${p7}${v7}, const ${t8} & ${p8}${v8}, std::shared_ptr<${t9}> ${p9}${v9}${)}${volatile}${throw};
+	  param inout name "f" type class_ref 799878 // ExchangeMessageProcessor
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}std::shared_ptr< ${t0} > ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}, const ${t4} & ${p4}${v4}, const ${t5} & ${p5}${v5}, const ${t6} & ${p6}${v6}, const ${t7} & ${p7}${v7}, const ${t8} & ${p8}${v8},std::shared_ptr<${t9}> ${p9}${v9}${)}${volatile}${throw};
 "
 	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}std::shared_ptr< ${t0} > ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, const ${t4} & ${p4}, const ${t5} & ${p5}, const ${t6} & ${p6}, const ${t7} & ${p7}, const ${t8} & ${p8}, std::shared_ptr<${t9}> ${p9}${)}${volatile}${throw} : _current_state{0},ioc_{ioc}, host_{host}, port_{port}, target_{target},  product_{product}, https_host_ {https_host}, https_port_{https_port}, f_{f} {
   ${body}}
@@ -4695,15 +4807,6 @@ ${inlines}
 	  b parent class_ref 753414 // strand
       end
 
-      classrelation 870790 // f_ (<directional composition>)
-	relation 860678 *-->
-	  a role_name "f_" private
-	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::shared_ptr<${type}> ${name}${value};
-"
-	    classrelation_ref 870790 // f_ (<directional composition>)
-	  b parent class_ref 780294 // ostream
-      end
-
       classrelation 877446 // <dependency>
 	relation 867334 -_->
 	  stereotype "friend"
@@ -4711,6 +4814,23 @@ ${inlines}
 	    cpp default "${type}"
 	    classrelation_ref 877446 // <dependency>
 	  b parent class_ref 786822 // Read_Snapshot_State
+      end
+
+      classrelation 883974 // <realization>
+	relation 873862 -_-|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 883974 // <realization>
+	  b parent class_ref 793350 // Receiver
+      end
+
+      classrelation 890630 // f_ (<directional composition>)
+	relation 880518 *-->
+	  a role_name "f_" private
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::shared_ptr<${type}> ${name}${value};
+"
+	    classrelation_ref 890630 // f_ (<directional composition>)
+	  b parent class_ref 799878 // ExchangeMessageProcessor
       end
     end
   end
@@ -12825,37 +12945,18 @@ ${namespace_end}
 "
       cpp_src "${comment}
 ${includes}
+#include <boost/property_tree/json_parser.hpp>
 ${namespace_start}
 ${members}
 ${namespace_end}"
-      java_src "${comment}
-${package}
-${imports}
-${definition}"
-      php_src "<?php
-${comment}
-${namespace}
-${require_once}
-${use}
-${definition}
-?>
-"
-      idl_src "#ifndef ${MODULE}_${NAME}_H
-#define ${MODULE}_${NAME}_H
-
-${comment}
-${includes}
-${module_start}
-${definition}
-${module_end}
-#endif
-"
       associated_elems
 	class_ref 739974 // HttpResponseWithStringBody
 	class_ref 740230 // HttpRequestWithEmptyBody
 	class_ref 698246 // SslStream
 	class_ref 698502 // WebsocketStream
 	class_ref 793350 // Receiver
+	class_ref 799878 // ExchangeMessageProcessor
+	class_ref 800006 // File
       end
     end
 

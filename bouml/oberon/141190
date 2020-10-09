@@ -1,6 +1,6 @@
 format 223
 "Reconstructor" // Standalone application::Reconstructor
-  revision 163
+  revision 164
   modified_by 6 "petr"
   // class settings
   
@@ -813,6 +813,14 @@ ${members}};
 	    cpp default "#include in source"
 	    classrelation_ref 688262 // <dependency>
 	  b parent class_ref 624902 // BitfinexReconstructor
+      end
+
+      classrelation 890758 // <realization>
+	relation 880646 -_-|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 890758 // <realization>
+	  b parent class_ref 799878 // ExchangeMessageProcessor
       end
     end
 

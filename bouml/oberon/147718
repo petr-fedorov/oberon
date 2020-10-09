@@ -1,6 +1,6 @@
 format 223
 "Standalone application" // Standalone application
-  revision 43
+  revision 45
   modified_by 6 "petr"
   // class settings
   
@@ -88,7 +88,7 @@ format 223
 
       activityaction 192390 "Receive messages"
 	call_operation_action
-	synchronous operation_ref 1058694 // run
+	synchronous operation_ref 1058694 // create
 	pin 350086 "target" type class_ref 793350 // Receiver
 	   multiplicity "1" unordered 
 	  in
@@ -1014,6 +1014,7 @@ using boost::posix_time::seconds;
 int main(int argc, char **argv) {
   namespace ssl = boost::asio::ssl;
   namespace websocket = boost::beast::websocket;
+  namespace rec = oberon::receiver;
   // Check command line arguments.
   if (argc != 8) {
     std::cerr << \"Usage: obtain <host> <port> <target> <https_host> <https_port> <https_target> path\\n\"
@@ -1030,15 +1031,17 @@ int main(int argc, char **argv) {
 
   // The io_context is required for all I/O
   std::shared_ptr<boost::asio::io_context> ioc = std::make_shared<boost::asio::io_context>();
-  std::shared_ptr<std::ofstream> f {std::make_shared<std::ofstream>(argv[7])};
-  oberon::receiver::Coinbase coinbase {ioc, host, port, target, https_host, https_port, https_target, \"BTC-USD\", \"full\", f};
-  coinbase.create();
+  auto f = std::make_shared<oberon::receiver::File>(argv[7]);
+  std::shared_ptr<rec::Receiver> coinbase =
+      std::make_shared<oberon::receiver::Coinbase>(
+          ioc, host, port, target, https_host, https_port, https_target,
+          \"BTC-USD\", \"full\", f);
+  coinbase->create();
   // Run the I/O service. The call will return when
   // the socket is closed.
   std::thread t {[&ioc]() { ioc->run(); }};
   ioc->run();
   t.join();
-  f->close();
 
   return EXIT_SUCCESS;
 }
@@ -1060,7 +1063,7 @@ int main(int argc, char **argv) {
       key "genpro target" value "/tmp/oberon/cpp/oberon"
       key "genpro tmplt" value "app"
       key "genpro config" value "debug warn_on qt"
-      key "genpro defines" value "VERBOSE_STATE_MACHINE"
+      key "genpro defines" value "VERBOSE_STATE_MACHINE DEBUG"
       key "genpro includepath" value ""
       key "genpro dependpath" value ""
       key "genpro objectsdir" value ""
