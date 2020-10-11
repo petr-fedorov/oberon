@@ -2,10 +2,10 @@ class Output_State
 !!!963462.cpp!!!	message(inout stm : Coinbase) : void
   {
 #ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : execute activity of transition message" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition message";
 #endif
 #ifdef DEBUG
-std::cout << "Seq no=" << stm.last_seq_number_ << "\n";
+BOOST_LOG_TRIVIAL(debug) << "Seq no=" << stm.last_seq_number_ << "\n";
 #endif
 stm.f_->process(*stm.tree_);
 stm.ws_->async_read(stm.buffer_,
@@ -22,7 +22,7 @@ stm.ws_->async_read(stm.buffer_,
 	_doentry(stm);
 !!!1018246.cpp!!!	_doentry(inout stm : Coinbase) : void
 #ifdef VERBOSE_STATE_MACHINE
-  std::cout << "DEBUG : execute entry behavior of .Coinbase.Engage.Subscribed.Output" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Coinbase.Engage.Subscribed.Output";
 #endif
 stm.messages_.erase(stm.messages_.begin());
 for (auto &message: stm.messages_)

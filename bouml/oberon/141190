@@ -1,6 +1,6 @@
 format 223
 "Reconstructor" // Standalone application::Reconstructor
-  revision 164
+  revision 167
   modified_by 6 "petr"
   // class settings
   
@@ -56,12 +56,12 @@ format 223
      end
     classdiagram 268166 "Reconstructor Interface"
       classdiagramsettings member_max_width 0 end
-      size A4
+      size A3-Landscape
     end
 
     classdiagram 307590 "Message Hierarchy Overview"
       classdiagramsettings hide_attributes yes hide_operations yes member_max_width 0 end
-      size A4
+      size A-Landscape
     end
 
     classdiagram 161030 "Message Hierarchy Detailed"
@@ -184,7 +184,7 @@ ${members}};
       end
 
       operation 879366 "operator =="
-	const constvalue cpp_inline public explicit_return_type "bool"
+	const cpp_inline public explicit_return_type "bool"
 	nparams 1
 	  param in name "other" type class_ref 305542 // Price
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
@@ -199,7 +199,7 @@ ${members}};
       end
 
       operation 879494 "operator <"
-	const constvalue cpp_inline public explicit_return_type "bool"
+	const cpp_inline public explicit_return_type "bool"
 	nparams 1
 	  param in name "other" type class_ref 305542 // Price
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
@@ -214,7 +214,7 @@ ${members}};
       end
 
       operation 879622 "operator >"
-	const constvalue cpp_inline public explicit_return_type "bool"
+	const cpp_inline public explicit_return_type "bool"
 	nparams 1
 	  param in name "other" type class_ref 305542 // Price
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
@@ -559,7 +559,7 @@ ${members}};
       end
 
       operation 635014 "timestamp"
-	abstract const constvalue cpp_virtual public return_type class_ref 230278 // Timestamp
+	abstract const cpp_virtual public return_type class_ref 230278 // Timestamp
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -570,7 +570,7 @@ ${members}};
       end
 
       operation 623750 "orderId"
-	abstract const constvalue cpp_virtual public return_type class_ref 306822 // OrderId
+	abstract const cpp_virtual public return_type class_ref 306822 // OrderId
 	multiplicity "1"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
@@ -582,7 +582,7 @@ ${members}};
       end
 
       operation 623878 "eventNo"
-	abstract const constvalue cpp_virtual public return_type class_ref 507142 // EventNo
+	abstract const cpp_virtual public return_type class_ref 507142 // EventNo
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -593,7 +593,7 @@ ${members}};
       end
 
       operation 624390 "state"
-	abstract const constvalue cpp_virtual public return_type class_ref 299014 // OrderState
+	abstract const cpp_virtual public return_type class_ref 299014 // OrderState
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -604,7 +604,7 @@ ${members}};
       end
 
       operation 624006 "price"
-	abstract const constvalue cpp_virtual public return_type class_ref 305542 // Price
+	abstract const cpp_virtual public return_type class_ref 305542 // Price
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -615,7 +615,7 @@ ${members}};
       end
 
       operation 624134 "volume"
-	abstract const constvalue cpp_virtual public return_type class_ref 305798 // Volume
+	abstract const cpp_virtual public return_type class_ref 305798 // Volume
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -626,7 +626,7 @@ ${members}};
       end
 
       operation 624262 "tradeId"
-	abstract const constvalue cpp_virtual public return_type class_ref 551174 // TradeId
+	abstract const cpp_virtual public return_type class_ref 551174 // TradeId
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -637,7 +637,7 @@ ${members}};
       end
 
       operation 707078 "deltaVolume"
-	abstract const constvalue cpp_virtual public return_type class_ref 305798 // Volume
+	abstract const cpp_virtual public return_type class_ref 305798 // Volume
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -659,7 +659,7 @@ ${members}};
       end
 
       operation 745606 "localTimestamp"
-	abstract const constvalue cpp_virtual public return_type class_ref 230278 // Timestamp
+	abstract const cpp_virtual public return_type class_ref 230278 // Timestamp
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -670,7 +670,7 @@ ${members}};
       end
 
       operation 865670 "isDeleted"
-	abstract const constvalue cpp_virtual public explicit_return_type "bool"
+	abstract const cpp_virtual public explicit_return_type "bool"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -813,14 +813,6 @@ ${members}};
 	    cpp default "#include in source"
 	    classrelation_ref 688262 // <dependency>
 	  b parent class_ref 624902 // BitfinexReconstructor
-      end
-
-      classrelation 890758 // <realization>
-	relation 880646 -_-|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 890758 // <realization>
-	  b parent class_ref 799878 // ExchangeMessageProcessor
       end
     end
 
@@ -2894,7 +2886,7 @@ The order price must be a multiple of this increment (i.e. if the increment is 0
       end
 
       operation 641926 "transmit"
-	cpp_virtual cpp_inline private explicit_return_type "void"
+	cpp_virtual private explicit_return_type "void"
 	nparams 1
 	  param in name "messages" type class_ref 245766 // Message
 	multiplicity "*"
@@ -3191,7 +3183,7 @@ ${members}};
       end
 
       operation 744070 "timestamp"
-	const constvalue cpp_virtual public return_type class_ref 230278 // Timestamp
+	const cpp_virtual cpp_override public return_type class_ref 230278 // Timestamp
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3205,7 +3197,7 @@ ${members}};
       end
 
       operation 744198 "orderId"
-	const constvalue cpp_virtual public return_type class_ref 306822 // OrderId
+	const cpp_virtual cpp_override public return_type class_ref 306822 // OrderId
 	multiplicity "1"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
@@ -3220,7 +3212,7 @@ ${members}};
       end
 
       operation 744326 "eventNo"
-	const constvalue cpp_virtual public return_type class_ref 507142 // EventNo
+	const cpp_virtual cpp_override public return_type class_ref 507142 // EventNo
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3234,7 +3226,7 @@ ${members}};
       end
 
       operation 744454 "state"
-	const constvalue cpp_virtual public return_type class_ref 299014 // OrderState
+	const cpp_virtual cpp_override public return_type class_ref 299014 // OrderState
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3248,7 +3240,7 @@ ${members}};
       end
 
       operation 744582 "price"
-	const constvalue cpp_virtual public return_type class_ref 305542 // Price
+	const cpp_virtual cpp_override public return_type class_ref 305542 // Price
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3262,7 +3254,7 @@ ${members}};
       end
 
       operation 744710 "volume"
-	const constvalue cpp_virtual public return_type class_ref 305798 // Volume
+	const cpp_virtual cpp_override public return_type class_ref 305798 // Volume
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3276,7 +3268,7 @@ ${members}};
       end
 
       operation 744838 "tradeId"
-	const constvalue cpp_virtual public return_type class_ref 551174 // TradeId
+	const cpp_virtual cpp_override public return_type class_ref 551174 // TradeId
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3290,7 +3282,7 @@ ${members}};
       end
 
       operation 744966 "deltaVolume"
-	const constvalue cpp_virtual public return_type class_ref 305798 // Volume
+	const cpp_virtual cpp_override public return_type class_ref 305798 // Volume
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3304,7 +3296,7 @@ ${members}};
       end
 
       operation 745094 "takerOrderId"
-	cpp_virtual public return_type class_ref 306822 // OrderId
+	cpp_virtual cpp_override public return_type class_ref 306822 // OrderId
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3318,7 +3310,7 @@ ${members}};
       end
 
       operation 745734 "localTimestamp"
-	const constvalue cpp_virtual public return_type class_ref 230278 // Timestamp
+	const cpp_virtual cpp_override public return_type class_ref 230278 // Timestamp
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3332,7 +3324,7 @@ ${members}};
       end
 
       operation 865798 "isDeleted"
-	const constvalue cpp_virtual public explicit_return_type "bool"
+	const cpp_virtual cpp_override public explicit_return_type "bool"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3346,7 +3338,7 @@ ${members}};
       end
 
       operation 893446 "toString"
-	const cpp_virtual public explicit_return_type "string"
+	const cpp_virtual cpp_override public explicit_return_type "string"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -4423,6 +4415,42 @@ ${inlines}
 	  ncouples 1
 	  key "STM generated" value ""
 	end
+
+	operation 1078918 "_doentry"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} &${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} &${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " performs the 'entry activity'"
+	end
+
+	operation 1079046 "_doexit"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} &${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} &${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " performs the 'exit activity'"
+	end
       end
 
       class 617734 "Deduce_Size_Coinbase_State"
@@ -5085,6 +5113,24 @@ ${inlines}
 	    key "STM generated" value ""
 	    comment " returns the state containing the current"
 	  end
+
+	  operation 1079174 "create"
+	    force_body_gen cpp_virtual public explicit_return_type "void"
+	    nparams 1
+	      param inout name "stm" type class_ref 542982 // Deduce_Size_Coinbase
+	    cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	    cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	    
+	    
+	    
+	    
+	    ncouples 1
+	    key "STM generated" value ""
+	    comment " to manage the event create"
+	  end
 	end
 
 	operation 774406 "~Deduce_Size_Coinbase_State"
@@ -5489,6 +5535,21 @@ ${inlines}
 "
 	    classrelation_ref 673542 // _current_state (<directional aggregation>)
 	  b parent class_ref 617606 // AnyState
+      end
+
+      attribute 718214 "_machine_name"
+	public explicit_type "string"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	ncouples 1
+	key "STM generated" value ""
+	comment " a (unique) name of the machine "
       end
     end
   end
@@ -6821,7 +6882,6 @@ ${namespace_end}"
 	class_ref 472966 // Exchanges
 	class_ref 472838 // time_order_error
 	class_ref 230406 // Event
-	class_ref 231302 // Store
 	class_ref 202630 // Reconstructor
       end
     end
@@ -6844,34 +6904,10 @@ ${namespace_end}
 ${includes}
 #include <iostream>
 #include \"date.h\"
+#include <boost/log/trivial.hpp>
 ${namespace_start}
 ${members}
 ${namespace_end}"
-      java_src "${comment}
-${package}
-${imports}
-${definition}"
-      php_src "<?php
-${comment}
-${namespace}
-${require_once}
-${use}
-${definition}
-?>
-"
-      python_src "${comment}
-${import}
-${definition}"
-      idl_src "#ifndef ${MODULE}_${NAME}_H
-#define ${MODULE}_${NAME}_H
-
-${comment}
-${includes}
-${module_start}
-${definition}
-${module_end}
-#endif
-"
       associated_elems
 	class_ref 271366 // BookSide
 	class_ref 406662 // PriceSide
@@ -6882,7 +6918,7 @@ ${module_end}
       end
     end
 
-    artifact 213638 "coinbase"
+    artifact 213638 "reconstructor_coinbase"
       stereotype "source"
       cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
 #define ${NAMESPACE}_${NAME}_H
@@ -6896,6 +6932,9 @@ ${namespace_end}
 #endif
 "
       cpp_src "${comment}
+#include <boost/log/trivial.hpp>
+#include <boost/property_tree/json_parser.hpp>
+#include <boost/property_tree/exceptions.hpp>
 ${includes}
 #include <iostream>
 #include \"date.h\"
@@ -6909,7 +6948,7 @@ ${namespace_end}"
       end
     end
 
-    artifact 213766 "bitstamp"
+    artifact 213766 "reconstructor_bitstamp"
       stereotype "source"
       cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
 #define ${NAMESPACE}_${NAME}_H
@@ -6937,7 +6976,7 @@ ${namespace_end}"
       end
     end
 
-    artifact 233350 "bitfinex"
+    artifact 233350 "reconstructor_bitfinex"
       stereotype "source"
       cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
 #define ${NAMESPACE}_${NAME}_H

@@ -3,7 +3,7 @@ class Connect_State
 	_doentry(stm);
 !!!962438.cpp!!!	_doentry(inout stm : Coinbase) : void
 #ifdef VERBOSE_STATE_MACHINE
-  std::cout << "DEBUG : execute entry behavior of .Coinbase.Engage.Initialize.Connect" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Coinbase.Engage.Initialize.Connect";
 #endif
 // Make the connection on the IP address we get from a lookup
 boost::asio::async_connect(
@@ -27,7 +27,7 @@ boost::asio::async_connect(
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
     stm._set_currentState(stm._coinbase_state._engage_state._initialize_state._handshake_ssl_state);
 #ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : current state is now .Coinbase.Engage.Initialize.Handshake SSL" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Coinbase.Engage.Initialize.Handshake SSL";
 #endif
     stm._coinbase_state._engage_state._initialize_state._handshake_ssl_state.create(stm);
   }

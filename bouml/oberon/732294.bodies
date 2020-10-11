@@ -5,7 +5,7 @@ class Connect_State
 	_doentry(stm);
 !!!967430.cpp!!!	_doentry(inout stm : Coinbase) : void
 #ifdef VERBOSE_STATE_MACHINE
-  std::cout << "DEBUG : execute entry behavior of .Coinbase.Engage.Subscribed.Snapshot.Connect" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Coinbase.Engage.Subscribed.Snapshot.Connect";
 #endif
 boost::asio::async_connect(
     stm.https_->next_layer(), stm.results_.begin(), stm.results_.end(),
@@ -18,7 +18,7 @@ boost::asio::async_connect(
             stm.failure();
           } else {
 #ifdef DEBUG
-            std::cout << "IP: " << iter->endpoint().address().to_string()
+            BOOST_LOG_TRIVIAL(debug) << "IP: " << iter->endpoint().address().to_string()
                       << " Port: " << iter->endpoint().port() << "\n";
 #endif
             stm.https_address_ = iter->endpoint().address();
@@ -30,7 +30,7 @@ boost::asio::async_connect(
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
     stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._snapshot_state._handshake_ssl_state);
 #ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Snapshot.Handshake SSL" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Coinbase.Engage.Subscribed.Snapshot.Handshake SSL";
 #endif
     stm._coinbase_state._engage_state._subscribed_state._snapshot_state._handshake_ssl_state.create(stm);
   }

@@ -4,19 +4,19 @@ class Snapshot_State
   {
     stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._snapshot_state._resolve_state);
 #ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Snapshot.Resolve" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Coinbase.Engage.Subscribed.Snapshot.Resolve";
 #endif
     stm._coinbase_state._engage_state._subscribed_state._snapshot_state._resolve_state.create(stm);
   }
 !!!964870.cpp!!!	message(inout stm : Coinbase) : void
   {
 #ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : execute activity of transition queue_message" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition queue_message";
 #endif
 stm.messages_.push_back(std::move(stm.tree_));
 #ifdef DEBUG
-std::cout << "Seq no: " << stm.last_seq_number_
-          << " Queue size: " << stm.messages_.size() << "\n";
+BOOST_LOG_TRIVIAL(debug) << "Seq no: " << stm.last_seq_number_
+          << " Queue size: " << stm.messages_.size();
 #endif
 stm.ws_->async_read(stm.buffer_,
                     boost::asio::bind_executor(
@@ -34,27 +34,32 @@ stm.ws_->async_read(stm.buffer_,
     stm._coinbase_state._engage_state._subscribed_state._snapshot_state._doexit(stm);
     stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._output_state);
 #ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Output" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Coinbase.Engage.Subscribed.Output";
 #endif
     stm._coinbase_state._engage_state._subscribed_state._output_state.create(stm);
     return (bool) 1;
   }
 !!!997254.cpp!!!	_doexit(inout stm : Coinbase) : void
 #ifdef VERBOSE_STATE_MACHINE
-  std::cout << "DEBUG : execute exit behavior of .Coinbase.Engage.Subscribed.Snapshot" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute exit behavior of .Coinbase.Engage.Subscribed.Snapshot";
 #endif
 stm.https_->next_layer().close(stm.ec_);
 #ifdef DEBUG
 if(stm.ec_)
- std::cout << "Https closing error: " << stm.ec_.message() << "\n";
+ BOOST_LOG_TRIVIAL(warning) << "Https closing error: " << stm.ec_.message(); 
 #endif
 !!!1028998.cpp!!!	failure(inout stm : Coinbase) : void
   {
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
     stm._coinbase_state._engage_state._subscribed_state._snapshot_state._doexit(stm);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition failure";
+#endif
+BOOST_LOG_TRIVIAL(warning) << stm.error_message_;
+stm.error_message_.clear();
     stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._failed_state);
 #ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Failed" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Coinbase.Engage.Subscribed.Failed";
 #endif
   }
 !!!1030150.cpp!!!	timeout(inout stm : Coinbase) : void
@@ -62,12 +67,12 @@ if(stm.ec_)
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
     stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._snapshot_state._failed_state);
 #ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Snapshot.Failed" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Coinbase.Engage.Subscribed.Snapshot.Failed";
 #endif
   }
 !!!1045382.cpp!!!	_doentry(inout stm : Coinbase) : void
 #ifdef VERBOSE_STATE_MACHINE
-  std::cout << "DEBUG : execute entry behavior of .Coinbase.Engage.Subscribed.Snapshot" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Coinbase.Engage.Subscribed.Snapshot";
 #endif
 stm.https_ctx_ = std::make_unique<boost::asio::ssl::context>(
     boost::asio::ssl::context::sslv23_client);
@@ -77,7 +82,7 @@ stm.https_ = std::make_unique<SslStream>(*stm.ioc_, *stm.https_ctx_);
 if (!SSL_set_tlsext_host_name(stm.https_->native_handle(), stm.https_host_.c_str())) {
   boost::system::error_code ec{static_cast<int>(::ERR_get_error()),
                                boost::asio::error::get_ssl_category()};
-  std::cerr << ec.message() << "\n";
+  BOOST_LOG_TRIVIAL(error) << ec.message();
 }
 
 /*

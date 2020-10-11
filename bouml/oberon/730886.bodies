@@ -4,7 +4,7 @@ class Engage_State
   {
     stm._set_currentState(stm._coinbase_state._engage_state._initialize_state);
 #ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : current state is now .Coinbase.Engage.Initialize" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Coinbase.Engage.Initialize";
 #endif
     stm._coinbase_state._engage_state._initialize_state.create(stm);
   }
@@ -16,23 +16,23 @@ class Engage_State
     stm._coinbase_state._engage_state._doexit(stm);
     stm._set_currentState(stm._coinbase_state);
 #ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : current state is now .Coinbase" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Coinbase";
 #endif
       stm._final();
   }
 !!!990726.cpp!!!	_doentry(inout stm : Coinbase) : void
 #ifdef VERBOSE_STATE_MACHINE
-  std::cout << "DEBUG : execute entry behavior of .Coinbase.Engage" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Coinbase.Engage";
 #endif
 stm.signal_set_->async_wait(boost::asio::bind_executor(
     *stm.rtc_, [&stm](const boost::system::error_code &ec, int signal_number) {
       if (!ec) {
-        std::cout << "\nTermination requested ... \n";
+        BOOST_LOG_TRIVIAL(info) << "\nTermination requested ...";
         stm.stop();
       }
     }));
 !!!1003782.cpp!!!	_doexit(inout stm : Coinbase) : void
 #ifdef VERBOSE_STATE_MACHINE
-  std::cout << "DEBUG : execute exit behavior of .Coinbase.Engage" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute exit behavior of .Coinbase.Engage";
 #endif
 stm.signal_set_->cancel();

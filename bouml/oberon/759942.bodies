@@ -4,7 +4,7 @@ class Save_snapshot_State
 	_do(stm);
 !!!1010950.cpp!!!	_doentry(inout stm : Coinbase) : void
 #ifdef VERBOSE_STATE_MACHINE
-  std::cout << "DEBUG : execute entry behavior of .Coinbase.Engage.Subscribed.Snapshot.Save snapshot" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Coinbase.Engage.Subscribed.Snapshot.Save snapshot";
 #endif
 auto iter = stm.messages_.begin();
 for (; iter != stm.messages_.end() &&
@@ -15,26 +15,28 @@ for (; iter != stm.messages_.end() &&
   return &stm._coinbase_state._engage_state._subscribed_state._snapshot_state;
 !!!1017862.cpp!!!	_doexit(inout stm : Coinbase) : void
 #ifdef VERBOSE_STATE_MACHINE
-  std::cout << "DEBUG : execute exit behavior of .Coinbase.Engage.Subscribed.Snapshot.Save snapshot" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute exit behavior of .Coinbase.Engage.Subscribed.Snapshot.Save snapshot";
 #endif
 stm.stop_thread_.store(true);
 stm.thread_.join();
 !!!1017990.cpp!!!	_do(inout stm : Coinbase) : void
 #ifdef VERBOSE_STATE_MACHINE
-  std::cout << "DEBUG : execute do behavior of .Coinbase.Engage.Subscribed.Snapshot.Save snapshot" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute do behavior of .Coinbase.Engage.Subscribed.Snapshot.Save snapshot";
 #endif
 if (stm.messages_.size()) {
   auto era_time = stm.messages_.front()->get<string>("time");
   auto product_id = stm.messages_.front()->get<string>("product_id");
+  auto local_timestamp = stm.messages_.front()->get<string>("local_timestamp");
 
   // Start new era in another thread since it takes a long time ...
-  stm.thread_ = std::thread{[&stm, era_time, product_id]() {
+  stm.thread_ = std::thread{[&stm, era_time, product_id, local_timestamp]() {
     stm.stop_thread_.store(false);
     try {
       boost::property_tree::ptree era;
       era.put<string>("type", "era");
       era.put<string>("time", era_time);
       era.put<string>("product_id", product_id);
+      era.put<string>("local_timestamp", local_timestamp);
       stm.f_->process(era);
 
       boost::property_tree::ptree order_tree;
@@ -54,6 +56,7 @@ if (stm.messages_.size()) {
         order_tree.put<string>("remaining_size",
                                iter2++->second.get_value<string>());
         order_tree.put<string>("order_id", iter2++->second.get_value<string>());
+        order_tree.put<string>("local_timestamp", local_timestamp);
         stm.f_->process(order_tree);
       }
       for (auto iter = stm.snapshot_tree_.get_child("asks").begin();
@@ -71,6 +74,7 @@ if (stm.messages_.size()) {
         order_tree.put<string>("remaining_size",
                                iter2++->second.get_value<string>());
         order_tree.put<string>("order_id", iter2++->second.get_value<string>());
+        order_tree.put<string>("local_timestamp", local_timestamp);
         stm.f_->process(order_tree);
       }
       if (!stm.stop_thread_) // We don't care too much about race condition here
@@ -81,6 +85,13 @@ if (stm.messages_.size()) {
           stm.error_message_ = "Snapshot saved has been stopped, exiting ...";
           stm.failure();
         }));
+    } catch (const std::exception &e) {
+      std::string w { e.what() };
+      boost::asio::post(boost::asio::bind_executor(*stm.rtc_, [&stm, w]() {
+        stm.error_message_ = w;
+        stm.failure();
+      }));
+
     } catch (...) {
       boost::asio::post(boost::asio::bind_executor(*stm.rtc_, [&stm]() {
         stm.error_message_ =
@@ -95,12 +106,12 @@ if (stm.messages_.size()) {
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
     stm._coinbase_state._engage_state._subscribed_state._snapshot_state._save_snapshot_state._doexit(stm);
 #ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : execute activity of transition success" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition success";
 #endif
 
     stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._snapshot_state);
 #ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Snapshot" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Coinbase.Engage.Subscribed.Snapshot";
 #endif
       stm._coinbase_state._engage_state._subscribed_state._snapshot_state._completion(stm);
   }

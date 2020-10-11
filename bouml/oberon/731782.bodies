@@ -2,7 +2,7 @@ class Subscribed_State
 !!!965126.cpp!!!	heartbeat(inout stm : Coinbase) : void
   {
 #ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : execute activity of transition heartbeat" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition heartbeat";
 #endif
 if (stm.timer_->expires_from_now(seconds(2)) > 0) {
   // We managed to cancel the timer. Start new asynchronous wait.
@@ -13,7 +13,7 @@ if (stm.timer_->expires_from_now(seconds(2)) > 0) {
       }));
 }
 #ifdef DEBUG
-std::cout << stm.tree_->get<std::string>("time") << " Timer restarted\n";
+BOOST_LOG_TRIVIAL(debug) << stm.tree_->get<std::string>("time") << " Timer restarted";
 #endif
 stm.ws_->async_read(stm.buffer_,
                     boost::asio::bind_executor(
@@ -28,7 +28,7 @@ stm.ws_->async_read(stm.buffer_,
   {
     stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._snapshot_state);
 #ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Snapshot" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Coinbase.Engage.Subscribed.Snapshot";
 #endif
     stm._coinbase_state._engage_state._subscribed_state._snapshot_state.create(stm);
   }
@@ -36,7 +36,7 @@ stm.ws_->async_read(stm.buffer_,
   return &stm._coinbase_state._engage_state;
 !!!965894.cpp!!!	_doentry(inout stm : Coinbase) : void
 #ifdef VERBOSE_STATE_MACHINE
-  std::cout << "DEBUG : execute entry behavior of .Coinbase.Engage.Subscribed" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Coinbase.Engage.Subscribed";
 #endif
 stm.first_seq_number_ = 0;
 stm.last_seq_number_ = 0;
@@ -54,7 +54,7 @@ stm.timer_->async_wait(boost::asio::bind_executor(
     *stm.rtc_, [&stm](const boost::system::error_code &ec) {
       if (ec != boost::asio::error::operation_aborted) {
 #ifdef DEBUG
-        std::cout << "Time out!\n";
+        BOOST_LOG_TRIVIAL(warning) << "Time out!\n";
 #endif
         stm.timeout();
       }
@@ -64,12 +64,12 @@ stm.timer_->async_wait(boost::asio::bind_executor(
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
     stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._failed_state);
 #ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Failed" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Coinbase.Engage.Subscribed.Failed";
 #endif
   }
 !!!984198.cpp!!!	_doexit(inout stm : Coinbase) : void
 #ifdef VERBOSE_STATE_MACHINE
-  std::cout << "DEBUG : execute exit behavior of .Coinbase.Engage.Subscribed" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute exit behavior of .Coinbase.Engage.Subscribed";
 #endif
 stm.timer_->cancel();
 stm.ws_->next_layer().next_layer().shutdown(boost::asio::ip::tcp::socket::shutdown_both);
@@ -84,7 +84,7 @@ stm.messages_.clear();
     stm._coinbase_state._engage_state._subscribed_state._doexit(stm);
     stm._set_currentState(stm._coinbase_state._engage_state._initialize_state);
 #ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : current state is now .Coinbase.Engage.Initialize" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Coinbase.Engage.Initialize";
 #endif
     stm._coinbase_state._engage_state._initialize_state.create(stm);
   }
@@ -93,7 +93,7 @@ stm.messages_.clear();
     stm._coinbase_state._engage_state._subscribed_state._doexit(stm);
     stm._set_currentState(stm._coinbase_state._engage_state._initialize_state);
 #ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : current state is now .Coinbase.Engage.Initialize" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Coinbase.Engage.Initialize";
 #endif
     stm._coinbase_state._engage_state._initialize_state.create(stm);
   }

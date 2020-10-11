@@ -2,7 +2,7 @@ class EventNumberGenerator
 !!!722438.cpp!!!	exchangeMessage() : bool
 ExchangeMessage *em = dynamic_cast<ExchangeMessage *>(received_.get());
 #ifdef VERBOSE_STATE_MACHINE
-std::cout << "exchangeMessage " << em->toString() << "\n";
+BOOST_LOG_TRIVIAL(debug) << "exchangeMessage " << em->toString();
 #endif
 try {
   em->setEventNo(eventNumbers_.at(em->getOrderId()) + 1);
@@ -14,7 +14,7 @@ return true;
 !!!722566.cpp!!!	created() : bool
 ExchangeMessage *em = dynamic_cast<ExchangeMessage *>(received_.get());
 #ifdef VERBOSE_STATE_MACHINE
-std::cout << "created " << em->toString() << "\n";
+BOOST_LOG_TRIVIAL(debug) << "created " << em->toString(); 
 #endif
 eventNumbers_[em->getOrderId()] = 1;
 em->setEventNo(1);
@@ -23,7 +23,7 @@ return true;
 !!!722694.cpp!!!	canceled() : bool
 ExchangeMessage *em = dynamic_cast<ExchangeMessage *>(received_.get());
 #ifdef VERBOSE_STATE_MACHINE
-std::cout << "fullyCanceled " << em->toString() << "\n";
+BOOST_LOG_TRIVIAL(debug) << "fullyCanceled " << em->toString(); 
 #endif
 
 try {
@@ -36,7 +36,7 @@ return true;
 !!!722822.cpp!!!	filled() : bool
 ExchangeMessage *em = dynamic_cast<ExchangeMessage *>(received_.get());
 #ifdef VERBOSE_STATE_MACHINE
-std::cout << "filled " << em->toString() << "\n";
+BOOST_LOG_TRIVIAL(debug) << "filled " << em->toString(); 
 #endif
 
 try {

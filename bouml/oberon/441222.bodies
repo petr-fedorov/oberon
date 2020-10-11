@@ -5,8 +5,7 @@ return true;
 for(auto& msg: messages) {
   if(msg) {
 #ifdef VERBOSE_STATE_MACHINE
-    // Here I produced the log record in BoUML style 
-    std::cout << "DEBUG : " << getHandlerName() << " received " << msg->toString() << "\n";
+    BOOST_LOG_TRIVIAL(debug) << getHandlerName() << " received " << msg->toString(); 
 #endif
     if(!msg->isDeleted()) {
       received_ = std::move(msg);

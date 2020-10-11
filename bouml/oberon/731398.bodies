@@ -3,7 +3,7 @@ class Subscribe_State
 	_doentry(stm);
 !!!961926.cpp!!!	_doentry(inout stm : Coinbase) : void
 #ifdef VERBOSE_STATE_MACHINE
-  std::cout << "DEBUG : execute entry behavior of .Coinbase.Engage.Initialize.Subscribe" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Coinbase.Engage.Initialize.Subscribe";
 #endif
 using namespace boost::property_tree;
 ptree tree;
@@ -15,7 +15,7 @@ tree.add_child("channels", stm.channels_);
 
 write_json(request, tree, false);
 #ifdef DEBUG
-std::cout << "Request: " << request.str() << "\n";
+BOOST_LOG_TRIVIAL(debug) << "Request: " << request.str(); 
 #endif
 stm.ws_->async_write(boost::asio::buffer(request.str()),
                      boost::asio::bind_executor(
@@ -40,7 +40,7 @@ stm.ws_->async_write(boost::asio::buffer(request.str()),
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
     stm._set_currentState(stm._coinbase_state._engage_state._initialize_state);
 #ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : current state is now .Coinbase.Engage.Initialize" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Coinbase.Engage.Initialize";
 #endif
       stm._coinbase_state._engage_state._initialize_state._completion(stm);
   }

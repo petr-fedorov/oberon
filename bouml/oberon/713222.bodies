@@ -3,7 +3,7 @@ class Coinbase_State
   {
     stm._set_currentState(stm._coinbase_state._engage_state);
 #ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : current state is now .Coinbase.Engage" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Coinbase.Engage";
 #endif
     stm._coinbase_state._engage_state.create(stm);
   }

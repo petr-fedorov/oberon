@@ -4,14 +4,14 @@ class Read_Snapshot_State
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
     stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._snapshot_state);
 #ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Snapshot" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Coinbase.Engage.Subscribed.Snapshot";
 #endif
     if (stm.snapshot_seq_number_ >= stm.first_seq_number_ &&
  stm.snapshot_seq_number_ <= stm.last_seq_number_
 ) {
       stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._snapshot_state._save_snapshot_state);
 #ifdef VERBOSE_STATE_MACHINE
-      std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Snapshot.Save snapshot" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Coinbase.Engage.Subscribed.Snapshot.Save snapshot";
 #endif
       stm._coinbase_state._engage_state._subscribed_state._snapshot_state._save_snapshot_state.create(stm);
     }
@@ -19,12 +19,12 @@ class Read_Snapshot_State
  stm.snapshot_seq_number_ == stm.last_seq_number_)
 ) {
 #ifdef VERBOSE_STATE_MACHINE
-      std::cout << "DEBUG : execute activity of transition stale" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition stale";
 #endif
 
       stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._snapshot_state._query_snapshot_state);
 #ifdef VERBOSE_STATE_MACHINE
-      std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Snapshot.Query snapshot" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Coinbase.Engage.Subscribed.Snapshot.Query snapshot";
 #endif
       stm._coinbase_state._engage_state._subscribed_state._snapshot_state._query_snapshot_state.create(stm);
     }
@@ -35,7 +35,7 @@ class Read_Snapshot_State
 	_doentry(stm);
 !!!1045638.cpp!!!	_doentry(inout stm : Coinbase) : void
 #ifdef VERBOSE_STATE_MACHINE
-  std::cout << "DEBUG : execute entry behavior of .Coinbase.Engage.Subscribed.Snapshot.Read Snapshot" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Coinbase.Engage.Subscribed.Snapshot.Read Snapshot";
 #endif
 boost::beast::http::async_read(
     *stm.https_, stm.https_buffer_, stm.https_res_,
@@ -45,11 +45,10 @@ boost::beast::http::async_read(
                                  if (ec) {
                                    stm.ec_ = ec;
                                    stm.error_message_ = ec.message();
-                                   std::cout << stm.error_message_ << "\n";
+                                   BOOST_LOG_TRIVIAL(warning) << stm.error_message_;
                                    stm.failure();
                                  } else {
-                                   // std::cout << stm.https_res_.body() <<
-                                   // "\n";
+                                   // BOOST_LOG_TRIVIAL(debug) << stm.https_res_.body(); 
                                    std::istringstream is{stm.https_res_.body()};
                                    stm.https_res_.body().clear();
                                    stm.snapshot_tree_.clear();
@@ -57,9 +56,8 @@ boost::beast::http::async_read(
                                    stm.snapshot_seq_number_ =
                                        stm.snapshot_tree_.get<long>("sequence");
 #ifdef DEBUG
-                                   std::cout << "Snapshot sequence number: "
-                                             << stm.snapshot_seq_number_
-                                             << "\n";
+                                   BOOST_LOG_TRIVIAL(debug) << "Snapshot sequence number: "
+                                             << stm.snapshot_seq_number_;
 #endif
                                    stm.https_buffer_.consume(stm.https_buffer_.size());
                                    stm.success();

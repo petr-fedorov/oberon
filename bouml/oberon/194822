@@ -1,6 +1,6 @@
 format 223
 "Receiver" // Standalone application::Receiver
-  revision 6
+  revision 9
   modified_by 6 "petr"
   // class settings
   
@@ -187,39 +187,6 @@ ${members}};
       end
     end
 
-    class 799878 "ExchangeMessageProcessor"
-      abstract visibility package stereotype "interface"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl "${comment}${@}${visibility}${static}interface ${name}${extends} {
-${members}}
-"
-      php_decl "${comment}interface ${name}${extends} {
-${members}}
-"
-      python_2_2 python_decl ""
-      idl_decl "${comment}${abstract}${local}interface ${name}${inherit} {
-${members}};
-"
-      explicit_switch_type ""
-      mysql_decl ""
-      
-      operation 1065222 "process"
-	abstract cpp_virtual public explicit_return_type "void"
-	nparams 1
-	  param in name "message" type class_ref 174214 // ptree
-	multiplicity "1"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	
-	
-	
-	
-      end
-    end
-
     class 800006 "File"
       visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
@@ -233,14 +200,6 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
-      classrelation 890502 // <realization>
-	relation 880390 -_-|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 890502 // <realization>
-	  b parent class_ref 799878 // ExchangeMessageProcessor
-      end
-
       operation 1065350 "process"
 	cpp_virtual public explicit_return_type "void"
 	nparams 1
@@ -297,7 +256,6 @@ ${inlines}
 	
       end
     end
-
   end
 
   classview 220550 "Coinbase"
@@ -345,7 +303,7 @@ ${inlines}
 	  cpp_on_entry "stm.signal_set_->async_wait(boost::asio::bind_executor(
     *stm.rtc_, [&stm](const boost::system::error_code &ec, int signal_number) {
       if (!ec) {
-        std::cout << \"\\nTermination requested ... \\n\";
+        BOOST_LOG_TRIVIAL(info) << \"\\nTermination requested ...\";
         stm.stop();
       }
     }));
@@ -431,7 +389,7 @@ tree.add_child(\"channels\", stm.channels_);
 
 write_json(request, tree, false);
 #ifdef DEBUG
-std::cout << \"Request: \" << request.str() << \"\\n\";
+BOOST_LOG_TRIVIAL(debug) << \"Request: \" << request.str(); 
 #endif
 stm.ws_->async_write(boost::asio::buffer(request.str()),
                      boost::asio::bind_executor(
@@ -496,7 +454,7 @@ boost::asio::async_connect(
             stm.ec_ = ec;
             stm.error_message_ = ec.message();
 #ifdef DEBUG
-            std::cout << \"Can't resolve!\\n\";
+            BOOST_LOG_TRIVIAL(debug) << \"Can't resolve!\";
 #endif
             stm.failure();
           } else {
@@ -559,7 +517,7 @@ stm.timer_->async_wait(boost::asio::bind_executor(
     *stm.rtc_, [&stm](const boost::system::error_code &ec) {
       if (ec != boost::asio::error::operation_aborted) {
 #ifdef DEBUG
-        std::cout << \"Time out!\\n\";
+        BOOST_LOG_TRIVIAL(warning) << \"Time out!\\n\";
 #endif
         stm.timeout();
       }
@@ -586,7 +544,7 @@ for (auto &message: stm.messages_)
 		uml_expr "save message"
 		cpp_trigger "message"
 		cpp_expr "#ifdef DEBUG
-std::cout << \"Seq no=\" << stm.last_seq_number_ << \"\\n\";
+BOOST_LOG_TRIVIAL(debug) << \"Seq no=\" << stm.last_seq_number_ << \"\\n\";
 #endif
 stm.f_->process(*stm.tree_);
 stm.ws_->async_read(stm.buffer_,
@@ -611,7 +569,7 @@ stm.https_ = std::make_unique<SslStream>(*stm.ioc_, *stm.https_ctx_);
 if (!SSL_set_tlsext_host_name(stm.https_->native_handle(), stm.https_host_.c_str())) {
   boost::system::error_code ec{static_cast<int>(::ERR_get_error()),
                                boost::asio::error::get_ssl_category()};
-  std::cerr << ec.message() << \"\\n\";
+  BOOST_LOG_TRIVIAL(error) << ec.message();
 }
 
 /*
@@ -627,7 +585,7 @@ SSL_CTX_set_keylog_callback(stm.https_ctx_->native_handle(),
 	      cpp_on_exit "stm.https_->next_layer().close(stm.ec_);
 #ifdef DEBUG
 if(stm.ec_)
- std::cout << \"Https closing error: \" << stm.ec_.message() << \"\\n\";
+ BOOST_LOG_TRIVIAL(warning) << \"Https closing error: \" << stm.ec_.message(); 
 #endif
 "
 	    state 233350 "Save snapshot"
@@ -645,15 +603,17 @@ stm.thread_.join();"
 		cpp_do_activity "if (stm.messages_.size()) {
   auto era_time = stm.messages_.front()->get<string>(\"time\");
   auto product_id = stm.messages_.front()->get<string>(\"product_id\");
+  auto local_timestamp = stm.messages_.front()->get<string>(\"local_timestamp\");
 
   // Start new era in another thread since it takes a long time ...
-  stm.thread_ = std::thread{[&stm, era_time, product_id]() {
+  stm.thread_ = std::thread{[&stm, era_time, product_id, local_timestamp]() {
     stm.stop_thread_.store(false);
     try {
       boost::property_tree::ptree era;
       era.put<string>(\"type\", \"era\");
       era.put<string>(\"time\", era_time);
       era.put<string>(\"product_id\", product_id);
+      era.put<string>(\"local_timestamp\", local_timestamp);
       stm.f_->process(era);
 
       boost::property_tree::ptree order_tree;
@@ -673,6 +633,7 @@ stm.thread_.join();"
         order_tree.put<string>(\"remaining_size\",
                                iter2++->second.get_value<string>());
         order_tree.put<string>(\"order_id\", iter2++->second.get_value<string>());
+        order_tree.put<string>(\"local_timestamp\", local_timestamp);
         stm.f_->process(order_tree);
       }
       for (auto iter = stm.snapshot_tree_.get_child(\"asks\").begin();
@@ -690,6 +651,7 @@ stm.thread_.join();"
         order_tree.put<string>(\"remaining_size\",
                                iter2++->second.get_value<string>());
         order_tree.put<string>(\"order_id\", iter2++->second.get_value<string>());
+        order_tree.put<string>(\"local_timestamp\", local_timestamp);
         stm.f_->process(order_tree);
       }
       if (!stm.stop_thread_) // We don't care too much about race condition here
@@ -700,6 +662,13 @@ stm.thread_.join();"
           stm.error_message_ = \"Snapshot saved has been stopped, exiting ...\";
           stm.failure();
         }));
+    } catch (const std::exception &e) {
+      std::string w { e.what() };
+      boost::asio::post(boost::asio::bind_executor(*stm.rtc_, [&stm, w]() {
+        stm.error_message_ = w;
+        stm.failure();
+      }));
+
     } catch (...) {
       boost::asio::post(boost::asio::bind_executor(*stm.rtc_, [&stm]() {
         stm.error_message_ =
@@ -766,7 +735,7 @@ stm.thread_.join();"
             stm.failure();
           } else {
 #ifdef DEBUG
-            std::cout << \"IP: \" << iter->endpoint().address().to_string()
+            BOOST_LOG_TRIVIAL(debug) << \"IP: \" << iter->endpoint().address().to_string()
                       << \" Port: \" << iter->endpoint().port() << \"\\n\";
 #endif
             stm.https_address_ = iter->endpoint().address();
@@ -809,7 +778,7 @@ stm.thread_.join();"
 		uml_on_entry "launch"
 		cpp_on_entry "namespace http = boost::beast::http;
 #ifdef DEBUG
-std::cout << \"HTTP GET \" << stm.https_req_.target() << \"\\n\";
+BOOST_LOG_TRIVIAL(debug) << \"HTTP GET \" << stm.https_req_.target();
 #endif
 http::async_write(
     *stm.https_, stm.https_req_,
@@ -862,8 +831,8 @@ http::async_write(
 		cpp_trigger "message"
 		cpp_expr "stm.messages_.push_back(std::move(stm.tree_));
 #ifdef DEBUG
-std::cout << \"Seq no: \" << stm.last_seq_number_
-          << \" Queue size: \" << stm.messages_.size() << \"\\n\";
+BOOST_LOG_TRIVIAL(debug) << \"Seq no: \" << stm.last_seq_number_
+          << \" Queue size: \" << stm.messages_.size();
 #endif
 stm.ws_->async_read(stm.buffer_,
                     boost::asio::bind_executor(
@@ -890,6 +859,9 @@ stm.ws_->async_read(stm.buffer_,
 	      on state_ref 239878 // Failed
 		uml_trigger "failure"
 		cpp_trigger "failure"
+		cpp_expr "BOOST_LOG_TRIVIAL(warning) << stm.error_message_;
+stm.error_message_.clear();
+"
 	      external 
 	    end
 
@@ -940,11 +912,10 @@ stm.ws_->async_read(stm.buffer_,
                                  if (ec) {
                                    stm.ec_ = ec;
                                    stm.error_message_ = ec.message();
-                                   std::cout << stm.error_message_ << \"\\n\";
+                                   BOOST_LOG_TRIVIAL(warning) << stm.error_message_;
                                    stm.failure();
                                  } else {
-                                   // std::cout << stm.https_res_.body() <<
-                                   // \"\\n\";
+                                   // BOOST_LOG_TRIVIAL(debug) << stm.https_res_.body(); 
                                    std::istringstream is{stm.https_res_.body()};
                                    stm.https_res_.body().clear();
                                    stm.snapshot_tree_.clear();
@@ -952,9 +923,8 @@ stm.ws_->async_read(stm.buffer_,
                                    stm.snapshot_seq_number_ =
                                        stm.snapshot_tree_.get<long>(\"sequence\");
 #ifdef DEBUG
-                                   std::cout << \"Snapshot sequence number: \"
-                                             << stm.snapshot_seq_number_
-                                             << \"\\n\";
+                                   BOOST_LOG_TRIVIAL(debug) << \"Snapshot sequence number: \"
+                                             << stm.snapshot_seq_number_;
 #endif
                                    stm.https_buffer_.consume(stm.https_buffer_.size());
                                    stm.success();
@@ -985,7 +955,7 @@ stm.ws_->async_read(stm.buffer_,
       }));
 }
 #ifdef DEBUG
-std::cout << stm.tree_->get<std::string>(\"time\") << \" Timer restarted\\n\";
+BOOST_LOG_TRIVIAL(debug) << stm.tree_->get<std::string>(\"time\") << \" Timer restarted\";
 #endif
 stm.ws_->async_read(stm.buffer_,
                     boost::asio::bind_executor(
@@ -4262,10 +4232,10 @@ ${inlines}
 	  param in name "https_target" explicit_type "string"
 	  param in name "product" explicit_type "string"
 	  param in name "channel" explicit_type "string"
-	  param inout name "f" type class_ref 799878 // ExchangeMessageProcessor
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}std::shared_ptr< ${t0} > ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}, const ${t4} & ${p4}${v4}, const ${t5} & ${p5}${v5}, const ${t6} & ${p6}${v6}, const ${t7} & ${p7}${v7}, const ${t8} & ${p8}${v8},std::shared_ptr<${t9}> ${p9}${v9}${)}${volatile}${throw};
+	  param inout name "f" type class_ref 202630 // Reconstructor
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}std::shared_ptr< ${t0} > ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}, const ${t4} & ${p4}${v4}, const ${t5} & ${p5}${v5}, const ${t6} & ${p6}${v6}, const ${t7} & ${p7}${v7}, const ${t8} & ${p8}${v8},std::unique_ptr<${t9}> && ${p9}${v9}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}std::shared_ptr< ${t0} > ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, const ${t4} & ${p4}, const ${t5} & ${p5}, const ${t6} & ${p6}, const ${t7} & ${p7}, const ${t8} & ${p8}, std::shared_ptr<${t9}> ${p9}${)}${volatile}${throw} : _current_state{0},ioc_{ioc}, host_{host}, port_{port}, target_{target},  product_{product}, https_host_ {https_host}, https_port_{https_port}, f_{f} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}std::shared_ptr< ${t0} > ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, const ${t4} & ${p4}, const ${t5} & ${p5}, const ${t6} & ${p6}, const ${t7} & ${p7}, const ${t8} & ${p8}, std::unique_ptr<${t9}> && ${p9}${)}${volatile}${throw} : _current_state{0},ioc_{ioc}, host_{host}, port_{port}, target_{target},  product_{product}, https_host_ {https_host}, https_port_{https_port}, f_{std::move(f)} {
   ${body}}
 "
 	
@@ -4824,13 +4794,28 @@ ${inlines}
 	  b parent class_ref 793350 // Receiver
       end
 
-      classrelation 890630 // f_ (<directional composition>)
-	relation 880518 *-->
+      classrelation 897286 // f_ (<directional composition>)
+	relation 887174 *-->
 	  a role_name "f_" private
-	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::shared_ptr<${type}> ${name}${value};
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::unique_ptr<${type}> ${name}${value};
 "
-	    classrelation_ref 890630 // f_ (<directional composition>)
-	  b parent class_ref 799878 // ExchangeMessageProcessor
+	    classrelation_ref 897286 // f_ (<directional composition>)
+	  b parent class_ref 202630 // Reconstructor
+      end
+
+      attribute 718086 "_machine_name"
+	public explicit_type "string"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	ncouples 1
+	key "STM generated" value ""
+	comment " a (unique) name of the machine "
       end
     end
   end
@@ -12955,7 +12940,6 @@ ${namespace_end}"
 	class_ref 698246 // SslStream
 	class_ref 698502 // WebsocketStream
 	class_ref 793350 // Receiver
-	class_ref 799878 // ExchangeMessageProcessor
 	class_ref 800006 // File
       end
     end
@@ -12980,6 +12964,8 @@ ${namespace_end}
 #include <boost/asio/bind_executor.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/log/trivial.hpp>
+#include \"date.h\"
 using boost::posix_time::seconds;
 ${includes}
 ${namespace_start}

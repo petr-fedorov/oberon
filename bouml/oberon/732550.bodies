@@ -5,11 +5,11 @@ class Query_snapshot_State
 	_doentry(stm);
 !!!967942.cpp!!!	_doentry(inout stm : Coinbase) : void
 #ifdef VERBOSE_STATE_MACHINE
-  std::cout << "DEBUG : execute entry behavior of .Coinbase.Engage.Subscribed.Snapshot.Query snapshot" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Coinbase.Engage.Subscribed.Snapshot.Query snapshot";
 #endif
 namespace http = boost::beast::http;
 #ifdef DEBUG
-std::cout << "HTTP GET " << stm.https_req_.target() << "\n";
+BOOST_LOG_TRIVIAL(debug) << "HTTP GET " << stm.https_req_.target();
 #endif
 http::async_write(
     *stm.https_, stm.https_req_,
@@ -29,7 +29,7 @@ http::async_write(
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
     stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._snapshot_state._read_snapshot_state);
 #ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Snapshot.Read Snapshot" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Coinbase.Engage.Subscribed.Snapshot.Read Snapshot";
 #endif
     stm._coinbase_state._engage_state._subscribed_state._snapshot_state._read_snapshot_state.create(stm);
   }

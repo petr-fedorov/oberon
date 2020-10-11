@@ -5,7 +5,7 @@ class Handshake_SSL_State
 	_doentry(stm);
 !!!967686.cpp!!!	_doentry(inout stm : Coinbase) : void
 #ifdef VERBOSE_STATE_MACHINE
-  std::cout << "DEBUG : execute entry behavior of .Coinbase.Engage.Subscribed.Snapshot.Handshake SSL" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Coinbase.Engage.Subscribed.Snapshot.Handshake SSL";
 #endif
 stm.https_->async_handshake(
     boost::asio::ssl::stream_base::client,
@@ -24,7 +24,7 @@ stm.https_->async_handshake(
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
     stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._snapshot_state._query_snapshot_state);
 #ifdef VERBOSE_STATE_MACHINE
-    std::cout << "DEBUG : current state is now .Coinbase.Engage.Subscribed.Snapshot.Query snapshot" << std::endl;
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Coinbase.Engage.Subscribed.Snapshot.Query snapshot";
 #endif
     stm._coinbase_state._engage_state._subscribed_state._snapshot_state._query_snapshot_state.create(stm);
   }

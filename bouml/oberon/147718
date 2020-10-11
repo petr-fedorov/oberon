@@ -1,6 +1,6 @@
 format 223
 "Standalone application" // Standalone application
-  revision 45
+  revision 46
   modified_by 6 "petr"
   // class settings
   
@@ -1003,6 +1003,8 @@ format 223
       cpp_src "#include <thread>
 #include \"root_certificates.h\"
 #include \"receiver_coinbase.h\"
+#include \"reconstructor.h\"
+#include \"store_file.h\"
 #include <boost/beast.hpp>
 #include <boost/asio/connect.hpp>
 #include <boost/asio/bind_executor.hpp>
@@ -1031,11 +1033,11 @@ int main(int argc, char **argv) {
 
   // The io_context is required for all I/O
   std::shared_ptr<boost::asio::io_context> ioc = std::make_shared<boost::asio::io_context>();
-  auto f = std::make_shared<oberon::receiver::File>(argv[7]);
+  oberon::store::File f{argv[7]};
   std::shared_ptr<rec::Receiver> coinbase =
       std::make_shared<oberon::receiver::Coinbase>(
           ioc, host, port, target, https_host, https_port, https_target,
-          \"BTC-USD\", \"full\", f);
+          \"BTC-USD\", \"full\",oberon::reconstructor::Reconstructor::create(oberon::reconstructor::Exchanges::kCoinbase, \"BTC-USD\", &f, 2.0, false));
   coinbase->create();
   // Run the I/O service. The call will return when
   // the socket is closed.
@@ -1053,9 +1055,16 @@ int main(int argc, char **argv) {
     artifact 174214 "oberon"
       stereotype "executable"
       associated_artifacts
+	artifact_ref 134534 // reconstructor
 	artifact_ref 173702 // main
+	artifact_ref 180998 // reconstructor_impl
+	artifact_ref 213638 // reconstructor_coinbase
+	artifact_ref 213766 // reconstructor_bitstamp
+	artifact_ref 233350 // reconstructor_bitfinex
 	artifact_ref 246406 // receiver_coinbase
 	artifact_ref 260102 // receiver_common
+	artifact_ref 266630 // store_file
+	artifact_ref 266758 // store
       end
       ncouples 10
       key "genpro pro" value "/tmp/oberon/cpp/oberon.pro"
@@ -1063,7 +1072,7 @@ int main(int argc, char **argv) {
       key "genpro target" value "/tmp/oberon/cpp/oberon"
       key "genpro tmplt" value "app"
       key "genpro config" value "debug warn_on qt"
-      key "genpro defines" value "VERBOSE_STATE_MACHINE DEBUG"
+      key "genpro defines" value "VERBOSE_STATE_MACHINE DEBUG BOOST_LOG_DYN_LINK"
       key "genpro includepath" value ""
       key "genpro dependpath" value ""
       key "genpro objectsdir" value ""
@@ -1071,7 +1080,7 @@ int main(int argc, char **argv) {
 CONFIG -= app_bundle
 CONFIG += thread
 CONFIG -= qt
-LIBS +=-lboost_system -lssl -lcrypto"
+LIBS +=-lboost_system -lssl -lcrypto -lboost_log"
     end
   end
 end

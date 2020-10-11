@@ -6,7 +6,9 @@ class AnyState
     st->opened(stm);
 #ifdef VERBOSE_STATE_MACHINE
   else
-    std::cout << "DEBUG : transition opened not expected" << std::endl;
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "transition opened not expected";
+#endif
 #endif
 !!!775430.cpp!!!	elapsed(inout stm : Deduce_Size_Coinbase) : void
   AnyState * st = _upper(stm);
@@ -15,7 +17,9 @@ class AnyState
     st->elapsed(stm);
 #ifdef VERBOSE_STATE_MACHINE
   else
-    std::cout << "DEBUG : transition elapsed not expected" << std::endl;
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "transition elapsed not expected";
+#endif
 #endif
 !!!775686.cpp!!!	era(inout stm : Deduce_Size_Coinbase) : void
   AnyState * st = _upper(stm);
@@ -24,7 +28,9 @@ class AnyState
     st->era(stm);
 #ifdef VERBOSE_STATE_MACHINE
   else
-    std::cout << "DEBUG : transition era not expected" << std::endl;
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "transition era not expected";
+#endif
 #endif
 !!!775942.cpp!!!	filled(inout stm : Deduce_Size_Coinbase) : void
   AnyState * st = _upper(stm);
@@ -33,7 +39,9 @@ class AnyState
     st->filled(stm);
 #ifdef VERBOSE_STATE_MACHINE
   else
-    std::cout << "DEBUG : transition filled not expected" << std::endl;
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "transition filled not expected";
+#endif
 #endif
 !!!776198.cpp!!!	message(inout stm : Deduce_Size_Coinbase) : void
   AnyState * st = _upper(stm);
@@ -42,7 +50,9 @@ class AnyState
     st->message(stm);
 #ifdef VERBOSE_STATE_MACHINE
   else
-    std::cout << "DEBUG : transition message not expected" << std::endl;
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "transition message not expected";
+#endif
 #endif
 !!!776582.cpp!!!	received(inout stm : Deduce_Size_Coinbase) : void
   AnyState * st = _upper(stm);
@@ -51,5 +61,7 @@ class AnyState
     st->received(stm);
 #ifdef VERBOSE_STATE_MACHINE
   else
-    std::cout << "DEBUG : transition received not expected" << std::endl;
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "transition received not expected";
+#endif
 #endif
