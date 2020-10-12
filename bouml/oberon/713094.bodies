@@ -1,5 +1,5 @@
 class AnyState
-!!!925702.cpp!!!	heartbeat(inout stm : Coinbase) : void
+!!!925702.cpp!!!	heartbeat(inout stm : CoinbaseReceiver) : void
   AnyState * st = _upper(stm);
 
   if (st != 0)
@@ -10,7 +10,7 @@ class AnyState
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "transition heartbeat not expected";
 #endif
 #endif
-!!!927750.cpp!!!	message(inout stm : Coinbase) : void
+!!!927750.cpp!!!	message(inout stm : CoinbaseReceiver) : void
   AnyState * st = _upper(stm);
 
   if (st != 0)
@@ -21,7 +21,7 @@ class AnyState
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "transition message not expected";
 #endif
 #endif
-!!!974854.cpp!!!	stop(inout stm : Coinbase) : void
+!!!974854.cpp!!!	stop(inout stm : CoinbaseReceiver) : void
   AnyState * st = _upper(stm);
 
   if (st != 0)
@@ -32,7 +32,7 @@ class AnyState
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "transition stop not expected";
 #endif
 #endif
-!!!976646.cpp!!!	timeout(inout stm : Coinbase) : void
+!!!976646.cpp!!!	timeout(inout stm : CoinbaseReceiver) : void
   AnyState * st = _upper(stm);
 
   if (st != 0)
@@ -43,7 +43,7 @@ class AnyState
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "transition timeout not expected";
 #endif
 #endif
-!!!1027206.cpp!!!	success(inout stm : Coinbase) : void
+!!!1027206.cpp!!!	success(inout stm : CoinbaseReceiver) : void
   AnyState * st = _upper(stm);
 
   if (st != 0)
@@ -54,7 +54,7 @@ class AnyState
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "transition success not expected";
 #endif
 #endif
-!!!1028102.cpp!!!	failure(inout stm : Coinbase) : void
+!!!1028102.cpp!!!	failure(inout stm : CoinbaseReceiver) : void
   AnyState * st = _upper(stm);
 
   if (st != 0)
@@ -63,5 +63,16 @@ class AnyState
   else
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "transition failure not expected";
+#endif
+#endif
+!!!1114630.cpp!!!	processed(inout stm : CoinbaseReceiver) : void
+  AnyState * st = _upper(stm);
+
+  if (st != 0)
+    st->processed(stm);
+#ifdef VERBOSE_STATE_MACHINE
+  else
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "transition processed not expected";
 #endif
 #endif

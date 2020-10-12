@@ -1,0 +1,39 @@
+class Failed_State
+!!!1109382.cpp!!!	success(inout stm : CoinbaseReceiver) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._coinbasereceiver_state._engage_state._subscribed_state._snapshot_state._doexit(stm);
+    stm._set_currentState(stm._coinbasereceiver_state._engage_state._subscribed_state._failed_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .CoinbaseReceiver.Engage.Subscribed.Failed";
+#endif
+  }
+!!!1109510.cpp!!!	failure(inout stm : CoinbaseReceiver) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._coinbasereceiver_state._engage_state._subscribed_state._snapshot_state._doexit(stm);
+    stm._set_currentState(stm._coinbasereceiver_state._engage_state._subscribed_state._failed_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .CoinbaseReceiver.Engage.Subscribed.Failed";
+#endif
+  }
+!!!1109638.cpp!!!	message(inout stm : CoinbaseReceiver) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._coinbasereceiver_state._engage_state._subscribed_state._snapshot_state._doexit(stm);
+    stm._set_currentState(stm._coinbasereceiver_state._engage_state._subscribed_state._failed_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .CoinbaseReceiver.Engage.Subscribed.Failed";
+#endif
+  }
+!!!1109766.cpp!!!	heartbeat(inout stm : CoinbaseReceiver) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._coinbasereceiver_state._engage_state._subscribed_state._snapshot_state._doexit(stm);
+    stm._set_currentState(stm._coinbasereceiver_state._engage_state._subscribed_state._failed_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .CoinbaseReceiver.Engage.Subscribed.Failed";
+#endif
+  }
+!!!1109894.cpp!!!	_upper(inout stm : CoinbaseReceiver) : CoinbaseReceiver::AnyState
+  return &stm._coinbasereceiver_state._engage_state._subscribed_state._snapshot_state;

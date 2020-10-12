@@ -1,19 +1,19 @@
 class Read_Snapshot_State
-!!!1045126.cpp!!!	success(inout stm : Coinbase) : void
+!!!1110150.cpp!!!	success(inout stm : CoinbaseReceiver) : void
   {
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
-    stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._snapshot_state);
+    stm._set_currentState(stm._coinbasereceiver_state._engage_state._subscribed_state._snapshot_state);
 #ifdef VERBOSE_STATE_MACHINE
-   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Coinbase.Engage.Subscribed.Snapshot";
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .CoinbaseReceiver.Engage.Subscribed.Snapshot";
 #endif
     if (stm.snapshot_seq_number_ >= stm.first_seq_number_ &&
  stm.snapshot_seq_number_ <= stm.last_seq_number_
 ) {
-      stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._snapshot_state._save_snapshot_state);
+      stm._set_currentState(stm._coinbasereceiver_state._engage_state._subscribed_state._snapshot_state._save_snapshot_state);
 #ifdef VERBOSE_STATE_MACHINE
-   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Coinbase.Engage.Subscribed.Snapshot.Save snapshot";
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .CoinbaseReceiver.Engage.Subscribed.Snapshot.Save snapshot";
 #endif
-      stm._coinbase_state._engage_state._subscribed_state._snapshot_state._save_snapshot_state.create(stm);
+      stm._coinbasereceiver_state._engage_state._subscribed_state._snapshot_state._save_snapshot_state.create(stm);
     }
     else if (!(stm.snapshot_seq_number_ >= stm.first_seq_number_ &&
  stm.snapshot_seq_number_ == stm.last_seq_number_)
@@ -22,20 +22,18 @@ class Read_Snapshot_State
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition stale";
 #endif
 
-      stm._set_currentState(stm._coinbase_state._engage_state._subscribed_state._snapshot_state._query_snapshot_state);
+      stm._set_currentState(stm._coinbasereceiver_state._engage_state._subscribed_state._snapshot_state._query_snapshot_state);
 #ifdef VERBOSE_STATE_MACHINE
-   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Coinbase.Engage.Subscribed.Snapshot.Query snapshot";
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .CoinbaseReceiver.Engage.Subscribed.Snapshot.Query snapshot";
 #endif
-      stm._coinbase_state._engage_state._subscribed_state._snapshot_state._query_snapshot_state.create(stm);
+      stm._coinbasereceiver_state._engage_state._subscribed_state._snapshot_state._query_snapshot_state.create(stm);
     }
   }
-!!!1045254.cpp!!!	_upper(inout stm : Coinbase) : Coinbase::AnyState
-  return &stm._coinbase_state._engage_state._subscribed_state._snapshot_state;
-!!!1045510.cpp!!!	create(inout stm : Coinbase) : void
+!!!1110278.cpp!!!	create(inout stm : CoinbaseReceiver) : void
 	_doentry(stm);
-!!!1045638.cpp!!!	_doentry(inout stm : Coinbase) : void
+!!!1110406.cpp!!!	_doentry(inout stm : CoinbaseReceiver) : void
 #ifdef VERBOSE_STATE_MACHINE
-   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Coinbase.Engage.Subscribed.Snapshot.Read Snapshot";
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .CoinbaseReceiver.Engage.Subscribed.Snapshot.Read Snapshot";
 #endif
 boost::beast::http::async_read(
     *stm.https_, stm.https_buffer_, stm.https_res_,
@@ -64,3 +62,5 @@ boost::beast::http::async_read(
                                  }
                                }));
 
+!!!1110534.cpp!!!	_upper(inout stm : CoinbaseReceiver) : CoinbaseReceiver::AnyState
+  return &stm._coinbasereceiver_state._engage_state._subscribed_state._snapshot_state;

@@ -1,0 +1,134 @@
+class Save_snapshot_State
+!!!1106054.cpp!!!	success(inout stm : CoinbaseReceiver) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._coinbasereceiver_state._engage_state._subscribed_state._snapshot_state._save_snapshot_state._doexit(stm);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition success";
+#endif
+
+    stm._set_currentState(stm._coinbasereceiver_state._engage_state._subscribed_state._snapshot_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .CoinbaseReceiver.Engage.Subscribed.Snapshot";
+#endif
+      stm._coinbasereceiver_state._engage_state._subscribed_state._snapshot_state._completion(stm);
+  }
+!!!1106182.cpp!!!	create(inout stm : CoinbaseReceiver) : void
+	_doentry(stm);
+	_do(stm);
+!!!1106310.cpp!!!	_doentry(inout stm : CoinbaseReceiver) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .CoinbaseReceiver.Engage.Subscribed.Snapshot.Save snapshot";
+#endif
+auto iter = stm.messages_.begin();
+for (; iter != stm.messages_.end() &&
+       (*iter)->get<long>("sequence") != stm.snapshot_seq_number_;
+     stm.messages_.erase(iter++))
+  ;
+!!!1106438.cpp!!!	_doexit(inout stm : CoinbaseReceiver) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute exit behavior of .CoinbaseReceiver.Engage.Subscribed.Snapshot.Save snapshot";
+#endif
+stm.stop_thread_.store(true);
+!!!1106566.cpp!!!	_do(inout stm : CoinbaseReceiver) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute do behavior of .CoinbaseReceiver.Engage.Subscribed.Snapshot.Save snapshot";
+#endif
+if (stm.messages_.size()) {
+  auto era_time = stm.messages_.front()->get<string>("time");
+  auto product_id = stm.messages_.front()->get<string>("product_id");
+  auto local_timestamp = stm.messages_.front()->get<string>("local_timestamp");
+  stm.messages_.erase(stm.messages_.begin());
+
+  // Start new era in another thread since it takes a long time ...
+  boost::asio::post(boost::asio::bind_executor(
+      *stm.reconstructor_strand_, [&stm, era_time, product_id, local_timestamp]() {
+        stm.stop_thread_.store(false);
+        try {
+          boost::property_tree::ptree era;
+          era.put<string>("type", "era");
+          era.put<string>("time", era_time);
+          era.put<string>("product_id", product_id);
+          era.put<string>("local_timestamp", local_timestamp);
+          if (!stm.f_->process(era))
+            throw std::logic_error("Couldn't process era message");
+
+          boost::property_tree::ptree order_tree;
+
+          for (auto iter = stm.snapshot_tree_.get_child("bids").begin();
+               iter != stm.snapshot_tree_.get_child("bids").end() &&
+               !stm.stop_thread_;
+               ++iter) {
+            order_tree.clear();
+            order_tree.put<string>("time", era_time);
+            order_tree.put<string>("product_id", product_id);
+            order_tree.put<string>("type", "open");
+            order_tree.put<string>("side", "buy");
+
+            auto iter2 = iter->second.begin();
+            order_tree.put<string>("price",
+                                   iter2++->second.get_value<string>());
+            order_tree.put<string>("remaining_size",
+                                   iter2++->second.get_value<string>());
+            order_tree.put<string>("order_id",
+                                   iter2++->second.get_value<string>());
+            order_tree.put<string>("local_timestamp", local_timestamp);
+            if (!stm.f_->process(order_tree))
+              throw std::logic_error("Couldn't process bid message");
+          }
+          for (auto iter = stm.snapshot_tree_.get_child("asks").begin();
+               iter != stm.snapshot_tree_.get_child("asks").end() &&
+               !stm.stop_thread_;
+               ++iter) {
+            order_tree.clear();
+            order_tree.put<string>("time", era_time);
+            order_tree.put<string>("product_id", product_id);
+            order_tree.put<string>("type", "open");
+            order_tree.put<string>("side", "sell");
+
+            auto iter2 = iter->second.begin();
+            order_tree.put<string>("price",
+                                   iter2++->second.get_value<string>());
+            order_tree.put<string>("remaining_size",
+                                   iter2++->second.get_value<string>());
+            order_tree.put<string>("order_id",
+                                   iter2++->second.get_value<string>());
+            order_tree.put<string>("local_timestamp", local_timestamp);
+            if (!stm.f_->process(order_tree))
+              throw std::logic_error("Couldn't process ask message");
+          }
+          if (!stm.stop_thread_) // We don't care too much about race condition
+                                 // here
+            boost::asio::post(boost::asio::bind_executor(
+                *stm.rtc_, [&stm]() { stm.success(); }));
+          else
+            boost::asio::post(boost::asio::bind_executor(*stm.rtc_, [&stm]() {
+              stm.error_message_ =
+                  "Snapshot saved has been stopped, exiting ...";
+              stm.failure();
+            }));
+        } catch (const std::logic_error &e) {
+          std::string w{e.what()};
+          boost::asio::post(boost::asio::bind_executor(*stm.rtc_, [&stm, w]() {
+            stm.error_message_ = w;
+            stm.stop(); // We can't process received messages, so we stop the
+                        // machine
+          }));
+        } catch (const std::exception &e) {
+          std::string w{e.what()};
+          boost::asio::post(boost::asio::bind_executor(*stm.rtc_, [&stm, w]() {
+            stm.error_message_ = w;
+            stm.failure();
+          }));
+
+        } catch (...) {
+          boost::asio::post(boost::asio::bind_executor(*stm.rtc_, [&stm]() {
+            stm.error_message_ =
+                "Snapshot saved failed due to an exception, exiting ...";
+            stm.failure();
+          }));
+        }
+      }));
+}
+!!!1106694.cpp!!!	_upper(inout stm : CoinbaseReceiver) : CoinbaseReceiver::AnyState
+  return &stm._coinbasereceiver_state._engage_state._subscribed_state._snapshot_state;

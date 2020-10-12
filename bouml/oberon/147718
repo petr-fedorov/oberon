@@ -1,6 +1,6 @@
 format 223
 "Standalone application" // Standalone application
-  revision 48
+  revision 49
   modified_by 6 "petr"
   // class settings
   
@@ -78,26 +78,21 @@ format 223
 	end
       end
 
-      parameter 149254 "destination" explicit_type "string"
-	 multiplicity "1" unordered 
-	in
-	flow 408326 "S.1.4"
-	  on pin_ref 349958 // destination
-	end
-      end
-
       activityaction 192390 "Receive messages"
-	call_operation_action
-	synchronous operation_ref 1058694 // create
-	pin 350086 "target" type class_ref 793350 // Receiver
+	opaque_action
+	flow 415622 "<flow>"
+	  on activitynode_ref 190086 // activity_final
+	end
+
+	pin 357382 "target" type class_ref 793350 // Receiver
 	   multiplicity "1" unordered 
 	  in
 	end
 
-	pin 350470 "ptree" type class_ref 174214 // ptree
+	pin 357510 "ptree" type class_ref 174214 // ptree
 	   multiplicity "*" fifo 
 	  out stream
-	  flow 407302 "S.1.12"
+	  flow 415750 "<flow>"
 	    on pin_ref 348678 // ptree
 	  end
 	end
@@ -105,14 +100,7 @@ format 223
 
       activitynode 189958 initial_node ""
 	flow 244230 "S.1.1"
-	  on activityaction_ref 213638 // activity action Create active objects
-	end
-      end
-
-      activityaction 193542 "Stop request"
-	accept_event_action
-	flow 219782 "S.1.14"
-	  on activitynode_ref 190086 // activity_final
+	  on activityaction_ref 213638 // activity action Initialize
 	end
       end
 
@@ -120,7 +108,7 @@ format 223
       end
 
       interruptibleactivityregion 141062 ""
-	activityaction 213638 "Create active objects"
+	activityaction 213638 "Initialize"
 	  call_behavior_action
 	  synchronous activity_ref 168710 // S.2 Initialize
 	  flow 272646 "S.1.6"
@@ -148,23 +136,11 @@ format 223
 	  pin 349830 "receiver" explicit_type ""
 	     multiplicity "1" unordered 
 	    out
-	    flow 407558 "S.1.5"
-	      on pin_ref 350086 // target
+	    flow 415878 "<flow>"
+	      on pin_ref 357382 // target
 	    end
 	  end
 
-	  pin 349958 "destination" explicit_type ""
-	     multiplicity "1" unordered 
-	    in
-	  end
-
-	  pin 350854 "store" type class_ref 231302 // Store
-	     multiplicity "1" unordered 
-	    out
-	    flow 407942 "S.1.8"
-	      on pin_ref 350598 // target
-	    end
-	  end
 	end
 
 	activitynode 229382 fork ""
@@ -176,33 +152,14 @@ format 223
 	    on activityaction_ref 247302 // activity action Reconstruct Order Book
 	  end
 
-	  flow 407814 "S.1.10"
-	    on activityaction_ref 288774 // activity action Store events
-	  end
 	end
 
 	activityaction 247302 "Reconstruct Order Book"
 	  call_behavior_action
 	  synchronous activity_ref 175238 // R.1 Reconstruct Order Book
 	  pin 348678 "ptree" type class_ref 174214 // ptree
-	     multiplicity "*" lifo 
+	     multiplicity "*" fifo 
 	    in stream
-	  end
-
-	  pin 348806 "time_order_error" type class_ref 472838 // time_order_error
-	     multiplicity "1" unordered is_control
-	    out exception
-	    flow 409094 "<flow>"
-	      on activitynode_ref 190086 // activity_final
-	    end
-	  end
-
-	  pin 348934 "logic_error" explicit_type ""
-	    unordered is_control
-	    out exception
-	    flow 408966 "<flow>"
-	      on activitynode_ref 190086 // activity_final
-	    end
 	  end
 
 	  pin 349062 "target" type class_ref 486278 // ReconstructorImplementation
@@ -210,34 +167,20 @@ format 223
 	    in
 	  end
 
-	  pin 349190 "events" explicit_type ""
-	     multiplicity "*" ordered 
-	    out stream
-	    flow 407430 "S.1.13"
-	      on pin_ref 350726 // events
-	    end
+	  flow 416006 "<flow>"
+	    on activitynode_ref 317190 // activity_final
 	  end
 	end
 
-	activityaction 288774 "Store events"
-	  call_behavior_action
-	  synchronous activity_ref 201734 // S.3 Store
-	  pin 350598 "target" type class_ref 231302 // Store
-	     multiplicity "1" unordered 
-	    in
-	  end
-
-	  pin 350726 "events" type class_ref 230406 // Event
-	     multiplicity "*" fifo 
-	    in stream
-	  end
-	end
       end
 
       activitypartition 128006 "Reconstructor"
       end
 
       activitypartition 128134 "Application"
+      end
+
+      activitynode 317190 activity_final ""
       end
     end
 
@@ -1031,11 +974,10 @@ int main(int argc, char **argv) {
   std::shared_ptr<boost::asio::io_context> ioc = std::make_shared<boost::asio::io_context>();
   oberon::store::File f{exchange,product};
   std::shared_ptr<rec::Receiver> coinbase =
-      std::make_shared<oberon::receiver::Coinbase>(
+      std::make_shared<oberon::receiver::CoinbaseReceiver>(
           ioc, product, oberon::reconstructor::Reconstructor::create(oberon::reconstructor::Exchanges::kCoinbase,product, &f, 2.0, false));
   coinbase->create();
-  // Run the I/O service. The call will return when
-  // the socket is closed.
+  // Run the I/O service in two threads.
   std::thread t {[&ioc]() { ioc->run(); }};
   ioc->run();
   t.join();

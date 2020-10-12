@@ -1,0 +1,36 @@
+class Resolve_State
+!!!1104390.cpp!!!	success(inout stm : CoinbaseReceiver) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._coinbasereceiver_state._engage_state._initialize_state._connect_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .CoinbaseReceiver.Engage.Initialize.Connect";
+#endif
+    stm._coinbasereceiver_state._engage_state._initialize_state._connect_state.create(stm);
+  }
+!!!1104518.cpp!!!	create(inout stm : CoinbaseReceiver) : void
+	_doentry(stm);
+!!!1104646.cpp!!!	_doentry(inout stm : CoinbaseReceiver) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .CoinbaseReceiver.Engage.Initialize.Resolve";
+#endif
+stm.resolver_->async_resolve(
+    stm.host_, stm.port_,
+    boost::asio::bind_executor(
+        *stm.rtc_,
+        [&stm](const boost::system::error_code &ec,
+               boost::asio::ip::tcp::resolver::results_type results) {
+          if (ec) {
+            stm.ec_ = ec;
+            stm.error_message_ = ec.message();
+#ifdef DEBUG
+            BOOST_LOG_TRIVIAL(debug) << "Can't resolve!";
+#endif
+            stm.failure();
+          } else {
+            stm.results_ = results;
+            stm.success();
+          }
+        }));
+!!!1104774.cpp!!!	_upper(inout stm : CoinbaseReceiver) : CoinbaseReceiver::AnyState
+  return &stm._coinbasereceiver_state._engage_state._initialize_state;

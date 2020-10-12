@@ -1,9 +1,18 @@
 class Subscribe_State
-!!!961798.cpp!!!	create(inout stm : Coinbase) : void
-	_doentry(stm);
-!!!961926.cpp!!!	_doentry(inout stm : Coinbase) : void
+!!!1103366.cpp!!!	success(inout stm : CoinbaseReceiver) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._coinbasereceiver_state._engage_state._initialize_state);
 #ifdef VERBOSE_STATE_MACHINE
-   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Coinbase.Engage.Initialize.Subscribe";
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .CoinbaseReceiver.Engage.Initialize";
+#endif
+      stm._coinbasereceiver_state._engage_state._initialize_state._completion(stm);
+  }
+!!!1103494.cpp!!!	create(inout stm : CoinbaseReceiver) : void
+	_doentry(stm);
+!!!1103622.cpp!!!	_doentry(inout stm : CoinbaseReceiver) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .CoinbaseReceiver.Engage.Initialize.Subscribe";
 #endif
 using namespace boost::property_tree;
 ptree tree;
@@ -33,14 +42,5 @@ stm.ws_->async_write(boost::asio::buffer(request.str()),
                                  });
                            }
                          }));
-!!!962054.cpp!!!	_upper(inout stm : Coinbase) : Coinbase::AnyState
-  return &stm._coinbase_state._engage_state._initialize_state;
-!!!1027590.cpp!!!	success(inout stm : Coinbase) : void
-  {
-    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
-    stm._set_currentState(stm._coinbase_state._engage_state._initialize_state);
-#ifdef VERBOSE_STATE_MACHINE
-   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Coinbase.Engage.Initialize";
-#endif
-      stm._coinbase_state._engage_state._initialize_state._completion(stm);
-  }
+!!!1103750.cpp!!!	_upper(inout stm : CoinbaseReceiver) : CoinbaseReceiver::AnyState
+  return &stm._coinbasereceiver_state._engage_state._initialize_state;
