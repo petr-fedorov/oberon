@@ -1,6 +1,6 @@
 format 223
 "Standalone application" // Standalone application
-  revision 46
+  revision 47
   modified_by 6 "petr"
   // class settings
   
@@ -1018,10 +1018,10 @@ int main(int argc, char **argv) {
   namespace websocket = boost::beast::websocket;
   namespace rec = oberon::receiver;
   // Check command line arguments.
-  if (argc != 8) {
-    std::cerr << \"Usage: obtain <host> <port> <target> <https_host> <https_port> <https_target> path\\n\"
+  if (argc != 7) {
+    std::cerr << \"Usage: obtain <host> <port> <target> <https_host> <https_port> <https_target> \\n\"
               << \"Example:\\n\"
-              << \"    obtain ws-feed.pro.coinbase.com 443 / api.pro.coinbase.com 80 / ./output.txt\\n\";
+              << \"    obtain ws-feed.pro.coinbase.com 443 / api.pro.coinbase.com 80 / \\n\";
     return EXIT_FAILURE;
   }
   auto const host = argv[1];
@@ -1033,7 +1033,7 @@ int main(int argc, char **argv) {
 
   // The io_context is required for all I/O
   std::shared_ptr<boost::asio::io_context> ioc = std::make_shared<boost::asio::io_context>();
-  oberon::store::File f{argv[7]};
+  oberon::store::File f{\"Coinbase\", \"BTC-USD\"};
   std::shared_ptr<rec::Receiver> coinbase =
       std::make_shared<oberon::receiver::Coinbase>(
           ioc, host, port, target, https_host, https_port, https_target,

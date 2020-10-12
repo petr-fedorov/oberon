@@ -2,9 +2,9 @@ class CoinbaseReconstructor
 !!!576134.cpp!!!	extract(in tree : ptree [1]) : MessageHandler::Message [1..*]
 using namespace date;
 using namespace std;
+vector<unique_ptr<Message>> output;
 try {
   Timestamp timestamp = toTimestamp(tree.get<string>("time"));
-  vector<unique_ptr<Message>> output;
   string type = tree.get<string>("type");
   if (type == "elapsed")
     output.push_back(make_unique<Elapsed>(timestamp));
@@ -17,15 +17,17 @@ try {
       output.push_back(make_unique<CoinbaseDoneCanceled>(tree, *this));
   } else if (type == "match") {
     output.push_back(make_unique<CoinbaseMatch>(tree, *this));
+  } else if (type == "era") {
+    output.push_back(make_unique<CoinbaseEra>(tree, *this));
   }
-  return size_deducer_->handle(move(output));
-} catch (...) {
+} catch (const std::exception & e) {
   std::stringstream s;
   boost::property_tree::write_json(s, tree, false);
   std::string msg { s.str() };
-  BOOST_LOG_TRIVIAL(error) << s.str();
+  BOOST_LOG_TRIVIAL(error) << "Exception " << e.what() << " while processing " << s.str();
   throw;
 };
+return size_deducer_->handle(move(output));
 !!!582918.cpp!!!	CoinbaseReconstructor(in store : Store, in base_min_size : Volume, in base_increment : Volume, in extract_only : bool)
 store_ = store;
 base_min_size_ = base_min_size;

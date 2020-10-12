@@ -14,6 +14,11 @@ class Engage_State
   {
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
     stm._coinbase_state._engage_state._doexit(stm);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition stop";
+#endif
+if(!stm.error_message_.empty())
+  BOOST_LOG_TRIVIAL(error) << stm.error_message_;
     stm._set_currentState(stm._coinbase_state);
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Coinbase";

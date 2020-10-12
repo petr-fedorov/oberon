@@ -11,12 +11,12 @@ std::istringstream ss{timestamp};
 Timestamp output;
 ss >> parse("%FT%TZ", output);
 return output;
-!!!575878.cpp!!!	process(in message : ptree [1]) : void
+!!!575878.cpp!!!	process(in message : ptree [1]) : bool
 try{
 if (extract_only_)
-  transmit(extract(message));
+  return transmit(extract(message));
 else
-  transmit(cleanse(extract(message)));
+  return transmit(cleanse(extract(message)));
 }
 catch (const std::logic_error &e) {
   throw;
@@ -27,10 +27,11 @@ if(deduplicator_)
 if(taker_filter_)
   messages = taker_filter_->handle(std::move(messages));
 return messages;
-!!!641926.cpp!!!	transmit(in messages : MessageHandler::Message [*]) : void
+!!!641926.cpp!!!	transmit(in messages : MessageHandler::Message [*]) : bool
 messages = event_number_generator_->handle(std::move(messages));
 for(auto &msg : messages) 
-  store_->transmit(msg->toEvent());
+  if(!msg->accept(*store_)) return false;
+return true;
 
 !!!827910.cpp!!!	ReconstructorImplementation()
 deduplicator_ = std::unique_ptr<MessageHandler>();

@@ -1,14 +1,15 @@
 class File
-!!!1072262.cpp!!!	File(in name : string)
+!!!1072262.cpp!!!	File(in exchange : string, in product : string)
 f_ << "order_id,event_no,timestamp,local_timestamp,state,price,volume,trade_id,deltaVolume,taker\n";
 
 !!!1072134.cpp!!!	~File()
 f_.close();
-!!!1072390.cpp!!!	transmit(in event : Event [0..1]) : void
+!!!1072390.cpp!!!	transmit(in event : Event [0..1]) : bool
 using namespace oberon::reconstructor;
 using boost::uuids::to_string;
 using std::chrono::duration;
 using std::chrono::duration_cast;
+stringstream buffer;
 
 // "order_id,event_no,timestamp,local_timestamp, state,price,volume,trade_id,deltaVolume,taker\n";
 if (event) {
@@ -16,50 +17,58 @@ if (event) {
   // order_id
   if (event->orderId() != Event::kNaOrderId)
     if (event->orderId() != boost::uuids::nil_uuid())
-      f_ << to_string(event->orderId()) << ",";
+      buffer << to_string(event->orderId()) << ",";
     else
-      f_ << ",";
+      buffer << ",";
   else
-    f_ << "NA,";
+    buffer << "NA,";
 
   // event_no
   if (event->eventNo() != Event::kNaEventNo)
-    f_ << event->eventNo() << ",";
+    buffer << event->eventNo() << ",";
   else
-    f_ << "NA,";
+    buffer << "NA,";
 
   // timestamp
-  date::to_stream(f_, "%FT%TZ,", event->timestamp());
+  date::to_stream(buffer, "%FT%TZ,", event->timestamp());
 
   // local_timestamp
-  date::to_stream(f_, "%FT%TZ,", event->localTimestamp());
+  date::to_stream(buffer, "%FT%TZ,", event->localTimestamp());
 
   // state
-  f_ << event->state() << ",";
+  buffer << event->state() << ",";
 
   // price
-  f_ << std::fixed << event->price() << ",";
+  buffer << std::fixed << event->price() << ",";
 
   // volume
-  f_ << std::fixed << event->volume() << ",";
+  buffer << std::fixed << event->volume() << ",";
 
   // trade_id
   if (event->tradeId() != Event::kNaTradeId)
-    f_ << event->tradeId() << ",";
+    buffer << event->tradeId() << ",";
   else
-    f_ << "NA,";
+    buffer << "NA,";
 
   // deltaVolume
-  f_ << std::fixed << event->deltaVolume() << ",";
+  buffer << std::fixed << event->deltaVolume() << ",";
 
   // taker_id
   if (event->takerOrderId() != Event::kNaOrderId)
     if (event->takerOrderId() != boost::uuids::nil_uuid())
-      f_ << to_string(event->takerOrderId()) << ",";
+      buffer << to_string(event->takerOrderId()) << ",";
     else
-      f_ << ",";
+      buffer << ",";
   else
-    f_ << "NA,";
+    buffer << "NA,";
 
-  f_ << "\n";
+  buffer << "\n";
+  return (f_ << buffer.str()).good();
 }
+return true;
+!!!1092358.cpp!!!	era(in era : Timestamp) : bool
+using namespace date;
+if(f_.is_open())
+  f_.close();
+f_.open(exchange_ + "_" + product_ + "_" + format("%FT%H-%M-%SZ", era));
+return f_.is_open();

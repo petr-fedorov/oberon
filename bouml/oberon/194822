@@ -1,6 +1,6 @@
 format 223
 "Receiver" // Standalone application::Receiver
-  revision 9
+  revision 11
   modified_by 6 "petr"
   // class settings
   
@@ -614,7 +614,8 @@ stm.thread_.join();"
       era.put<string>(\"time\", era_time);
       era.put<string>(\"product_id\", product_id);
       era.put<string>(\"local_timestamp\", local_timestamp);
-      stm.f_->process(era);
+      if (!stm.f_->process(era))
+        throw std::logic_error(\"Couldn't process era message\");
 
       boost::property_tree::ptree order_tree;
 
@@ -634,7 +635,8 @@ stm.thread_.join();"
                                iter2++->second.get_value<string>());
         order_tree.put<string>(\"order_id\", iter2++->second.get_value<string>());
         order_tree.put<string>(\"local_timestamp\", local_timestamp);
-        stm.f_->process(order_tree);
+        if (!stm.f_->process(order_tree))
+          throw std::logic_error(\"Couldn't process bid message\");
       }
       for (auto iter = stm.snapshot_tree_.get_child(\"asks\").begin();
            iter != stm.snapshot_tree_.get_child(\"asks\").end() &&
@@ -652,7 +654,8 @@ stm.thread_.join();"
                                iter2++->second.get_value<string>());
         order_tree.put<string>(\"order_id\", iter2++->second.get_value<string>());
         order_tree.put<string>(\"local_timestamp\", local_timestamp);
-        stm.f_->process(order_tree);
+        if (!stm.f_->process(order_tree))
+          throw std::logic_error(\"Couldn't process ask message\");
       }
       if (!stm.stop_thread_) // We don't care too much about race condition here
         boost::asio::post(
@@ -662,8 +665,15 @@ stm.thread_.join();"
           stm.error_message_ = \"Snapshot saved has been stopped, exiting ...\";
           stm.failure();
         }));
-    } catch (const std::exception &e) {
-      std::string w { e.what() };
+    } catch (const std::logic_error &e) {
+      std::string w{e.what()};
+      boost::asio::post(boost::asio::bind_executor(*stm.rtc_, [&stm, w]() {
+        stm.error_message_ = w;
+        stm.stop(); // We can't process received messages, so we stop the machine
+      }));
+    }
+    catch (const std::exception &e) {
+      std::string w{e.what()};
       boost::asio::post(boost::asio::bind_executor(*stm.rtc_, [&stm, w]() {
         stm.error_message_ = w;
         stm.failure();
@@ -1043,6 +1053,9 @@ stm.ws_->async_read(stm.buffer_,
 	  on pseudostate_ref 314502 // final 
 	    uml_trigger "stop"
 	    cpp_trigger "stop"
+	    cpp_expr "if(!stm.error_message_.empty())
+  BOOST_LOG_TRIVIAL(error) << stm.error_message_;
+"
 	  external 
 	end
       end

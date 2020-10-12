@@ -1,6 +1,13 @@
 class Era
+!!!642182.cpp!!!	accept(in mh : MessageHandler [1]) : bool
+return mh->era();
+
+!!!642438.cpp!!!	~Era()
+BOOST_LOG_TRIVIAL(debug) << toString() << "~Era";
 !!!650246.cpp!!!	toString() : string
 std::stringstream buf;
-buf << Message::toString() << " era";
+buf << Message::toString() << " Era";
 return buf.str();
 
+!!!1092614.cpp!!!	accept(inout store : Store) : bool
+return store.era(getTimestamp());

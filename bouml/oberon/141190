@@ -1,6 +1,6 @@
 format 223
 "Reconstructor" // Standalone application::Reconstructor
-  revision 167
+  revision 170
   modified_by 6 "petr"
   // class settings
   
@@ -66,7 +66,7 @@ format 223
 
     classdiagram 161030 "Message Hierarchy Detailed"
       classdiagramsettings member_max_width 0 end
-      size A4
+      size B
     end
 
     classdiagram 287878 "Reconstructor Implementation"
@@ -763,7 +763,7 @@ ${members}};
       end
 
       operation 188550 "process"
-	abstract cpp_virtual public explicit_return_type "void"
+	abstract cpp_virtual public explicit_return_type "bool"
 	nparams 1
 	  param in name "message" type class_ref 174214 // ptree
 	multiplicity "1"
@@ -1187,6 +1187,18 @@ ${inlines}
 	    param in name "mh" type class_ref 441222 // MessageHandler
 	  multiplicity "1"
 	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0}* ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 1085702 "accept"
+	  abstract cpp_virtual public explicit_return_type "bool"
+	  nparams 1
+	    param inout name "store" type class_ref 231302 // Store
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
 "
 	  
 	  
@@ -1625,6 +1637,21 @@ ${body}}
 	      cpp default "#include in source"
 	      classrelation_ref 615942 // <dependency>
 	    b parent class_ref 564358 // cmath
+	end
+
+	operation 1092486 "accept"
+	  cpp_virtual public explicit_return_type "bool"
+	  nparams 1
+	    param inout name "store" type class_ref 231302 // Store
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
 	end
       end
 
@@ -2367,6 +2394,21 @@ ${inlines}
 	  
 	  
 	end
+
+	operation 1092742 "accept"
+	  cpp_virtual public explicit_return_type "bool"
+	  nparams 1
+	    param inout name "store" type class_ref 231302 // Store
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
       end
 
       class 521478 "Era"
@@ -2447,6 +2489,35 @@ ${inlines}
 	  
 	  
 	end
+
+	operation 1092614 "accept"
+	  cpp_virtual public explicit_return_type "bool"
+	  nparams 1
+	    param inout name "store" type class_ref 231302 // Store
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+      end
+
+      operation 1093254 "era"
+	cpp_virtual public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
       end
 
       operation 692230 "create"
@@ -2835,7 +2906,7 @@ The order price must be a multiple of this increment (i.e. if the increment is 0
       end
 
       operation 575878 "process"
-	cpp_virtual cpp_final public explicit_return_type "void"
+	cpp_virtual cpp_final public explicit_return_type "bool"
 	nparams 1
 	  param in name "message" type class_ref 174214 // ptree
 	multiplicity "1"
@@ -2886,7 +2957,7 @@ The order price must be a multiple of this increment (i.e. if the increment is 0
       end
 
       operation 641926 "transmit"
-	cpp_virtual private explicit_return_type "void"
+	cpp_virtual private explicit_return_type "bool"
 	nparams 1
 	  param in name "messages" type class_ref 245766 // Message
 	multiplicity "*"
@@ -3480,8 +3551,8 @@ ${inlines}
     activitydiagramsettings
      end
     classdiagram 294406 "Coinbase Messages"
-      classdiagramsettings member_max_width 0 end
-      size A4
+      classdiagramsettings draw_all_relations yes member_max_width 0 end
+      size C
     end
 
     classdiagram 314246 "Coinbase Reconstructor"
@@ -3967,6 +4038,45 @@ ${inlines}
 	  
 	  
 	  
+	end
+      end
+
+      class 806662 "CoinbaseEra"
+	visibility private 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	operation 1092870 "CoinbaseEra"
+	  public explicit_return_type ""
+	  nparams 2
+	    param in name "tree" type class_ref 174214 // ptree
+	  multiplicity "1"
+	    param in name "reconstructor" type class_ref 486406 // CoinbaseReconstructor
+	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${volatile}${throw};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw} {
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	classrelation 903814 // <generalisation>
+	  relation 893702 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 903814 // <generalisation>
+	    b parent class_ref 521478 // Era
 	end
       end
 
