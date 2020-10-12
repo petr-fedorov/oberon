@@ -1,15 +1,15 @@
 class Coinbase
 !!!915590.cpp!!!	Coinbase()
   _current_state = 0;
-!!!917382.cpp!!!	Coinbase(inout ioc : io_context, in host : string, in port : string, in target : string, in https_host : string, in https_port : string, in https_target : string, in product : string, in channel : string, inout f : Reconstructor)
+!!!917382.cpp!!!	Coinbase(inout ioc : io_context, in product : string, inout f : Reconstructor)
 rtc_ = std::make_unique<boost::asio::io_context::strand>(*ioc);
 timer_ = std::make_unique<boost::asio::deadline_timer>(*ioc);
 signal_set_ = std::make_unique<boost::asio::signal_set>(*ioc, SIGINT, SIGTERM);
 
 namespace http = boost::beast::http;
 https_req_.method(http::verb::get);
-https_req_.target(https_target + "/" + product + "/book?level=3");
-https_req_.set(http::field::host, https_host);
+https_req_.target("/products/" + product + "/book?level=3");
+https_req_.set(http::field::host, https_host_);
 https_req_.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
 
 using namespace boost::property_tree;
@@ -17,7 +17,7 @@ ptree p, h, c;
 
 p.put("", product);
 h.put("", "heartbeat");
-c.put("", channel);
+c.put("", "full");
 
 products_.push_back(std::make_pair("", p));
 channels_.push_back(std::make_pair("", h));

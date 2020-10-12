@@ -1,6 +1,6 @@
 format 223
 "Receiver" // Standalone application::Receiver
-  revision 11
+  revision 12
   modified_by 6 "petr"
   // class settings
   
@@ -4020,7 +4020,8 @@ ${inlines}
       end
 
       attribute 617222 "host_"
-	private explicit_type "string"
+	const_attribute private explicit_type "string"
+	init_value "\"ws-feed.pro.coinbase.com\""
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -4032,7 +4033,8 @@ ${inlines}
       end
 
       attribute 617606 "port_"
-	private explicit_type "string"
+	const_attribute private explicit_type "string"
+	init_value "\"443\""
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -4044,7 +4046,8 @@ ${inlines}
       end
 
       attribute 617094 "target_"
-	private explicit_type "string"
+	const_attribute private explicit_type "string"
+	init_value "\"/\""
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -4056,7 +4059,8 @@ ${inlines}
       end
 
       attribute 650374 "https_host_"
-	private explicit_type "string"
+	const_attribute private explicit_type "string"
+	init_value "\"api.pro.coinbase.com\""
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -4068,7 +4072,8 @@ ${inlines}
       end
 
       attribute 650502 "https_port_"
-	private explicit_type "string"
+	const_attribute private explicit_type "string"
+	init_value "\"443\""
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -4235,20 +4240,13 @@ ${inlines}
 
       operation 917382 "Coinbase"
 	public explicit_return_type ""
-	nparams 10
+	nparams 3
 	  param inout name "ioc" type class_ref 698758 // io_context
-	  param in name "host" explicit_type "string"
-	  param in name "port" explicit_type "string"
-	  param in name "target" explicit_type "string"
-	  param in name "https_host" explicit_type "string"
-	  param in name "https_port" explicit_type "string"
-	  param in name "https_target" explicit_type "string"
 	  param in name "product" explicit_type "string"
-	  param in name "channel" explicit_type "string"
 	  param inout name "f" type class_ref 202630 // Reconstructor
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}std::shared_ptr< ${t0} > ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}, const ${t4} & ${p4}${v4}, const ${t5} & ${p5}${v5}, const ${t6} & ${p6}${v6}, const ${t7} & ${p7}${v7}, const ${t8} & ${p8}${v8},std::unique_ptr<${t9}> && ${p9}${v9}${)}${volatile}${throw};
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}std::shared_ptr< ${t0} > ${p0}${v0}, const ${t1} & ${p1}${v1},std::unique_ptr<${t2}> && ${p2}${v2}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}std::shared_ptr< ${t0} > ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, const ${t4} & ${p4}, const ${t5} & ${p5}, const ${t6} & ${p6}, const ${t7} & ${p7}, const ${t8} & ${p8}, std::unique_ptr<${t9}> && ${p9}${)}${volatile}${throw} : _current_state{0},ioc_{ioc}, host_{host}, port_{port}, target_{target},  product_{product}, https_host_ {https_host}, https_port_{https_port}, f_{std::move(f)} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}std::shared_ptr< ${t0} > ${p0}, const ${t1} & ${p1}, std::unique_ptr<${t2}> && ${p2}${)}${volatile}${throw} : _current_state{0},ioc_{ioc}, product_{product}, f_{std::move(f)} {
   ${body}}
 "
 	

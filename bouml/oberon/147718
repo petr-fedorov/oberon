@@ -1,6 +1,6 @@
 format 223
 "Standalone application" // Standalone application
-  revision 47
+  revision 48
   modified_by 6 "petr"
   // class settings
   
@@ -1018,26 +1018,21 @@ int main(int argc, char **argv) {
   namespace websocket = boost::beast::websocket;
   namespace rec = oberon::receiver;
   // Check command line arguments.
-  if (argc != 7) {
-    std::cerr << \"Usage: obtain <host> <port> <target> <https_host> <https_port> <https_target> \\n\"
+  if (argc != 3) {
+    std::cerr << \"Usage: obtain <exchange> <product> \\n\"
               << \"Example:\\n\"
-              << \"    obtain ws-feed.pro.coinbase.com 443 / api.pro.coinbase.com 80 / \\n\";
+              << \"    obtain Coinbase BTC-USD \\n\";
     return EXIT_FAILURE;
   }
-  auto const host = argv[1];
-  auto const port = argv[2];
-  auto const target = argv[3];
-  auto const https_host = argv[4];
-  auto const https_port = argv[5];
-  auto const https_target = argv[6];
+  auto const exchange = argv[1];
+  auto const product = argv[2];
 
   // The io_context is required for all I/O
   std::shared_ptr<boost::asio::io_context> ioc = std::make_shared<boost::asio::io_context>();
-  oberon::store::File f{\"Coinbase\", \"BTC-USD\"};
+  oberon::store::File f{exchange,product};
   std::shared_ptr<rec::Receiver> coinbase =
       std::make_shared<oberon::receiver::Coinbase>(
-          ioc, host, port, target, https_host, https_port, https_target,
-          \"BTC-USD\", \"full\",oberon::reconstructor::Reconstructor::create(oberon::reconstructor::Exchanges::kCoinbase, \"BTC-USD\", &f, 2.0, false));
+          ioc, product, oberon::reconstructor::Reconstructor::create(oberon::reconstructor::Exchanges::kCoinbase,product, &f, 2.0, false));
   coinbase->create();
   // Run the I/O service. The call will return when
   // the socket is closed.
