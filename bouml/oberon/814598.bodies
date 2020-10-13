@@ -22,7 +22,7 @@ class Save_snapshot_State
 #endif
 auto iter = stm.messages_.begin();
 for (; iter != stm.messages_.end() &&
-       (*iter)->get<long>("sequence") != stm.snapshot_seq_number_;
+       (*iter)->get<std::uint64_t>("sequence") != stm.snapshot_seq_number_;
      stm.messages_.erase(iter++))
   ;
 !!!1106438.cpp!!!	_doexit(inout stm : CoinbaseReceiver) : void
@@ -40,7 +40,7 @@ if (stm.messages_.size()) {
   auto local_timestamp = stm.messages_.front()->get<string>("local_timestamp");
   stm.messages_.erase(stm.messages_.begin());
 
-  // Start new era in another thread since it takes a long time ...
+  // Start new era in another thread since it takes a lot of time ...
   boost::asio::post(boost::asio::bind_executor(
       *stm.reconstructor_strand_, [&stm, era_time, product_id, local_timestamp]() {
         stm.stop_thread_.store(false);

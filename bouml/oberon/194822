@@ -1,6 +1,6 @@
 format 223
 "Receiver" // Standalone application::Receiver
-  revision 13
+  revision 14
   modified_by 6 "petr"
   // class settings
   
@@ -186,7 +186,6 @@ ${members}};
 	
       end
     end
-
   end
 
   classview 220550 "Coinbase Receiver"
@@ -522,7 +521,7 @@ if(stm.ec_)
 		uml_do_activity "save snapshot into the file"
 		cpp_on_entry "auto iter = stm.messages_.begin();
 for (; iter != stm.messages_.end() &&
-       (*iter)->get<long>(\"sequence\") != stm.snapshot_seq_number_;
+       (*iter)->get<std::uint64_t>(\"sequence\") != stm.snapshot_seq_number_;
      stm.messages_.erase(iter++))
   ;
 "
@@ -534,7 +533,7 @@ for (; iter != stm.messages_.end() &&
   auto local_timestamp = stm.messages_.front()->get<string>(\"local_timestamp\");
   stm.messages_.erase(stm.messages_.begin());
 
-  // Start new era in another thread since it takes a long time ...
+  // Start new era in another thread since it takes a lot of time ...
   boost::asio::post(boost::asio::bind_executor(
       *stm.reconstructor_strand_, [&stm, era_time, product_id, local_timestamp]() {
         stm.stop_thread_.store(false);
@@ -847,7 +846,7 @@ stm.error_message_.clear();
                                    stm.snapshot_tree_.clear();
                                    read_json(is, stm.snapshot_tree_);
                                    stm.snapshot_seq_number_ =
-                                       stm.snapshot_tree_.get<long>(\"sequence\");
+                                       stm.snapshot_tree_.get<std::uint64_t>(\"sequence\");
 #ifdef DEBUG
                                    BOOST_LOG_TRIVIAL(debug) << \"Snapshot sequence number: \"
                                              << stm.snapshot_seq_number_;
@@ -4270,7 +4269,7 @@ ${inlines}
       end
 
       attribute 657798 "first_seq_number_"
-	private explicit_type "long"
+	private type class_ref 822278 // uint64_t
 	init_value "0"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -4283,7 +4282,7 @@ ${inlines}
       end
 
       attribute 657926 "last_seq_number_"
-	private explicit_type "long"
+	private type class_ref 822278 // uint64_t
 	init_value "0"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -4296,7 +4295,7 @@ ${inlines}
       end
 
       attribute 664838 "snapshot_seq_number_"
-	private explicit_type "long"
+	private type class_ref 822278 // uint64_t
 	init_value "0"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -4734,7 +4733,7 @@ ${inlines}
 	relation 900742 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 910854 // <dependency>
 	  b parent class_ref 813574 // Handshake_SSL_State
       end
@@ -4743,7 +4742,7 @@ ${inlines}
 	relation 900998 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 911110 // <dependency>
 	  b parent class_ref 813702 // Handshake_Websocket_State
       end
@@ -4752,7 +4751,7 @@ ${inlines}
 	relation 901254 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 911366 // <dependency>
 	  b parent class_ref 813830 // Subscribe_State
       end
@@ -4761,7 +4760,7 @@ ${inlines}
 	relation 901510 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 911622 // <dependency>
 	  b parent class_ref 813958 // Connect_State
       end
@@ -4770,7 +4769,7 @@ ${inlines}
 	relation 901766 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 911878 // <dependency>
 	  b parent class_ref 814086 // Resolve_State
       end
@@ -4779,7 +4778,7 @@ ${inlines}
 	relation 901894 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 912006 // <dependency>
 	  b parent class_ref 813446 // Initialize_State
       end
@@ -4788,7 +4787,7 @@ ${inlines}
 	relation 902662 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 912774 // <dependency>
 	  b parent class_ref 814598 // Save_snapshot_State
       end
@@ -4797,7 +4796,7 @@ ${inlines}
 	relation 902918 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 913030 // <dependency>
 	  b parent class_ref 814726 // Resolve_State
       end
@@ -4806,7 +4805,7 @@ ${inlines}
 	relation 903174 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 913286 // <dependency>
 	  b parent class_ref 814854 // Connect_State
       end
@@ -4815,7 +4814,7 @@ ${inlines}
 	relation 903430 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 913542 // <dependency>
 	  b parent class_ref 814982 // Handshake_SSL_State
       end
@@ -4824,7 +4823,7 @@ ${inlines}
 	relation 903686 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 913798 // <dependency>
 	  b parent class_ref 815110 // Query_snapshot_State
       end
@@ -4833,7 +4832,7 @@ ${inlines}
 	relation 903942 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 914054 // <dependency>
 	  b parent class_ref 815238 // Failed_State
       end
@@ -4842,7 +4841,7 @@ ${inlines}
 	relation 904198 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 914310 // <dependency>
 	  b parent class_ref 815366 // Read_Snapshot_State
       end
@@ -4851,7 +4850,7 @@ ${inlines}
 	relation 904326 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 914438 // <dependency>
 	  b parent class_ref 814470 // Snapshot_State
       end
@@ -4860,7 +4859,7 @@ ${inlines}
 	relation 904582 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 914694 // <dependency>
 	  b parent class_ref 815494 // Failed_State
       end
@@ -4869,7 +4868,7 @@ ${inlines}
 	relation 904710 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 914822 // <dependency>
 	  b parent class_ref 814214 // Subscribed_State
       end
@@ -4878,7 +4877,7 @@ ${inlines}
 	relation 904838 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 914950 // <dependency>
 	  b parent class_ref 813318 // Engage_State
       end
@@ -4887,7 +4886,7 @@ ${inlines}
 	relation 904966 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 915078 // <dependency>
 	  b parent class_ref 813190 // CoinbaseReceiver_State
       end
@@ -4923,7 +4922,7 @@ ${inlines}
 	relation 905350 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 915462 // <dependency>
 	  b parent class_ref 815622 // Process_State
       end
@@ -4963,7 +4962,7 @@ ${inlines}
 	relation 905606 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 915718 // <dependency>
 	  b parent class_ref 815750 // Wait_State
       end

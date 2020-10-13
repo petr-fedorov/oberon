@@ -1,6 +1,5 @@
 class File
 !!!1072262.cpp!!!	File(in exchange : string, in product : string)
-f_ << "order_id,event_no,timestamp,local_timestamp,state,price,volume,trade_id,deltaVolume,taker\n";
 
 !!!1072134.cpp!!!	~File()
 f_.close();
@@ -71,4 +70,5 @@ using namespace date;
 if(f_.is_open())
   f_.close();
 f_.open(exchange_ + "_" + product_ + "_" + format("%FT%H-%M-%SZ", era));
+f_ << "order_id,event_no,timestamp,local_timestamp,state,price,volume,trade_id,deltaVolume,taker\n";
 return f_.is_open();

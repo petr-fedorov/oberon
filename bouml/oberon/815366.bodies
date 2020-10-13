@@ -52,7 +52,7 @@ boost::beast::http::async_read(
                                    stm.snapshot_tree_.clear();
                                    read_json(is, stm.snapshot_tree_);
                                    stm.snapshot_seq_number_ =
-                                       stm.snapshot_tree_.get<long>("sequence");
+                                       stm.snapshot_tree_.get<std::uint64_t>("sequence");
 #ifdef DEBUG
                                    BOOST_LOG_TRIVIAL(debug) << "Snapshot sequence number: "
                                              << stm.snapshot_seq_number_;

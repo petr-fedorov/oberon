@@ -75,7 +75,7 @@ else {
   // std::cout << m.str() << std::endl;
   std::string msg_type{tree_->get<std::string>("type")};
   try {
-    auto seq_number = tree_->get<long>("sequence");
+    auto seq_number = tree_->get<std::uint64_t>("sequence");
 
     if (msg_type == "heartbeat") {
       if (seq_number == last_seq_number_ || !last_seq_number_)
