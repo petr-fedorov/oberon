@@ -1,6 +1,6 @@
 format 223
 "Standalone application" // Standalone application
-  revision 49
+  revision 50
   modified_by 6 "petr"
   // class settings
   
@@ -80,7 +80,7 @@ format 223
 
       activityaction 192390 "Receive messages"
 	opaque_action
-	flow 415622 "<flow>"
+	flow 415622 "S.1.10"
 	  on activitynode_ref 190086 // activity_final
 	end
 
@@ -92,7 +92,7 @@ format 223
 	pin 357510 "ptree" type class_ref 174214 // ptree
 	   multiplicity "*" fifo 
 	  out stream
-	  flow 415750 "<flow>"
+	  flow 415750 "S.1.5"
 	    on pin_ref 348678 // ptree
 	  end
 	end
@@ -136,11 +136,10 @@ format 223
 	  pin 349830 "receiver" explicit_type ""
 	     multiplicity "1" unordered 
 	    out
-	    flow 415878 "<flow>"
+	    flow 415878 "S.1.4"
 	      on pin_ref 357382 // target
 	    end
 	  end
-
 	end
 
 	activitynode 229382 fork ""
@@ -148,10 +147,9 @@ format 223
 	    on activityaction_ref 192390 // activity action Receive messages
 	  end
 
-	  flow 315142 "S.1.11"
+	  flow 315142 "S.1.8"
 	    on activityaction_ref 247302 // activity action Reconstruct Order Book
 	  end
-
 	end
 
 	activityaction 247302 "Reconstruct Order Book"
@@ -167,11 +165,10 @@ format 223
 	    in
 	  end
 
-	  flow 416006 "<flow>"
+	  flow 416006 "S.1.11"
 	    on activitynode_ref 317190 // activity_final
 	  end
 	end
-
       end
 
       activitypartition 128006 "Reconstructor"

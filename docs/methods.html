@@ -24,7 +24,7 @@
 <meta name="author" content="Petr Fedorov" />
 
 
-<meta name="date" content="2020-07-27" />
+<meta name="date" content="2020-10-13" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -114,19 +114,13 @@
 <h1><span class="header-section-number">2</span> Methods</h1>
 <div id="overview" class="section level2">
 <h2><span class="header-section-number">2.1</span> Overview</h2>
-<p>Figure <a href="methods.html#fig:oberon-package-overview">2.1</a> shows UML2 Activity Diagram <span class="citation">(Cook et al. 2017)</span> of two functions implemented in R package <code>oberon</code> which together realize the order book events reconstruction process:</p>
-<ul>
-<li><code>oberon::obtain()</code> - connects to the specified exchange, obtains available information for the specified pair and saves it as a set of JSON lines with an exchange-specific names into Messages file,</li>
-<li><code>oberon::reconstruct()</code> - takes Messages file, produced by <code>oberon::obtain()</code>, reconstructs Order Table as defined by <a href="methods.html#def:order-table">2.12</a>, i.e. produces a set of an exchange-independent Events as defined by <a href="methods.html#def:order-event">2.11</a>, and saves the set into Events file in CSV format.</li>
-</ul>
-<div class="figure" style="text-align: center"><span id="fig:oberon-package-overview"></span>
-<img src="Oberon%20package%20overview.png" alt="UML2 Activity Diagram  of a standalone application using Reconstruction algorithm"  />
+<p>Figure <a href="methods.html#fig:oberon-overview">2.1</a> shows UML2 Activity Diagram <span class="citation">(Cook et al. 2017)</span> of an application which implements the reconstruction algorithm.</p>
+<div class="figure" style="text-align: center"><span id="fig:oberon-overview"></span>
+<img src="S.1%20Standalone%20application.png" alt="`Receive messages` activity collects avaialbe information in an exchange-specific way and pass the information in the form of [Boost.Property Tree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) to `Reconstruct Order Book` activity that, as its name implies, reconstructs order book events in an *universal* format described herein. Note that both activities run concurrently."  />
 <p class="caption">
-Figure 2.1: UML2 Activity Diagram of a standalone application using Reconstruction algorithm
+Figure 2.1: <code>Receive messages</code> activity collects avaialbe information in an exchange-specific way and pass the information in the form of <a href="https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html">Boost.Property Tree</a> to <code>Reconstruct Order Book</code> activity that, as its name implies, reconstructs order book events in an <em>universal</em> format described herein. Note that both activities run concurrently.
 </p>
 </div>
-<p><code>oberon::obtain()</code> subscribes to the exchange’s websocket channel(s) providing information about events and trades for the specified pair. Then it starts an era, i.e. it requests a snapshot of the order book for the specified pair and synchronises the stream of messages it’s already receiving from the websocket with the snapshot. As soon as the synchronization is completed, the snapshot itself and the messages that represents an update of the snapshot are being saved to the output file. It is important to note that messages are saved in the order of events as they had happened on the exchange, not in the order they have been received. <code>Receive and arrange messages</code> activity performs buffering and re-arranging of the messages before saving them as JSON lines.</p>
-<p>The <code>exchange name</code> parameter tells <code>oberon::reconstruct()</code> which kind of reconstructor object needs to be created to process the Messages file. Every line of the file is transformed into <a href="https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html">Boost.Property Tree</a> container by <code>Read next message</code> activity. The container is then passed to <code>R.1 Reconstruct Order Book</code> activity, described in details in section <a href="methods.html#reconstruction-process">2.3</a>. This activity represents the core of the reconstruction algorithm. The output of <code>R.1 Reconstruct Order Book</code> is a set of an exchange-independent order events, whch also carries information about trades. The events are saved into Events file in CSV format.</p>
 <p>Surprisingly, an order, an order event, a limit order book, the operations of a continuous double auction are rather complicated things if one attempts to define them rigorously. Consider, for example, a definition given in the recent book <span class="citation">(Bouchaud and Bonart 2018)</span>:</p>
 <blockquote>
 <p>An order is a commitment, declared at a given submission time, to buy or sell a given volume of an asset at no worse than a given price. An order <span class="math inline">\(x\)</span> is thus described by four attributes:</p>
@@ -555,14 +549,14 @@ Figure 2.3: Price and Volume functions for the limit orders in table <a href="me
 </div>
 <div id="reconstruction-process" class="section level2">
 <h2><span class="header-section-number">2.3</span> Reconstruction process</h2>
-<p>Figure <a href="methods.html#fig:reconstruction-activity">2.4</a> shows UML2 Activity Diagram of <code>R.1 Reconstruct Order Book</code> activity of <code>oberon::reconstruct()</code> function.</p>
+<p>Figure <a href="methods.html#fig:reconstruction-activity">2.4</a> shows UML2 Activity Diagram of <code>R.1 Reconstruct Order Book</code> activity which details <code>Reconstruct Order Book</code> activity on figure <a href="methods.html#fig:oberon-overview">2.1</a>.</p>
 <div class="figure" style="text-align: center"><span id="fig:reconstruction-activity"></span>
 <img src="R.1%20Reconstruct%20Order%20Book.png" alt="UML2 Activity Diagram  of Reconstruction algorithm"  />
 <p class="caption">
 Figure 2.4: UML2 Activity Diagram of Reconstruction algorithm
 </p>
 </div>
-<p>The activity <code>R.2 Extract</code> takes a <a href="https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html">Boost.PropertyTree</a> container with an exchange-specific data and produces one or more internal exchange-independent messages. The produced messages belong to the classes shown on figure <a href="methods.html#fig:message-hierarchy">2.5</a>.</p>
+<p>The activity <code>R.2 Extract</code> takes a <a href="https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html">Boost.PropertyTree</a> container with an exchange-specific data and produces one or more internal exchange-independent messages. Every produced message belongs to one of the ‘green’ classes shown on figure <a href="methods.html#fig:message-hierarchy">2.5</a>.</p>
 <div class="figure" style="text-align: center"><span id="fig:message-hierarchy"></span>
 <img src="Message%20Hierarchy.png" alt="UML2 Class Diagram of internal exchange-independent message types used by Order Book Reconstruction algorithm"  />
 <p class="caption">

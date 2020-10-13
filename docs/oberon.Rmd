@@ -97,18 +97,12 @@ It should be clear from the above that substantial effort is required to reconst
 
 ## Overview
 
-Figure \@ref(fig:oberon-package-overview) shows UML2 Activity Diagram [@cook_omg_2017] of two functions implemented in R package `oberon` which together realize the order book events reconstruction process:
+Figure \@ref(fig:oberon-overview) shows UML2 Activity Diagram [@cook_omg_2017] of an application which implements the reconstruction algorithm.
 
-  * `oberon::obtain()` - connects to the specified exchange, obtains available information for the specified pair and saves it as a set of JSON lines with an exchange-specific names into Messages file,
-  * `oberon::reconstruct()` - takes Messages file, produced by `oberon::obtain()`, reconstructs Order Table as defined by \@ref(def:order-table), i.e. produces a set of an exchange-independent Events as defined by \@ref(def:order-event), and saves the set into Events file in CSV format.
 
-```{r oberon-package-overview, echo=FALSE, fig.cap="UML2 Activity Diagram  of a standalone application using Reconstruction algorithm", fig.align="center"}
-knitr::include_graphics("Oberon package overview.png", dpi=80)
+```{r oberon-overview, echo=FALSE, fig.cap="`Receive messages` activity collects avaialbe information in an exchange-specific way and pass the information in the form of [Boost.Property Tree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) to `Reconstruct Order Book` activity that, as its name implies, reconstructs order book events in an *universal* format described herein. Note that both activities run concurrently.", fig.align="center"}
+knitr::include_graphics("S.1 Standalone application.png", dpi=80)
 ```
-
-`oberon::obtain()` subscribes to the exchange's websocket channel(s) providing information about events and trades for the specified pair. Then it starts an era, i.e. it requests a snapshot of the order book for the specified pair and synchronises the stream of messages it's already receiving from the websocket with the snapshot. As soon as the synchronization is completed, the snapshot itself and the messages that represents an update of the snapshot are being saved to the output file. It is important to note that messages are saved in the order of events as they had happened on the exchange, not in the order they have been received. `Receive and arrange messages` activity performs buffering and re-arranging of the messages before saving them as JSON lines.
-
-The `exchange name` parameter tells `oberon::reconstruct()` which kind of reconstructor object needs to be created to process the Messages file. Every line of the file is transformed into [Boost.Property Tree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) container by `Read next message` activity. The container is then passed to `R.1 Reconstruct Order Book` activity, described in details in section \@ref(reconstruction-process). This activity represents the core of the reconstruction algorithm.  The output of `R.1 Reconstruct Order Book` is a set of an exchange-independent order events, whch also carries information about trades. The events are saved into Events file in CSV format.
 
 Surprisingly, an order, an order event, a limit order book,  the operations of a continuous double auction are rather complicated things if one attempts to define them rigorously. Consider, for example,  a definition given in the recent book [@bouchaud_trades_2018]:
 
@@ -518,14 +512,14 @@ It can bee seen from figure \@ref(fig:example-order-book) that:
 
 ## Reconstruction process{#reconstruction-process}
 
-Figure \@ref(fig:reconstruction-activity) shows UML2 Activity Diagram of `R.1 Reconstruct Order Book` activity of `oberon::reconstruct()` function.
+Figure \@ref(fig:reconstruction-activity) shows UML2 Activity Diagram of `R.1 Reconstruct Order Book` activity which details `Reconstruct Order Book` activity on figure \@ref(fig:oberon-overview).
 
 
 ```{r reconstruction-activity, echo=FALSE, fig.cap="UML2 Activity Diagram  of Reconstruction algorithm", fig.align="center"}
 knitr::include_graphics("R.1 Reconstruct Order Book.png", dpi=80)
 ```
 
-The activity `R.2 Extract` takes a [Boost.PropertyTree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) container with an exchange-specific data and produces one or more internal exchange-independent messages. The produced messages belong to the classes shown on figure \@ref(fig:message-hierarchy). 
+The activity `R.2 Extract` takes a [Boost.PropertyTree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) container with an exchange-specific data and produces one or more internal exchange-independent messages. Every produced message belongs to one of the 'green' classes shown on figure \@ref(fig:message-hierarchy). 
 
 
 ```{r message-hierarchy, echo=FALSE, fig.cap="UML2 Class Diagram of internal exchange-independent message types used by Order Book Reconstruction algorithm", fig.align="center"}
@@ -674,10 +668,10 @@ as_hux_event_table(bitstamp.cleansed,'(#tab:stamp-duplicated) Row 16 is deleted 
 
 
 
-```{r visualise-one-second-changes, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="A graphical representation of the evolution of a market depth during 1 second, which is calculated from changing limit orders only. Tick size is $0.1 and sample period is 0.1 second."}
+```{r visualise-one-second-changes,eval=FALSE, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="A graphical representation of the evolution of a market depth during 1 second, which is calculated from changing limit orders only. The tick size is $0.01 and sample period is 0.001 second."}
 
 bitstamp.visualise <- bitstamp.cleansed.full[between(timestamp, '2020-03-25 12:17:23+03', '2020-03-25 12:17:24+03') | between(next_timestamp, '2020-03-25 12:17:23+03', '2020-03-25 12:17:24+03') , ][order(timestamp)]
-t <- oberon::grid(bitstamp.visualise[(!is_deleted),][order(timestamp)], 139.5,142.5, 0.1,  lubridate::ymd_hms('2020-03-25 12:17:23+03'), lubridate::ymd_hms('2020-03-25 12:17:24+03'),"deci")
+t <- oberon::grid(bitstamp.visualise[(!is_deleted),][order(timestamp)], 139.5,142.5, 0.01,  lubridate::ymd_hms('2020-03-25 12:17:23+03'), lubridate::ymd_hms('2020-03-25 12:17:24+03'),"milli")
 small <- 0.0000001
 r <- seq(min(t$z)-small, max(t$z), length.out=100)
 asks <- c(r[1:(which.max(r >= 0)-1)], -small)
@@ -686,22 +680,32 @@ col <- c(colorRampPalette(c("blue", "white"))(length(asks)),colorRampPalette(c("
 
 layout(matrix(c(2,1), ncol = 2), width=c(1, 4))
 image(t,  breaks=c(asks, bids), col=col, axes=F)
-axis.POSIXct(1, at=as.POSIXct(t$x+0.005, origin="1970-01-01"), format="%H:%M:%OS1",las=2, lwd=0.1, tck=1)
-axis(2, at=t$y[seq(2, length(t$y),2)], las=1,lwd=0.1, tck=1)
+x <- as.POSIXct(t$x+0.001, origin="1970-01-01")
+x_min <- min(x)
+x_max <- max(x)#-as.difftime(0.05, units="secs")
+
+
+axis.POSIXct(1, at=seq(x_min,x_max, by=as.difftime(0.05, units="secs")), format="%M:%OS2",las=2, lwd=0.1, tck=1)
+
+y_min <- min(t$y)
+y_max <- max(t$y)
+axis(2, at=seq(y_min, y_max,by=0.2), las=1,lwd=0.1, tck=1)
+#par("usr")
 plot.new()
 levels <- c(asks, bids)
 plot.window(xlim = c(0, 1), ylim = rev(range(levels)), xaxs = "i", yaxs = "i")
 rect(0, head(levels,-1), 1, tail(levels,-1), col=col, lty="blank")
 axis(2)
 mtext("Volume", line = 1)
+
 
 ```
 
 
 
-```{r visualise-one-second-all, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="A graphical representation of the evolution of a market depth during 1 second, which is calculated from all known limit orders. Tick size and sample period are the same as on the previous figure."}
+```{r visualise-one-second-all, eval=FALSE,echo=FALSE, message=FALSE, warning=FALSE, fig.cap="A graphical representation of the evolution of a market depth during 1 second, which is calculated from all known limit orders. The tick size and sample period are the same as on the previous figure."}
 bitstamp.visualise <- bitstamp.cleansed.full[between(timestamp, '2020-03-25 12:17:23+03', '2020-03-25 12:17:24+03') | between(next_timestamp, '2020-03-25 12:17:23+03', '2020-03-25 12:17:24+03') | (timestamp <'2020-03-25 12:17:23+03' & next_timestamp > '2020-03-25 12:17:23+03'), ][order(timestamp)]
-t <- oberon::grid(bitstamp.visualise[(!is_deleted),][order(timestamp)], 139.5,142.5, 0.1,  lubridate::ymd_hms('2020-03-25 12:17:23+03'), lubridate::ymd_hms('2020-03-25 12:17:24+03'),"deci")
+t <- oberon::grid(bitstamp.visualise[(!is_deleted),][order(timestamp)], 139.5,142.5, 0.01,  lubridate::ymd_hms('2020-03-25 12:17:23+03'), lubridate::ymd_hms('2020-03-25 12:17:24+03'),"milli")
 small <- 0.0000001
 r <- seq(min(t$z)-small, max(t$z), length.out=100)
 asks <- c(r[1:(which.max(r >= 0)-1)], -small)
@@ -710,14 +714,24 @@ col <- c(colorRampPalette(c("blue", "white"))(length(asks)),colorRampPalette(c("
 
 layout(matrix(c(2,1), ncol = 2), width=c(1, 4))
 image(t,  breaks=c(asks, bids), col=col, axes=F)
-axis.POSIXct(1, at=as.POSIXct(t$x+0.005, origin="1970-01-01"), format="%H:%M:%OS1",las=2, lwd=0.1, tck=1)
-axis(2, at=t$y[seq(2, length(t$y),2)], las=1,lwd=0.1, tck=1)
+x <- as.POSIXct(t$x+0.001, origin="1970-01-01")
+x_min <- min(x)
+x_max <- max(x)#-as.difftime(0.05, units="secs")
+
+
+axis.POSIXct(1, at=seq(x_min,x_max, by=as.difftime(0.05, units="secs")), format="%M:%OS2",las=2, lwd=0.1, tck=1)
+
+y_min <- min(t$y)
+y_max <- max(t$y)
+axis(2, at=seq(y_min, y_max,by=0.2), las=1,lwd=0.1, tck=1)
+#par("usr")
 plot.new()
 levels <- c(asks, bids)
 plot.window(xlim = c(0, 1), ylim = rev(range(levels)), xaxs = "i", yaxs = "i")
 rect(0, head(levels,-1), 1, tail(levels,-1), col=col, lty="blank")
 axis(2)
 mtext("Volume", line = 1)
+
 ```
 
 # Discussion
