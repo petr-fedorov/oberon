@@ -1,6 +1,6 @@
 format 223
 "Reconstructor" // Standalone application::Reconstructor
-  revision 172
+  revision 174
   modified_by 6 "petr"
   // class settings
   
@@ -310,7 +310,7 @@ ${members}};
     end
 
     class 551174 "TradeId"
-      visibility package stereotype "typedef" explicit_base_type "ulong"
+      visibility package stereotype "typedef" base_type class_ref 822278 // uint64_t
       cpp_decl "${comment}typedef ${type} ${name};
 "
       java_decl ""
@@ -324,7 +324,7 @@ ${members}};
     end
 
     class 507142 "EventNo"
-      visibility package stereotype "typedef" explicit_base_type "uint"
+      visibility package stereotype "typedef" base_type class_ref 828806 // uint32_t
       cpp_decl "${comment}typedef ${type} ${name};
 "
       java_decl ""
@@ -343,7 +343,7 @@ ${members}};
       actual class class_ref 514822 // time_point
         rank 0 value class_ref 514694 // system_clock
       actual class class_ref 514822 // time_point
-        rank 1 value class_ref 448518 // Duration
+        rank 1 value class_ref 514950 // microseconds
       cpp_decl "${comment}typedef ${type} ${name};
 "
       java_decl ""
@@ -362,20 +362,6 @@ ${members}};
 	    classrelation_ref 561286 // <realization>
 	  b parent class_ref 514822 // time_point
       end
-    end
-
-    class 448518 "Duration"
-      visibility package stereotype "typedef" base_type class_ref 514950 // microseconds
-      cpp_decl "${comment}typedef ${type} ${name};
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl "${comment}typedef ${type} ${name};
-"
-      explicit_switch_type ""
-      mysql_decl ""
-      
     end
 
     class 299014 "OrderState"
@@ -6981,7 +6967,6 @@ ${namespace_start}
 ${members}
 ${namespace_end}"
       associated_elems
-	class_ref 448518 // Duration
 	class_ref 230278 // Timestamp
 	class_ref 507142 // EventNo
 	class_ref 305798 // Volume

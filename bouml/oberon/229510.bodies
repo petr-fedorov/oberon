@@ -10,10 +10,10 @@ using std::chrono::duration;
 using std::chrono::duration_cast;
 stringstream buffer;
 
-// "order_id,event_no,timestamp,local_timestamp, state,price,volume,trade_id,deltaVolume,taker\n";
+// "i,n,t,s,p,v,f,delta_v,taker_i, local_t\n";
 if (event) {
 
-  // order_id
+  // i
   if (event->orderId() != Event::kNaOrderId)
     if (event->orderId() != boost::uuids::nil_uuid())
       buffer << to_string(event->orderId()) << ",";
@@ -22,37 +22,34 @@ if (event) {
   else
     buffer << "NA,";
 
-  // event_no
+  // n
   if (event->eventNo() != Event::kNaEventNo)
     buffer << event->eventNo() << ",";
   else
     buffer << "NA,";
 
-  // timestamp
+  // t
   date::to_stream(buffer, "%FT%TZ,", event->timestamp());
 
-  // local_timestamp
-  date::to_stream(buffer, "%FT%TZ,", event->localTimestamp());
-
-  // state
+  // s
   buffer << event->state() << ",";
 
-  // price
+  // p
   buffer << std::fixed << event->price() << ",";
 
-  // volume
+  // v
   buffer << std::fixed << event->volume() << ",";
 
-  // trade_id
+  // f
   if (event->tradeId() != Event::kNaTradeId)
     buffer << event->tradeId() << ",";
   else
     buffer << "NA,";
 
-  // deltaVolume
+  // delta_v
   buffer << std::fixed << event->deltaVolume() << ",";
 
-  // taker_id
+  // taker_i
   if (event->takerOrderId() != Event::kNaOrderId)
     if (event->takerOrderId() != boost::uuids::nil_uuid())
       buffer << to_string(event->takerOrderId()) << ",";
@@ -60,6 +57,9 @@ if (event) {
       buffer << ",";
   else
     buffer << "NA,";
+
+  // local_t
+  date::to_stream(buffer, "%FT%TZ,", event->localTimestamp());
 
   buffer << "\n";
   return (f_ << buffer.str()).good();
@@ -70,5 +70,5 @@ using namespace date;
 if(f_.is_open())
   f_.close();
 f_.open(exchange_ + "_" + product_ + "_" + format("%FT%H-%M-%SZ", era));
-f_ << "order_id,event_no,timestamp,local_timestamp,state,price,volume,trade_id,deltaVolume,taker\n";
+f_ << "i,n,t,s,p,v,f,delta_v,taker_i, local_t\n";
 return f_.is_open();

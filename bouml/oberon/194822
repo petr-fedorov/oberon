@@ -1,6 +1,6 @@
 format 223
 "Receiver" // Standalone application::Receiver
-  revision 14
+  revision 16
   modified_by 6 "petr"
   // class settings
   
@@ -831,31 +831,42 @@ stm.error_message_.clear();
 		uml_on_entry "launch"
 		cpp_on_entry "boost::beast::http::async_read(
     *stm.https_, stm.https_buffer_, stm.https_res_,
-    boost::asio::bind_executor(*stm.rtc_,
-                               [&stm](const boost::system::error_code &ec,
-                                      std::size_t bytes_transferred) {
-                                 if (ec) {
-                                   stm.ec_ = ec;
-                                   stm.error_message_ = ec.message();
-                                   BOOST_LOG_TRIVIAL(warning) << stm.error_message_;
-                                   stm.failure();
-                                 } else {
-                                   // BOOST_LOG_TRIVIAL(debug) << stm.https_res_.body(); 
-                                   std::istringstream is{stm.https_res_.body()};
-                                   stm.https_res_.body().clear();
-                                   stm.snapshot_tree_.clear();
-                                   read_json(is, stm.snapshot_tree_);
-                                   stm.snapshot_seq_number_ =
-                                       stm.snapshot_tree_.get<std::uint64_t>(\"sequence\");
+    boost::asio::bind_executor(
+        *stm.rtc_, [&stm](const boost::system::error_code &ec,
+                          std::size_t bytes_transferred) {
+          if (ec) {
+            stm.ec_ = ec;
+            stm.error_message_ = ec.message();
+            BOOST_LOG_TRIVIAL(warning) << stm.error_message_;
+            stm.failure();
+          } else {
+            boost::asio::post(boost::asio::bind_executor(
+                *stm.reconstructor_strand_, [&stm]() {
+                  // BOOST_LOG_TRIVIAL(debug) << stm.https_res_.body();
+                  std::istringstream is{stm.https_res_.body()};
+                  stm.https_res_.body().clear();
+                  stm.snapshot_tree_.clear();
+                  try {
+                    read_json(is, stm.snapshot_tree_);
+                    stm.snapshot_seq_number_ =
+                        stm.snapshot_tree_.get<std::uint64_t>(\"sequence\");
 #ifdef DEBUG
-                                   BOOST_LOG_TRIVIAL(debug) << \"Snapshot sequence number: \"
+                    BOOST_LOG_TRIVIAL(debug) << \"Snapshot sequence number: \"
                                              << stm.snapshot_seq_number_;
 #endif
-                                   stm.https_buffer_.consume(stm.https_buffer_.size());
-                                   stm.success();
-                                 }
-                               }));
-
+                    stm.https_buffer_.consume(stm.https_buffer_.size());
+                    boost::asio::post(boost::asio::bind_executor(
+                        *stm.rtc_, [&stm]() { stm.success(); }));
+                  } catch (...) {
+                    boost::asio::post(
+                        boost::asio::bind_executor(*stm.rtc_, [&stm]() {
+                          stm.error_message_ = \"Failed to parse the order book snapshot\";
+                          stm.failure();
+                        }));
+                  }
+                }));
+          }
+        }));
 "
 	      transition 478470 "success"
 		on pseudostate_ref 294406 // choice 
