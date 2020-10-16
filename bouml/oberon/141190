@@ -1,6 +1,6 @@
 format 223
 "Reconstructor" // Standalone application::Reconstructor
-  revision 174
+  revision 176
   modified_by 6 "petr"
   // class settings
   
@@ -310,7 +310,7 @@ ${members}};
     end
 
     class 551174 "TradeId"
-      visibility package stereotype "typedef" base_type class_ref 822278 // uint64_t
+      visibility package stereotype "typedef" explicit_base_type "long long"
       cpp_decl "${comment}typedef ${type} ${name};
 "
       java_decl ""
@@ -324,7 +324,7 @@ ${members}};
     end
 
     class 507142 "EventNo"
-      visibility package stereotype "typedef" base_type class_ref 828806 // uint32_t
+      visibility package stereotype "typedef" explicit_base_type "long"
       cpp_decl "${comment}typedef ${type} ${name};
 "
       java_decl ""

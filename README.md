@@ -3,7 +3,7 @@ A stand-alone application for collection of data that allows re-construction of 
 
 |i|n|t|s|p|v|f|delta_v|taker_i|local_t|
 | --- | ---| --- | ---| --- | ---| --- | ---| --- | ---|
-|[UUID](https://www.boost.org/doc/libs/1_67_0/libs/uuid/doc/index.html)|uint32_t|timestamp|bool|double|double|uint64_t|double|UUID|timestamp|
+|[UUID](https://www.boost.org/doc/libs/1_67_0/libs/uuid/doc/index.html)|long|timestamp|bool|double|double|long long|double|UUID|timestamp|
 
 The content of the first seven columns is described in [Definition 2.11 (Order Event)](https://petr-fedorov.github.io/oberon/methods.html#order-and-trade). Three additional columns contain the following data:
 

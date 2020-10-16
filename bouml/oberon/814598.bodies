@@ -22,7 +22,7 @@ class Save_snapshot_State
 #endif
 auto iter = stm.messages_.begin();
 for (; iter != stm.messages_.end() &&
-       (*iter)->get<std::uint64_t>("sequence") != stm.snapshot_seq_number_;
+       (*iter)->get<long long>("sequence") != stm.snapshot_seq_number_;
      stm.messages_.erase(iter++))
   ;
 !!!1106438.cpp!!!	_doexit(inout stm : CoinbaseReceiver) : void

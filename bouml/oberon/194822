@@ -1,6 +1,6 @@
 format 223
 "Receiver" // Standalone application::Receiver
-  revision 16
+  revision 18
   modified_by 6 "petr"
   // class settings
   
@@ -521,7 +521,7 @@ if(stm.ec_)
 		uml_do_activity "save snapshot into the file"
 		cpp_on_entry "auto iter = stm.messages_.begin();
 for (; iter != stm.messages_.end() &&
-       (*iter)->get<std::uint64_t>(\"sequence\") != stm.snapshot_seq_number_;
+       (*iter)->get<long long>(\"sequence\") != stm.snapshot_seq_number_;
      stm.messages_.erase(iter++))
   ;
 "
@@ -849,7 +849,7 @@ stm.error_message_.clear();
                   try {
                     read_json(is, stm.snapshot_tree_);
                     stm.snapshot_seq_number_ =
-                        stm.snapshot_tree_.get<std::uint64_t>(\"sequence\");
+                        stm.snapshot_tree_.get<long long>(\"sequence\");
 #ifdef DEBUG
                     BOOST_LOG_TRIVIAL(debug) << \"Snapshot sequence number: \"
                                              << stm.snapshot_seq_number_;
@@ -4280,7 +4280,7 @@ ${inlines}
       end
 
       attribute 657798 "first_seq_number_"
-	private type class_ref 822278 // uint64_t
+	private explicit_type "long long"
 	init_value "0"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -4293,7 +4293,7 @@ ${inlines}
       end
 
       attribute 657926 "last_seq_number_"
-	private type class_ref 822278 // uint64_t
+	private explicit_type "long long"
 	init_value "0"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -4306,7 +4306,7 @@ ${inlines}
       end
 
       attribute 664838 "snapshot_seq_number_"
-	private type class_ref 822278 // uint64_t
+	private explicit_type "long long"
 	init_value "0"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
