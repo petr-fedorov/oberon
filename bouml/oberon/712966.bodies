@@ -193,3 +193,7 @@ Receiver & stm {*this};
 _current_state->stop(*this);
   }
   return (_current_state != 0);
+!!!1191174.cpp!!!	post_event(inout event : std::function<bool(Receiver *)>) : void
+boost::asio::post(boost::asio::bind_executor(*rtc_,std::bind(event, this)));
+!!!1191302.cpp!!!	post(inout event : std::function<void()>) : void
+boost::asio::post(boost::asio::bind_executor(*rtc_,event));

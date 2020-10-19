@@ -29,15 +29,14 @@ class Process_State
 boost::asio::post(boost::asio::bind_executor(*stm.reconstructor_strand_, [messages = std::move(stm.messages_), &stm]() {
   for (auto &message : messages)
     if (!stm.f_->process(*message)) {
-      boost::asio::post(boost::asio::bind_executor(*stm.rtc_, [&stm]() {
+      stm.post([&stm]() {
         stm.error_message_ = "Couldn't process message";
         stm.stop(); // We can't process received messages, so we stop the
                     // machine
-      }));
+      });
       return;
     };
-  boost::asio::post(
-      boost::asio::bind_executor(*stm.rtc_, [&stm]() { stm.processed(); }));
+    stm.post_event(&Receiver::processed);
 }));
 !!!1159430.cpp!!!	_upper(inout stm : Receiver) : Receiver::AnyState
   return &stm._receiver_state._engage_state._subscribed_state;

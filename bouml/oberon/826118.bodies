@@ -14,10 +14,6 @@ class Snapshot_State
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition <transition>";
 #endif
-boost::asio::post(
-    boost::asio::bind_executor(*stm.receiver_->rtc_, [&stm]() {
-      stm.receiver_->failure();
-    }));
-
+stm.receiver_->post_event(&Receiver::failure);
       stm._final();
   }

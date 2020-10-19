@@ -30,7 +30,6 @@ class Load_snapshot_State
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Receiver.Engage.Subscribed.Load snapshot";
 #endif
 stm.snapshot_ = std::make_unique<Snapshot>(stm.ioc_, stm.shared_from_this(), stm.product_);
-BOOST_LOG_TRIVIAL(debug) << "Created Snapshot\n";
 stm.snapshot_->create();
 !!!1175558.cpp!!!	_upper(inout stm : Receiver) : Receiver::AnyState
   return &stm._receiver_state._engage_state._subscribed_state;

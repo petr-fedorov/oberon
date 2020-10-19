@@ -1,6 +1,6 @@
 format 223
 "Coinbase" // Standalone application::Receiver::Coinbase
-  revision 4
+  revision 6
   modified_by 6 "petr"
   // class settings
   
@@ -376,33 +376,32 @@ boost::asio::post(boost::asio::bind_executor(
         }
         if (!stm.stop_thread_) // We don't care too much about race condition
                                // here
-          boost::asio::post(boost::asio::bind_executor(
-              *stm.rtc_, [&stm]() { stm.success(); }));
+          stm.post_event(&Receiver::success);
         else
-          boost::asio::post(boost::asio::bind_executor(*stm.rtc_, [&stm]() {
+          stm.post([&stm]() {
             stm.error_message_ = \"Snapshot saved has been stopped, exiting ...\";
             stm.failure();
-          }));
+          });
       } catch (const std::logic_error &e) {
         std::string w{e.what()};
-        boost::asio::post(boost::asio::bind_executor(*stm.rtc_, [&stm, w]() {
+        stm.post([&stm, w]() {
           stm.error_message_ = w;
           stm.stop(); // We can't process received messages, so we stop the
                       // machine
-        }));
+        });
       } catch (const std::exception &e) {
         std::string w{e.what()};
-        boost::asio::post(boost::asio::bind_executor(*stm.rtc_, [&stm, w]() {
+        stm.post([&stm, w]() {
           stm.error_message_ = w;
           stm.failure();
-        }));
+        });
 
       } catch (...) {
-        boost::asio::post(boost::asio::bind_executor(*stm.rtc_, [&stm]() {
+        stm.post([&stm]() {
           stm.error_message_ =
               \"Snapshot saved failed due to an exception, exiting ...\";
           stm.failure();
-        }));
+        });
       }
     }));
 "
@@ -436,15 +435,14 @@ boost::asio::post(boost::asio::bind_executor(
 	      cpp_on_entry "boost::asio::post(boost::asio::bind_executor(*stm.reconstructor_strand_, [messages = std::move(stm.messages_), &stm]() {
   for (auto &message : messages)
     if (!stm.f_->process(*message)) {
-      boost::asio::post(boost::asio::bind_executor(*stm.rtc_, [&stm]() {
+      stm.post([&stm]() {
         stm.error_message_ = \"Couldn't process message\";
         stm.stop(); // We can't process received messages, so we stop the
                     // machine
-      }));
+      });
       return;
     };
-  boost::asio::post(
-      boost::asio::bind_executor(*stm.rtc_, [&stm]() { stm.processed(); }));
+    stm.post_event(&Receiver::processed);
 }));
 "
 	    transition 492294 "processed"
@@ -585,7 +583,6 @@ stm.ws_->async_read(stm.buffer_,
 	  state 261638 "Load snapshot"
 	      uml_on_entry "launch"
 	      cpp_on_entry "stm.snapshot_ = std::make_unique<Snapshot>(stm.ioc_, stm.shared_from_this(), stm.product_);
-BOOST_LOG_TRIVIAL(debug) << \"Created Snapshot\\n\";
 stm.snapshot_->create();
 "
 	    transition 502790 "timeout"
@@ -3612,6 +3609,36 @@ ${inlines}
 	    classrelation_ref 945158 // <dependency>
 	  b parent class_ref 836998 // Load_snapshot_State
       end
+
+      operation 1191174 "post_event"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "event" explicit_type "std::function<bool(Receiver *)>"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} && ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} && ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1191302 "post"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "event" explicit_type "std::function<void()>"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} && ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} && ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
     end
   end
 
@@ -3642,20 +3669,437 @@ ${inlines}
 
     state 259718 "Feeder"
       stereotype "machine"
-      statediagram 406150 "WebSocket"
+      statediagram 406150 "Feeder"
 	statediagramsettings
 	 end
 	size A4
       end
 
-      pseudostate 334086 initial ""
-	transition 499206 "<transition>"
-	  on state_ref 259846 // Resolve
-	  external 
+      state 259846 "Engage"
+	pseudostate 341766 entry_point "entry1"
+	  transition 516742 "<transition>"
+	    on state_ref 268166 // Resolve
+	    external 
+	  end
+	end
+
+	state 268166 "Resolve"
+	end
+      end
+    end
+
+    class 843526 "Feeder"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      ncouples 1
+      key "STM generated" value ""
+      comment " implement the state machine Feeder"
+      class 843654 "AnyState"
+	abstract visibility protected 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " Mother class of all the classes representing states"
+	operation 1189510 "~AnyState"
+	  force_body_gen cpp_virtual public explicit_return_type ""
+	  nparams 0
+	  cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	end
+
+	operation 1189638 "_upper"
+	  abstract force_body_gen cpp_virtual public return_type class_ref 843654 // AnyState
+	  nparams 1
+	    param inout name "stm" type class_ref 843526 // Feeder
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} &${)}${const}${volatile}${throw}${abstract};
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " return the upper state"
+	end
+
+	operation 1189766 "_do"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 843526 // Feeder
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} &${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} &${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " perform the 'do activity'"
+	end
+
+	operation 1189894 "_doentry"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 843526 // Feeder
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} &${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} &${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " performs the 'entry activity'"
+	end
+
+	operation 1190022 "_doexit"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 843526 // Feeder
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} &${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} &${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " performs the 'exit activity'"
 	end
       end
 
-      state 259846 "Resolve"
+      class 843782 "Feeder_State"
+	visibility protected 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " implement the state Feeder"
+	class 843910 "Engage_State"
+	  visibility public 
+	  cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	  java_decl ""
+	  php_decl ""
+	  python_2_2 python_decl ""
+	  idl_decl ""
+	  explicit_switch_type ""
+	  mysql_decl ""
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " implement the state Engage"
+	  class 844038 "Resolve_State"
+	    visibility public 
+	    cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	    java_decl ""
+	    php_decl ""
+	    python_2_2 python_decl ""
+	    idl_decl ""
+	    explicit_switch_type ""
+	    mysql_decl ""
+	    
+	    ncouples 1
+	    key "STM generated" value ""
+	    comment " implement the state Resolve"
+	    operation 1190406 "~Resolve_State"
+	      force_body_gen cpp_virtual public explicit_return_type ""
+	      nparams 0
+	      cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	    end
+
+	    classrelation 951942 // <generalisation>
+	      relation 941574 ---|>
+		a public
+		  cpp default "${type}"
+		  classrelation_ref 951942 // <generalisation>
+		b parent class_ref 843654 // AnyState
+	    end
+
+	    operation 1190790 "_upper"
+	      force_body_gen cpp_virtual public return_type class_ref 843654 // AnyState
+	      nparams 1
+	        param inout name "stm" type class_ref 843526 // Feeder
+	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " returns the state containing the current"
+	    end
+	  end
+
+	  operation 1190278 "~Engage_State"
+	    force_body_gen cpp_virtual public explicit_return_type ""
+	    nparams 0
+	    cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	    cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	    
+	    
+	    
+	    
+	    ncouples 1
+	    key "STM generated" value ""
+	  end
+
+	  attribute 755078 "_resolve_state"
+	    public type class_ref 844038 // Resolve_State
+	    cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    java_decl ""
+	    php_decl ""
+	    python_decl ""
+	    idl_decl ""
+	    mysql_decl ""
+	    MysqlColumn
+	    ncouples 1
+	    key "STM generated" value ""
+	    comment " memorize the instance of the state Resolve, internal"
+	  end
+
+	  classrelation 951814 // <generalisation>
+	    relation 941446 ---|>
+	      a public
+		cpp default "${type}"
+		classrelation_ref 951814 // <generalisation>
+	      b parent class_ref 843654 // AnyState
+	  end
+
+	  operation 1190918 "_upper"
+	    force_body_gen cpp_virtual public return_type class_ref 843654 // AnyState
+	    nparams 1
+	      param inout name "stm" type class_ref 843526 // Feeder
+	    cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	    cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	    
+	    
+	    
+	    
+	    ncouples 1
+	    key "STM generated" value ""
+	    comment " returns the state containing the current"
+	  end
+	end
+
+	operation 1190150 "~Feeder_State"
+	  force_body_gen cpp_virtual public explicit_return_type ""
+	  nparams 0
+	  cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	end
+
+	attribute 754950 "_engage_state"
+	  public type class_ref 843910 // Engage_State
+	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " memorize the instance of the state Engage, internal"
+	end
+
+	classrelation 951686 // <generalisation>
+	  relation 941318 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 951686 // <generalisation>
+	    b parent class_ref 843654 // AnyState
+	end
+
+	operation 1191046 "_upper"
+	  force_body_gen cpp_virtual public return_type class_ref 843654 // AnyState
+	  nparams 1
+	    param inout name "stm" type class_ref 843526 // Feeder
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} &${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} &${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " returns the state containing the current"
+	end
+      end
+
+      attribute 754694 "_machine_name"
+	public explicit_type "string"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	ncouples 1
+	key "STM generated" value ""
+	comment " a (unique) name of the machine "
+      end
+
+      attribute 754822 "_feeder_state"
+	protected type class_ref 843782 // Feeder_State
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	ncouples 1
+	key "STM generated" value ""
+	comment " memorize the instance of the state Feeder, internal"
+      end
+
+      operation 1190534 "Feeder"
+	force_body_gen public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+      end
+
+      operation 1190662 "~Feeder"
+	force_body_gen cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+      end
+
+      classrelation 952070 // <dependency>
+	relation 941702 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 952070 // <dependency>
+	  b parent class_ref 844038 // Resolve_State
+      end
+
+      classrelation 952198 // <dependency>
+	relation 941830 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 952198 // <dependency>
+	  b parent class_ref 843910 // Engage_State
+      end
+
+      classrelation 952326 // <dependency>
+	relation 941958 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 952326 // <dependency>
+	  b parent class_ref 843782 // Feeder_State
       end
     end
   end
@@ -3768,10 +4212,8 @@ if(stm.ec_)
 	transition 499974 "completion"
 	  on pseudostate_ref 334598 // final 
 	    uml_expr "report success"
-	    cpp_expr "boost::asio::post(
-    boost::asio::bind_executor(*stm.receiver_->rtc_, [&stm]() {
-      stm.receiver_->success();
-    }));
+	    cpp_expr "stm.receiver_->post_event(&Receiver::success);
+
 "
 	  external 
 	end
@@ -3956,11 +4398,7 @@ http::async_write(
 	transition 502150 "<transition>"
 	  on pseudostate_ref 334598 // final 
 	    uml_expr "report failure"
-	    cpp_expr "boost::asio::post(
-    boost::asio::bind_executor(*stm.receiver_->rtc_, [&stm]() {
-      stm.receiver_->failure();
-    }));
-
+	    cpp_expr "stm.receiver_->post_event(&Receiver::failure);
 "
 	  external 
 	end
@@ -5813,6 +6251,7 @@ ${inlines}
 #define ${NAMESPACE}_${NAME}_H
 
 ${comment}
+#include <functional>
 ${includes}
 ${declarations}
 ${namespace_start}
