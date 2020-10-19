@@ -1,0 +1,35 @@
+class Query_snapshot_State
+!!!1166214.cpp!!!	success(inout stm : Snapshot) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._snapshot_state._obtain_state._read_snapshot_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Snapshot.Obtain.Read snapshot";
+#endif
+    stm._snapshot_state._obtain_state._read_snapshot_state.create(stm);
+  }
+!!!1166342.cpp!!!	create(inout stm : Snapshot) : void
+	_doentry(stm);
+!!!1166470.cpp!!!	_doentry(inout stm : Snapshot) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Snapshot.Obtain.Query snapshot";
+#endif
+namespace http = boost::beast::http;
+#ifndef NDEBUG
+BOOST_LOG_TRIVIAL(debug) << "HTTP GET " << stm.https_req_.target();
+#endif
+http::async_write(
+    *stm.https_, stm.https_req_,
+    boost::asio::bind_executor(
+        *stm.strand_, [&stm](const boost::system::error_code &ec,
+                          std::size_t bytes_transferred) {
+          if (ec) {
+            stm.ec_ = ec;
+            stm.error_message_ = ec.message();
+            stm.failure();
+          } else {
+            stm.success();
+          }
+        }));
+!!!1166598.cpp!!!	_upper(inout stm : Snapshot) : Snapshot::AnyState
+  return &stm._snapshot_state._obtain_state;

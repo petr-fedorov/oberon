@@ -1,17 +1,12 @@
-class CoinbaseReceiver
-!!!915590.cpp!!!	CoinbaseReceiver()
+class Receiver
+!!!915590.cpp!!!	Receiver()
   _current_state = 0;
-!!!917382.cpp!!!	CoinbaseReceiver(inout ioc : io_context, in product : string, inout f : Reconstructor)
+!!!917382.cpp!!!	Receiver(inout ioc : io_context, in product : string, inout f : Reconstructor)
 rtc_ = std::make_unique<boost::asio::io_context::strand>(*ioc);
 reconstructor_strand_ = std::make_unique<boost::asio::io_context::strand>(*ioc);
 timer_ = std::make_unique<boost::asio::deadline_timer>(*ioc);
 signal_set_ = std::make_unique<boost::asio::signal_set>(*ioc, SIGINT, SIGTERM);
 
-namespace http = boost::beast::http;
-https_req_.method(http::verb::get);
-https_req_.target("/products/" + product + "/book?level=3");
-https_req_.set(http::field::host, https_host_);
-https_req_.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
 
 using namespace boost::property_tree;
 ptree p, h, c;
@@ -26,32 +21,14 @@ channels_.push_back(std::make_pair("", c));
 _machine_name = "Receiver - ";
 !!!916486.cpp!!!	doActivity() : void
   _current_state->_do(*this);
-!!!916614.cpp!!!	_set_currentState(inout st : CoinbaseReceiver::AnyState) : void
+!!!916614.cpp!!!	_set_currentState(inout st : AnyState) : void
   _current_state = &st;
 !!!916742.cpp!!!	_final() : void
   _current_state = 0;
-CoinbaseReceiver &stm {*this};
+Receiver &stm {*this};
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "final state reached";
 #endif
-!!!925574.cpp!!!	heartbeat() : bool
-  if (_current_state != 0) {
- CoinbaseReceiver & stm {*this};
-#ifdef VERBOSE_STATE_MACHINE
-   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger heartbeat";
-#endif
-_current_state->heartbeat(*this);
-  }
-  return (_current_state != 0);
-!!!927622.cpp!!!	message() : bool
-  if (_current_state != 0) {
- CoinbaseReceiver & stm {*this};
-#ifdef VERBOSE_STATE_MACHINE
-   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger message";
-#endif
-_current_state->message(*this);
-  }
-  return (_current_state != 0);
 !!!935302.cpp!!!	dispatchJson(in ec : error_code) : void
 // boost::ignore_unused(bytes_transferred);
 using namespace boost::property_tree;
@@ -121,53 +98,15 @@ else {
   };
 }
 
-!!!974726.cpp!!!	stop() : bool
-  if (_current_state != 0) {
- CoinbaseReceiver & stm {*this};
-#ifdef VERBOSE_STATE_MACHINE
-   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger stop";
-#endif
-_current_state->stop(*this);
-  }
-  return (_current_state != 0);
 !!!976518.cpp!!!	timeout() : bool
   if (_current_state != 0) {
- CoinbaseReceiver & stm {*this};
+ #ifdef VERBOSE_STATE_MACHINE
+Receiver & stm {*this};
+ #endif
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger timeout";
 #endif
 _current_state->timeout(*this);
-  }
-  return (_current_state != 0);
-!!!1027078.cpp!!!	success() : bool
-  if (_current_state != 0) {
- CoinbaseReceiver & stm {*this};
-#ifdef VERBOSE_STATE_MACHINE
-   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger success";
-#endif
-_current_state->success(*this);
-  }
-  return (_current_state != 0);
-!!!1027974.cpp!!!	failure() : bool
-  if (_current_state != 0) {
- CoinbaseReceiver & stm {*this};
-#ifdef VERBOSE_STATE_MACHINE
-   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger failure";
-#endif
-_current_state->failure(*this);
-  }
-  return (_current_state != 0);
-!!!1113606.cpp!!!	create() : bool
-if (_current_state == 0)
-  (_current_state = &(*this)._coinbasereceiver_state)->create(*this);
-return (_current_state != 0);
-!!!1114502.cpp!!!	processed() : bool
-  if (_current_state != 0) {
- CoinbaseReceiver & stm {*this};
-#ifdef VERBOSE_STATE_MACHINE
-   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger processed";
-#endif
-_current_state->processed(*this);
   }
   return (_current_state != 0);
 !!!1115014.cpp!!!	defer() : void
@@ -184,3 +123,73 @@ ws_->async_read(buffer_,
                         }));
 
 
+!!!1138438.cpp!!!	create() : bool
+if (_current_state == 0)
+  (_current_state = &(*this)._receiver_state)->create(*this);
+return (_current_state != 0);
+!!!1138566.cpp!!!	success() : bool
+  if (_current_state != 0) {
+ #ifdef VERBOSE_STATE_MACHINE
+Receiver & stm {*this};
+ #endif
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger success";
+#endif
+_current_state->success(*this);
+  }
+  return (_current_state != 0);
+!!!1138694.cpp!!!	failure() : bool
+  if (_current_state != 0) {
+ #ifdef VERBOSE_STATE_MACHINE
+Receiver & stm {*this};
+ #endif
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger failure";
+#endif
+_current_state->failure(*this);
+  }
+  return (_current_state != 0);
+!!!1138822.cpp!!!	processed() : bool
+  if (_current_state != 0) {
+ #ifdef VERBOSE_STATE_MACHINE
+Receiver & stm {*this};
+ #endif
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger processed";
+#endif
+_current_state->processed(*this);
+  }
+  return (_current_state != 0);
+!!!1138950.cpp!!!	message() : bool
+  if (_current_state != 0) {
+ #ifdef VERBOSE_STATE_MACHINE
+Receiver & stm {*this};
+ #endif
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger message";
+#endif
+_current_state->message(*this);
+  }
+  return (_current_state != 0);
+!!!1139078.cpp!!!	heartbeat() : bool
+  if (_current_state != 0) {
+ #ifdef VERBOSE_STATE_MACHINE
+Receiver & stm {*this};
+ #endif
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger heartbeat";
+#endif
+_current_state->heartbeat(*this);
+  }
+  return (_current_state != 0);
+!!!1139206.cpp!!!	stop() : bool
+  if (_current_state != 0) {
+ #ifdef VERBOSE_STATE_MACHINE
+Receiver & stm {*this};
+ #endif
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger stop";
+#endif
+_current_state->stop(*this);
+  }
+  return (_current_state != 0);

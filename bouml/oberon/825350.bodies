@@ -1,0 +1,17 @@
+class Receiver
+!!!1140230.cpp!!!	Receiver()
+  _current_state = 0;
+!!!1140486.cpp!!!	create() : bool
+if (_current_state == 0)
+  (_current_state = &(*this)._receiver_state)->create(*this);
+return (_current_state != 0);
+!!!1141126.cpp!!!	doActivity() : void
+  _current_state->_do(*this);
+!!!1141254.cpp!!!	_set_currentState(inout st : Receiver::AnyState) : void
+  _current_state = &st;
+!!!1141382.cpp!!!	_final() : void
+  _current_state = 0;
+Receiver &stm {*this};
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "final state reached";
+#endif

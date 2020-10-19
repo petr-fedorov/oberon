@@ -1,18 +1,18 @@
 class Connect_State
-!!!1103878.cpp!!!	success(inout stm : CoinbaseReceiver) : void
+!!!1156102.cpp!!!	success(inout stm : Receiver) : void
   {
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
-    stm._set_currentState(stm._coinbasereceiver_state._engage_state._initialize_state._handshake_ssl_state);
+    stm._set_currentState(stm._receiver_state._engage_state._initialize_state._handshake_ssl_state);
 #ifdef VERBOSE_STATE_MACHINE
-   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .CoinbaseReceiver.Engage.Initialize.Handshake SSL";
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver.Engage.Initialize.Handshake SSL";
 #endif
-    stm._coinbasereceiver_state._engage_state._initialize_state._handshake_ssl_state.create(stm);
+    stm._receiver_state._engage_state._initialize_state._handshake_ssl_state.create(stm);
   }
-!!!1104006.cpp!!!	create(inout stm : CoinbaseReceiver) : void
+!!!1156230.cpp!!!	create(inout stm : Receiver) : void
 	_doentry(stm);
-!!!1104134.cpp!!!	_doentry(inout stm : CoinbaseReceiver) : void
+!!!1156358.cpp!!!	_doentry(inout stm : Receiver) : void
 #ifdef VERBOSE_STATE_MACHINE
-   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .CoinbaseReceiver.Engage.Initialize.Connect";
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Receiver.Engage.Initialize.Connect";
 #endif
 // Make the connection on the IP address we get from a lookup
 boost::asio::async_connect(
@@ -29,5 +29,5 @@ boost::asio::async_connect(
                                    stm.success();
                                  }
                                }));
-!!!1104262.cpp!!!	_upper(inout stm : CoinbaseReceiver) : CoinbaseReceiver::AnyState
-  return &stm._coinbasereceiver_state._engage_state._initialize_state;
+!!!1156486.cpp!!!	_upper(inout stm : Receiver) : Receiver::AnyState
+  return &stm._receiver_state._engage_state._initialize_state;

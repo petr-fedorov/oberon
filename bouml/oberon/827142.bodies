@@ -1,0 +1,21 @@
+class Cancelled_State
+!!!1148422.cpp!!!	success(inout stm : Snapshot) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._snapshot_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Snapshot";
+#endif
+    stm._snapshot_state._junction1(stm);
+  }
+!!!1148550.cpp!!!	failure(inout stm : Snapshot) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._snapshot_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Snapshot";
+#endif
+    stm._snapshot_state._junction1(stm);
+  }
+!!!1148678.cpp!!!	_upper(inout stm : Snapshot) : Snapshot::AnyState
+  return &stm._snapshot_state;

@@ -1,0 +1,59 @@
+class Snapshot
+!!!1143302.cpp!!!	Snapshot()
+  _current_state = 0;
+!!!1149318.cpp!!!	Snapshot(inout ioc : io_context, inout receiver : Receiver, in product : string)
+strand_ = std::make_unique<boost::asio::io_context::strand>(*ioc_);
+
+namespace http = boost::beast::http;
+https_req_.method(http::verb::get);
+https_req_.target("/products/" + product + "/book?level=3");
+https_req_.set(http::field::host, https_host_);
+https_req_.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
+
+!!!1143558.cpp!!!	create() : bool
+if (_current_state == 0)
+  (_current_state = &(*this)._snapshot_state)->create(*this);
+return (_current_state != 0);
+!!!1143942.cpp!!!	success() : bool
+  if (_current_state != 0) {
+ #ifdef VERBOSE_STATE_MACHINE
+Snapshot & stm {*this};
+ #endif
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger success";
+#endif
+_current_state->success(*this);
+  }
+  return (_current_state != 0);
+!!!1144838.cpp!!!	failure() : bool
+  if (_current_state != 0) {
+ #ifdef VERBOSE_STATE_MACHINE
+Snapshot & stm {*this};
+ #endif
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger failure";
+#endif
+_current_state->failure(*this);
+  }
+  return (_current_state != 0);
+!!!1147910.cpp!!!	cancel() : bool
+  if (_current_state != 0) {
+ #ifdef VERBOSE_STATE_MACHINE
+Snapshot & stm {*this};
+ #endif
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger cancel";
+#endif
+_current_state->cancel(*this);
+  }
+  return (_current_state != 0);
+!!!1148934.cpp!!!	doActivity() : void
+  _current_state->_do(*this);
+!!!1149062.cpp!!!	_set_currentState(inout st : Snapshot::AnyState) : void
+  _current_state = &st;
+!!!1149190.cpp!!!	_final() : void
+  _current_state = 0;
+Snapshot &stm {*this};
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "final state reached";
+#endif

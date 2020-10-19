@@ -1,0 +1,46 @@
+class Engage_State
+!!!1162502.cpp!!!	create(inout stm : Receiver) : void
+  _doentry(stm);
+  {
+    stm._set_currentState(stm._receiver_state._engage_state._initialize_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver.Engage.Initialize";
+#endif
+    stm._receiver_state._engage_state._initialize_state.create(stm);
+  }
+!!!1162758.cpp!!!	stop(inout stm : Receiver) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._receiver_state._engage_state._doexit(stm);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition stop";
+#endif
+if(!stm.error_message_.empty())
+  BOOST_LOG_TRIVIAL(error) << stm.error_message_;
+    stm._set_currentState(stm._receiver_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver";
+#endif
+      stm._final();
+  }
+!!!1162886.cpp!!!	processed(inout stm : Receiver) : void
+  {
+  }
+!!!1163014.cpp!!!	_doentry(inout stm : Receiver) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Receiver.Engage";
+#endif
+stm.signal_set_->async_wait(boost::asio::bind_executor(
+    *stm.rtc_, [&stm](const boost::system::error_code &ec, int signal_number) {
+      if (!ec) {
+        BOOST_LOG_TRIVIAL(info) << "\nTermination requested ...";
+        stm.stop();
+      }
+    }));
+!!!1163142.cpp!!!	_doexit(inout stm : Receiver) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute exit behavior of .Receiver.Engage";
+#endif
+stm.signal_set_->cancel();
+!!!1163270.cpp!!!	_upper(inout stm : Receiver) : Receiver::AnyState
+  return &stm._receiver_state;

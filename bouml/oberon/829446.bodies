@@ -1,0 +1,84 @@
+class Obtain_State
+!!!1164934.cpp!!!	create(inout stm : Snapshot) : void
+  _doentry(stm);
+  {
+    stm._set_currentState(stm._snapshot_state._obtain_state._resolve_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Snapshot.Obtain.Resolve";
+#endif
+    stm._snapshot_state._obtain_state._resolve_state.create(stm);
+  }
+!!!1165062.cpp!!!	_completion(inout stm : Snapshot) : bool
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._snapshot_state._obtain_state._doexit(stm);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition completion";
+#endif
+boost::asio::post(
+    boost::asio::bind_executor(*stm.receiver_->rtc_, [&stm]() {
+      stm.receiver_->success();
+    }));
+    stm._set_currentState(stm._snapshot_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Snapshot";
+#endif
+      stm._final();
+    return (bool) 1;
+  }
+!!!1167750.cpp!!!	cancel(inout stm : Snapshot) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._snapshot_state._obtain_state._doexit(stm);
+    stm._set_currentState(stm._snapshot_state._cancelled_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Snapshot.Cancelled";
+#endif
+  }
+!!!1167878.cpp!!!	failure(inout stm : Snapshot) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._snapshot_state._obtain_state._doexit(stm);
+    stm._set_currentState(stm._snapshot_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Snapshot";
+#endif
+    stm._snapshot_state._junction1(stm);
+  }
+!!!1168006.cpp!!!	_doentry(inout stm : Snapshot) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Snapshot.Obtain";
+#endif
+stm.snapshot_seq_number_ = 0;
+stm.resolver_ = std::make_unique<boost::asio::ip::tcp::resolver>(*stm.ioc_);
+stm.https_ctx_ = std::make_unique<boost::asio::ssl::context>(
+    boost::asio::ssl::context::sslv23_client);
+load_root_certificates(*stm.https_ctx_);
+stm.https_ = std::make_unique<SslStream>(*stm.ioc_, *stm.https_ctx_);
+
+if (!SSL_set_tlsext_host_name(stm.https_->native_handle(), stm.https_host_.c_str())) {
+  boost::system::error_code ec{static_cast<int>(::ERR_get_error()),
+                               boost::asio::error::get_ssl_category()};
+  BOOST_LOG_TRIVIAL(error) << ec.message();
+}
+
+/*
+SSL_CTX_set_keylog_callback(stm.https_ctx_->native_handle(),
+      [](const SSL *ssl, const char *line) {
+  ofstream f{"./key_https.txt", ios_base::app};
+  f << line << "\n";
+  f.close();
+      });
+*/
+
+!!!1168134.cpp!!!	_doexit(inout stm : Snapshot) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute exit behavior of .Snapshot.Obtain";
+#endif
+stm.https_->next_layer().close(stm.ec_);
+#ifndef NDEBUG
+if(stm.ec_)
+ BOOST_LOG_TRIVIAL(warning) << "Https closing error: " << stm.ec_.message(); 
+#endif
+!!!1168262.cpp!!!	_upper(inout stm : Snapshot) : Snapshot::AnyState
+  return &stm._snapshot_state;

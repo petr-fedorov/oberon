@@ -1,0 +1,54 @@
+class Load_snapshot_State
+!!!1175174.cpp!!!	success(inout stm : Receiver) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._receiver_state._engage_state._subscribed_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver.Engage.Subscribed";
+#endif
+    if (!(stm.snapshot_->snapshot_seq_number_ >= stm.first_seq_number_ && stm.snapshot_->snapshot_seq_number_ <= stm.last_seq_number_)
+
+) {
+      stm._set_currentState(stm._receiver_state._engage_state._subscribed_state._load_snapshot_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver.Engage.Subscribed.Load snapshot";
+#endif
+      stm._receiver_state._engage_state._subscribed_state._load_snapshot_state.create(stm);
+    }
+    else {
+      stm._set_currentState(stm._receiver_state._engage_state._subscribed_state._save_snapshot_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver.Engage.Subscribed.Save snapshot";
+#endif
+      stm._receiver_state._engage_state._subscribed_state._save_snapshot_state.create(stm);
+    }
+  }
+!!!1175302.cpp!!!	create(inout stm : Receiver) : void
+	_doentry(stm);
+!!!1175430.cpp!!!	_doentry(inout stm : Receiver) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Receiver.Engage.Subscribed.Load snapshot";
+#endif
+stm.snapshot_ = std::make_unique<Snapshot>(stm.ioc_, stm.shared_from_this(), stm.product_);
+BOOST_LOG_TRIVIAL(debug) << "Created Snapshot\n";
+stm.snapshot_->create();
+!!!1175558.cpp!!!	_upper(inout stm : Receiver) : Receiver::AnyState
+  return &stm._receiver_state._engage_state._subscribed_state;
+!!!1182854.cpp!!!	failure(inout stm : Receiver) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._receiver_state._engage_state._subscribed_state._failed_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver.Engage.Subscribed.Failed";
+#endif
+  }
+!!!1182982.cpp!!!	timeout(inout stm : Receiver) : void
+  {
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition timeout";
+#endif
+boost::asio::post(
+    boost::asio::bind_executor(*stm.snapshot_->strand_, [&stm]() {
+      stm.snapshot_->cancel();
+      }));
+  }

@@ -1,0 +1,15 @@
+class Wait_State
+!!!1161094.cpp!!!	message(inout stm : Receiver) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition message";
+#endif
+stm.defer();    stm._set_currentState(stm._receiver_state._engage_state._subscribed_state._process_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver.Engage.Subscribed.Process";
+#endif
+    stm._receiver_state._engage_state._subscribed_state._process_state.create(stm);
+  }
+!!!1161222.cpp!!!	_upper(inout stm : Receiver) : Receiver::AnyState
+  return &stm._receiver_state._engage_state._subscribed_state;

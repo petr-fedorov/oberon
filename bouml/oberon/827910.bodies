@@ -1,42 +1,42 @@
 class Initialize_State
-!!!1104902.cpp!!!	create(inout stm : CoinbaseReceiver) : void
+!!!1157126.cpp!!!	create(inout stm : Receiver) : void
   _doentry(stm);
   {
-    stm._set_currentState(stm._coinbasereceiver_state._engage_state._initialize_state._resolve_state);
+    stm._set_currentState(stm._receiver_state._engage_state._initialize_state._resolve_state);
 #ifdef VERBOSE_STATE_MACHINE
-   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .CoinbaseReceiver.Engage.Initialize.Resolve";
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver.Engage.Initialize.Resolve";
 #endif
-    stm._coinbasereceiver_state._engage_state._initialize_state._resolve_state.create(stm);
+    stm._receiver_state._engage_state._initialize_state._resolve_state.create(stm);
   }
-!!!1105030.cpp!!!	_completion(inout stm : CoinbaseReceiver) : bool
+!!!1157254.cpp!!!	_completion(inout stm : Receiver) : bool
   {
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
-    stm._set_currentState(stm._coinbasereceiver_state._engage_state._subscribed_state);
+    stm._set_currentState(stm._receiver_state._engage_state._subscribed_state);
 #ifdef VERBOSE_STATE_MACHINE
-   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .CoinbaseReceiver.Engage.Subscribed";
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver.Engage.Subscribed";
 #endif
-    stm._coinbasereceiver_state._engage_state._subscribed_state.create(stm);
+    stm._receiver_state._engage_state._subscribed_state.create(stm);
     return (bool) 1;
   }
-!!!1105158.cpp!!!	failure(inout stm : CoinbaseReceiver) : void
+!!!1157510.cpp!!!	failure(inout stm : Receiver) : void
   {
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
-    stm._coinbasereceiver_state._engage_state._doexit(stm);
+    stm._receiver_state._engage_state._doexit(stm);
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition failure";
 #endif
 #ifdef VERBOSE_STATE_MACHINE
 std::cout << stm.error_message_ << "\n";
 #endif
-    stm._set_currentState(stm._coinbasereceiver_state);
+    stm._set_currentState(stm._receiver_state);
 #ifdef VERBOSE_STATE_MACHINE
-   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .CoinbaseReceiver";
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver";
 #endif
       stm._final();
   }
-!!!1105286.cpp!!!	_doentry(inout stm : CoinbaseReceiver) : void
+!!!1157638.cpp!!!	_doentry(inout stm : Receiver) : void
 #ifdef VERBOSE_STATE_MACHINE
-   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .CoinbaseReceiver.Engage.Initialize";
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Receiver.Engage.Initialize";
 #endif
 stm.ctx_ = std::make_unique<boost::asio::ssl::context>(
     boost::asio::ssl::context::sslv23_client);
@@ -58,5 +58,5 @@ SSL_CTX_set_keylog_callback(stm.ctx_->native_handle(),
   f.close();
       });
 */
-!!!1105414.cpp!!!	_upper(inout stm : CoinbaseReceiver) : CoinbaseReceiver::AnyState
-  return &stm._coinbasereceiver_state._engage_state;
+!!!1157766.cpp!!!	_upper(inout stm : Receiver) : Receiver::AnyState
+  return &stm._receiver_state._engage_state;

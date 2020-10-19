@@ -1,0 +1,41 @@
+class Parse_snapshot_State
+!!!1167238.cpp!!!	success(inout stm : Snapshot) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._snapshot_state._obtain_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Snapshot.Obtain";
+#endif
+      stm._snapshot_state._obtain_state._completion(stm);
+  }
+!!!1167366.cpp!!!	create(inout stm : Snapshot) : void
+	_doentry(stm);
+!!!1167494.cpp!!!	_doentry(inout stm : Snapshot) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Snapshot.Obtain.Parse snapshot";
+#endif
+boost::asio::post(*stm.ioc_, [&stm]() {
+      // BOOST_LOG_TRIVIAL(debug) << stm.https_res_.body();
+      std::istringstream is{stm.https_res_.body()};
+      stm.https_res_.body().clear();
+      stm.snapshot_tree_.clear();
+      try {
+        read_json(is, stm.snapshot_tree_);
+        stm.snapshot_seq_number_ =
+            stm.snapshot_tree_.get<long long>("sequence");
+#ifdef DEBUG
+        BOOST_LOG_TRIVIAL(debug)
+            << "Snapshot sequence number: " << stm.snapshot_seq_number_;
+#endif
+        stm.https_buffer_.consume(stm.https_buffer_.size());
+        boost::asio::post(
+            boost::asio::bind_executor(*stm.strand_, [&stm]() { stm.success(); }));
+      } catch (...) {
+        boost::asio::post(boost::asio::bind_executor(*stm.strand_, [&stm]() {
+          stm.error_message_ = "Failed to parse the order book snapshot";
+          stm.failure();
+        }));
+      }
+    });
+!!!1167622.cpp!!!	_upper(inout stm : Snapshot) : Snapshot::AnyState
+  return &stm._snapshot_state._obtain_state;

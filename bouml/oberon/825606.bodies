@@ -1,0 +1,10 @@
+class Receiver_State
+!!!1140742.cpp!!!	create(inout stm : Receiver) : void
+  {
+    stm._set_currentState(stm._receiver_state._receive_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver.Receive";
+#endif
+  }
+!!!1140998.cpp!!!	_upper(inout stm : Receiver) : Receiver::AnyState
+  return 0;

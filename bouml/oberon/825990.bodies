@@ -1,0 +1,34 @@
+class AnyState
+!!!1144070.cpp!!!	success(inout stm : Snapshot) : void
+  AnyState * st = _upper(stm);
+
+  if (st != 0)
+    st->success(stm);
+#ifdef VERBOSE_STATE_MACHINE
+  else
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "transition success not expected";
+#endif
+#endif
+!!!1144966.cpp!!!	failure(inout stm : Snapshot) : void
+  AnyState * st = _upper(stm);
+
+  if (st != 0)
+    st->failure(stm);
+#ifdef VERBOSE_STATE_MACHINE
+  else
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "transition failure not expected";
+#endif
+#endif
+!!!1148038.cpp!!!	cancel(inout stm : Snapshot) : void
+  AnyState * st = _upper(stm);
+
+  if (st != 0)
+    st->cancel(stm);
+#ifdef VERBOSE_STATE_MACHINE
+  else
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "transition cancel not expected";
+#endif
+#endif

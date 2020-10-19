@@ -1,0 +1,36 @@
+class Connect_State
+!!!1165190.cpp!!!	success(inout stm : Snapshot) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._snapshot_state._obtain_state._handshake_ssl_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Snapshot.Obtain.Handshake SSL";
+#endif
+    stm._snapshot_state._obtain_state._handshake_ssl_state.create(stm);
+  }
+!!!1165318.cpp!!!	create(inout stm : Snapshot) : void
+	_doentry(stm);
+!!!1165446.cpp!!!	_doentry(inout stm : Snapshot) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Snapshot.Obtain.Connect";
+#endif
+boost::asio::async_connect(
+    stm.https_->next_layer(), stm.results_.begin(), stm.results_.end(),
+    boost::asio::bind_executor(
+        *stm.strand_, [&stm](const boost::system::error_code &ec,
+                          decltype(stm.results_)::iterator iter) {
+          if (ec) {
+            stm.ec_ = ec;
+            stm.error_message_ = ec.message();
+            stm.failure();
+          } else {
+#ifndef NDEBUG
+            BOOST_LOG_TRIVIAL(debug) << "IP: " << iter->endpoint().address().to_string()
+                      << " Port: " << iter->endpoint().port() << "\n";
+#endif
+            stm.https_address_ = iter->endpoint().address();
+            stm.success();
+          }
+        }));
+!!!1165574.cpp!!!	_upper(inout stm : Snapshot) : Snapshot::AnyState
+  return &stm._snapshot_state._obtain_state;

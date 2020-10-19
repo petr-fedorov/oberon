@@ -1,0 +1,43 @@
+class Process_State
+!!!1159046.cpp!!!	processed(inout stm : Receiver) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._receiver_state._engage_state._subscribed_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver.Engage.Subscribed";
+#endif
+    if (!stm.messages_.empty()) {
+      stm._set_currentState(stm._receiver_state._engage_state._subscribed_state._process_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver.Engage.Subscribed.Process";
+#endif
+      stm._receiver_state._engage_state._subscribed_state._process_state.create(stm);
+    }
+    else {
+      stm._set_currentState(stm._receiver_state._engage_state._subscribed_state._wait_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver.Engage.Subscribed.Wait";
+#endif
+    }
+  }
+!!!1159174.cpp!!!	create(inout stm : Receiver) : void
+	_doentry(stm);
+!!!1159302.cpp!!!	_doentry(inout stm : Receiver) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Receiver.Engage.Subscribed.Process";
+#endif
+boost::asio::post(boost::asio::bind_executor(*stm.reconstructor_strand_, [messages = std::move(stm.messages_), &stm]() {
+  for (auto &message : messages)
+    if (!stm.f_->process(*message)) {
+      boost::asio::post(boost::asio::bind_executor(*stm.rtc_, [&stm]() {
+        stm.error_message_ = "Couldn't process message";
+        stm.stop(); // We can't process received messages, so we stop the
+                    // machine
+      }));
+      return;
+    };
+  boost::asio::post(
+      boost::asio::bind_executor(*stm.rtc_, [&stm]() { stm.processed(); }));
+}));
+!!!1159430.cpp!!!	_upper(inout stm : Receiver) : Receiver::AnyState
+  return &stm._receiver_state._engage_state._subscribed_state;

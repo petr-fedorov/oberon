@@ -1,0 +1,23 @@
+class Snapshot_State
+!!!1143814.cpp!!!	create(inout stm : Snapshot) : void
+  {
+    stm._set_currentState(stm._snapshot_state._obtain_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Snapshot.Obtain";
+#endif
+    stm._snapshot_state._obtain_state.create(stm);
+  }
+!!!1148806.cpp!!!	_upper(inout stm : Snapshot) : Snapshot::AnyState
+  return 0;
+!!!1151622.cpp!!!	_junction1(inout stm : Snapshot) : void
+  {
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition <transition>";
+#endif
+boost::asio::post(
+    boost::asio::bind_executor(*stm.receiver_->rtc_, [&stm]() {
+      stm.receiver_->failure();
+    }));
+
+      stm._final();
+  }
