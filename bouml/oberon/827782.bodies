@@ -31,7 +31,7 @@ if(!stm.error_message_.empty())
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Receiver.Engage";
 #endif
 stm.signal_set_->async_wait(boost::asio::bind_executor(
-    *stm.rtc_, [&stm](const boost::system::error_code &ec, int signal_number) {
+    *stm.strand_, [&stm](const boost::system::error_code &ec, int signal_number) {
       if (!ec) {
         BOOST_LOG_TRIVIAL(info) << "\nTermination requested ...";
         stm.stop();

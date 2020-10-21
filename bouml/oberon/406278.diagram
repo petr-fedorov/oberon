@@ -1,7 +1,122 @@
 format 223
 
-classcanvas 128134 class_ref 712966 // CoinbaseReceiver
+classcanvas 128262 class_ref 851974 // function
   classdiagramsettings member_max_width 0 end
-  xyz 103 78 2005
+  xyz 189 137 2005
+end
+classcanvas 128390 class_ref 852102 // ReceivedHandler
+  classdiagramsettings member_max_width 0 end
+  xyz 69 282 2000
+end
+classcanvas 128646 class_ref 852230 // Message
+  classdiagramsettings member_max_width 0 end
+  xyz 577 264 2000
+end
+classcanvas 129030 class_ref 852358 // FailureHandler
+  classdiagramsettings member_max_width 0 end
+  xyz 288 282 2011
+end
+classcanvas 129286 class_ref 852486 // SuccessHandler
+  classdiagramsettings member_max_width 0 end
+  xyz 359 162 2011
+end
+classcanvas 129542 class_ref 843526 // Feeder
+  classdiagramsettings hide_operations yes member_max_width 0 end
+  xyz 380 402 2017
+end
+classcanvas 130182 class_ref 174214 // ptree
+  classdiagramsettings member_max_width 0 end
+  xyz 623 452 2000
+end
+classcanvas 130438 class_ref 852614 // shared_ptr
+  classdiagramsettings member_max_width 0 end
+  xyz 553 111 2005
+end
+classcanvas 130822 class_ref 850566 // AsioStateMachine
+  classdiagramsettings member_max_width 0 end
+  xyz 452 257 2023
+end
+classcanvas 131078 class_ref 698886 // context
+  classdiagramsettings member_max_width 0 end
+  xyz 610 561 2000
+end
+classcanvas 131334 class_ref 697862 // resolver
+  classdiagramsettings member_max_width 0 end
+  xyz 611 658 2000
+end
+classcanvas 131590 class_ref 698502 // WebsocketStream
+  classdiagramsettings member_max_width 0 end
+  xyz 619 748 2000
+end
+classcanvas 131846 class_ref 698758 // io_context
+  classdiagramsettings member_max_width 0 end
+  xyz 620 342 2000
+end
+classcanvas 132102 class_ref 746886 // signal_set
+  classdiagramsettings member_max_width 0 end
+  xyz 145 564 2000
+end
+relationcanvas 128518 relation_ref 951302 // <realization>
+  from ref 128390 z 2006 label "<R_Args->void(Message)>" max_width 255 xyz 102 221 2006 stereotype "<<bind>>" xyz 149 239 3000 to ref 128262
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 129158 relation_ref 951558 // <realization>
+  from ref 129030 z 2012 label "<R_Args->void()>" max_width 255 xyz 237 220 2012 stereotype "<<bind>>" xyz 260 238 2012 to ref 128262
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 129414 relation_ref 951686 // <realization>
+  from ref 129286 z 2012 label "<R_Args->void()>" max_width 255 xyz 255 159 2012 stereotype "<<bind>>" xyz 277 177 2012 to ref 128262
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+line 129670 ---+
+  from ref 128646 z 2018 to ref 129542
+line 129798 ---+
+  from ref 128390 z 2018 to ref 129542
+line 129926 ---+
+  from ref 129030 z 2018 to ref 129542
+line 130054 ---+
+  from ref 129286 z 2018 to ref 129542
+relationcanvas 130310 relation_ref 951814 // <directional composition>
+  from ref 129542 z 2018 to ref 130182
+  role_a_pos 585 455 3000 no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130566 relation_ref 951942 // <realization>
+  from ref 128646 z 2006 label "<T->ptree>" max_width 255 xyz 586 199 2006 stereotype "<<bind>>" xyz 590 217 3000 to ref 130438
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130950 relation_ref 958470 // <generalisation>
+  from ref 129542 z 2024 to ref 130822
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131206 relation_ref 958598 // <directional composition>
+  from ref 129542 z 2018 to ref 131078
+  role_a_pos 577 557 3000 no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131462 relation_ref 958726 // <directional composition>
+  from ref 129542 z 2018 to ref 131334
+  role_a_pos 551 644 3000 no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131718 relation_ref 958854 // <directional composition>
+  from ref 129542 z 2018 to ref 131590
+  role_a_pos 605 731 3000 no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131974 relation_ref 958982 // <directional aggregation>
+  from ref 129542 z 2018 to ref 131846
+  role_a_pos 591 365 3000 no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 132230 relation_ref 959110 // <directional composition>
+  from ref 129542 z 2018 to ref 132102
+  role_a_pos 225 559 3000 no_role_b
+  no_multiplicity_a no_multiplicity_b
 end
 end

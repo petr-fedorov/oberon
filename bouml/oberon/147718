@@ -1,6 +1,6 @@
 format 223
 "Standalone application" // Standalone application
-  revision 54
+  revision 56
   modified_by 6 "petr"
   // class settings
   
@@ -8895,6 +8895,7 @@ operator<<(std::basic_ostream<CharT, Traits>& os,
       stereotype "source"
       cpp_src "#include <thread>
 #include \"receiver/coinbase/Receiver.h\"
+#include \"receiver/coinbase/Feeder.h\"
 #include \"receiver/bitstamp/Receiver.h\"
 #include \"reconstructor.h\"
 #include \"store_file.h\"
@@ -8904,6 +8905,9 @@ operator<<(std::basic_ostream<CharT, Traits>& os,
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 using boost::posix_time::seconds;
+
+// TEMPORARY
+#include <boost/property_tree/json_parser.hpp>
 
 
 int main(int argc, char **argv) {
@@ -8925,9 +8929,15 @@ int main(int argc, char **argv) {
   // The io_context is required for all I/O
   std::shared_ptr<boost::asio::io_context> ioc = std::make_shared<boost::asio::io_context>();
   oberon::store::File f{exchange,product};
-  std::shared_ptr<rec::Receiver> coinbase =
-      std::make_shared<oberon::receiver::coinbase::Receiver>(
+  using Receiver = oberon::receiver::coinbase::Receiver;
+  auto coinbase =
+      std::make_shared<Receiver>(
           ioc, product, oberon::reconstructor::Reconstructor::create(oberon::reconstructor::Exchanges::kCoinbase,product, &f, 2.0, false));
+  // auto feeder = std::make_shared<oberon::receiver::coinbase::Feeder>(ioc, product);
+  // feeder->registerHandlers(std::bind(&Receiver::_postEvent, coinbase, &Receiver::success), std::bind(&Receiver::_postEvent, coinbase, &Receiver::failure), std::bind(&Receiver::_postData, coinbase, std::placeholders::_1)); 
+  // feeder->registerHandlers([]() { std::cout << \"Success\\n\"; }, []() {std::cout << \"Failure\\n\";}, [](std::shared_ptr<boost::property_tree::ptree> && tree) { boost::property_tree::write_json(std::cout, *tree, false); });
+  // feeder->create();
+  // feeder->engage();
   coinbase->create();
   // Run the I/O service in two threads.
   std::thread t {[&ioc]() { ioc->run(); }};
@@ -8957,6 +8967,7 @@ int main(int argc, char **argv) {
 	artifact_ref 273286 // Feeder
 	artifact_ref 273414 // Receiver
 	artifact_ref 273542 // Snapshot
+	artifact_ref 280070 // AsioStateMachine
       end
       ncouples 10
       key "genpro pro" value "/tmp/oberon/cpp/oberon.pro"

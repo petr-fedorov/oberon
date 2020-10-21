@@ -2,7 +2,7 @@ class Receiver
 !!!915590.cpp!!!	Receiver()
   _current_state = 0;
 !!!917382.cpp!!!	Receiver(inout ioc : io_context, in product : string, inout f : Reconstructor)
-rtc_ = std::make_unique<boost::asio::io_context::strand>(*ioc);
+strand_ = std::make_unique<boost::asio::io_context::strand>(*ioc);
 reconstructor_strand_ = std::make_unique<boost::asio::io_context::strand>(*ioc);
 timer_ = std::make_unique<boost::asio::deadline_timer>(*ioc);
 signal_set_ = std::make_unique<boost::asio::signal_set>(*ioc, SIGINT, SIGTERM);
@@ -116,7 +116,7 @@ BOOST_LOG_TRIVIAL(debug) << "Seq no: " << last_seq_number_ << " Queue size: " <<
 #endif
 ws_->async_read(buffer_,
                     boost::asio::bind_executor(
-                        *rtc_, [this](const boost::system::error_code &ec,
+                        *strand_, [this](const boost::system::error_code &ec,
                                           std::size_t bytes_transferred) {
                           boost::ignore_unused(bytes_transferred);
                           this->dispatchJson(ec);
@@ -193,7 +193,10 @@ Receiver & stm {*this};
 _current_state->stop(*this);
   }
   return (_current_state != 0);
-!!!1191174.cpp!!!	post_event(inout event : std::function<bool(Receiver *)>) : void
-boost::asio::post(boost::asio::bind_executor(*rtc_,std::bind(event, this)));
-!!!1191302.cpp!!!	post(inout event : std::function<void()>) : void
-boost::asio::post(boost::asio::bind_executor(*rtc_,event));
+!!!1191174.cpp!!!	_postEvent(inout event : Receiver::ReceiverEventFn) : void
+_post(std::bind(event, std::static_pointer_cast<Receiver>(shared_from_this())));
+
+!!!1205254.cpp!!!	_postData(inout tree : ptree) : void
+boost::asio::post(*strand_, std::bind(&Receiver::_dispatchData, std::static_pointer_cast<Receiver>(shared_from_this()),tree));
+
+

@@ -98,28 +98,28 @@ boost::asio::post(boost::asio::bind_executor(
         }
         if (!stm.stop_thread_) // We don't care too much about race condition
                                // here
-          stm.post_event(&Receiver::success);
+          stm._postEvent(&Receiver::success);
         else
-          stm.post([&stm]() {
+          stm._post([&stm]() {
             stm.error_message_ = "Snapshot saved has been stopped, exiting ...";
             stm.failure();
           });
       } catch (const std::logic_error &e) {
         std::string w{e.what()};
-        stm.post([&stm, w]() {
+        stm._post([&stm, w]() {
           stm.error_message_ = w;
           stm.stop(); // We can't process received messages, so we stop the
                       // machine
         });
       } catch (const std::exception &e) {
         std::string w{e.what()};
-        stm.post([&stm, w]() {
+        stm._post([&stm, w]() {
           stm.error_message_ = w;
           stm.failure();
         });
 
       } catch (...) {
-        stm.post([&stm]() {
+        stm._post([&stm]() {
           stm.error_message_ =
               "Snapshot saved failed due to an exception, exiting ...";
           stm.failure();

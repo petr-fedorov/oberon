@@ -1,3 +1,31 @@
 class Feeder_State
 !!!1191046.cpp!!!	_upper(inout stm : Feeder) : Feeder::AnyState
   return 0;
+!!!1203590.cpp!!!	create(inout stm : Feeder) : void
+  {
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition <transition>";
+#endif
+stm.signal_set_->async_wait(boost::asio::bind_executor(
+    *stm.strand_, [&stm](const boost::system::error_code &ec, int signal_number) {
+      if (!ec) {
+        BOOST_LOG_TRIVIAL(info) << "\nTermination requested ...";
+        stm.dismiss();
+      }
+    }));
+    stm._set_currentState(stm._feeder_state._idle_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Feeder.Idle";
+#endif
+  }
+!!!1204102.cpp!!!	_junction1(inout stm : Feeder) : void
+  {
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition dismissed";
+#endif
+if(stm.sh_) stm.sh_();
+    stm._set_currentState(stm._feeder_state._idle_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Feeder.Idle";
+#endif
+  }

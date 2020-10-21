@@ -1,6 +1,6 @@
 format 223
 "std" // std
-  revision 25
+  revision 26
   modified_by 6 "petr"
   // class settings
   
@@ -213,6 +213,23 @@ ${members}};
       
     end
 
+    class 852614 "shared_ptr"
+      visibility package 
+      nformals 1
+      formal name "T" type "class" explicit_default_value ""
+        explicit_extends ""
+      cpp_external cpp_decl "${name}
+#include <memory>
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+    end
+
     class 564358 "cmath"
       visibility package 
       cpp_external cpp_decl "${name}
@@ -342,6 +359,22 @@ ${members}};
       
     end
 
+    class 851974 "function"
+      visibility package 
+      nformals 1
+      formal name "R_Args" type "class" explicit_default_value ""
+        explicit_extends ""
+      cpp_external cpp_decl "${name}
+#include <functional>
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+    end
   end
 
   package_ref 161286 // chrono

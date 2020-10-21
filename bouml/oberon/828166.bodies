@@ -16,7 +16,7 @@ class Handshake_Websocket_State
 #endif
 stm.ws_->async_handshake(
     stm.host_, stm.target_,
-    boost::asio::bind_executor(*stm.rtc_,
+    boost::asio::bind_executor(*stm.strand_,
                                [&stm](const boost::system::error_code &ec) {
                                  if (ec) {
                                    stm.ec_ = ec;

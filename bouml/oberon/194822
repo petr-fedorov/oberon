@@ -1,6 +1,6 @@
 format 223
 "Receiver" // Standalone application::Receiver
-  revision 20
+  revision 21
   modified_by 6 "petr"
   // class settings
   
@@ -185,6 +185,60 @@ ${members}};
 	
 	
       end
+    end
+
+    class 850566 "AsioStateMachine"
+      visibility package 
+      nactuals 1
+      actual class class_ref 697734 // enable_shared_from_this
+        rank 0 value class_ref 850566 // AsioStateMachine
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      operation 1197830 "_post"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "handler" explicit_type "std::function<void()>"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} && ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} && ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 958854 // <realization>
+	relation 948486 -_-|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 958854 // <realization>
+	  b parent class_ref 697734 // enable_shared_from_this
+      end
+
+      classrelation 958982 // strand_ (<directional composition>)
+	relation 948614 *-->
+	  a role_name "strand_" protected
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::unique_ptr<${type}> ${name}${value};
+"
+	    classrelation_ref 958982 // strand_ (<directional composition>)
+	  b parent class_ref 753414 // strand
+      end
+    end
+
+    classdiagram 413190 "AsioStateMachine"
+      classdiagramsettings member_max_width 0 end
+      size A4
     end
   end
 
@@ -377,6 +431,30 @@ load_root_certificates(ssl::context& ctx)
 #endif
 "
       associated_elems
+      end
+    end
+
+    artifact 280070 "AsioStateMachine"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+#include <boost/asio/post.hpp>
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 850566 // AsioStateMachine
       end
     end
   end
