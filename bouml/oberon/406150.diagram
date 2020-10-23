@@ -2,78 +2,66 @@ format 223
 
 statecanvas 128134 state_ref 259846 // Busy
   
-  xyzwh 26 177 2000 783 709
+  xyzwh 26 224 2000 783 709
 end
 statecanvas 128518 state_ref 268166 // Resolve
   
-  xyzwh 136 284 2005 115 77
-end
-statecanvas 128774 state_ref 274694 // Idle
-  
-  xyzwh 375 67 2000 45 41
+  xyzwh 136 331 2005 115 77
 end
 pseudostatecanvas 128902 pseudostate_ref 348294 // initial 
-   xyz 440 5 2000
+   xyz 95 39 2000
 end
 statecanvas 130054 state_ref 275078 // Receive
   
-  xyzwh 247 648 2005 225 77
+  xyzwh 78 666 2005 225 77
 end
 pseudostatecanvas 130694 pseudostate_ref 348550 // initial 
-   xyz 56 312 2005
+   xyz 56 359 2005
 end
 statecanvas 130822 state_ref 275206 // Connect
   
-  xyzwh 361 289 2005 115 77
+  xyzwh 361 336 2005 115 77
 end
 statecanvas 130950 state_ref 275334 // Handshake SSL
   
-  xyzwh 606 284 2005 115 77
+  xyzwh 606 331 2005 115 77
 end
 statecanvas 131078 state_ref 275462 // Handshake websocket
   
-  xyzwh 595 467 2005 149 77
+  xyzwh 595 514 2005 149 77
 end
 statecanvas 131206 state_ref 275590 // Subscribe
   
-  xyzwh 292 465 2005 115 77
-end
-pseudostatecanvas 132102 pseudostate_ref 348678 // final 
-   xyz 214 21 2000
+  xyzwh 393 513 2005 115 77
 end
 statecanvas 132358 state_ref 275718 // Stopping
   
-  xyzwh 620 77 2000 73 41
+  xyzwh 639 43 2000 85 41
 end
 pseudostatecanvas 132998 pseudostate_ref 348806 // junction 
-   xyz 543 81 2000
+   xyz 560 43 2000
 end
-transitioncanvas 129030 transition_ref 523270 // <transition>
-  
-  from ref 128902 z 2001 label "/ set signal handler (TEMPORARY!)" xyz 329 35 2001 to ref 128774
-  write_horizontally default show_definition default drawing_language default
+pseudostatecanvas 134150 pseudostate_ref 355462 // junction 
+   xyz 461 139 2000
 end
-transitioncanvas 129158 transition_ref 523398 // engage
-  decenter_end 265
-  
-  from ref 128774 z 2001 label "engage" xyz 284 78 2001 to point 233 85
-  line 129542 z 2001 to ref 128134
-  write_horizontally default show_definition default drawing_language default
+pseudostatecanvas 135046 pseudostate_ref 355590 // choice 
+   xyz 464 677 2005
 end
-transitioncanvas 130182 transition_ref 523782 // failure
-  decenter_begin 469
-  
-  from ref 128134 z 2001 label "failure / report failure " xyz 335 131 2001 to ref 128774
-  write_horizontally default show_definition default drawing_language default
+pseudostatecanvas 135558 pseudostate_ref 355846 // choice 
+   xyz 463 806 2005
 end
-transitioncanvas 130310 transition_ref 523910 // success
-  decenter_begin 219
-  decenter_end 780
+pseudostatecanvas 136326 pseudostate_ref 356102 // final 
+   xyz 664 812 2005
+end
+statecanvas 137478 state_ref 282246 // Exhausted
   
-  from ref 130054 z 2006 to point 133 660
-  line 130438 z 2006 label "success / report received ptree" xyz 53 676 2006 to point 133 706
-  line 130566 z 2006 to ref 130054
-  write_horizontally default show_definition default drawing_language default
+  xyzwh 270 117 2000 81 41
+end
+pseudostatecanvas 138758 pseudostate_ref 369542 // choice 
+   xyz 210 32 2000
+end
+pseudostatecanvas 138886 pseudostate_ref 369670 // final 
+   xyz 454 39 2005
 end
 transitioncanvas 131334 transition_ref 524038 // <transition>
   
@@ -82,55 +70,140 @@ transitioncanvas 131334 transition_ref 524038 // <transition>
 end
 transitioncanvas 131462 transition_ref 524166 // success
   
-  from ref 128518 z 2006 label "success" xyz 283 315 2006 to ref 130822
+  from ref 128518 z 2006 label "success" xyz 283 362 2006 to ref 130822
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 131590 transition_ref 524294 // success
   
-  from ref 130822 z 2006 label "success" xyz 518 314 2006 to ref 130950
+  from ref 130822 z 2006 label "success" xyz 518 361 2006 to ref 130950
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 131718 transition_ref 524422 // success
   
-  from ref 130950 z 2006 label "success" xyz 642 404 2006 to ref 131078
+  from ref 130950 z 2006 label "success" xyz 642 451 2006 to ref 131078
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 131846 transition_ref 524550 // success
   
-  from ref 131078 z 2006 label "success" xyz 478 494 2006 to ref 131206
+  from ref 131078 z 2006 label "success" xyz 528 542 2006 to ref 131206
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 131974 transition_ref 524678 // success
+  decenter_end 133
   
-  from ref 131206 z 2006 label "success / report subscribed" xyz 279 585 2006 to ref 130054
+  from ref 131206 z 2006 label "success / report subscribed, start timer" xyz 146 542 2006 to point 104 549
+  line 133766 z 2006 to ref 130054
   write_horizontally default show_definition default drawing_language default
 end
-transitioncanvas 132230 transition_ref 524806 // terminate
+transitioncanvas 132486 transition_ref 524934 // stop
+  decenter_begin 844
   
-  from ref 128774 z 2001 label "terminate / report success" xyz 236 47 2001 to ref 132102
-  write_horizontally default show_definition default drawing_language default
-end
-transitioncanvas 132486 transition_ref 524934 // dismiss
-  decenter_begin 802
-  
-  from ref 128134 z 2001 label "dismiss" xyz 634 138 2001 to ref 132358
+  from ref 128134 z 2001 label "stop" xyz 672 144 2001 to ref 132358
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 133126 transition_ref 525318 // success
   
-  from ref 132358 z 2001 label "success" xyz 584 54 2001 to point 581 46
-  line 133254 z 2001 to ref 132998
+  from ref 132358 z 2001 to point 679 24
+  line 133254 z 2001 label "success" xyz 601 17 2001 to point 563 24
+  line 139654 z 2001 to ref 132998
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 133382 transition_ref 525446 // failure
+  decenter_begin 780
   
-  from ref 132358 z 2001 label "failure" xyz 585 120 2001 to point 575 138
+  from ref 132358 z 2001 label "failure" xyz 586 65 2001 to point 564 73
   line 133510 z 2001 to ref 132998
   write_horizontally default show_definition default drawing_language default
 end
-transitioncanvas 133638 transition_ref 525574 // dismissed
+transitioncanvas 134278 transition_ref 532358 // <transition>
+  decenter_begin 568
   
-  from ref 132998 z 2001 label "/ report success" xyz 447 70 2001 to ref 128774
+  from ref 128134 z 2001 to ref 134150
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 134790 transition_ref 532614 // failure
+  decenter_begin 735
+  
+  from ref 128134 z 2001 label "failure" xyz 583 175 2001 to point 597 145
+  line 139910 z 2001 to ref 134150
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 135174 transition_ref 532742 // success
+  decenter_begin 376
+  
+  from ref 130054 z 2006 label "success / restart timer" xyz 323 685 2006 to ref 135046
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 135686 transition_ref 532998 // data
+  
+  from ref 135046 z 2006 label "[else]" xyz 461 750 2006 to ref 135558
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 136966 transition_ref 533510 // bad sequence number
+  
+  from ref 135558 z 2006 label "[bad sequence num]" xyz 521 815 2006 to ref 136326
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 137222 transition_ref 533638 // report data received
+  
+  from ref 135558 z 2006 label "[else] / report received" xyz 266 814 2006 to point 187 821
+  line 137350 z 2006 to ref 130054
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 137606 transition_ref 533766 // exhausted
+  decenter_begin 339
+  decenter_end 246
+  
+  from ref 128134 z 2001 label "exhausted" xyz 262 181 2001 to ref 137478
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 137734 transition_ref 533894 // failure
+  decenter_begin 780
+  
+  from ref 137478 z 2001 label "failure" xyz 389 138 2001 to ref 134150
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 137990 transition_ref 534022 // success
+  decenter_begin 780
+  
+  from ref 137478 z 2001 to point 331 169
+  line 140166 z 2001 label "success" xyz 368 161 2001 to point 447 169
+  line 138118 z 2001 to ref 134150
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 138246 transition_ref 534150 // heartbeat or subscriptions
+  
+  from ref 135046 z 2006 to point 471 627
+  line 138630 z 2006 label "[heartbeat or subscription]" xyz 261 619 2006 to point 186 626
+  line 138502 z 2006 to ref 130054
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 139014 transition_ref 549894 // stopped
+  
+  from ref 132998 z 2006 label "/ report success" xyz 474 32 2006 to ref 138886
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 139142 transition_ref 550022 // failed
+  
+  from ref 134150 z 2006 label "/ report failure" xyz 429 91 2006 to ref 138886
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 139270 transition_ref 550150 // <transition>
+  
+  from ref 128902 z 2001 to ref 138758
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 140038 transition_ref 550406 // <transition>
+  decenter_begin 520
+  decenter_end 254
+  
+  from ref 138758 z 2001 label "[else]" xyz 209 136 2001 to ref 128134
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 140422 transition_ref 550534 // create
+  
+  from ref 138758 z 2001 label "[created with a default constructor]" xyz 238 38 2001 to point 426 45
+  line 140550 z 2001 to ref 134150
   write_horizontally default show_definition default drawing_language default
 end
 end

@@ -16,21 +16,21 @@ class Resolve_State
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Feeder.Busy.Resolve";
 #endif
-stm.resolver_->async_resolve(
-    stm.host_, stm.port_,
+stm.d_->resolver_->async_resolve(
+    stm.d_->host_, stm.d_->port_,
     boost::asio::bind_executor(
-        *stm.strand_,
+        *stm.d_->strand_,
         [&stm](const boost::system::error_code &ec,
                boost::asio::ip::tcp::resolver::results_type results) {
           if (ec) {
-            stm.ec_ = ec;
-            stm.error_message_ = ec.message();
+            stm.d_->ec_ = ec;
+            stm.d_->error_message_ = ec.message();
 #ifdef DEBUG
             BOOST_LOG_TRIVIAL(debug) << "Can't resolve!";
 #endif
             stm.failure();
           } else {
-            stm.results_ = results;
+            stm.d_->results_ = results;
             stm.success();
           }
         }));

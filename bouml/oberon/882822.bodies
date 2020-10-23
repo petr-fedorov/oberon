@@ -1,5 +1,5 @@
-class Cancelled_State
-!!!1148422.cpp!!!	success(inout stm : Snapshot) : void
+class Stopping_State
+!!!1256198.cpp!!!	failure(inout stm : Snapshot) : void
   {
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
     stm._set_currentState(stm._snapshot_state);
@@ -8,7 +8,7 @@ class Cancelled_State
 #endif
     stm._snapshot_state._junction1(stm);
   }
-!!!1148550.cpp!!!	failure(inout stm : Snapshot) : void
+!!!1256326.cpp!!!	success(inout stm : Snapshot) : void
   {
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
     stm._set_currentState(stm._snapshot_state);
@@ -17,5 +17,5 @@ class Cancelled_State
 #endif
     stm._snapshot_state._junction1(stm);
   }
-!!!1148678.cpp!!!	_upper(inout stm : Snapshot) : Snapshot::AnyState
+!!!1256454.cpp!!!	_upper(inout stm : Snapshot) : Snapshot::AnyState
   return &stm._snapshot_state;

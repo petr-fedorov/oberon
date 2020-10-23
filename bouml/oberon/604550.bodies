@@ -1,13 +1,13 @@
 class BitstampChanged
 !!!759302.cpp!!!	BitstampChanged(in tree : ptree, in reconstructor : BitstampReconstructor)
-order_id_ = toUuid(tree.get<string>("id"));
-timestamp_ = toTimestamp(tree.get<string>("microtimestamp"));
-local_timestamp_ = toTimestamp(tree.get<string>("local_timestamp"));
-price_ = std::strtod(tree.get<string>("price").c_str(), nullptr);
-remaining_size_ = std::strtod(tree.get<string>("amount").c_str(), nullptr);
-if (tree.get<string>("order_type") == "buy")
+order_id_ = toUuid(tree.get<std::string>("id"));
+timestamp_ = toTimestamp(tree.get<std::string>("microtimestamp"));
+local_timestamp_ = toTimestamp(tree.get<std::string>("local_timestamp"));
+price_ = std::strtod(tree.get<std::string>("price").c_str(), nullptr);
+remaining_size_ = std::strtod(tree.get<std::string>("amount").c_str(), nullptr);
+if (tree.get<std::string>("order_type") == "buy")
   side_ = kBid;
 else
   side_ = kAsk;
-!!!835718.cpp!!!	clone() : MessageHandler::Changed
+!!!835718.cpp!!!	clone() : BitstampReconstructor::BitstampChanged
 return new BitstampChanged(*this);

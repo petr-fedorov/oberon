@@ -1,0 +1,42 @@
+class Processing_State
+!!!1237766.cpp!!!	success(inout stm : Receiver) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._receiver_state._engage_state._feeder_engaged_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver.Engage.Feeder Engaged";
+#endif
+    if (!stm.d_->messages_.empty()) {
+      stm._set_currentState(stm._receiver_state._engage_state._feeder_engaged_state._processing_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver.Engage.Feeder Engaged.Processing";
+#endif
+      stm._receiver_state._engage_state._feeder_engaged_state._processing_state.create(stm);
+    }
+    else {
+      stm._set_currentState(stm._receiver_state._engage_state._feeder_engaged_state._waiting_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver.Engage.Feeder Engaged.Waiting";
+#endif
+    }
+  }
+!!!1237894.cpp!!!	create(inout stm : Receiver) : void
+	_doentry(stm);
+!!!1238022.cpp!!!	_doentry(inout stm : Receiver) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Receiver.Engage.Feeder Engaged.Processing";
+#endif
+boost::asio::post(boost::asio::bind_executor(*stm.d_->processing_strand_, [messages = std::move(stm.d_->messages_), &stm]() {
+  for (auto &message : messages)
+    if (!stm.d_->processor_->process(*message)) {
+      stm._post([&stm]() {
+        stm.d_->error_message_ = "Couldn't process message";
+        stm.stop(); // We can't process received messages, so we stop the
+                    // machine
+      });
+      return;
+    };
+    stm.postEvent(&Receiver::success);
+}));
+!!!1238150.cpp!!!	_upper(inout stm : Receiver) : Receiver::AnyState
+  return &stm._receiver_state._engage_state._feeder_engaged_state;

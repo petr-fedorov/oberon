@@ -1,0 +1,38 @@
+class Feeder_Engaged_State
+!!!1238278.cpp!!!	failure(inout stm : Receiver) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._receiver_state._engage_state._feeder_engaged_state._doexit(stm);
+    stm._set_currentState(stm._receiver_state._engage_state._engaging_feeder_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver.Engage.Engaging Feeder";
+#endif
+    stm._receiver_state._engage_state._engaging_feeder_state.create(stm);
+  }
+!!!1238406.cpp!!!	message(inout stm : Receiver) : void
+  {
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition message";
+#endif
+stm.defer();
+#ifndef NDEBUG
+BOOST_LOG_TRIVIAL(debug) << stm._machine_name << " unprocessed message queue size: " << stm.d_->messages_.size();
+#endif
+  }
+!!!1241222.cpp!!!	_doexit(inout stm : Receiver) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute exit behavior of .Receiver.Engage.Feeder Engaged";
+#endif
+stm.d_->messages_.clear();
+
+
+!!!1241350.cpp!!!	_upper(inout stm : Receiver) : Receiver::AnyState
+  return &stm._receiver_state._engage_state;
+!!!1256710.cpp!!!	create(inout stm : Receiver) : void
+  {
+    stm._set_currentState(stm._receiver_state._engage_state._feeder_engaged_state._making_snapshot_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver.Engage.Feeder Engaged.Making Snapshot";
+#endif
+    stm._receiver_state._engage_state._feeder_engaged_state._making_snapshot_state.create(stm);
+  }

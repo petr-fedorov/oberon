@@ -1,15 +1,15 @@
 class BitstampFilled
 !!!759558.cpp!!!	BitstampFilled(in tree : ptree, in reconstructor : BitstampReconstructor)
-order_id_ = toUuid(tree.get<string>("maker_order_id"));
-taker_order_id_ = toUuid(tree.get<string>("taker_order_id"));
-timestamp_ = toTimestamp(tree.get<string>("trade_timestamp"));
-local_timestamp_ = toTimestamp(tree.get<string>("local_timestamp"));
-price_ = std::strtod(tree.get<string>("price").c_str(), nullptr);
-change_size_ = std::strtod(tree.get<string>("amount").c_str(), nullptr);
-trade_id_ = std::stol(tree.get<string>("trade_id")); 
-if (tree.get<string>("order_type") == "buy")
+order_id_ = toUuid(tree.get<std::string>("maker_order_id"));
+taker_order_id_ = toUuid(tree.get<std::string>("taker_order_id"));
+timestamp_ = toTimestamp(tree.get<std::string>("trade_timestamp"));
+local_timestamp_ = toTimestamp(tree.get<std::string>("local_timestamp"));
+price_ = std::strtod(tree.get<std::string>("price").c_str(), nullptr);
+change_size_ = std::strtod(tree.get<std::string>("amount").c_str(), nullptr);
+trade_id_ = std::stol(tree.get<std::string>("trade_id")); 
+if (tree.get<std::string>("order_type") == "buy")
   side_ = kBid;
 else
   side_ = kAsk;
-!!!835590.cpp!!!	clone() : MessageHandler::Filled
+!!!835590.cpp!!!	clone() : BitstampReconstructor::BitstampFilled
 return new BitstampFilled(*this);

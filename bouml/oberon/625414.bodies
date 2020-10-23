@@ -1,9 +1,9 @@
 class BitfinexCanceled
 !!!793478.cpp!!!	BitfinexCanceled(in tree : ptree, in reconstructor : BitfinexReconstructor)
-timestamp_ = toTimestamp(tree.get<string>("exchange_timestamp"));
-local_timestamp_ = toTimestamp(tree.get<string>("local_timestamp"));
-order_id_ = toUuid(tree.get<string>("order_id"));
-if(std::stod(tree.get<string>("amount")) < 0) {
+timestamp_ = toTimestamp(tree.get<std::string>("exchange_timestamp"));
+local_timestamp_ = toTimestamp(tree.get<std::string>("local_timestamp"));
+order_id_ = toUuid(tree.get<std::string>("order_id"));
+if(std::stod(tree.get<std::string>("amount")) < 0) {
   side_ = kAsk;
 } else
   side_ = kBid;

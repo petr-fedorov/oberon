@@ -1,0 +1,22 @@
+class Making_Snapshot_State
+!!!1238790.cpp!!!	create(inout stm : Receiver) : void
+  {
+    stm._set_currentState(stm._receiver_state._engage_state._feeder_engaged_state._making_snapshot_state._obtaining_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver.Engage.Feeder Engaged.Making Snapshot.Obtaining";
+#endif
+    stm._receiver_state._engage_state._feeder_engaged_state._making_snapshot_state._obtaining_state.create(stm);
+  }
+!!!1240070.cpp!!!	failure(inout stm : Receiver) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._receiver_state._engage_state._feeder_engaged_state._doexit(stm);
+    stm._receiver_state._engage_state._doexit(stm);
+    stm._set_currentState(stm._receiver_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver";
+#endif
+      stm._final();
+  }
+!!!1240198.cpp!!!	_upper(inout stm : Receiver) : Receiver::AnyState
+  return &stm._receiver_state._engage_state._feeder_engaged_state;

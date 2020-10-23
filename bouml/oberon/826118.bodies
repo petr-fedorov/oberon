@@ -1,11 +1,16 @@
 class Snapshot_State
 !!!1143814.cpp!!!	create(inout stm : Snapshot) : void
   {
-    stm._set_currentState(stm._snapshot_state._obtain_state);
+    if (stm.d_) {
+      stm._set_currentState(stm._snapshot_state._obtaining_state);
 #ifdef VERBOSE_STATE_MACHINE
-   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Snapshot.Obtain";
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Snapshot.Obtaining";
 #endif
-    stm._snapshot_state._obtain_state.create(stm);
+      stm._snapshot_state._obtaining_state.create(stm);
+    }
+    else {
+        stm._final();
+    }
   }
 !!!1148806.cpp!!!	_upper(inout stm : Snapshot) : Snapshot::AnyState
   return 0;
@@ -14,6 +19,7 @@ class Snapshot_State
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition <transition>";
 #endif
-stm.receiver_->_postEvent(&Receiver::failure);
+if(stm.d_->fh_) stm.d_->fh_();
+
       stm._final();
   }

@@ -1,6 +1,6 @@
 format 223
 "Reconstructor" // Standalone application::Reconstructor
-  revision 177
+  revision 179
   modified_by 6 "petr"
   // class settings
   
@@ -2527,9 +2527,9 @@ ${inlines}
 	nparams 1
 	  param in name "messages" type class_ref 245766 // Message
 	multiplicity "*"
-	cpp_decl "${comment}${friend}${static}${inline}${virtual}${stereotype}${typeprefix}<std::unique_ptr<${type}>> ${name}${(}vector<std::unique_ptr<${t0}>> && ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+	cpp_decl "${comment}${friend}${static}${inline}${virtual}${stereotype}${typeprefix}<std::unique_ptr<${type}>> ${name}${(}std::vector<std::unique_ptr<${t0}>> && ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
 "
-	cpp_def "${comment}${inline}${stereotype}${typeprefix}<std::unique_ptr<${type}>> ${class}::${name}${(}vector<std::unique_ptr<${t0}>> && ${p0}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${stereotype}${typeprefix}<std::unique_ptr<${type}>> ${class}::${name}${(}std::vector<std::unique_ptr<${t0}>> && ${p0}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
@@ -2931,9 +2931,9 @@ The order price must be a multiple of this increment (i.e. if the increment is 0
 	nparams 1
 	  param in name "messages" type class_ref 245766 // Message
 	multiplicity "1..*"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${stereotype}<std::unique_ptr<${type}>> ${name}${(} vector<std::unique_ptr<${t0}>>  ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${stereotype}<std::unique_ptr<${type}>> ${name}${(} std::vector<std::unique_ptr<${t0}>>  ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
 "
-	cpp_def "${comment}${inline}${typeprefix}${stereotype}<std::unique_ptr<${type}>> ${class}::${name}${(} vector<std::unique_ptr<${t0}>>  ${p0}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${typeprefix}${stereotype}<std::unique_ptr<${type}>> ${class}::${name}${(} std::vector<std::unique_ptr<${t0}>>  ${p0}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
@@ -2947,9 +2947,9 @@ The order price must be a multiple of this increment (i.e. if the increment is 0
 	nparams 1
 	  param in name "messages" type class_ref 245766 // Message
 	multiplicity "*"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(} vector<std::unique_ptr<${t0}>>  ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(} std::vector<std::unique_ptr<${t0}>>  ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
 "
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(} vector<std::unique_ptr<${t0}>>  ${p0}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(} std::vector<std::unique_ptr<${t0}>>  ${p0}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	

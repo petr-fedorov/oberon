@@ -15,7 +15,7 @@ else if (getRemainingSize())
   state = kActive;
 else
   state = kFinished;
-return make_unique<EventImpl>(getOrderId(), getTimestamp(), getLocalTimestamp(), getEventNo(),
+return std::make_unique<EventImpl>(getOrderId(), getTimestamp(), getLocalTimestamp(), getEventNo(),
                               getPrice(),
                               roundToBaseIncrement(getRemainingSize()) * sign,
                               roundToBaseIncrement(getChangeSize()) * sign,

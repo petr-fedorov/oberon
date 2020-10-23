@@ -16,12 +16,12 @@ class Handshake_SSL_State
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Feeder.Busy.Handshake SSL";
 #endif
-stm.ws_->next_layer().async_handshake(
+stm.d_->ws_->next_layer().async_handshake(
     boost::asio::ssl::stream_base::client,
-    boost::asio::bind_executor(*stm.strand_,
+    boost::asio::bind_executor(*stm.d_->strand_,
                                [&stm](const boost::system::error_code &ec) {
                                  if (ec) {
-                                   stm.ec_ = ec;
+                                   stm.d_->ec_ = ec;
                                    stm.failure();
                                  } else {
                                    stm.success();

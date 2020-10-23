@@ -1,0 +1,36 @@
+class Parsing_snapshot_State
+!!!1234310.cpp!!!	success(inout stm : Snapshot) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._snapshot_state._obtaining_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Snapshot.Obtaining";
+#endif
+      stm._snapshot_state._obtaining_state._completion(stm);
+  }
+!!!1234438.cpp!!!	create(inout stm : Snapshot) : void
+	_doentry(stm);
+!!!1234566.cpp!!!	_doentry(inout stm : Snapshot) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Snapshot.Obtaining.Parsing snapshot";
+#endif
+auto self(stm.shared_from_this());
+boost::asio::post(*stm.d_->ioc_, [&stm]() {
+      // BOOST_LOG_TRIVIAL(debug) << stm.d_->res_.body();
+      std::istringstream is{stm.d_->res_.body()};
+      stm.d_->res_.body().clear();
+      stm.d_->snapshot_tree_ = std::make_unique<boost::property_tree::ptree>();
+      try {
+        read_json(is, *stm.d_->snapshot_tree_);
+        stm.d_->buffer_.consume(stm.d_->buffer_.size());
+        boost::asio::post(
+            boost::asio::bind_executor(*stm.d_->strand_, [&stm]() { stm.success(); }));
+      } catch (...) {
+        boost::asio::post(boost::asio::bind_executor(*stm.d_->strand_, [&stm]() {
+          stm.d_->error_message_ = "Failed to parse the order book snapshot";
+          stm.failure();
+        }));
+      }
+    });
+!!!1234694.cpp!!!	_upper(inout stm : Snapshot) : Snapshot::AnyState
+  return &stm._snapshot_state._obtaining_state;

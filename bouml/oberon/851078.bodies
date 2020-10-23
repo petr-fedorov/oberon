@@ -1,13 +1,61 @@
 class Receive_State
 !!!1200006.cpp!!!	success(inout stm : Feeder) : void
   {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition success";
 #endif
-if(stm.rh_)stm.rh_(std::move(stm.tree_));
+using boost::posix_time::seconds;
+
+if (stm.d_->timer_->expires_from_now(seconds(1)) > 0) {
+  // We managed to cancel the timer. Start new asynchronous wait.
+  stm.d_->timer_->async_wait(boost::asio::bind_executor(
+      *stm.d_->strand_, [&stm](const boost::system::error_code &ec) {
+        if (ec != boost::asio::error::operation_aborted)
+          stm.exhausted();
+      }));
+}
+    stm._set_currentState(stm._feeder_state._busy_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Feeder.Busy";
+#endif
+    if ((stm.d_->tree_->get<std::string>("type") == "heartbeat" ||
+ stm.d_->tree_->get<std::string>("type") == "subscriptions")
+) {
+      stm._set_currentState(stm._feeder_state._busy_state._receive_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Feeder.Busy.Receive";
+#endif
+      stm._feeder_state._busy_state._receive_state.create(stm);
+    }
+    else {
+      if ((stm.d_->last_sequence_ && stm.d_->tree_->get<long long>("sequence") != stm.d_->last_sequence_ + 1)
+) {
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition bad sequence number";
+#endif
+#ifndef NDEBUG
+BOOST_LOG_TRIVIAL(warning) << stm._machine_name
+                         << " Bad sequence number: last_seq=" << stm.d_->last_sequence_ << " sequence="
+                         << stm.d_->tree_->get<long long>("sequence");
+#endif
+          stm._feeder_state._busy_state._completion(stm);
+      }
+      else {
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition report data received";
+#endif
+stm.d_->last_sequence_ = stm.d_->tree_->get<long long>("sequence");
+if(stm.d_->rh_) stm.d_->rh_(std::move(stm.d_->tree_));
 
 
-    create(stm);
+        stm._set_currentState(stm._feeder_state._busy_state._receive_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Feeder.Busy.Receive";
+#endif
+        stm._feeder_state._busy_state._receive_state.create(stm);
+      }
+    }
   }
 !!!1200134.cpp!!!	_upper(inout stm : Feeder) : Feeder::AnyState
   return &stm._feeder_state._busy_state;
@@ -17,10 +65,10 @@ if(stm.rh_)stm.rh_(std::move(stm.tree_));
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Feeder.Busy.Receive";
 #endif
-stm.ws_->async_read(
-    stm.buffer_,
+stm.d_->ws_->async_read(
+    stm.d_->buffer_,
     boost::asio::bind_executor(
-        *stm.strand_, [&stm](const boost::system::error_code &ec,
+        *stm.d_->strand_, [&stm](const boost::system::error_code &ec,
                          std::size_t bytes_transferred) {
           boost::ignore_unused(bytes_transferred);
           if (ec)
@@ -31,13 +79,15 @@ stm.ws_->async_read(
                 "%FT%TZ",
                 std::chrono::time_point_cast<std::chrono::microseconds>(
                     std::chrono::system_clock::now()));
-            stringstream m;
-            m << boost::beast::buffers(stm.buffer_.data());
-            stm.tree_ = std::move(make_unique<ptree>());
-            read_json(m, *stm.tree_);
-            stm.tree_->put("local_timestamp", local_timestamp);
-            stm.buffer_.consume(stm.buffer_.size());
-            // std::cout << m.str() << std::endl;
+            std::stringstream m;
+            m << boost::beast::buffers(stm.d_->buffer_.data());
+            stm.d_->tree_ = std::move(std::make_unique<boost::property_tree::ptree>());
+            boost::property_tree::read_json(m, *stm.d_->tree_);
+            stm.d_->tree_->put("local_timestamp", local_timestamp);
+            stm.d_->buffer_.consume(stm.d_->buffer_.size());
+#ifndef NDEBUG
+            BOOST_LOG_TRIVIAL(debug) << stm._machine_name << m.str(); 
+#endif
             stm.success();
           }
         }));

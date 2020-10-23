@@ -1,0 +1,34 @@
+class Reading_snapshot_State
+!!!1233798.cpp!!!	success(inout stm : Snapshot) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._snapshot_state._obtaining_state._parsing_snapshot_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Snapshot.Obtaining.Parsing snapshot";
+#endif
+    stm._snapshot_state._obtaining_state._parsing_snapshot_state.create(stm);
+  }
+!!!1233926.cpp!!!	create(inout stm : Snapshot) : void
+	_doentry(stm);
+!!!1234054.cpp!!!	_doentry(inout stm : Snapshot) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Snapshot.Obtaining.Reading snapshot";
+#endif
+auto self(stm.shared_from_this());
+boost::beast::http::async_read(
+    *stm.d_->https_, stm.d_->buffer_, stm.d_->res_,
+    boost::asio::bind_executor(*stm.d_->strand_,
+                               [&stm](const boost::system::error_code &ec,
+                                      std::size_t bytes_transferred) {
+                                 boost::ignore_unused(bytes_transferred);
+                                 if (ec) {
+                                   stm.d_->ec_ = ec;
+                                   stm.d_->error_message_ = ec.message();
+                                   BOOST_LOG_TRIVIAL(warning)
+                                       << stm.d_->error_message_;
+                                   stm.failure();
+                                 } else
+                                   stm.success();
+                               }));
+!!!1234182.cpp!!!	_upper(inout stm : Snapshot) : Snapshot::AnyState
+  return &stm._snapshot_state._obtaining_state;

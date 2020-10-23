@@ -1,6 +1,6 @@
 format 223
 "Standalone application" // Standalone application
-  revision 56
+  revision 61
   modified_by 6 "petr"
   // class settings
   
@@ -8896,6 +8896,7 @@ operator<<(std::basic_ostream<CharT, Traits>& os,
       cpp_src "#include <thread>
 #include \"receiver/coinbase/Receiver.h\"
 #include \"receiver/coinbase/Feeder.h\"
+#include \"receiver/coinbase/Snapshot.h\"
 #include \"receiver/bitstamp/Receiver.h\"
 #include \"reconstructor.h\"
 #include \"store_file.h\"
@@ -8911,8 +8912,6 @@ using boost::posix_time::seconds;
 
 
 int main(int argc, char **argv) {
-  namespace ssl = boost::asio::ssl;
-  namespace websocket = boost::beast::websocket;
   namespace rec = oberon::receiver;
   // Check command line arguments.
   if (argc != 3) {
@@ -8930,19 +8929,26 @@ int main(int argc, char **argv) {
   std::shared_ptr<boost::asio::io_context> ioc = std::make_shared<boost::asio::io_context>();
   oberon::store::File f{exchange,product};
   using Receiver = oberon::receiver::coinbase::Receiver;
-  auto coinbase =
-      std::make_shared<Receiver>(
-          ioc, product, oberon::reconstructor::Reconstructor::create(oberon::reconstructor::Exchanges::kCoinbase,product, &f, 2.0, false));
-  // auto feeder = std::make_shared<oberon::receiver::coinbase::Feeder>(ioc, product);
-  // feeder->registerHandlers(std::bind(&Receiver::_postEvent, coinbase, &Receiver::success), std::bind(&Receiver::_postEvent, coinbase, &Receiver::failure), std::bind(&Receiver::_postData, coinbase, std::placeholders::_1)); 
-  // feeder->registerHandlers([]() { std::cout << \"Success\\n\"; }, []() {std::cout << \"Failure\\n\";}, [](std::shared_ptr<boost::property_tree::ptree> && tree) { boost::property_tree::write_json(std::cout, *tree, false); });
+  auto feeder = std::make_shared<oberon::receiver::coinbase::Feeder>(ioc, product);
+  auto snapshot = std::make_shared<oberon::receiver::coinbase::Snapshot>(ioc, product);
+  using namespace oberon::reconstructor;
+  std::shared_ptr<Reconstructor> reconstructor = Reconstructor::create(Exchanges::kCoinbase,product, &f, 2.0, false);
+  auto coinbase = std::make_shared<Receiver>( ioc, feeder, snapshot, reconstructor);
+  feeder->registerHandlers(std::bind(&Receiver::postEvent, coinbase, &Receiver::success), std::bind(&Receiver::postEvent, coinbase, &Receiver::failure), std::bind(&Receiver::postMessage, coinbase, std::placeholders::_1)); 
+  snapshot->registerHandlers(std::bind(&Receiver::postEvent, coinbase, &Receiver::failure), std::bind(&Receiver::postSnapshot, coinbase, std::placeholders::_1)); 
+  //feeder->registerHandlers([]() { std::cout << \"Success\\n\"; }, []() {std::cout << \"Failure\\n\";}, [](std::shared_ptr<boost::property_tree::ptree> && tree) { boost::property_tree::write_json(std::cout, *tree, false); });
   // feeder->create();
-  // feeder->engage();
+  // feeder->engage(); 
   coinbase->create();
   // Run the I/O service in two threads.
-  std::thread t {[&ioc]() { ioc->run(); }};
+  // snapshot->create();
+  std::thread t1 {[&ioc]() { ioc->run(); }};
+  std::thread t2 {[&ioc]() { ioc->run(); }};
+  std::thread t3 {[&ioc]() { ioc->run(); }};
   ioc->run();
-  t.join();
+  t1.join();
+  t2.join();
+  t3.join();
 
   return EXIT_SUCCESS;
 }
@@ -8967,15 +8973,17 @@ int main(int argc, char **argv) {
 	artifact_ref 273286 // Feeder
 	artifact_ref 273414 // Receiver
 	artifact_ref 273542 // Snapshot
-	artifact_ref 280070 // AsioStateMachine
+	artifact_ref 286598 // SnapshotData
+	artifact_ref 286726 // ReceiverData
+	artifact_ref 293254 // FeederData
       end
       ncouples 10
       key "genpro pro" value "/tmp/oberon/cpp/oberon.pro"
       key "genpro path" value "/home/petr/repos/oberon/cpp"
       key "genpro target" value "/tmp/oberon/cpp/oberon"
       key "genpro tmplt" value "app"
-      key "genpro config" value "debug warn_on qt"
-      key "genpro defines" value "BOOST_LOG_DYN_LINK VERBOSE_STATE_MACHINE DEBUG"
+      key "genpro config" value "  qt"
+      key "genpro defines" value "BOOST_LOG_DYN_LINK NO_VERBOSE_STATE_MACHINE NDEBUG"
       key "genpro includepath" value ""
       key "genpro dependpath" value ""
       key "genpro objectsdir" value ""

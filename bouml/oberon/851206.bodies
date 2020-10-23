@@ -18,16 +18,16 @@ class Connect_State
 #endif
 // Make the connection on the IP address we get from a lookup
 boost::asio::async_connect(
-    stm.ws_->next_layer().next_layer(), stm.results_.begin(),
-    stm.results_.end(),
-    boost::asio::bind_executor(*stm.strand_,
+    stm.d_->ws_->next_layer().next_layer(), stm.d_->results_.begin(),
+    stm.d_->results_.end(),
+    boost::asio::bind_executor(*stm.d_->strand_,
                                [&stm](const boost::system::error_code &ec,
-                                      decltype(stm.results_.begin()) iter) {
+                                      decltype(stm.d_->results_.begin()) iter) {
                                  if (ec) {
-                                   stm.ec_ = ec;
+                                   stm.d_->ec_ = ec;
                                    stm.failure();
                                  } else {
-                                   stm.address_ = iter->endpoint().address();
+                                   stm.d_->address_ = iter->endpoint().address();
                                    stm.success();
                                  }
                                }));

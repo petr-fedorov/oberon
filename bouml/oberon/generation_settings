@@ -20,16 +20,16 @@
     "ulong" "unsigned long" "long" "unsigned long" "${type}" "${type} &" "${type} &" "${type}"
     "float" "float" "float" "float" "${type}" "${type} &" "${type} &" "${type}"
     "double" "double" "double" "double" "${type}" "${type} &" "${type} &" "${type}"
-    "string" "string" "String" "string" "const ${type} &" "${type} &" "${type} &" "${type}"
+    "string" "std::string" "String" "string" "const ${type} &" "${type} &" "${type} &" "${type}"
     "long long" "long long" "long" "long" "${type}" "${type} &" "${type} &" "${type}"
   
   relations_stereotypes 6 // uml cpp java pythonidl
-    "sequence" "vector" "Vector" "list" "sequence"
-    "vector" "vector" "Vector" "list" "sequence"
-    "list" "list" "List" "list" "sequence"
-    "set" "set" "Set" "set" "sequence"
-    "map" "map" "Map" "dict" "sequence"
-    "multimap" "multimap" "multimap" "" ""
+    "sequence" "std::vector" "Vector" "list" "sequence"
+    "vector" "std::vector" "Vector" "list" "sequence"
+    "list" "std::list" "List" "list" "sequence"
+    "set" "std::set" "Set" "set" "sequence"
+    "map" "std::map" "Map" "dict" "sequence"
+    "multimap" "std::multimap" "multimap" "" ""
   
   classes_stereotypes 17 // uml cpp java php python idl
     "class" "class" "class" "class" "class" "valuetype"

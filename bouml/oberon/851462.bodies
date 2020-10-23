@@ -16,13 +16,13 @@ class Handshake_websocket_State
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Feeder.Busy.Handshake websocket";
 #endif
-stm.ws_->async_handshake(
-    stm.host_, stm.target_,
-    boost::asio::bind_executor(*stm.strand_,
+stm.d_->ws_->async_handshake(
+    stm.d_->host_, stm.d_->target_,
+    boost::asio::bind_executor(*stm.d_->strand_,
                                [&stm](const boost::system::error_code &ec) {
                                  if (ec) {
-                                   stm.ec_ = ec;
-                                   stm.error_message_ = ec.message();
+                                   stm.d_->ec_ = ec;
+                                   stm.d_->error_message_ = ec.message();
                                    stm.failure();
                                  } else {
                                    stm.success();
