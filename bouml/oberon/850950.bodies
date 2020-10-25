@@ -25,9 +25,6 @@ stm.d_->resolver_->async_resolve(
           if (ec) {
             stm.d_->ec_ = ec;
             stm.d_->error_message_ = ec.message();
-#ifdef DEBUG
-            BOOST_LOG_TRIVIAL(debug) << "Can't resolve!";
-#endif
             stm.failure();
           } else {
             stm.d_->results_ = results;

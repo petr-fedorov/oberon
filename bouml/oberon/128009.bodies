@@ -1,5 +1,5 @@
-class Processing_State
-!!!1237766.cpp!!!	success(inout stm : Receiver) : void
+class Processing_messages_State
+!!!128265.cpp!!!	success(inout stm : Receiver) : void
   {
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
     stm._set_currentState(stm._receiver_state._engage_state._feeder_engaged_state);
@@ -7,11 +7,11 @@ class Processing_State
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver.Engage.Feeder Engaged";
 #endif
     if (!stm.d_->messages_.empty()) {
-      stm._set_currentState(stm._receiver_state._engage_state._feeder_engaged_state._processing_state);
+      stm._set_currentState(stm._receiver_state._engage_state._feeder_engaged_state._processing_messages_state);
 #ifdef VERBOSE_STATE_MACHINE
-   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver.Engage.Feeder Engaged.Processing";
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver.Engage.Feeder Engaged.Processing messages";
 #endif
-      stm._receiver_state._engage_state._feeder_engaged_state._processing_state.create(stm);
+      stm._receiver_state._engage_state._feeder_engaged_state._processing_messages_state.create(stm);
     }
     else {
       stm._set_currentState(stm._receiver_state._engage_state._feeder_engaged_state._waiting_state);
@@ -20,11 +20,11 @@ class Processing_State
 #endif
     }
   }
-!!!1237894.cpp!!!	create(inout stm : Receiver) : void
+!!!128393.cpp!!!	create(inout stm : Receiver) : void
 	_doentry(stm);
-!!!1238022.cpp!!!	_doentry(inout stm : Receiver) : void
+!!!128521.cpp!!!	_doentry(inout stm : Receiver) : void
 #ifdef VERBOSE_STATE_MACHINE
-   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Receiver.Engage.Feeder Engaged.Processing";
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Receiver.Engage.Feeder Engaged.Processing messages";
 #endif
 boost::asio::post(boost::asio::bind_executor(*stm.d_->processing_strand_, [messages = std::move(stm.d_->messages_), &stm]() {
   for (auto &message : messages)
@@ -38,5 +38,5 @@ boost::asio::post(boost::asio::bind_executor(*stm.d_->processing_strand_, [messa
     };
     stm.postEvent(&Receiver::success);
 }));
-!!!1238150.cpp!!!	_upper(inout stm : Receiver) : Receiver::AnyState
+!!!128649.cpp!!!	_upper(inout stm : Receiver) : Receiver::AnyState
   return &stm._receiver_state._engage_state._feeder_engaged_state;

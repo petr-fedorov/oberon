@@ -5,11 +5,11 @@ class Waiting_State
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition message";
 #endif
-stm.defer();    stm._set_currentState(stm._receiver_state._engage_state._feeder_engaged_state._processing_state);
+stm.defer();    stm._set_currentState(stm._receiver_state._engage_state._feeder_engaged_state._processing_messages_state);
 #ifdef VERBOSE_STATE_MACHINE
-   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver.Engage.Feeder Engaged.Processing";
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver.Engage.Feeder Engaged.Processing messages";
 #endif
-    stm._receiver_state._engage_state._feeder_engaged_state._processing_state.create(stm);
+    stm._receiver_state._engage_state._feeder_engaged_state._processing_messages_state.create(stm);
   }
 !!!1238662.cpp!!!	_upper(inout stm : Receiver) : Receiver::AnyState
   return &stm._receiver_state._engage_state._feeder_engaged_state;
