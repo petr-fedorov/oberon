@@ -24,8 +24,6 @@ boost::beast::http::async_read(
                                  if (ec) {
                                    stm.d_->ec_ = ec;
                                    stm.d_->error_message_ = ec.message();
-                                   BOOST_LOG_TRIVIAL(warning)
-                                       << stm.d_->error_message_;
                                    stm.failure();
                                  } else
                                    stm.success();

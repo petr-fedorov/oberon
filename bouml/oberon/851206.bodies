@@ -25,6 +25,7 @@ boost::asio::async_connect(
                                       decltype(stm.d_->results_.begin()) iter) {
                                  if (ec) {
                                    stm.d_->ec_ = ec;
+				   stm.d_->error_message_ = ec.message();
                                    stm.failure();
                                  } else {
                                    stm.d_->address_ = iter->endpoint().address();

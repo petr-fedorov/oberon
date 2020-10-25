@@ -1,7 +1,7 @@
 format 223
 "Coinbase" // Standalone application::Receiver::Coinbase
-  revision 12
-  modified_by 6 "petr"
+  revision 13
+  modified_by 9 "german"
   // class settings
   
   classdiagramsettings member_max_width 0 end
@@ -80,9 +80,7 @@ format 223
     *stm.d_->receiving_strand_, [&stm](const boost::system::error_code &ec, int signal_number) {
       boost::ignore_unused(signal_number);
       if (!ec) {
-#ifndef NDEBUG
-        BOOST_LOG_TRIVIAL(info) << \"Termination requested ...\";
-#endif
+        BOOST_LOG_TRIVIAL(info) << stm._machine_name << \"Termination requested ...\";
         stm.stop();
       }
     }));
@@ -96,6 +94,8 @@ stm.d_->feeder_->postEvent(&Feeder::stop);"
 	    on state_ref 226694 // Feeder Engaged
 	      uml_trigger "success"
 	      cpp_trigger "success"
+	      cpp_expr "BOOST_LOG_TRIVIAL(info) << stm._machine_name << \"Feeder engaged successfully.\";
+"
 	    external 
 	  end
 
@@ -103,9 +103,7 @@ stm.d_->feeder_->postEvent(&Feeder::stop);"
 	    on pseudostate_ref 314502 // final 
 	      uml_trigger "failure"
 	      cpp_trigger "failure"
-	      cpp_expr "#ifdef VERBOSE_STATE_MACHINE
-std::cout << stm.d_->error_message_ << \"\\n\";
-#endif
+	      cpp_expr "BOOST_LOG_TRIVIAL(error) << stm._machine_name << \"Couldn't engage Feeder, exiting. \" << stm.d_->error_message_; 
 "
 	    external 
 	  end
@@ -117,7 +115,7 @@ std::cout << stm.d_->error_message_ << \"\\n\";
 
 
 "
-	  state 219782 "Processing"
+	  state 219782 "Processing messages"
 	      uml_on_entry "pass to reconstructor"
 	      cpp_on_entry "boost::asio::post(boost::asio::bind_executor(*stm.d_->processing_strand_, [messages = std::move(stm.d_->messages_), &stm]() {
   for (auto &message : messages)
@@ -154,7 +152,7 @@ BOOST_LOG_TRIVIAL(debug) << stm._machine_name << \" unprocessed message queue si
 
 	  state 253190 "Waiting"
 	    transition 492678 "message"
-	      on state_ref 219782 // Processing
+	      on state_ref 219782 // Processing messages
 		uml_trigger "message"
 		uml_expr "queue message"
 		cpp_trigger "message"
@@ -165,7 +163,7 @@ BOOST_LOG_TRIVIAL(debug) << stm._machine_name << \" unprocessed message queue si
 
 	  pseudostate 327558 choice ""
 	    transition 492422 "queue not empty"
-	      on state_ref 219782 // Processing
+	      on state_ref 219782 // Processing messages
 		uml_guard "queue not empty"
 		cpp_guard "!stm.d_->messages_.empty()"
 	      external 
@@ -187,11 +185,13 @@ BOOST_LOG_TRIVIAL(debug) << stm._machine_name << \" unprocessed message queue si
     stm.d_->messages_.front()->get<long long>(\"sequence\") >=
          stm.d_->snapshot_tree_->get<long long>(\"sequence\")
 "
+		  cpp_expr "BOOST_LOG_TRIVIAL(info) << stm._machine_name << \"The received snapshot is stale\";
+"
 		external 
 	      end
 
 	      transition 503302 "<transition>"
-		on state_ref 233350 // Saving
+		on state_ref 233350 // Processing snapshot
 		  uml_guard "else"
 		external 
 	      end
@@ -208,18 +208,20 @@ BOOST_LOG_TRIVIAL(debug) << stm._machine_name << \" unprocessed message queue si
 		uml_on_entry "launch Snapshot"
 		uml_on_exit "stop Snapshot"
 		cpp_on_entry "if(!stm.d_->snapshot_->create()) throw 0;
+BOOST_LOG_TRIVIAL(info) << stm._machine_name << \"An order book snapshot requested\";
 
 "
 	      transition 503046 "success"
 		on pseudostate_ref 335238 // choice 
 		  uml_trigger "success"
 		  cpp_trigger "success"
+		  cpp_expr "BOOST_LOG_TRIVIAL(info) << stm._machine_name << \"Received the order book snapshot\";
+"
 		external 
 	      end
-
 	    end
 
-	    state 233350 "Saving"
+	    state 233350 "Processing snapshot"
 		uml_on_entry "launch"
 		uml_on_exit "stop saving job"
 		cpp_on_entry "auto iter = stm.d_->messages_.begin();
@@ -324,18 +326,23 @@ boost::asio::post(boost::asio::bind_executor(
 
 "
 	      transition 503686 "success"
-		on state_ref 219782 // Processing
+		on state_ref 219782 // Processing messages
 		  uml_trigger "success"
 		  cpp_trigger "success"
+		  cpp_expr "BOOST_LOG_TRIVIAL(info) << stm._machine_name << \"Processed the snapshot. Started processing of messages ...\";
+
+"
 		external 
 	      end
-
 	    end
 
 	    transition 550662 "failure"
 	      on pseudostate_ref 314502 // final 
 		uml_trigger "failure"
 		cpp_trigger "failure"
+		cpp_expr "BOOST_LOG_TRIVIAL(error) << stm._machine_name << \"Couldn't make snapshot, exiting. \" << stm.d_->error_message_; 
+
+"
 	      external 
 	    end
 	  end
@@ -351,6 +358,8 @@ boost::asio::post(boost::asio::bind_executor(
 	    on state_ref 219526 // Engaging Feeder
 	      uml_trigger "failure"
 	      cpp_trigger "failure"
+	      cpp_expr "BOOST_LOG_TRIVIAL(info) << stm._machine_name << \"Feeder is to be re-engaged ...\";
+"
 	    external 
 	  end
 	end
@@ -635,119 +644,6 @@ ${inlines}
 	    ncouples 1
 	    key "STM generated" value ""
 	    comment " implement the state Feeder Engaged"
-	    class 868742 "Processing_State"
-	      visibility public 
-	      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-	      java_decl ""
-	      php_decl ""
-	      python_2_2 python_decl ""
-	      idl_decl ""
-	      explicit_switch_type ""
-	      mysql_decl ""
-	      
-	      ncouples 1
-	      key "STM generated" value ""
-	      comment " implement the state Processing"
-	      operation 1235974 "~Processing_State"
-		force_body_gen cpp_virtual public explicit_return_type ""
-		nparams 0
-		cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
-"
-		cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
-  ${body}}
-"
-		
-		
-		
-		
-		ncouples 1
-		key "STM generated" value ""
-	      end
-
-	      classrelation 989574 // <generalisation>
-		relation 979206 ---|>
-		  a public
-		    cpp default "${type}"
-		    classrelation_ref 989574 // <generalisation>
-		  b parent class_ref 827526 // AnyState
-	      end
-
-	      operation 1237766 "success"
-		force_body_gen cpp_virtual public explicit_return_type "void"
-		nparams 1
-		  param inout name "stm" type class_ref 712966 // Receiver
-		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-		
-		
-		
-		
-		ncouples 1
-		key "STM generated" value ""
-		comment " to manage the event success"
-	      end
-
-	      operation 1237894 "create"
-		force_body_gen cpp_virtual public explicit_return_type "void"
-		nparams 1
-		  param inout name "stm" type class_ref 712966 // Receiver
-		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-		
-		
-		
-		
-		ncouples 1
-		key "STM generated" value ""
-		comment " to manage the event create"
-	      end
-
-	      operation 1238022 "_doentry"
-		force_body_gen public explicit_return_type "void"
-		nparams 1
-		  param inout name "stm" type class_ref 712966 // Receiver
-		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-		
-		
-		
-		
-		ncouples 1
-		key "STM generated" value ""
-		comment " perform the 'entry behavior'"
-	      end
-
-	      operation 1238150 "_upper"
-		force_body_gen cpp_virtual public return_type class_ref 827526 // AnyState
-		nparams 1
-		  param inout name "stm" type class_ref 712966 // Receiver
-		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-		cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-		
-		
-		
-		
-		ncouples 1
-		key "STM generated" value ""
-		comment " returns the state containing the current"
-	      end
-	    end
-
 	    class 868998 "Making_Snapshot_State"
 	      visibility public 
 	      cpp_decl "${comment}${template}class ${name}${inherit} {
@@ -877,7 +773,7 @@ ${inlines}
 		end
 	      end
 
-	      class 869254 "Saving_State"
+	      class 128137 "Processing_snapshot_State"
 		visibility public 
 		cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -892,8 +788,8 @@ ${inlines}
 		
 		ncouples 1
 		key "STM generated" value ""
-		comment " implement the state Saving"
-		operation 1236486 "~Saving_State"
+		comment " implement the state Processing snapshot"
+		operation 128137 "~Processing_snapshot_State"
 		  force_body_gen cpp_virtual public explicit_return_type ""
 		  nparams 0
 		  cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
@@ -909,15 +805,15 @@ ${inlines}
 		  key "STM generated" value ""
 		end
 
-		classrelation 990470 // <generalisation>
-		  relation 980102 ---|>
+		classrelation 128265 // <generalisation>
+		  relation 128265 ---|>
 		    a public
 		      cpp default "${type}"
-		      classrelation_ref 990470 // <generalisation>
+		      classrelation_ref 128265 // <generalisation>
 		    b parent class_ref 827526 // AnyState
 		end
 
-		operation 1239430 "success"
+		operation 128777 "success"
 		  force_body_gen cpp_virtual public explicit_return_type "void"
 		  nparams 1
 		    param inout name "stm" type class_ref 712966 // Receiver
@@ -935,7 +831,7 @@ ${inlines}
 		  comment " to manage the event success"
 		end
 
-		operation 1239558 "create"
+		operation 128905 "create"
 		  force_body_gen cpp_virtual public explicit_return_type "void"
 		  nparams 1
 		    param inout name "stm" type class_ref 712966 // Receiver
@@ -953,7 +849,7 @@ ${inlines}
 		  comment " to manage the event create"
 		end
 
-		operation 1239686 "_doentry"
+		operation 129033 "_doentry"
 		  force_body_gen public explicit_return_type "void"
 		  nparams 1
 		    param inout name "stm" type class_ref 712966 // Receiver
@@ -971,7 +867,7 @@ ${inlines}
 		  comment " perform the 'entry behavior'"
 		end
 
-		operation 1239814 "_doexit"
+		operation 129161 "_doexit"
 		  force_body_gen public explicit_return_type "void"
 		  nparams 1
 		    param inout name "stm" type class_ref 712966 // Receiver
@@ -989,7 +885,7 @@ ${inlines}
 		  comment " perform the 'exit behavior'"
 		end
 
-		operation 1239942 "_upper"
+		operation 129289 "_upper"
 		  force_body_gen cpp_virtual public return_type class_ref 827526 // AnyState
 		  nparams 1
 		    param inout name "stm" type class_ref 712966 // Receiver
@@ -1037,21 +933,6 @@ ${inlines}
 		ncouples 1
 		key "STM generated" value ""
 		comment " memorize the instance of the state Obtaining, internal"
-	      end
-
-	      attribute 786694 "_saving_state"
-		public type class_ref 869254 // Saving_State
-		cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-		java_decl ""
-		php_decl ""
-		python_decl ""
-		idl_decl ""
-		mysql_decl ""
-		MysqlColumn
-		ncouples 1
-		key "STM generated" value ""
-		comment " memorize the instance of the state Saving, internal"
 	      end
 
 	      classrelation 990086 // <generalisation>
@@ -1114,6 +995,21 @@ ${inlines}
 		ncouples 1
 		key "STM generated" value ""
 		comment " returns the state containing the current"
+	      end
+
+	      attribute 128137 "_processing_snapshot_state"
+		public type class_ref 128137 // Processing_snapshot_State
+		cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+		java_decl ""
+		php_decl ""
+		python_decl ""
+		idl_decl ""
+		mysql_decl ""
+		MysqlColumn
+		ncouples 1
+		key "STM generated" value ""
+		comment " memorize the instance of the state Processing snapshot, internal"
 	      end
 	    end
 
@@ -1194,6 +1090,119 @@ ${inlines}
 	      end
 	    end
 
+	    class 128009 "Processing_messages_State"
+	      visibility public 
+	      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	      java_decl ""
+	      php_decl ""
+	      python_2_2 python_decl ""
+	      idl_decl ""
+	      explicit_switch_type ""
+	      mysql_decl ""
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " implement the state Processing messages"
+	      operation 128009 "~Processing_messages_State"
+		force_body_gen cpp_virtual public explicit_return_type ""
+		nparams 0
+		cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+		cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+	      end
+
+	      classrelation 128009 // <generalisation>
+		relation 128009 ---|>
+		  a public
+		    cpp default "${type}"
+		    classrelation_ref 128009 // <generalisation>
+		  b parent class_ref 827526 // AnyState
+	      end
+
+	      operation 128265 "success"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Receiver
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event success"
+	      end
+
+	      operation 128393 "create"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Receiver
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event create"
+	      end
+
+	      operation 128521 "_doentry"
+		force_body_gen public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Receiver
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " perform the 'entry behavior'"
+	      end
+
+	      operation 128649 "_upper"
+		force_body_gen cpp_virtual public return_type class_ref 827526 // AnyState
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Receiver
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " returns the state containing the current"
+	      end
+	    end
+
 	    operation 1235846 "~Feeder_Engaged_State"
 	      force_body_gen cpp_virtual public explicit_return_type ""
 	      nparams 0
@@ -1208,21 +1217,6 @@ ${inlines}
 	      
 	      ncouples 1
 	      key "STM generated" value ""
-	    end
-
-	    attribute 786182 "_processing_state"
-	      public type class_ref 868742 // Processing_State
-	      cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	      java_decl ""
-	      php_decl ""
-	      python_decl ""
-	      idl_decl ""
-	      mysql_decl ""
-	      MysqlColumn
-	      ncouples 1
-	      key "STM generated" value ""
-	      comment " memorize the instance of the state Processing, internal"
 	    end
 
 	    attribute 786310 "_waiting_state"
@@ -1351,6 +1345,21 @@ ${inlines}
 	      ncouples 1
 	      key "STM generated" value ""
 	      comment " to manage the event create"
+	    end
+
+	    attribute 128009 "_processing_messages_state"
+	      public type class_ref 128009 // Processing_messages_State
+	      cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	      java_decl ""
+	      php_decl ""
+	      python_decl ""
+	      idl_decl ""
+	      mysql_decl ""
+	      MysqlColumn
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " memorize the instance of the state Processing messages, internal"
 	    end
 	  end
 
@@ -2116,15 +2125,6 @@ ${inlines}
 	  b parent class_ref 868358 // Engaging_Feeder_State
       end
 
-      classrelation 989702 // <dependency>
-	relation 979334 -_->
-	  stereotype "friend"
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 989702 // <dependency>
-	  b parent class_ref 868742 // Processing_State
-      end
-
       classrelation 989958 // <dependency>
 	relation 979590 -_->
 	  stereotype "friend"
@@ -2141,15 +2141,6 @@ ${inlines}
 	    cpp default "${type}"
 	    classrelation_ref 990342 // <dependency>
 	  b parent class_ref 869126 // Obtaining_State
-      end
-
-      classrelation 990598 // <dependency>
-	relation 980230 -_->
-	  stereotype "friend"
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 990598 // <dependency>
-	  b parent class_ref 869254 // Saving_State
       end
 
       classrelation 990726 // <dependency>
@@ -2170,6 +2161,23 @@ ${inlines}
 	  b parent class_ref 868614 // Feeder_Engaged_State
       end
 
+      classrelation 128137 // <dependency>
+	relation 128137 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 128137 // <dependency>
+	  b parent class_ref 128009 // Processing_messages_State
+      end
+
+      classrelation 128393 // <dependency>
+	relation 128393 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 128393 // <dependency>
+	  b parent class_ref 128137 // Processing_snapshot_State
+      end
     end
 
     class 868230 "ReceiverData"
@@ -2380,9 +2388,6 @@ stm.d_->ws_->next_layer().next_layer().close();
           if (ec) {
             stm.d_->ec_ = ec;
             stm.d_->error_message_ = ec.message();
-#ifdef DEBUG
-            BOOST_LOG_TRIVIAL(debug) << \"Can't resolve!\";
-#endif
             stm.failure();
           } else {
             stm.d_->results_ = results;
@@ -2399,15 +2404,18 @@ stm.d_->ws_->next_layer().next_layer().close();
 	end
 
 	state 275078 "Receive"
-	    uml_on_entry "async_read next message"
+	    uml_on_entry "absync_read next message"
 	    cpp_on_entry "stm.d_->ws_->async_read(
     stm.d_->buffer_,
     boost::asio::bind_executor(
         *stm.d_->strand_, [&stm](const boost::system::error_code &ec,
                          std::size_t bytes_transferred) {
           boost::ignore_unused(bytes_transferred);
-          if (ec)
+          if (ec) {
+            stm.d_->ec_ = ec;
+            stm.d_->error_message_ = ec.message();
             stm.failure();
+	    }
           else {
             using namespace boost::property_tree;
             auto local_timestamp = date::format(
@@ -2416,7 +2424,7 @@ stm.d_->ws_->next_layer().next_layer().close();
                     std::chrono::system_clock::now()));
             std::stringstream m;
             m << boost::beast::buffers(stm.d_->buffer_.data());
-            stm.d_->tree_ = std::move(std::make_unique<boost::property_tree::ptree>());
+            stm.d_->tree_ = std::make_unique<boost::property_tree::ptree>();
             boost::property_tree::read_json(m, *stm.d_->tree_);
             stm.d_->tree_->put(\"local_timestamp\", local_timestamp);
             stm.d_->buffer_.consume(stm.d_->buffer_.size());
@@ -2465,6 +2473,7 @@ boost::asio::async_connect(
                                       decltype(stm.d_->results_.begin()) iter) {
                                  if (ec) {
                                    stm.d_->ec_ = ec;
+				   stm.d_->error_message_ = ec.message();
                                    stm.failure();
                                  } else {
                                    stm.d_->address_ = iter->endpoint().address();
@@ -2488,6 +2497,7 @@ boost::asio::async_connect(
                                [&stm](const boost::system::error_code &ec) {
                                  if (ec) {
                                    stm.d_->ec_ = ec;
+				   stm.d_->error_message_ = ec.message();
                                    stm.failure();
                                  } else {
                                    stm.success();
@@ -2545,8 +2555,11 @@ stm.d_->ws_->async_write(
                                [&stm](const boost::system::error_code &ec,
                                       std::size_t bytes_transferred) {
                                  boost::ignore_unused(bytes_transferred);
-                                 if (ec)
+                                 if (ec) {
+				   stm.d_->ec_ = ec;
+				   stm.d_->error_message_ = ec.message();
                                    stm.failure();
+				   }
                                  else
                                    stm.success();
                                }));
@@ -2559,7 +2572,7 @@ stm.d_->ws_->async_write(
 	      cpp_expr "if(stm.d_->sh_) stm.d_->sh_();
 stm.d_->last_sequence_ = 0;
 using boost::posix_time::seconds;
-stm.d_->timer_->expires_from_now(seconds(1));
+stm.d_->timer_->expires_from_now(seconds(5));
 stm.d_->timer_->async_wait(boost::asio::bind_executor(
     *stm.d_->strand_, [&stm](const boost::system::error_code &ec) {
       if (ec != boost::asio::error::operation_aborted) {
@@ -2587,6 +2600,9 @@ stm.d_->timer_->async_wait(boost::asio::bind_executor(
 	  on pseudostate_ref 355462 // junction 
 	    uml_trigger "failure"
 	    cpp_trigger "failure"
+	    cpp_expr "BOOST_LOG_TRIVIAL(warning) << stm._machine_name << stm.d_->error_message_;
+
+"
 	  external 
 	end
 
@@ -2613,11 +2629,9 @@ stm.d_->timer_->async_wait(boost::asio::bind_executor(
 	      uml_guard "bad sequence num"
 	      cpp_guard "(stm.d_->last_sequence_ && stm.d_->tree_->get<long long>(\"sequence\") != stm.d_->last_sequence_ + 1)
 "
-	      cpp_expr "#ifndef NDEBUG
-BOOST_LOG_TRIVIAL(warning) << stm._machine_name
+	      cpp_expr "BOOST_LOG_TRIVIAL(warning) << stm._machine_name
                          << \" Bad sequence number: last_seq=\" << stm.d_->last_sequence_ << \" sequence=\"
                          << stm.d_->tree_->get<long long>(\"sequence\");
-#endif
 "
 	    external 
 	  end
@@ -2642,6 +2656,9 @@ if(stm.d_->rh_) stm.d_->rh_(std::move(stm.d_->tree_));
 	  on state_ref 282246 // Exhausted
 	    uml_trigger "exhausted"
 	    cpp_trigger "exhausted"
+	    cpp_expr "BOOST_LOG_TRIVIAL(warning) << stm._machine_name << \"Exhausted\";
+
+"
 	  external 
 	end
       end
@@ -4650,18 +4667,6 @@ ${inlines}
 	comment " a (unique) name of the machine "
       end
 
-      attribute 784134 "last_sequence_"
-	private explicit_type "long long"
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-      end
-
       operation 1197830 "_post"
 	public explicit_return_type "void"
 	nparams 1
@@ -4722,7 +4727,7 @@ ${inlines}
 	relation 996358 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 1006726 // <dependency>
 	  b parent class_ref 882694 // Stopping_State
       end
@@ -5259,8 +5264,6 @@ boost::beast::http::async_read(
                                  if (ec) {
                                    stm.d_->ec_ = ec;
                                    stm.d_->error_message_ = ec.message();
-                                   BOOST_LOG_TRIVIAL(warning)
-                                       << stm.d_->error_message_;
                                    stm.failure();
                                  } else
                                    stm.success();
@@ -5317,6 +5320,8 @@ boost::asio::post(*stm.d_->ioc_, [&stm]() {
 	  on pseudostate_ref 335110 // junction 
 	    uml_trigger "failure"
 	    cpp_trigger "failure"
+	    cpp_expr "BOOST_LOG_TRIVIAL(warning) << stm._machine_name << stm.d_->error_message_;
+"
 	  external 
 	end
       end
@@ -7106,7 +7111,7 @@ ${inlines}
 	relation 996614 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 1006982 // <dependency>
 	  b parent class_ref 882822 // Stopping_State
       end

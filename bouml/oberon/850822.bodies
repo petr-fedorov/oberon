@@ -3,6 +3,11 @@ class Busy_State
   {
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
     stm._feeder_state._busy_state._doexit(stm);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition failure";
+#endif
+BOOST_LOG_TRIVIAL(warning) << stm._machine_name << stm.d_->error_message_;
+
     stm._set_currentState(stm._feeder_state);
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Feeder";
@@ -59,6 +64,11 @@ SSL_CTX_set_keylog_callback(stm.d_->ctx_->native_handle(),
   {
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
     stm._feeder_state._busy_state._doexit(stm);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition exhausted";
+#endif
+BOOST_LOG_TRIVIAL(warning) << stm._machine_name << "Exhausted";
+
     stm._set_currentState(stm._feeder_state._exhausted_state);
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Feeder.Exhausted";

@@ -2,6 +2,10 @@ class Engaging_Feeder_State
 !!!1237126.cpp!!!	success(inout stm : Receiver) : void
   {
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition success";
+#endif
+BOOST_LOG_TRIVIAL(info) << stm._machine_name << "Feeder engaged successfully.";
     stm._set_currentState(stm._receiver_state._engage_state._feeder_engaged_state);
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver.Engage.Feeder Engaged";
@@ -15,9 +19,7 @@ class Engaging_Feeder_State
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition failure";
 #endif
-#ifdef VERBOSE_STATE_MACHINE
-std::cout << stm.d_->error_message_ << "\n";
-#endif
+BOOST_LOG_TRIVIAL(error) << stm._machine_name << "Couldn't engage Feeder, exiting. " << stm.d_->error_message_; 
     stm._set_currentState(stm._receiver_state);
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver";
