@@ -29,9 +29,10 @@ BOOST_LOG_TRIVIAL(debug) << "fullyCanceled " << em->toString();
 try {
   em->setEventNo(eventNumbers_.at(em->getOrderId()) + 1);
   eventNumbers_.erase(em->getOrderId());
+  output_.push_back(std::move(received_));
 } catch (const std::out_of_range &) {
+  received_.release();
 }
-output_.push_back(std::move(received_));
 return true;
 !!!722822.cpp!!!	filled() : bool
 ExchangeMessage *em = dynamic_cast<ExchangeMessage *>(received_.get());
@@ -45,9 +46,10 @@ try {
     eventNumbers_.erase(em->getOrderId());
   else
     eventNumbers_[em->getOrderId()] = em->getEventNo();
+  output_.push_back(std::move(received_));
 } catch (const std::out_of_range &) {
+  received_.release();
 }
-output_.push_back(std::move(received_));
 return true;
 !!!723078.cpp!!!	getHandlerName() : string
 return "EventNumberGenerator";

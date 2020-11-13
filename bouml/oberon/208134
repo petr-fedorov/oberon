@@ -1,7 +1,7 @@
 format 223
 "Coinbase" // Standalone application::Receiver::Coinbase
-  revision 13
-  modified_by 9 "german"
+  revision 14
+  modified_by 6 "petr"
   // class settings
   
   classdiagramsettings member_max_width 0 end
@@ -2165,7 +2165,7 @@ ${inlines}
 	relation 128137 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 128137 // <dependency>
 	  b parent class_ref 128009 // Processing_messages_State
       end
@@ -2174,7 +2174,7 @@ ${inlines}
 	relation 128393 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 128393 // <dependency>
 	  b parent class_ref 128137 // Processing_snapshot_State
       end
@@ -7422,7 +7422,7 @@ ${namespace_end}
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/log/trivial.hpp>
-#include \"date.h\"
+#include \"../../date.h\"
 using boost::posix_time::seconds;
 ${includes}
 ${namespace_start}
