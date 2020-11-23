@@ -21,20 +21,20 @@ else
 catch (const std::logic_error &e) {
   throw;
 }
-!!!641798.cpp!!!	cleanse(in messages : MessageHandler::Message [1..*]) : MessageHandler::Message [*]
+!!!641798.cpp!!!	cleanse(in messages : Token [1..*]) : Token [*]
 if(deduplicator_)
   messages = deduplicator_->handle(std::move(messages));
 if(taker_filter_)
   messages = taker_filter_->handle(std::move(messages));
 return messages;
-!!!641926.cpp!!!	transmit(in messages : MessageHandler::Message [*]) : bool
+!!!641926.cpp!!!	transmit(in messages : Token [*]) : bool
 messages = event_number_generator_->handle(std::move(messages));
 for(auto &msg : messages) 
   if(!msg->accept(*store_)) return false;
 return true;
 
 !!!827910.cpp!!!	ReconstructorImplementation()
-deduplicator_ = std::unique_ptr<MessageHandler>();
-taker_filter_ = std::unique_ptr<MessageHandler>();
-size_deducer_ = std::unique_ptr<MessageHandler>();
+deduplicator_ = std::unique_ptr<TokenHandler>();
+taker_filter_ = std::unique_ptr<TokenHandler>();
+size_deducer_ = std::unique_ptr<TokenHandler>();
 event_number_generator_ = std::make_unique<EventNumberGenerator>(); 

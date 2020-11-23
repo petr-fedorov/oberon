@@ -1,51 +1,51 @@
 class EventNumberGenerator
 !!!722438.cpp!!!	exchangeMessage() : bool
-ExchangeMessage *em = dynamic_cast<ExchangeMessage *>(received_.get());
+OrderEvent *em = dynamic_cast<OrderEvent *>(received_.get());
 #ifdef VERBOSE_STATE_MACHINE
 BOOST_LOG_TRIVIAL(debug) << "exchangeMessage " << em->toString();
 #endif
 try {
-  em->setEventNo(eventNumbers_.at(em->getOrderId()) + 1);
-  eventNumbers_[em->getOrderId()] = em->getEventNo();
+  em->ordinal(eventNumbers_.at(em->maker()) + 1);
+  eventNumbers_[em->maker()] = em->ordinal();
 } catch (const std::out_of_range &) {
 }
 output_.push_back(std::move(received_));
 return true;
 !!!722566.cpp!!!	created() : bool
-ExchangeMessage *em = dynamic_cast<ExchangeMessage *>(received_.get());
+OrderEvent *em = dynamic_cast<OrderEvent *>(received_.get());
 #ifdef VERBOSE_STATE_MACHINE
 BOOST_LOG_TRIVIAL(debug) << "created " << em->toString(); 
 #endif
-eventNumbers_[em->getOrderId()] = 1;
-em->setEventNo(1);
+eventNumbers_[em->maker()] = 1;
+em->ordinal(1);
 output_.push_back(std::move(received_));
 return true;
 !!!722694.cpp!!!	canceled() : bool
-ExchangeMessage *em = dynamic_cast<ExchangeMessage *>(received_.get());
+OrderEvent *em = dynamic_cast<OrderEvent *>(received_.get());
 #ifdef VERBOSE_STATE_MACHINE
 BOOST_LOG_TRIVIAL(debug) << "fullyCanceled " << em->toString(); 
 #endif
 
 try {
-  em->setEventNo(eventNumbers_.at(em->getOrderId()) + 1);
-  eventNumbers_.erase(em->getOrderId());
+  em->ordinal(eventNumbers_.at(em->maker()) + 1);
+  eventNumbers_.erase(em->maker());
   output_.push_back(std::move(received_));
 } catch (const std::out_of_range &) {
   received_.release();
 }
 return true;
 !!!722822.cpp!!!	filled() : bool
-ExchangeMessage *em = dynamic_cast<ExchangeMessage *>(received_.get());
+OrderEvent *em = dynamic_cast<OrderEvent *>(received_.get());
 #ifdef VERBOSE_STATE_MACHINE
 BOOST_LOG_TRIVIAL(debug) << "filled " << em->toString(); 
 #endif
 
 try {
-  em->setEventNo(eventNumbers_.at(em->getOrderId()) + 1);
-  if (!em->getRemainingSize())
-    eventNumbers_.erase(em->getOrderId());
+  em->ordinal(eventNumbers_.at(em->maker()) + 1);
+  if (!em->remaining())
+    eventNumbers_.erase(em->maker());
   else
-    eventNumbers_[em->getOrderId()] = em->getEventNo();
+    eventNumbers_[em->maker()] = em->ordinal();
   output_.push_back(std::move(received_));
 } catch (const std::out_of_range &) {
   received_.release();

@@ -1,16 +1,8 @@
 format 223
 
-classcanvas 128006 class_ref 472838 // time_order_error
-  classdiagramsettings member_max_width 0 end
-  xyz 343 229 2000
-end
-classcanvas 128134 class_ref 448006 // logic_error
-  classdiagramsettings member_max_width 0 end
-  xyz 345 102 2000
-end
 classcanvas 129030 class_ref 202630 // Reconstructor
   classdiagramsettings member_max_width 0 end
-  xyzwh 440 320 2000 135 113
+  xyzwh 417 274 2000 135 113
 end
 classcanvas 129670 class_ref 472966 // Exchanges
   classdiagramsettings member_max_width 0 end
@@ -18,17 +10,7 @@ classcanvas 129670 class_ref 472966 // Exchanges
 end
 classcanvas 130694 class_ref 231302 // Store
   classdiagramsettings member_max_width 0 end
-  xyz 453 483 3005
-end
-classcanvas 133766 class_ref 230406 // Event
-  classdiagramsettings member_max_width 0 end
-  hidden_attributes
-    attribute_ref 465030 // kNaVolume
-    attribute_ref 465158 // kNaTradeId
-    attribute_ref 465286 // kNaPrice
-    attribute_ref 465414 // kNaOrderId
-    attribute_ref 465542 // kNaEventNo
-  xyz 168 391 2000
+  xyz 840 513 3005
 end
 classcanvas 134406 class_ref 230278 // Timestamp
   classdiagramsettings member_max_width 0 end
@@ -40,7 +22,7 @@ classcanvas 134534 class_ref 306822 // OrderId
 end
 classcanvas 134662 class_ref 305798 // Volume
   classdiagramsettings member_max_width 0 end
-  xyz 57 115 2010
+  xyz 440 676 2010
 end
 classcanvas 134790 class_ref 305542 // Price
   classdiagramsettings member_max_width 0 end
@@ -70,26 +52,20 @@ classcanvas 136454 class_ref 564358 // cmath
   classdiagramsettings member_max_width 0 end
   xyz 332 383 2000
 end
-classcanvas 136838 class_ref 507782 // EventImpl
+classcanvas 137990 class_ref 624902 // BitfinexReconstructor
   classdiagramsettings member_max_width 0 end
-  xyz 337 457 3010
+  xyz 264 565 2006
 end
-classcanvas 137350 class_ref 448518 // Duration
+classcanvas 138246 class_ref 486406 // CoinbaseReconstructor
   classdiagramsettings member_max_width 0 end
-  xyz 577 622 2000
+  xyz 417 463 3011
 end
-relationcanvas 128902 relation_ref 486534 // <generalisation>
-  from ref 128006 z 2001 to ref 128134
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
+classcanvas 138630 class_ref 603654 // BitstampReconstructor
+  classdiagramsettings member_max_width 0 end
+  xyz 629 549 2006
 end
 relationcanvas 135558 relation_ref 551174 // <realization>
-  from ref 134406 z 3006 label "<Clock->system_clock, Duration->Duration>" max_width 255 xyz 576 358 3006 stereotype "<<bind>>" xyz 668 372 3006 to ref 135430
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
-end
-relationcanvas 136070 relation_ref 626694 // <dependency>
-  from ref 133766 z 3011 to ref 135942
+  from ref 134406 z 3006 label "<Clock->system_clock, Duration->microseconds>" max_width 255 xyz 561 358 3006 stereotype "<<bind>>" xyz 668 372 3006 to ref 135430
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
@@ -98,14 +74,23 @@ relationcanvas 136710 relation_ref 737798 // <dependency>
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
-relationcanvas 136966 relation_ref 544262 // <realization>
-  from ref 136838 z 3011 to ref 133766
+relationcanvas 138118 relation_ref 678150 // <dependency>
+  from ref 129030 z 2007 to ref 137990
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
-relationcanvas 137094 relation_ref 737926 // <dependency>
-  from ref 133766 z 3011 to point 297 726
-  line 137862 z 3011 to ref 136838
+relationcanvas 138374 relation_ref 543750 // <directional composition>
+  from ref 138246 z 3012 stereotype "<<map>>" xyz 515 605 3012 to ref 134662
+  role_a_pos 490 651 3000 no_role_b
+  multiplicity_a_pos 465 651 3000 no_multiplicity_b
+end
+relationcanvas 138502 relation_ref 507270 // <dependency>
+  from ref 129030 z 3012 to ref 138246
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 138758 relation_ref 647942 // <dependency>
+  from ref 129030 z 2007 to ref 138630
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end

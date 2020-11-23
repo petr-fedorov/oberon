@@ -1,9 +1,9 @@
 class File
-!!!1072262.cpp!!!	File(in exchange : string, in product : string)
+!!!1072262.cpp!!!	File(in exchange : string, in product : string, in base_precision : int, in quote_precision : int)
 
 !!!1072134.cpp!!!	~File()
 f_.close();
-!!!1072390.cpp!!!	transmit(in event : Event [0..1]) : bool
+!!!1072390.cpp!!!	transmit(inout event : Store::OrderEventUP [0..1]) : bool
 using namespace oberon::reconstructor;
 using boost::uuids::to_string;
 using std::chrono::duration;
@@ -13,18 +13,20 @@ std::stringstream buffer;
 // "i,n,t,s,p,v,f,delta_v,taker_i, local_t\n";
 if (event) {
 
+  int sign = event->side() == kAsk ? -1 : 1;
+
   // i
-  if (event->orderId() != Event::kNaOrderId)
-    if (event->orderId() != boost::uuids::nil_uuid())
-      buffer << to_string(event->orderId()) << ",";
+  if (event->maker() != OrderEvent::kNaOrderId)
+    if (event->maker() != boost::uuids::nil_uuid())
+      buffer << to_string(event->maker()) << ",";
     else
       buffer << ",";
   else
     buffer << "NA,";
 
   // n
-  if (event->eventNo() != Event::kNaEventNo)
-    buffer << event->eventNo() << ",";
+  if (event->ordinal() != OrderEvent::kNaEventNo)
+    buffer << event->ordinal() << ",";
   else
     buffer << "NA,";
 
@@ -35,31 +37,31 @@ if (event) {
   buffer << event->state() << ",";
 
   // p
-  buffer << std::fixed << event->price() << ",";
+  buffer << std::fixed << std::setprecision(quote_precision_) << event->price() << ",";
 
   // v
-  buffer << std::fixed << event->volume() << ",";
+  buffer << std::fixed << std::setprecision(base_precision_) << sign*event->remaining() << ",";
 
   // f
-  if (event->tradeId() != Event::kNaTradeId)
-    buffer << event->tradeId() << ",";
+  if (event->trade() != OrderEvent::kNaTradeId)
+    buffer << event->trade() << ",";
   else
     buffer << "NA,";
 
   // delta_v
-  buffer << std::fixed << event->deltaVolume() << ",";
+  buffer << std::fixed << std::setprecision(base_precision_) << sign*event->change() << ",";
 
   // taker_i
-  if (event->takerOrderId() != Event::kNaOrderId)
-    if (event->takerOrderId() != boost::uuids::nil_uuid())
-      buffer << to_string(event->takerOrderId()) << ",";
+  if (event->taker() != OrderEvent::kNaOrderId)
+    if (event->taker() != boost::uuids::nil_uuid())
+      buffer << to_string(event->taker()) << ",";
     else
       buffer << ",";
   else
     buffer << "NA,";
 
   // local_t
-  date::to_stream(buffer, "%FT%TZ,", event->localTimestamp());
+  date::to_stream(buffer, "%FT%TZ,", event->local());
 
   buffer << "\n";
   return (f_ << buffer.str()).good();

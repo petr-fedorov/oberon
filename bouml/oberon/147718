@@ -1,6 +1,6 @@
 format 223
 "Standalone application" // Standalone application
-  revision 67
+  revision 69
   modified_by 6 "petr"
   // class settings
   
@@ -349,7 +349,7 @@ format 223
 	in
       end
 
-      parameter 226054 "events" type class_ref 230406 // Event
+      parameter 226054 "events" explicit_type ""
 	 multiplicity "*" fifo 
 	in stream
       end
@@ -371,7 +371,7 @@ format 223
 	end
       end
 
-      parameter 178822 "time_order_error" type class_ref 472838 // time_order_error
+      parameter 178822 "time_order_error" explicit_type ""
 	 multiplicity "1" unordered is_control
 	out exception
       end
@@ -389,7 +389,7 @@ format 223
 	  in
 	end
 
-	pin 281990 "message" type class_ref 245766 // Message
+	pin 281990 "message" type class_ref 245766 // Token
 	   multiplicity "1..*" fifo is_control
 	  return
 	  flow 290054 "<flow>"
@@ -453,17 +453,17 @@ format 223
       activityaction 240006 "To be defined"
 	call_operation_action
 	synchronous operation_ref 590214 // handle
-	pin 289414 "target" type class_ref 441222 // MessageHandler
+	pin 289414 "target" type class_ref 441222 // TokenHandler
 	  unordered 
 	  in
 	end
 
-	pin 289542 "output" type class_ref 245766 // Message
+	pin 289542 "output" type class_ref 245766 // Token
 	   multiplicity "*" unordered 
 	  return
 	end
 
-	pin 289670 "messages" type class_ref 245766 // Message
+	pin 289670 "messages" type class_ref 245766 // Token
 	  unordered is_control
 	  in
 	end
@@ -477,7 +477,7 @@ format 223
 	  in
 	end
 
-	pin 297734 "output" type class_ref 245766 // Message
+	pin 297734 "output" type class_ref 245766 // Token
 	   multiplicity "*" fifo is_control
 	  return
 	  flow 344710 "<flow>"
@@ -485,7 +485,7 @@ format 223
 	  end
 	end
 
-	pin 297862 "message" type class_ref 245766 // Message
+	pin 297862 "message" type class_ref 245766 // Token
 	   multiplicity "1..*" unordered is_control
 	  in
 	end
@@ -507,7 +507,7 @@ format 223
 	  in
 	end
 
-	pin 298502 "messages" type class_ref 245766 // Message
+	pin 298502 "messages" type class_ref 245766 // Token
 	   multiplicity "*" unordered is_control
 	  in
 	end
@@ -573,7 +573,7 @@ format 223
 	size A4
       end
 
-      parameter 191878 "message" type class_ref 245766 // Message
+      parameter 191878 "message" type class_ref 245766 // Token
 	 multiplicity "1" unordered is_control
 	in
 	flow 374406 "<flow>"
@@ -589,7 +589,7 @@ format 223
 	end
       end
 
-      parameter 192134 "output" type class_ref 245766 // Message
+      parameter 192134 "output" type class_ref 245766 // Token
 	 multiplicity "*" fifo is_control
 	out
       end
@@ -597,12 +597,12 @@ format 223
       activityaction 246662 "Deduplicate"
 	call_operation_action
 	operation_ref 590214 // handle
-	pin 305414 "target" type class_ref 441222 // MessageHandler
+	pin 305414 "target" type class_ref 441222 // TokenHandler
 	  unordered 
 	  in
 	end
 
-	pin 305542 "output" type class_ref 245766 // Message
+	pin 305542 "output" type class_ref 245766 // Token
 	   multiplicity "*" unordered is_control
 	  return
 	  flow 337542 "<flow>"
@@ -610,7 +610,7 @@ format 223
 	  end
 	end
 
-	pin 305670 "messages" type class_ref 245766 // Message
+	pin 305670 "messages" type class_ref 245766 // Token
 	   multiplicity "*" unordered is_control
 	  in
 	end
@@ -619,12 +619,12 @@ format 223
       activityaction 246918 "Re-classify"
 	call_operation_action
 	operation_ref 590214 // handle
-	pin 296966 "target" type class_ref 441222 // MessageHandler
+	pin 296966 "target" type class_ref 441222 // TokenHandler
 	  unordered 
 	  in
 	end
 
-	pin 297094 "output" type class_ref 245766 // Message
+	pin 297094 "output" type class_ref 245766 // Token
 	   multiplicity "*" unordered 
 	  return
 	  flow 352134 "<flow>"
@@ -632,7 +632,7 @@ format 223
 	  end
 	end
 
-	pin 297222 "messages" type class_ref 245766 // Message
+	pin 297222 "messages" type class_ref 245766 // Token
 	   multiplicity "*" unordered is_control
 	  in
 	end
@@ -723,7 +723,7 @@ format 223
 	size A4
       end
 
-      parameter 192262 "messages" type class_ref 245766 // Message
+      parameter 192262 "messages" type class_ref 245766 // Token
 	 multiplicity "*" fifo is_control
 	in
 	flow 352646 "<flow>"
@@ -747,7 +747,7 @@ format 223
 	  in
 	end
 
-	pin 297478 "event" type class_ref 230406 // Event
+	pin 297478 "event" explicit_type "Event"
 	   multiplicity "0..1" unordered is_control
 	  in
 	end
@@ -756,12 +756,12 @@ format 223
       activityaction 260486 "Generate event numbers"
 	call_operation_action
 	operation_ref 590214 // handle
-	pin 312198 "target" type class_ref 441222 // MessageHandler
+	pin 312198 "target" type class_ref 441222 // TokenHandler
 	  unordered 
 	  in
 	end
 
-	pin 312326 "output" type class_ref 245766 // Message
+	pin 312326 "output" type class_ref 245766 // Token
 	   multiplicity "*" fifo is_control
 	  return
 	  flow 360582 "<flow>"
@@ -770,7 +770,7 @@ format 223
 	  end
 	end
 
-	pin 312454 "messages" type class_ref 245766 // Message
+	pin 312454 "messages" type class_ref 245766 // Token
 	   multiplicity "*" unordered is_control
 	  in
 	end
@@ -8898,7 +8898,7 @@ operator<<(std::basic_ostream<CharT, Traits>& os,
 #include \"receiver/coinbase/Feeder.h\"
 #include \"receiver/coinbase/Snapshot.h\"
 #include \"receiver/bitstamp/Receiver.h\"
-#include \"reconstructor.h\"
+#include \"reconstructor/reconstructor.h\"
 #include \"store_file.h\"
 #include <boost/beast.hpp>
 #include <boost/asio/connect.hpp>
@@ -8927,7 +8927,7 @@ int main(int argc, char **argv) {
 
   // The io_context is required for all I/O
   std::shared_ptr<boost::asio::io_context> ioc = std::make_shared<boost::asio::io_context>();
-  oberon::store::File f{exchange,product};
+  oberon::store::File f{exchange,product, 8, 2};
   using Receiver = oberon::receiver::coinbase::Receiver;
   auto feeder = std::make_shared<oberon::receiver::coinbase::Feeder>(ioc, product);
   auto snapshot = std::make_shared<oberon::receiver::coinbase::Snapshot>(ioc, product);
@@ -8976,6 +8976,11 @@ int main(int argc, char **argv) {
 	artifact_ref 286598 // SnapshotData
 	artifact_ref 286726 // ReceiverData
 	artifact_ref 293254 // FeederData
+	artifact_ref 299782 // Created
+	artifact_ref 299910 // Changed
+	artifact_ref 300038 // Filled
+	artifact_ref 300166 // Cancelled
+	artifact_ref 300294 // TokenHandler
       end
       ncouples 10
       key "genpro pro" value "/tmp/oberon/cpp/oberon.pro"

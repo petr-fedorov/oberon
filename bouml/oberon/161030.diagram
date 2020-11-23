@@ -1,6 +1,6 @@
 format 223
 
-classcanvas 132230 class_ref 245766 // Message
+classcanvas 132230 class_ref 245766 // Token
   classdiagramsettings member_max_width 0 end
   xyz 430 41 2000
 end
@@ -37,7 +37,7 @@ classcanvas 147462 class_ref 328582 // VolumeDecremented
   color lightmediumgreen
   xyz 563 1381 2000
 end
-classcanvas 147718 class_ref 328710 // Canceled
+classcanvas 147718 class_ref 328710 // Cancelled
   classdiagramsettings member_max_width 0 end
   color lightmediumgreen
   xyz 303 980 2000
@@ -57,11 +57,7 @@ classcanvas 153094 class_ref 441478 // Elapsed
   color lightmediumgreen
   xyz 673 339 2000
 end
-classcanvas 153606 class_ref 406662 // PriceSide
-  classdiagramsettings member_max_width 0 end
-  xyz 863 713 3005
-end
-classcanvas 154246 class_ref 448390 // ExchangeMessage
+classcanvas 154246 class_ref 448390 // OrderEvent
   classdiagramsettings show_members_full_definition yes show_members_visibility yes member_max_width 0 end
   xyz 324 337 2012
 end
@@ -92,17 +88,6 @@ relationcanvas 153222 relation_ref 442374 // <generalisation>
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
-relationcanvas 153734 relation_ref 380678 // <directional composition>
-  from ref 153606 z 3006 to ref 140678
-  role_a_pos 910 852 3000 no_role_b
-  multiplicity_a_pos 883 852 3000 multiplicity_b_pos 885 840 3000
-end
-relationcanvas 153862 relation_ref 380806 // <directional composition>
-  decenter_end 513
-  from ref 153606 z 3006 to ref 144518
-  role_a_pos 823 747 3000 no_role_b
-  multiplicity_a_pos 823 780 3000 multiplicity_b_pos 847 780 3000
-end
 relationcanvas 154374 relation_ref 449542 // <generalisation>
   from ref 154246 z 2013 to ref 132230
   no_role_a no_role_b
@@ -121,12 +106,6 @@ relationcanvas 157318 relation_ref 558214 // <generalisation>
   from ref 157190 z 2001 to point 251 296
   line 160134 z 2001 to point 477 296
   line 160262 z 2001 to ref 132230
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
-end
-relationcanvas 157574 relation_ref 605830 // <dependency>
-  decenter_end 558
-  from ref 154246 z 2013 to ref 157446
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
@@ -178,7 +157,7 @@ end
 relationcanvas 159622 relation_ref 640390 // <generalisation>
   geometry VHV unfixed
   decenter_begin 538
-  from ref 147718 z 2013 to point 335 936
+  from ref 147718 z 2013 to point 338 936
   line 161158 z 2013 to point 477 936
   line 161286 z 2013 to ref 154246
   no_role_a no_role_b

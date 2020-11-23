@@ -1,22 +1,17 @@
 class Filled
-!!!625286.cpp!!!	accept(in mh : MessageHandler [1]) : bool
+!!!625286.cpp!!!	accept(in mh : TokenHandler [1]) : bool
 return mh->filled();
 
 !!!649734.cpp!!!	toString() : string
 std::stringstream buf;
-buf << ExchangeMessage::toString() << " " << trade_id_ << " Filled";
+buf << OrderEvent::toString() << " " << trade_id_ << " Filled";
 return buf.str();
-!!!707590.cpp!!!	toEvent() : Event [0..1]
-int sign = getSide() == kAsk ? -1 : 1;
+!!!1278086.cpp!!!	state() : OrderState
 OrderState state;
-if (std::isnan(getRemainingSize()))
+if (std::isnan(remaining()))
   state = kNA;
-else if (getRemainingSize())
+else if (remaining() > getBaseIncrement())
   state = kActive;
 else
   state = kFinished;
-return std::make_unique<EventImpl>(getOrderId(), getTimestamp(), getLocalTimestamp(), getEventNo(),
-                              getPrice(),
-                              roundToBaseIncrement(getRemainingSize()) * sign,
-                              roundToBaseIncrement(getChangeSize()) * sign,
-                              state, trade_id_, taker_order_id_, is_deleted_);
+return state;

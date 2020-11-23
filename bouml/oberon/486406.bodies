@@ -1,5 +1,5 @@
 class CoinbaseReconstructor
-!!!576134.cpp!!!	extract(in tree : ptree [1]) : MessageHandler::Message [1..*]
+!!!576134.cpp!!!	extract(in tree : ptree [1]) : Token [1..*]
 using namespace date;
 using namespace std;
 vector<unique_ptr<Message>> output;
@@ -36,5 +36,5 @@ extract_only_ = extract_only;
 size_deducer_ = std::make_unique<Deduce_Size_Coinbase>();
 size_deducer_->create();
 // Deduplication is not needed for CoinBase
-deduplicator_ = std::unique_ptr<MessageHandler>();
+deduplicator_ = std::unique_ptr<TokenHandler>();
 event_number_generator_ = std::make_unique<EventNumberGenerator>();

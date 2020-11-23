@@ -5,21 +5,21 @@ std::cout << received_->toString() << "\n";
 #endif
 for (auto i_other = std::begin(other_messages_);
      i_other != std::end(other_messages_); ++i_other) {
-  auto change_size = (*i_other)->getChangeSize();
-  // string order_id {boost::uuids::to_string((*i_other)->getOrderId())};
+  auto change_size = (*i_other)->change();
+  // string order_id {boost::uuids::to_string((*i_other)->maker())};
   if (std::isnan(change_size) || change_size > 0) {
     for (auto i_fills = std::begin(fills_); i_fills != std::end(fills_);
          ++i_fills) {
-      if ((*i_other)->getOrderId() == (*i_fills)->getOrderId()) {
+      if ((*i_other)->maker() == (*i_fills)->maker()) {
         if ((std::isnan(change_size) ||
-             std::abs(change_size - (*i_fills)->getChangeSize()) <
+             std::abs(change_size - (*i_fills)->change()) <
                  reconstructor_.base_increment_)) {
-          (*i_fills)->setRemainingSize((*i_other)->getRemainingSize());
+          (*i_fills)->remaining((*i_other)->remaining());
 #ifdef VERBOSE_BITSTAMP_DEDUPLICATOR
           std::cout << (*i_other)->toString() << " duplicate, dropped\n";
 #endif
           //i_other = other_messages_.erase(i_other);
-          (*i_other)->set_is_deleted(true);
+          (*i_other)->deleted(true);
           i_other = other_messages_.insert(i_other, std::move(*i_fills));
           fills_.erase(i_fills);
           break;
@@ -52,5 +52,5 @@ else {
 fills_.push_back(std::unique_ptr<Filled>(dynamic_cast<Filled*>(received_.release())));
 return true;
 !!!820486.cpp!!!	exchangeMessage() : bool
-other_messages_.push_back(std::unique_ptr<ExchangeMessage>(dynamic_cast<ExchangeMessage*>(received_.release())));
+other_messages_.push_back(std::unique_ptr<OrderEvent>(dynamic_cast<OrderEvent*>(received_.release())));
 return true;

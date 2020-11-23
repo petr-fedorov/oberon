@@ -1,0 +1,53 @@
+format 223
+
+classcanvas 128006 class_ref 441222 // TokenHandler
+  classdiagramsettings member_max_width 0 end
+  xyz 459 70 2000
+end
+classcanvas 128134 class_ref 245766 // Token
+  classdiagramsettings member_max_width 0 end
+  xyz 611 574 3005
+end
+classcanvas 128774 class_ref 889478 // unique_ptr
+  classdiagramsettings member_max_width 0 end
+  xyz 188 372 2005
+end
+classcanvas 128902 class_ref 889606 // TokenUP
+  classdiagramsettings member_max_width 0 end
+  xyz 165 536 2006
+end
+classcanvas 129286 class_ref 889734 // vector
+  classdiagramsettings member_max_width 0 end
+  xyz 57 135 2005
+end
+classcanvas 129414 class_ref 889862 // VecOfTokenUP
+  classdiagramsettings member_max_width 0 end
+  xyz 18 311 2011
+end
+relationcanvas 128262 relation_ref 515718 // <directional composition>
+  from ref 128006 z 3006 to point 418 637
+  line 128518 z 3006 to ref 128134
+  role_a_pos 548 655 3000 no_role_b
+  multiplicity_a_pos 593 688 3000 multiplicity_b_pos 430 495 3000
+end
+relationcanvas 128390 relation_ref 529926 // <directional composition>
+  from ref 128006 z 3006 to point 750 416
+  line 128646 z 3006 stereotype "<<vector>>" xyz 694.5 495 3006 to ref 128134
+  role_a_pos 711 549 3000 no_role_b
+  multiplicity_a_pos 686 549 3000 multiplicity_b_pos 599 333 3000
+end
+line 129030 ---+
+  from ref 128902 z 2007 to ref 128006
+relationcanvas 129158 relation_ref 1003398 // <realization>
+  from ref 128902 z 2007 label "<T->Token>" max_width 255 xyz 194.5 465 3000 stereotype "<<bind>>" xyz 202 483 3000 to ref 128774
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+line 129542 ---+
+  from ref 129414 z 2012 to ref 128006
+relationcanvas 129670 relation_ref 1003526 // <realization>
+  from ref 129414 z 2012 label "<T->TokenUP>" max_width 255 xyz 41.5 234 3000 stereotype "<<bind>>" xyz 56.5 252 3000 to ref 129286
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+end

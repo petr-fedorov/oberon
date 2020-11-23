@@ -19,9 +19,9 @@ stm.output_.push_back(std::move(stm.em_));
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Deduce Size Coinbase.Save";
 #endif
-if(stm.em_->getRemainingSize())
-  stm.previous_sizes_[stm.em_->getOrderId()] = stm.em_->getRemainingSize();
+if(stm.em_->remaining())
+  stm.previous_sizes_[stm.em_->maker()] = stm.em_->remaining();
 else
-  stm.previous_sizes_.erase(stm.em_->getOrderId());
+  stm.previous_sizes_.erase(stm.em_->maker());
 !!!779014.cpp!!!	_upper(inout stm : Deduce_Size_Coinbase) : Deduce_Size_Coinbase::AnyState
   return &stm._deduce_size_coinbase_state;

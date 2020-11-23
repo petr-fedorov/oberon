@@ -55,7 +55,7 @@ stm.received_.reset(nullptr);  }
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute exit behavior of .Deduce Size Coinbase.Wait";
 #endif
-stm.em_ = std::unique_ptr<ExchangeMessage>(
-    dynamic_cast<ExchangeMessage *>(stm.received_.release()));
+stm.em_ = std::unique_ptr<OrderEvent>(
+    dynamic_cast<OrderEvent *>(stm.received_.release()));
 !!!776966.cpp!!!	_upper(inout stm : Deduce_Size_Coinbase) : Deduce_Size_Coinbase::AnyState
   return &stm._deduce_size_coinbase_state;

@@ -14,10 +14,10 @@ stm.output_.push_back(std::move(stm.em_));    stm._set_currentState(stm._deduce_
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Deduce Size Coinbase.Deduce";
 #endif
-stm.previous_size_ = Event::kNaVolume;
+stm.previous_size_ = OrderEvent::kNaVolume;
 
 try {
-  stm.previous_size_ = stm.previous_sizes_.at(stm.em_->getOrderId());
+  stm.previous_size_ = stm.previous_sizes_.at(stm.em_->maker());
 }
 catch (...) {};
 !!!778374.cpp!!!	_doexit(inout stm : Deduce_Size_Coinbase) : void

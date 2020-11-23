@@ -1,9 +1,7 @@
 class Received
-!!!793606.cpp!!!	toEvent() : Event [0..1]
-return std::unique_ptr<Event>();
-!!!492550.cpp!!!	accept(in mh : MessageHandler [1]) : bool
+!!!492550.cpp!!!	accept(in mh : TokenHandler [1]) : bool
 return mh->received();
 !!!649094.cpp!!!	toString() : string
 std::stringstream buf;
-buf << ExchangeMessage::toString() << " Received";
+buf << Created::toString() << " Received";
 return buf.str();

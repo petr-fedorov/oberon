@@ -1,9 +1,11 @@
 class Opened
 !!!649350.cpp!!!	toString() : string
 std::stringstream buf;
-buf << ExchangeMessage::toString() << " Opened";
+buf << Created::toString() << " Opened";
 return buf.str();
 
-!!!625414.cpp!!!	accept(in mh : MessageHandler [1]) : bool
+!!!625414.cpp!!!	accept(in mh : TokenHandler [1]) : bool
 return mh->opened();
 
+!!!1278598.cpp!!!	state() : OrderState
+return OrderState::kActive;

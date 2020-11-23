@@ -1,14 +1,10 @@
 class Created
 !!!852102.cpp!!!	toString() : string
 std::stringstream buf;
-buf << ExchangeMessage::toString() << " Created";
+buf << OrderEvent::toString() << " Created";
 return buf.str();
 
-!!!650630.cpp!!!	toEvent() : Event [0..1]
-int sign = getSide() == kAsk ? -1 : 1;
-return std::make_unique<EventImpl>(
-    getOrderId(), getTimestamp(), getLocalTimestamp(), getEventNo(), getPrice(),
-    roundToBaseIncrement(getRemainingSize()) * sign,
-    roundToBaseIncrement(getChangeSize()) * sign, kActive, 0, boost::uuids::nil_uuid(), is_deleted_);
-!!!760198.cpp!!!	accept(in mh : MessageHandler [1]) : bool
+!!!760198.cpp!!!	accept(in mh : TokenHandler [1]) : bool
 return mh->created();
+!!!1278982.cpp!!!	state() : OrderState
+return OrderState::kNA;
