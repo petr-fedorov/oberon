@@ -4,11 +4,10 @@ std::stringstream buf;
 buf << std::setw(32) << std::setfill('0') << std::right << std::stol(id);
 return boost::uuids::string_generator{}(buf.str());
 
-!!!767110.cpp!!!	toTimestamp(in timestamp : string) : Timestamp
+!!!767110.cpp!!!	toTimestamp(in timestamp : string) : Message::Timestamp
 using namespace date;
-boost::uuids::string_generator gen;
 std::istringstream ss{timestamp};
-Timestamp output;
+Message::Timestamp output;
 ss >> parse("%FT%TZ", output);
 return output;
 !!!575878.cpp!!!	process(in message : ptree [1]) : bool
@@ -21,16 +20,14 @@ else
 catch (const std::logic_error &e) {
   throw;
 }
-!!!641798.cpp!!!	cleanse(in messages : Token [1..*]) : Token [*]
+!!!641798.cpp!!!	cleanse(inout messages : Tokens [1..*]) : Tokens [*]
 if(deduplicator_)
   messages = deduplicator_->handle(std::move(messages));
 if(taker_filter_)
   messages = taker_filter_->handle(std::move(messages));
 return messages;
-!!!641926.cpp!!!	transmit(in messages : Token [*]) : bool
-messages = event_number_generator_->handle(std::move(messages));
-for(auto &msg : messages) 
-  if(!msg->accept(*store_)) return false;
+!!!641926.cpp!!!	transmit(inout messages : Tokens [*]) : bool
+store_->handle(event_number_generator_->handle(std::move(messages)));
 return true;
 
 !!!827910.cpp!!!	ReconstructorImplementation()

@@ -1,13 +1,10 @@
 class Elapsed
 !!!485638.cpp!!!	accept(in mh : TokenHandler [1]) : bool
 return mh->elapsed();
-!!!561926.cpp!!!	Elapsed(in exchange_time : Timestamp)
+!!!561926.cpp!!!	Elapsed(in exchange_time : Message::Timestamp)
 timestamp_ = exchange_time;
 !!!650118.cpp!!!	toString() : string
 std::stringstream buf;
-buf << Token::toString() << " elapsed";
+buf << Message::toString() << " elapsed";
 return buf.str();
 
-!!!1092742.cpp!!!	accept(inout store : Store) : bool
-BOOST_LOG_TRIVIAL(warning) << "An attempt to store Elapsed event: " << toString();
-return false;

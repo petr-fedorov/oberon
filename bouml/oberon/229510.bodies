@@ -3,17 +3,19 @@ class File
 
 !!!1072134.cpp!!!	~File()
 f_.close();
-!!!1072390.cpp!!!	transmit(inout event : Store::OrderEventUP [0..1]) : bool
+!!!1072390.cpp!!!	orderEvent() : bool
 using namespace oberon::reconstructor;
 using boost::uuids::to_string;
 using std::chrono::duration;
 using std::chrono::duration_cast;
 std::stringstream buffer;
 
+OrderEvent *event = dynamic_cast<OrderEvent *>(received_.get());
+
 // "i,n,t,s,p,v,f,delta_v,taker_i, local_t\n";
 if (event) {
 
-  int sign = event->side() == kAsk ? -1 : 1;
+  int sign = event->side() == OrderEvent::BookSide::kAsk ? -1 : 1;
 
   // i
   if (event->maker() != OrderEvent::kNaOrderId)
@@ -67,10 +69,11 @@ if (event) {
   return (f_ << buffer.str()).good();
 }
 return true;
-!!!1092358.cpp!!!	era(in era : Timestamp) : bool
+!!!1092358.cpp!!!	era() : bool
 using namespace date;
+Era *era = dynamic_cast<Era *>(received_.get());
 if(f_.is_open())
   f_.close();
-f_.open(exchange_ + "_" + product_ + "_" + format("%FT%H-%M-%SZ", era));
+f_.open(exchange_ + "_" + product_ + "_" + format("%FT%H-%M-%SZ", era->timestamp()));
 f_ << "i,n,t,s,p,v,f,delta_v,taker_i, local_t\n";
 return f_.is_open();

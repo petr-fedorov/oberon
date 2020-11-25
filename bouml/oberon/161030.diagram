@@ -1,6 +1,6 @@
 format 223
 
-classcanvas 132230 class_ref 245766 // Token
+classcanvas 132230 class_ref 245766 // Message
   classdiagramsettings member_max_width 0 end
   xyz 430 41 2000
 end
@@ -79,6 +79,22 @@ classcanvas 159238 class_ref 597126 // Created
   classdiagramsettings member_max_width 0 end
   color lightmediumgreen
   xyzwh 609 980 2000 107 97
+end
+classcanvas 162438 class_ref 902918 // Token
+  classdiagramsettings member_max_width 0 end
+  xyz 68 151 2000
+end
+classcanvas 162566 class_ref 889478 // unique_ptr
+  classdiagramsettings member_max_width 0 end
+  xyz 94 26 2005
+end
+classcanvas 162822 class_ref 889734 // vector
+  classdiagramsettings member_max_width 0 end
+  xyz 271 26 2005
+end
+classcanvas 162950 class_ref 903046 // Tokens
+  classdiagramsettings member_max_width 0 end
+  xyz 229 147 2000
 end
 relationcanvas 153222 relation_ref 442374 // <generalisation>
   geometry VHV unfixed
@@ -179,6 +195,16 @@ end
 relationcanvas 160006 relation_ref 737798 // <dependency>
   decenter_begin 517
   from ref 144518 z 2001 to ref 157446
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 162694 relation_ref 1016966 // <realization>
+  from ref 162438 z 2006 label "<T->Message>" max_width 255 xyz 91 100 3000 to ref 162566
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 163078 relation_ref 1017094 // <realization>
+  from ref 162950 z 2006 label "<T->Token>" max_width 255 xyz 262.5 98 3000 to ref 162822
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end

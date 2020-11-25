@@ -12,23 +12,11 @@ classcanvas 128390 class_ref 486406 // CoinbaseReconstructor
   classdiagramsettings member_max_width 0 end
   xyz 433 395 2000
 end
-classcanvas 129798 class_ref 230406 // Event
-  classdiagramsettings member_max_width 0 end
-  xyz 695 67 2000
-end
-classcanvas 129926 class_ref 507782 // EventImpl
-  classdiagramsettings member_max_width 0 end
-  xyz 702 556 2000
-end
 classcanvas 130182 class_ref 508038 // nil_generator
   classdiagramsettings member_max_width 0 end
   xyz 568 696 2000
 end
-classcanvas 130822 class_ref 231302 // Store
-  classdiagramsettings member_max_width 0 end
-  xyz 41 170 2000
-end
-classcanvas 132358 class_ref 441222 // MessageHandler
+classcanvas 132358 class_ref 441222 // TokenHandler
   classdiagramsettings member_max_width 0 end
   xyz 42 587 2006
 end
@@ -67,29 +55,13 @@ relationcanvas 129670 relation_ref 543238 // <realization>
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
-relationcanvas 130054 relation_ref 544262 // <realization>
-  from ref 129926 z 2001 to ref 129798
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
-end
-relationcanvas 130310 relation_ref 544518 // <dependency>
-  from ref 129926 z 2001 to ref 130182
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
-end
-relationcanvas 131206 relation_ref 558086 // <directional aggregation>
-  decenter_begin 49
-  from ref 128006 z 2001 to ref 130822
-  role_a_pos 131 265 3000 no_role_b
-  multiplicity_a_pos 104 265 3000 multiplicity_b_pos 160 327 3000
-end
 relationcanvas 132614 relation_ref 589958 // <directional composition>
   decenter_begin 312
   decenter_end 230
   from ref 128006 z 2007 to point 68 415
   line 132742 z 2007 to ref 132358
-  role_a_pos 85 562 3000 no_role_b
-  multiplicity_a_pos 58 562 3000 multiplicity_b_pos 168 426 3000
+  role_a_pos 80 562 3000 no_role_b
+  multiplicity_a_pos 53 562 3000 multiplicity_b_pos 168 426 3000
 end
 relationcanvas 133254 relation_ref 605318 // <generalisation>
   decenter_begin 487
@@ -156,9 +128,10 @@ relationcanvas 135302 relation_ref 710918 // <directional composition>
   role_a_pos 196 722 3000 no_role_b
   multiplicity_a_pos 196 755 3000 multiplicity_b_pos 295 600 3000
 end
-relationcanvas 135558 relation_ref 737926 // <dependency>
-  from ref 129798 z 2001 to ref 129926
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
+relationcanvas 135686 relation_ref 1017478 // <directional aggregation>
+  from ref 128006 z 2007 stereotype "<<unique_ptr>>" xyz 111 464 3000 to point 106 462
+  line 135814 z 2007 to ref 132358
+  role_a_pos 116 562 3000 no_role_b
+  multiplicity_a_pos 89 562 3000 no_multiplicity_b
 end
 end

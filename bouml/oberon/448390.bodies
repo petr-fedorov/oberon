@@ -1,37 +1,37 @@
 class OrderEvent
 !!!650374.cpp!!!	toString() : string
 std::stringstream buf;
-buf << Token::toString() << " " << order_id_ << " " << event_no_ << " "
+buf << Message::toString() << " " << order_id_ << " " << event_no_ << " "
     << (side_ == kBid ? 'B' : 'A') << price_ << " " << remaining_size_ << " "
     << change_size_ << ( is_deleted_ ? " DELETED " : ""); 
 return buf.str();
-!!!723590.cpp!!!	roundToBaseIncrement(in volume : Volume) : Volume
+!!!723590.cpp!!!	roundToBaseIncrement(in volume : OrderEvent::Volume) : OrderEvent::Volume
 return std::round(volume/getBaseIncrement())*getBaseIncrement();
-!!!1092486.cpp!!!	accept(inout store : Store) : bool
-return store.transmit(std::unique_ptr<OrderEvent>(clone()));
-!!!1263238.cpp!!!	maker() : OrderId
+!!!1285510.cpp!!!	accept(in mh : TokenHandler [1]) : bool
+return mh->orderEvent();
+!!!1263238.cpp!!!	maker() : OrderEvent::OrderId
 return order_id_;
-!!!1263366.cpp!!!	maker(in order_id : OrderId) : void
+!!!1263366.cpp!!!	maker(in order_id : OrderEvent::OrderId) : void
 order_id_ = order_id;
-!!!1263494.cpp!!!	remaining() : Volume
+!!!1263494.cpp!!!	remaining() : OrderEvent::Volume
 return remaining_size_;
-!!!1263622.cpp!!!	remaining(in remaining_size : Volume) : void
+!!!1263622.cpp!!!	remaining(in remaining_size : OrderEvent::Volume) : void
 remaining_size_ = remaining_size;
-!!!1263750.cpp!!!	change() : Volume
+!!!1263750.cpp!!!	change() : OrderEvent::Volume
 return change_size_;
-!!!1263878.cpp!!!	change(in change_size : Volume) : void
+!!!1263878.cpp!!!	change(in change_size : OrderEvent::Volume) : void
 change_size_ = change_size;
-!!!1264006.cpp!!!	ordinal() : EventNo
+!!!1264006.cpp!!!	ordinal() : OrderEvent::EventNo
 return event_no_;
-!!!1264134.cpp!!!	ordinal(in event_no : EventNo) : void
+!!!1264134.cpp!!!	ordinal(in event_no : OrderEvent::EventNo) : void
 event_no_ = event_no;
-!!!1264262.cpp!!!	price() : Price
+!!!1264262.cpp!!!	price() : OrderEvent::Price
 return price_;
-!!!1264390.cpp!!!	local() : Timestamp
+!!!1264390.cpp!!!	local() : Message::Timestamp
 return local_timestamp_;
-!!!1270918.cpp!!!	side() : BookSide
+!!!1270918.cpp!!!	side() : OrderEvent::BookSide
 return side_;
-!!!1277830.cpp!!!	taker() : OrderId
+!!!1277830.cpp!!!	taker() : OrderEvent::OrderId
 return taker_order_id_;
-!!!1277958.cpp!!!	trade() : TradeId
+!!!1277958.cpp!!!	trade() : OrderEvent::TradeId
 return trade_id_;

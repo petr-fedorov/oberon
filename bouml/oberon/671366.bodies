@@ -1,7 +1,7 @@
 class Classifier
 !!!844166.cpp!!!	opened() : bool
 BitstampOpened *msg = dynamic_cast<BitstampOpened*>(received_.get());
-if(msg->side() == kBid)
+if(msg->side() == OrderEvent::BookSide::kBid)
   return classifyOpened(&bids_, &asks_);
 else
   return classifyOpened(&asks_, &bids_);
@@ -37,7 +37,7 @@ if (!them->empty() && !comp(opened->price(), them->begin()->first)) {
 return true;
 !!!844678.cpp!!!	changed() : bool
 BitstampChanged *msg = dynamic_cast<BitstampChanged *>(received_.get());
-if(msg->side() == kBid)
+if(msg->side() == OrderEvent::BookSide::kBid)
   return classifyChanged(&bids_, &asks_);
 else
   return classifyChanged(&asks_, &bids_);
@@ -47,8 +47,8 @@ BitstampChanged *msg = dynamic_cast<BitstampChanged *>(received_.get());
 std::cout << msg->toString() << "\n";
 #endif
 auto comp = them -> key_comp();
-Price previous_price = 0.0;
-Volume previous_volume = 0.0;
+OrderEvent::Price previous_price = 0.0;
+OrderEvent::Volume previous_volume = 0.0;
 OrderEvent *previous_msg = nullptr;
 try {
   previous_price = prices_.at(msg->maker());
@@ -94,7 +94,7 @@ if (!them->empty() &&
 return true;
 !!!844934.cpp!!!	canceled() : bool
 BitstampCanceled *msg = dynamic_cast<BitstampCanceled *>(received_.get());
-if(msg->side() == kBid)
+if(msg->side() == OrderEvent::BookSide::kBid)
   return classifyCanceled(&bids_, &asks_);
 else
   return classifyCanceled(&asks_, &bids_);
@@ -138,7 +138,7 @@ try {
 return true;
 !!!851846.cpp!!!	filled() : bool
 Filled *msg = dynamic_cast<Filled*>(received_.get());
-if(msg->side() == kBid)
+if(msg->side() == OrderEvent::BookSide::kBid)
   return classifyFilled(&bids_, &asks_);
 else
   return classifyFilled(&asks_, &bids_);
@@ -147,8 +147,8 @@ Filled *msg = dynamic_cast<Filled *>(received_.get());
 #ifdef VERBOSE_BITSTAMP_CLASSIFIER
 std::cout << msg->toString() << "\n";
 #endif
-Price previous_price = 0.0;
-Volume previous_volume = 0.0;
+OrderEvent::Price previous_price = 0.0;
+OrderEvent::Volume previous_volume = 0.0;
 try {
   previous_price = prices_.at(msg->maker());
   for (auto iter = us->lower_bound(previous_price);

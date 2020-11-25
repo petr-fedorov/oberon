@@ -3,7 +3,7 @@ class TokenHandler
 return message();
 !!!692230.cpp!!!	create() : bool
 return true;
-!!!590214.cpp!!!	handle(inout messages : TokenHandler::VecOfTokenUP [*]) : TokenHandler::VecOfTokenUP [*]
+!!!590214.cpp!!!	handle(inout messages : Tokens [*]) : Tokens [*]
 for(auto& msg: messages) {
   if(msg) {
 #ifdef VERBOSE_STATE_MACHINE
@@ -27,27 +27,19 @@ output_.push_back(std::move(received_));
 return true;
 !!!483590.cpp!!!	elapsed() : bool
 return message();
-!!!721798.cpp!!!	exchangeMessage() : bool
+!!!721798.cpp!!!	orderEvent() : bool
 return message();
 !!!752646.cpp!!!	created() : bool
-return exchangeMessage();
+return orderEvent();
 
 !!!484486.cpp!!!	received() : bool
 return created();
 !!!625542.cpp!!!	opened() : bool
 return created();
 !!!730118.cpp!!!	changed() : bool
-return exchangeMessage();
+return orderEvent();
 
-!!!484742.cpp!!!	volumeIncremented() : bool
-return changed();
-!!!485254.cpp!!!	volumeDecremented() : bool
-return changed();
-!!!484870.cpp!!!	priceAdvanced() : bool
-return changed();
-!!!484998.cpp!!!	priceReceded() : bool
-return changed();
 !!!485126.cpp!!!	filled() : bool
-return exchangeMessage();
+return orderEvent();
 !!!485382.cpp!!!	canceled() : bool
-return exchangeMessage();
+return orderEvent();

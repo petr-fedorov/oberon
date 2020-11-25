@@ -1,30 +1,46 @@
 format 223
 
-classcanvas 128390 class_ref 231302 // Store
-  classdiagramsettings member_max_width 0 end
-  xyz 251 45 2000
-end
 classcanvas 128774 class_ref 229510 // File
   classdiagramsettings member_max_width 0 end
-  xyzwh 292 201 2000 103 211
+  xyzwh 210 273 2000 103 211
 end
-classcanvas 130054 class_ref 896390 // OrderEventUP
+classcanvas 131078 class_ref 441222 // TokenHandler
   classdiagramsettings member_max_width 0 end
-  xyz 341 511 2006
+  xyz 419 55 2005
 end
-classcanvas 130310 class_ref 889478 // unique_ptr
+classcanvas 131206 class_ref 903430 // Store
   classdiagramsettings member_max_width 0 end
-  xyz 101 408 2005
+  xyz 59 219 2000
 end
-relationcanvas 129542 relation_ref 190342 // <generalisation>
-  from ref 128774 z 2001 to ref 128390
+classcanvas 131334 class_ref 889478 // unique_ptr
+  classdiagramsettings member_max_width 0 end
+  xyz 85 93 2005
+end
+classcanvas 131718 class_ref 448390 // OrderEvent
+  classdiagramsettings member_max_width 0 end
+  xyz 20 299 2005
+end
+classcanvas 131974 class_ref 521478 // Era
+  classdiagramsettings member_max_width 0 end
+  xyz 332 553 2000
+end
+relationcanvas 131462 relation_ref 1017606 // <realization>
+  from ref 131206 z 2006 label "<T->TokenHandler>" max_width 255 xyz 56.5 167 3000 stereotype "<<bind>>" xyz 84 185 3000 to ref 131334
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
-line 130182 ---+
-  from ref 130054 z 2007 to ref 128390
-relationcanvas 130438 relation_ref 1010438 // <realization>
-  from ref 130054 z 2007 label "<T->OrderEvent>" max_width 255 xyz 211.5 469.5 3000 stereotype "<<bind>>" xyz 232.5 487.5 3000 to ref 130310
+relationcanvas 131590 relation_ref 1017734 // <generalisation>
+  from ref 128774 z 2006 to ref 131078
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131846 relation_ref 1017862 // <dependency>
+  from ref 128774 z 2006 to ref 131718
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 132102 relation_ref 1017990 // <dependency>
+  from ref 128774 z 2001 to ref 131974
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end

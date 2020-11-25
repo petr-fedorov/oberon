@@ -1,6 +1,6 @@
 class BitstampReconstructor
-!!!759686.cpp!!!	BitstampReconstructor(in store : Store, in base_min_size : Volume, in base_increment : Volume, in extract_only : bool)
-store_ = store;
+!!!759686.cpp!!!	BitstampReconstructor(inout store : Store, in base_min_size : OrderEvent::Volume, in base_increment : OrderEvent::Volume, in extract_only : bool)
+store_ = std::move(store);
 base_min_size_ = base_min_size;
 base_increment_ = base_increment;
 extract_only_ = extract_only;
@@ -8,13 +8,13 @@ size_deducer_ =std::make_unique<DeduceSizeBitstamp>();
 deduplicator_ = std::make_unique<Deduplicator>(*this);
 taker_filter_ = std::make_unique<Classifier>(*this);
 
-!!!759814.cpp!!!	extract(in tree : ptree [1]) : MessageHandler::Message [1..*]
+!!!759814.cpp!!!	extract(in tree : ptree [1]) : Tokens [1..*]
 using namespace date;
 using namespace std;
 string type = tree.get<string>("event");
 vector<unique_ptr<Message>> output;
 if (type == "elapsed") {
-  Timestamp timestamp;
+  Message::Timestamp timestamp;
   std::istringstream ss{tree.get<string>("timestamp")};
   ss >> parse("%FT%TZ", timestamp);
   output.push_back(make_unique<Elapsed>(timestamp));
