@@ -10,7 +10,6 @@ BitstampOpened *opened = dynamic_cast<BitstampOpened *>(received_.get());
 #ifdef VERBOSE_BITSTAMP_CLASSIFIER
 std::cout << opened->toString() << "\n";
 #endif
-OrderEvent *msg = nullptr;
 auto comp = them -> key_comp();
 prices_.insert(decltype(prices_)::value_type{opened->maker(),
                                              opened->price()});
@@ -49,7 +48,6 @@ std::cout << msg->toString() << "\n";
 auto comp = them -> key_comp();
 OrderEvent::Price previous_price = 0.0;
 OrderEvent::Volume previous_volume = 0.0;
-OrderEvent *previous_msg = nullptr;
 try {
   previous_price = prices_.at(msg->maker());
   for (auto iter = us->lower_bound(previous_price);

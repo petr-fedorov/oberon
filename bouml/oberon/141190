@@ -1,6 +1,6 @@
 format 223
 "Reconstructor" // Standalone application::Reconstructor
-  revision 185
+  revision 186
   modified_by 6 "petr"
   // class settings
   
@@ -123,7 +123,6 @@ format 223
       classdiagramsettings member_max_width 0 end
       size B
     end
-
   end
 
   classview 134534 "Message Hierarchy"
@@ -197,7 +196,6 @@ ${inlines}
 	idl_decl ""
 	mysql_decl ""
 	MysqlColumn
-	set_oper operation_ref 865542 // set_is_deleted_
       end
 
       attribute 398982 "timestamp_"
@@ -422,7 +420,6 @@ ${inlines}
 	
 	
       end
-
     end
 
     class 448390 "OrderEvent"
@@ -1326,7 +1323,6 @@ ${inlines}
 	
 	
       end
-
     end
 
     class 597126 "Created"
@@ -2052,156 +2048,7 @@ ${inlines}
       size A4
     end
 
-    class 202630 "Reconstructor"
-      abstract visibility public stereotype "interface"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl "${comment}${@}${visibility}${static}interface ${name}${extends} {
-${members}}
-"
-      php_decl "${comment}interface ${name}${extends} {
-${members}}
-"
-      python_2_2 python_decl ""
-      idl_decl "${comment}${abstract}${local}interface ${name}${inherit} {
-${members}};
-"
-      explicit_switch_type ""
-      mysql_decl ""
-      
-      comment " implement the state machine Reconstructor"
-      class 472966 "Exchanges"
-	visibility public stereotype "enum"
-	cpp_decl "${comment}enum ${name} {
-${items}};
-"
-	java_decl "${comment}${@}${visibility}${static}${final}${abstract}enum ${name}${implements} {
-${items};
-${members}}
-"
-	php_decl "${comment}${visibility}final class ${name} {
-${items}}
-"
-	python_2_2 python_decl "class ${name}:
-${docstring}${members}
-"
-	idl_decl "${comment}enum ${name} {
-${items}};
-"
-	explicit_switch_type ""
-	mysql_decl ""
-	
-	attribute 378502 "kCoinbase"
-	  public type class_ref 472966 // Exchanges
-	  cpp_decl "  ${name}${value},${comment}"
-	  java_decl ""
-	  php_decl ""
-	  python_decl ""
-	  idl_decl ""
-	  mysql_decl ""
-	  MysqlColumn
-	end
-
-	attribute 378630 "kBitstamp"
-	  public type class_ref 472966 // Exchanges
-	  cpp_decl "  ${name}${value},${comment}"
-	  java_decl ""
-	  php_decl ""
-	  python_decl ""
-	  idl_decl ""
-	  mysql_decl ""
-	  MysqlColumn
-	end
-
-	attribute 378758 "kBitfinex"
-	  public type class_ref 472966 // Exchanges
-	  cpp_decl "  ${name}${value},${comment}"
-	  java_decl ""
-	  php_decl ""
-	  python_decl ""
-	  idl_decl ""
-	  mysql_decl ""
-	  MysqlColumn
-	end
-      end
-
-      operation 238982 "create"
-	class_operation public return_type class_ref 202630 // Reconstructor
-	nparams 5
-	  param in name "exchange" type class_ref 472966 // Exchanges
-	  param in name "pair_name" explicit_type "string"
-	  param inout name "store" type class_ref 903430 // Store
-	  param in name "delay" explicit_type "double"
-	  param in name "extract_only" explicit_type "bool"
-	    defaultvalue "false"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}std::unique_ptr<${type}> ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} ${p2}${v2}, ${t3} ${p3}${v3}, ${t4} ${p4}${v4}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}std::unique_ptr<${type}> ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${)}${const}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 188550 "process"
-	abstract cpp_virtual public explicit_return_type "bool"
-	nparams 1
-	  param in name "message" type class_ref 174214 // ptree
-	multiplicity "1"
-	nexceptions 1
-	  explicit_exception "time_order_error"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};
-"
-	
-	
-	
-	
-      end
-
-      operation 582790 "~Reconstructor"
-	cpp_virtual public explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
-"
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      classrelation 517382 // <dependency>
-	relation 507270 -_->
-	  a public
-	    cpp default "#include in source"
-	    classrelation_ref 517382 // <dependency>
-	  b parent class_ref 486406 // CoinbaseReconstructor
-      end
-
-      classrelation 658054 // <dependency>
-	relation 647942 -_->
-	  a public
-	    cpp default "#include in source"
-	    classrelation_ref 658054 // <dependency>
-	  b parent class_ref 603654 // BitstampReconstructor
-      end
-
-      classrelation 688262 // <dependency>
-	relation 678150 -_->
-	  a public
-	    cpp default "#include in source"
-	    classrelation_ref 688262 // <dependency>
-	  b parent class_ref 624902 // BitfinexReconstructor
-      end
-    end
-
-    class 486278 "ReconstructorImplementation"
+    class 486278 "Reconstructor"
       abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -2375,14 +2222,6 @@ The order price must be a multiple of this increment (i.e. if the increment is 0
 	
       end
 
-      classrelation 553350 // <realization>
-	relation 543238 -_-|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 553350 // <realization>
-	  b parent class_ref 202630 // Reconstructor
-      end
-
       classrelation 600070 // deduplicator_ (<directional composition>)
 	relation 589958 *-->
 	  a role_name "deduplicator_" multiplicity "1" protected
@@ -2435,7 +2274,7 @@ The order price must be a multiple of this increment (i.e. if the increment is 0
 	  b multiplicity "0..1" parent class_ref 441222 // TokenHandler
       end
 
-      operation 827910 "ReconstructorImplementation"
+      operation 827910 "Reconstructor"
 	public explicit_return_type ""
 	nparams 0
 	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${)}${volatile}${throw};
@@ -3332,7 +3171,7 @@ ${inlines}
 	  a public
 	    cpp default "${type}"
 	    classrelation_ref 510598 // <generalisation>
-	  b parent class_ref 486278 // ReconstructorImplementation
+	  b parent class_ref 486278 // Reconstructor
       end
 
       operation 576134 "extract"
@@ -5459,7 +5298,7 @@ ${inlines}
 	  a public
 	    cpp default "${type}"
 	    classrelation_ref 658182 // <generalisation>
-	  b parent class_ref 486278 // ReconstructorImplementation
+	  b parent class_ref 486278 // Reconstructor
       end
 
       operation 759814 "extract"
@@ -6125,7 +5964,7 @@ ${inlines}
 	  a public
 	    cpp default "${type}"
 	    classrelation_ref 688134 // <generalisation>
-	  b parent class_ref 486278 // ReconstructorImplementation
+	  b parent class_ref 486278 // Reconstructor
       end
     end
   end
@@ -6186,37 +6025,7 @@ ${namespace_end}"
       end
     end
 
-    artifact 134534 "reconstructor"
-      stereotype "source"
-      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
-#define ${NAMESPACE}_${NAME}_H
-
-${comment}
-${includes}
-${declarations}
-${namespace_start}
-${definition}
-${namespace_end}
-#endif
-"
-      cpp_src "${comment}
-#include \"../date.h\"
-#include <boost/log/trivial.hpp>
-#include <boost/uuid/uuid_io.hpp>
-#include <boost/uuid/random_generator.hpp>
-#include <cmath>
-${includes}
-#include <cmath>
-#include <limits>
-${namespace_start}
-${members}
-${namespace_end}"
-      associated_elems
-	class_ref 202630 // Reconstructor
-      end
-    end
-
-    artifact 180998 "reconstructor_impl"
+    artifact 180998 "Reconstructor"
       stereotype "source"
       cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
 #define ${NAMESPACE}_${NAME}_H
@@ -6240,11 +6049,11 @@ ${members}
 ${namespace_end}"
       associated_elems
 	class_ref 564230 // EventNumberGenerator
-	class_ref 486278 // ReconstructorImplementation
+	class_ref 486278 // Reconstructor
       end
     end
 
-    artifact 213638 "reconstructor_coinbase"
+    artifact 213638 "CoinbaseReconstructor"
       stereotype "source"
       cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
 #define ${NAMESPACE}_${NAME}_H
@@ -6274,7 +6083,7 @@ ${namespace_end}"
       end
     end
 
-    artifact 213766 "reconstructor_bitstamp"
+    artifact 213766 "BitstampReconstructor"
       stereotype "source"
       cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
 #define ${NAMESPACE}_${NAME}_H
@@ -6302,7 +6111,7 @@ ${namespace_end}"
       end
     end
 
-    artifact 233350 "reconstructor_bitfinex"
+    artifact 233350 "BitfinexReconstructor"
       stereotype "source"
       cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
 #define ${NAMESPACE}_${NAME}_H

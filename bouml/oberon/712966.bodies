@@ -1,11 +1,11 @@
 class Receiver
 !!!915590.cpp!!!	Receiver()
   _current_state = 0;
-!!!917382.cpp!!!	Receiver(inout ioc : io_context, inout feeder : Feeder, inout snapshot : Snapshot, inout processor : Reconstructor)
+!!!917382.cpp!!!	Receiver(inout ioc : io_context, inout feeder : Feeder, inout snapshot : Snapshot, inout processor : ConsumerFn)
 d_->receiving_strand_ = std::make_unique<boost::asio::io_context::strand>(*ioc);
 d_->processing_strand_ = std::make_unique<boost::asio::io_context::strand>(*ioc);
 d_->signal_set_ = std::make_unique<boost::asio::signal_set>(*ioc, SIGINT, SIGTERM);
-d_->processor_ = processor;
+(*d_).process = processor;
 d_->feeder_ = feeder;
 d_->snapshot_ = snapshot;
 _machine_name = "Receiver - ";

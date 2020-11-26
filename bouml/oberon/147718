@@ -1,6 +1,6 @@
 format 223
 "Standalone application" // Standalone application
-  revision 70
+  revision 71
   modified_by 6 "petr"
   // class settings
   
@@ -125,7 +125,7 @@ format 223
 	    in
 	  end
 
-	  pin 349702 "reconstructor" type class_ref 202630 // Reconstructor
+	  pin 349702 "reconstructor" explicit_type "Reconstructor"
 	     multiplicity "1" unordered 
 	    out
 	    flow 407686 "S.1.7"
@@ -160,7 +160,7 @@ format 223
 	    in stream
 	  end
 
-	  pin 349062 "target" type class_ref 486278 // ReconstructorImplementation
+	  pin 349062 "target" type class_ref 486278 // Reconstructor
 	     multiplicity "1" unordered 
 	    in
 	  end
@@ -204,7 +204,7 @@ format 223
 	end
       end
 
-      parameter 165126 "reconstructor" type class_ref 202630 // Reconstructor
+      parameter 165126 "reconstructor" explicit_type ""
 	 multiplicity "1" unordered 
 	out
       end
@@ -285,8 +285,8 @@ format 223
 
       activityaction 213382 "S.7 Create Order Book Reconstructor"
 	call_operation_action
-	synchronous operation_ref 238982 // create
-	pin 238726 "" type class_ref 202630 // Reconstructor
+	synchronous no_operation
+	pin 238726 "" explicit_type "Reconstructor"
 	   multiplicity "1" unordered 
 	  return
 	  flow 244870 "S.7.13"
@@ -356,7 +356,6 @@ format 223
     end
 
     activity 175238 "R.1 Reconstruct Order Book"
-      specification operation_ref 188550 // process
       activitydiagram 274822 "R.1 Reconstruct Order Book"
 	activitydiagramsettings
 	 end
@@ -384,7 +383,7 @@ format 223
       activityaction 226950 "R.2 Extract"
 	call_operation_action
 	operation_ref 576006 // extract
-	pin 281862 "target" type class_ref 486278 // ReconstructorImplementation
+	pin 281862 "target" type class_ref 486278 // Reconstructor
 	   multiplicity "1" unordered 
 	  in
 	end
@@ -403,7 +402,7 @@ format 223
 	end
       end
 
-      parameter 185350 "target" type class_ref 486278 // ReconstructorImplementation
+      parameter 185350 "target" type class_ref 486278 // Reconstructor
 	 multiplicity "1" unordered 
 	in
 	flow 281734 "<flow>"
@@ -425,7 +424,7 @@ format 223
 
       activityobject 154502 "this"
 	stereotype "datastore"
-	 type class_ref 486278 // ReconstructorImplementation
+	 type class_ref 486278 // Reconstructor
 	unordered 
 	flow 290182 "<flow>"
 	  on pin_ref 281862 // target
@@ -472,7 +471,7 @@ format 223
       activityaction 247174 "R.3 Cleanse"
 	call_operation_action
 	synchronous operation_ref 641798 // cleanse
-	pin 297606 "target" type class_ref 486278 // ReconstructorImplementation
+	pin 297606 "target" type class_ref 486278 // Reconstructor
 	  unordered 
 	  in
 	end
@@ -502,7 +501,7 @@ format 223
       activityaction 247430 "R.4 Transmit"
 	call_operation_action
 	synchronous operation_ref 641926 // transmit
-	pin 298374 "target" type class_ref 486278 // ReconstructorImplementation
+	pin 298374 "target" type class_ref 486278 // Reconstructor
 	  unordered 
 	  in
 	end
@@ -581,7 +580,7 @@ format 223
 	end
       end
 
-      parameter 192006 "target" type class_ref 486278 // ReconstructorImplementation
+      parameter 192006 "target" type class_ref 486278 // Reconstructor
 	 multiplicity "1" unordered 
 	in
 	flow 313350 "<flow>"
@@ -640,7 +639,7 @@ format 223
 
       activityobject 180614 "this"
 	stereotype "datastore"
-	 type class_ref 486278 // ReconstructorImplementation
+	 type class_ref 486278 // Reconstructor
 	unordered 
 	flow 337030 "<flow>"
 	  on activityobject_ref 193926 // activity object deduplicator
@@ -731,7 +730,7 @@ format 223
 	end
       end
 
-      parameter 192390 "target" type class_ref 486278 // ReconstructorImplementation
+      parameter 192390 "target" type class_ref 486278 // Reconstructor
 	 multiplicity "1" unordered 
 	in
 	flow 352518 "<flow>"
@@ -778,7 +777,7 @@ format 223
 
       activityobject 200582 "this"
 	stereotype "datastore"
-	 type class_ref 486278 // ReconstructorImplementation
+	 type class_ref 486278 // Reconstructor
 	 multiplicity "1" unordered 
 	flow 352902 "<flow>"
 	  on pin_ref 312198 // target
@@ -931,8 +930,6 @@ format 223
   package_ref 194822 // Receiver
 
   package_ref 141190 // Reconstructor
-
-  package_ref 201606 // Store
 
   deploymentview 160774 "Source files"
     //deployment diagram settings
@@ -8898,7 +8895,7 @@ operator<<(std::basic_ostream<CharT, Traits>& os,
 #include \"receiver/coinbase/Feeder.h\"
 #include \"receiver/coinbase/Snapshot.h\"
 #include \"receiver/bitstamp/Receiver.h\"
-#include \"reconstructor/reconstructor.h\"
+#include \"reconstructor/CoinbaseReconstructor.h\"
 #include \"reconstructor/File.h\"
 #include <boost/beast.hpp>
 #include <boost/asio/connect.hpp>
@@ -8922,17 +8919,17 @@ int main(int argc, char **argv) {
   }
   auto const exchange = argv[1];
   auto const product = argv[2];
+  using namespace oberon::reconstructor;
+  using namespace oberon::receiver;
+  using Receiver = coinbase::Receiver;
 
-  oberon::receiver::bitstamp::Receiver r;
 
   // The io_context is required for all I/O
   std::shared_ptr<boost::asio::io_context> ioc = std::make_shared<boost::asio::io_context>();
-  using Receiver = oberon::receiver::coinbase::Receiver;
   auto feeder = std::make_shared<oberon::receiver::coinbase::Feeder>(ioc, product);
   auto snapshot = std::make_shared<oberon::receiver::coinbase::Snapshot>(ioc, product);
-  using namespace oberon::reconstructor;
-  std::shared_ptr<Reconstructor> reconstructor = Reconstructor::create(Reconstructor::Exchanges::kCoinbase,product,std::make_unique<File>(exchange, product, 8, 2), 2.0, false);
-  auto coinbase = std::make_shared<Receiver>( ioc, feeder, snapshot, reconstructor);
+  auto reconstructor = CoinbaseReconstructor{std::make_unique<File>(exchange, product, 8, 2), 0.001,0.00000001, false};
+  auto coinbase = std::make_shared<Receiver>( ioc, feeder, snapshot, std::bind(&CoinbaseReconstructor::process, &reconstructor, std::placeholders::_1));
   feeder->registerHandlers(std::bind(&Receiver::postEvent, coinbase, &Receiver::success), std::bind(&Receiver::postEvent, coinbase, &Receiver::failure), std::bind(&Receiver::postMessage, coinbase, std::placeholders::_1)); 
   snapshot->registerHandlers(std::bind(&Receiver::postEvent, coinbase, &Receiver::failure), std::bind(&Receiver::postSnapshot, coinbase, std::placeholders::_1)); 
   //feeder->registerHandlers([]() { std::cout << \"Success\\n\"; }, []() {std::cout << \"Failure\\n\";}, [](std::shared_ptr<boost::property_tree::ptree> && tree) { boost::property_tree::write_json(std::cout, *tree, false); });
@@ -8959,12 +8956,11 @@ int main(int argc, char **argv) {
     artifact 174214 "oberon"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 134534 // reconstructor
 	artifact_ref 173702 // main
-	artifact_ref 180998 // reconstructor_impl
-	artifact_ref 213638 // reconstructor_coinbase
-	artifact_ref 213766 // reconstructor_bitstamp
-	artifact_ref 233350 // reconstructor_bitfinex
+	artifact_ref 180998 // Reconstructor
+	artifact_ref 213638 // CoinbaseReconstructor
+	artifact_ref 213766 // BitstampReconstructor
+	artifact_ref 233350 // BitfinexReconstructor
 	artifact_ref 246406 // Receiver
 	artifact_ref 260102 // common
 	artifact_ref 266630 // File

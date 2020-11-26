@@ -28,7 +28,7 @@ class Processing_messages_State
 #endif
 boost::asio::post(boost::asio::bind_executor(*stm.d_->processing_strand_, [messages = std::move(stm.d_->messages_), &stm]() {
   for (auto &message : messages)
-    if (!stm.d_->processor_->process(*message)) {
+    if (!stm.d_->process(*message)) {
       stm._post([&stm]() {
         stm.d_->error_message_ = "Couldn't process message";
         stm.stop(); // We can't process received messages, so we stop the

@@ -1,6 +1,6 @@
 format 223
 "Coinbase" // Standalone application::Receiver::Coinbase
-  revision 14
+  revision 15
   modified_by 6 "petr"
   // class settings
   
@@ -119,7 +119,7 @@ stm.d_->feeder_->postEvent(&Feeder::stop);"
 	      uml_on_entry "pass to reconstructor"
 	      cpp_on_entry "boost::asio::post(boost::asio::bind_executor(*stm.d_->processing_strand_, [messages = std::move(stm.d_->messages_), &stm]() {
   for (auto &message : messages)
-    if (!stm.d_->processor_->process(*message)) {
+    if (!stm.d_->process(*message)) {
       stm._post([&stm]() {
         stm.d_->error_message_ = \"Couldn't process message\";
         stm.stop(); // We can't process received messages, so we stop the
@@ -246,7 +246,7 @@ boost::asio::post(boost::asio::bind_executor(
         era.put<std::string>(\"time\", era_time);
         era.put<std::string>(\"product_id\", product_id);
         era.put<std::string>(\"local_timestamp\", local_timestamp);
-        if (!stm.d_->processor_->process(era))
+        if (!stm.d_->process(era))
           throw std::logic_error(\"Couldn't process era message\");
 
         boost::property_tree::ptree order_tree;
@@ -268,7 +268,7 @@ boost::asio::post(boost::asio::bind_executor(
           order_tree.put<std::string>(\"order_id\",
                                  iter2++->second.get_value<std::string>());
           order_tree.put<std::string>(\"local_timestamp\", local_timestamp);
-          if (!stm.d_->processor_->process(order_tree))
+          if (!stm.d_->process(order_tree))
             throw std::logic_error(\"Couldn't process bid message\");
         }
         for (auto iter = stm.d_->snapshot_tree_->get_child(\"asks\").begin();
@@ -288,7 +288,7 @@ boost::asio::post(boost::asio::bind_executor(
           order_tree.put<std::string>(\"order_id\",
                                  iter2++->second.get_value<std::string>());
           order_tree.put<std::string>(\"local_timestamp\", local_timestamp);
-          if (!stm.d_->processor_->process(order_tree))
+          if (!stm.d_->process(order_tree))
             throw std::logic_error(\"Couldn't process ask message\");
         }
         if (!stm.d_->stop_thread_) // We don't care too much about race condition
@@ -384,6 +384,20 @@ boost::asio::post(boost::asio::bind_executor(
 
       pseudostate 314502 final ""
       end
+    end
+
+    class 909958 "ConsumerFn"
+      visibility package stereotype "typedef" base_type class_ref 174214 // ptree
+      cpp_decl "${comment}typedef std::function<bool(const ${type} &)> ${name};
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl "${comment}typedef ${type} ${name};
+"
+      explicit_switch_type ""
+      mysql_decl ""
+      
     end
 
     class 712966 "Receiver"
@@ -1749,10 +1763,10 @@ ${inlines}
 	  param inout name "ioc" type class_ref 698758 // io_context
 	  param inout name "feeder" type class_ref 843526 // Feeder
 	  param inout name "snapshot" type class_ref 825862 // Snapshot
-	  param inout name "processor" type class_ref 202630 // Reconstructor
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}std::shared_ptr< ${t0} > ${p0}${v0},  std::shared_ptr<${t1}>  & ${p1}${v1}, std::shared_ptr<${t2}> & ${p2}${v2},std::shared_ptr<${t3}> & ${p3}${v3}${)}${volatile}${throw};
+	  param inout name "processor" type class_ref 909958 // ConsumerFn
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}std::shared_ptr< ${t0} > ${p0}${v0}, std::shared_ptr< ${t1} >  & ${p1}${v1}, std::shared_ptr< ${t2} > & ${p2}${v2}, ${t3} ${p3}${v3}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}std::shared_ptr< ${t0} > ${p0},  std::shared_ptr<${t1}>  & ${p1}, std::shared_ptr<${t2}> & ${p2},std::shared_ptr<${t3}> & ${p3}${)}${throw} : _current_state{0}, d_{std::make_unique<ReceiverData>()} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}std::shared_ptr< ${t0} > ${p0}, std::shared_ptr< ${t1} >  & ${p1}, std::shared_ptr< ${t2} > & ${p2}, ${t3} ${p3}${)}${throw} : _current_state{0}, d_{std::make_unique<ReceiverData>()} {
   ${body}}
 "
 	
@@ -2231,6 +2245,18 @@ ${members}};
 	MysqlColumn
       end
 
+      attribute 813446 "process"
+	public type class_ref 909958 // ConsumerFn
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
       classrelation 988294 // signal_set_ (<directional composition>)
 	relation 977926 *-->
 	  a role_name "signal_set_" public
@@ -2283,15 +2309,6 @@ ${members}};
 "
 	    classrelation_ref 991494 // snapshot_tree_ (<directional aggregation>)
 	  b parent class_ref 174214 // ptree
-      end
-
-      classrelation 991622 // processor_ (<directional aggregation>)
-	relation 981254 o-->
-	  a role_name "processor_" public
-	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::shared_ptr<${type}> ${name}${value};
-"
-	    classrelation_ref 991622 // processor_ (<directional aggregation>)
-	  b parent class_ref 202630 // Reconstructor
       end
 
       classrelation 1006342 // tree_ (<directional aggregation>)
@@ -7430,6 +7447,7 @@ ${members}
 ${namespace_end}
 "
       associated_elems
+	class_ref 909958 // ConsumerFn
 	class_ref 712966 // Receiver
       end
     end
