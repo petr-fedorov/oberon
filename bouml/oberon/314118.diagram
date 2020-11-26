@@ -28,10 +28,10 @@ pseudostatecanvas 136838 pseudostate_ref 260998 // initial
 end
 note 137478 "This happens only when \"opened\" message has not been seen, i.e. in the beginning of the data set. "
   xyzwh 699 157 2000 129 123
-transitioncanvas 128774 transition_ref 357254 // opened
+transitioncanvas 128774 transition_ref 357254 // created
   decenter_end 173
   
-  from ref 128006 z 2001 label "opened" xyz 199 123 2001 to point 70 126
+  from ref 128006 z 2001 label "created [state == kActive]" xyz 151 121 2001 to point 70 126
   line 128902 z 2001 to ref 128262
   write_horizontally default show_definition default drawing_language default
 end
@@ -113,12 +113,12 @@ transitioncanvas 136966 transition_ref 379782 // <transition>
   from ref 136838 z 2001 to ref 128006
   write_horizontally default show_definition default drawing_language default
 end
-transitioncanvas 137734 transition_ref 386310 // received
+transitioncanvas 137734 transition_ref 386310 // created
   decenter_begin 671
   decenter_end 306
   
   from ref 128006 z 2001 to point 546 57
-  line 137862 z 2001 label "received / drop message" xyz 432 52 2001 to point 446 57
+  line 137862 z 2001 label "created [state == kNA] / drop message" xyz 395 50 2001 to point 446 57
   line 137990 z 2001 to ref 128006
   write_horizontally default show_definition default drawing_language default
 end

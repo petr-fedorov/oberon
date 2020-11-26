@@ -1,7 +1,7 @@
 class BitfinexFilled
 !!!793350.cpp!!!	BitfinexFilled(in tree : ptree, in reconstructor : BitfinexReconstructor)
 timestamp_ = toTimestamp(tree.get<std::string>("mts"));
-local_timestamp_ = toTimestamp(tree.get<std::string>("local_timestamp"));
+heard_ = toTimestamp(tree.get<std::string>("local_timestamp"));
 price_ = std::stod(tree.get<std::string>("price"));
 change_size_ = std::stod(tree.get<std::string>("amount"));
 if(change_size_ < 0) {
@@ -12,5 +12,3 @@ else
  side_ = kAsk;
 trade_id_ = std::stol(tree.get<std::string>("id"));
 
-!!!836102.cpp!!!	clone() : MessageHandler::Filled
-return new BitfinexFilled(*this);

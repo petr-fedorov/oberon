@@ -6,12 +6,11 @@ boost::uuids::string_generator gen;
 std::istringstream ss{tree.get<string>("time")};
 ss >> parse("%FT%TZ", timestamp_);
 ss.str(tree.get<string>("local_timestamp"));
-ss >> parse("%FT%TZ", local_timestamp_);
+ss >> parse("%FT%TZ", heard_);
 order_id_ = gen(tree.get<string>("order_id"));
 side_ = tree.get<string>("side") == "buy" ? kBid : kAsk;
 price_ = stod(tree.get("price", "0.0"));
-remaining_size_ = stod(tree.get("size", "0.0"));
+remaining(stod(tree.get("size", "0.0")));
 change_size_ = 0;
 event_no_ = 0;
-!!!836230.cpp!!!	clone() : MessageHandler::Received
-return new CoinbaseReceived{*this};
+state_ = OrderEvent::OrderState::kNA;

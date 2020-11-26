@@ -6,12 +6,9 @@ return mh->filled();
 std::stringstream buf;
 buf << OrderEvent::toString() << " " << trade_id_ << " Filled";
 return buf.str();
-!!!1278086.cpp!!!	state() : OrderState
-OrderState state;
-if (std::isnan(remaining()))
-  state = kNA;
-else if (remaining() > getBaseIncrement())
-  state = kActive;
+!!!1292550.cpp!!!	remaining(in remaining_size : OrderEvent::Volume) : void
+OrderEvent::remaining(remaining_size);
+if(remaining_size >= base_increment_)
+  state(kActive);
 else
-  state = kFinished;
-return state;
+  state(kFinished);

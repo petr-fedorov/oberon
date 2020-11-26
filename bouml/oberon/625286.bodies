@@ -1,14 +1,14 @@
 class BitfinexChanged
 !!!793094.cpp!!!	BitfinexChanged(in tree : ptree, in reconstructor : BitfinexReconstructor)
 timestamp_ = toTimestamp(tree.get<std::string>("exchange_timestamp"));
-local_timestamp_ = toTimestamp(tree.get<std::string>("local_timestamp"));
+heard_ = toTimestamp(tree.get<std::string>("local_timestamp"));
 order_id_ = toUuid(tree.get<std::string>("order_id"));
 price_ = std::stod(tree.get<std::string>("price"));
-remaining_size_ = std::stod(tree.get<std::string>("amount"));
-if (remaining_size_ < 0) {
-  remaining_size_ *= -1;
+auto r = std::stod(tree.get<std::string>("amount"));
+if (r < 0) {
+  remaining(-r);
   side_ = kAsk;
-} else
+} else {
+  remaining(r);
   side_ = kBid;
-!!!835846.cpp!!!	clone() : MessageHandler::Changed
-return new BitfinexChanged(*this);
+}

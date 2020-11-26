@@ -2,9 +2,9 @@ class BitstampOpened
 !!!759174.cpp!!!	BitstampOpened(in tree : ptree, in reconstructor : BitstampReconstructor)
 order_id_ = toUuid(tree.get<std::string>("id"));
 timestamp_ = toTimestamp(tree.get<std::string>("microtimestamp"));
-local_timestamp_ = toTimestamp(tree.get<std::string>("local_timestamp"));
+heard_ = toTimestamp(tree.get<std::string>("local_timestamp"));
 price_ = std::strtod(tree.get<std::string>("price").c_str(), nullptr);
-remaining_size_ = std::strtod(tree.get<std::string>("amount").c_str(), nullptr);
+remaining(std::strtod(tree.get<std::string>("amount").c_str(), nullptr));
 change_size_ = 0;
 event_no_ = 1;
 if(tree.get<std::string>("order_type") == "buy")
@@ -12,5 +12,3 @@ side_ = kBid;
 else
 side_ = kAsk;
 
-!!!835334.cpp!!!	clone() : BitstampReconstructor::BitstampOpened
-return new BitstampOpened(*this);

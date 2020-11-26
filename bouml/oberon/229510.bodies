@@ -63,7 +63,7 @@ if (event) {
     buffer << "NA,";
 
   // local_t
-  date::to_stream(buffer, "%FT%TZ,", event->local());
+  date::to_stream(buffer, "%FT%TZ,", event->heard());
 
   buffer << "\n";
   return (f_ << buffer.str()).good();

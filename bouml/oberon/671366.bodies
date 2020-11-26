@@ -166,6 +166,7 @@ try {
   std::cout << "Previous price not found\n";
 #endif
 }
+/* 
 if(msg->remaining() >= reconstructor_.base_min_size_) {
 #ifdef VERBOSE_BITSTAMP_CLASSIFIER
   std::cout << "Added to LOB\n";
@@ -173,6 +174,7 @@ if(msg->remaining() >= reconstructor_.base_min_size_) {
   us->insert(typename std::remove_reference<decltype(*us)>::type::value_type{
       msg->price(), std::unique_ptr<OrderEvent>(msg->clone())});
 }
+*/
 output_.push_back(std::move(received_));
 #ifdef VERBOSE_BITSTAMP_CLASSIFIER
 std::cout << "Output\n";

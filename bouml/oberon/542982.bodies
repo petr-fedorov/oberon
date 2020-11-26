@@ -3,7 +3,9 @@ class Deduce_Size_Coinbase
   _current_state = 0;
 !!!687494.cpp!!!	elapsed() : bool
   if (_current_state != 0) {
- Deduce_Size_Coinbase & stm {*this};
+ #ifdef VERBOSE_STATE_MACHINE
+Deduce_Size_Coinbase & stm {*this};
+ #endif
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger elapsed";
 #endif
@@ -12,7 +14,9 @@ _current_state->elapsed(*this);
   return (_current_state != 0);
 !!!687878.cpp!!!	era() : bool
   if (_current_state != 0) {
- Deduce_Size_Coinbase & stm {*this};
+ #ifdef VERBOSE_STATE_MACHINE
+Deduce_Size_Coinbase & stm {*this};
+ #endif
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger era";
 #endif
@@ -21,7 +25,9 @@ _current_state->era(*this);
   return (_current_state != 0);
 !!!688262.cpp!!!	filled() : bool
   if (_current_state != 0) {
- Deduce_Size_Coinbase & stm {*this};
+ #ifdef VERBOSE_STATE_MACHINE
+Deduce_Size_Coinbase & stm {*this};
+ #endif
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger filled";
 #endif
@@ -30,7 +36,9 @@ _current_state->filled(*this);
   return (_current_state != 0);
 !!!688646.cpp!!!	message() : bool
   if (_current_state != 0) {
- Deduce_Size_Coinbase & stm {*this};
+ #ifdef VERBOSE_STATE_MACHINE
+Deduce_Size_Coinbase & stm {*this};
+ #endif
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger message";
 #endif
@@ -51,21 +59,14 @@ Deduce_Size_Coinbase &stm {*this};
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "final state reached";
 #endif
-!!!773638.cpp!!!	opened() : bool
+!!!1292038.cpp!!!	created() : bool
   if (_current_state != 0) {
- Deduce_Size_Coinbase & stm {*this};
+ #ifdef VERBOSE_STATE_MACHINE
+Deduce_Size_Coinbase & stm {*this};
+ #endif
 #ifdef VERBOSE_STATE_MACHINE
-   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger opened";
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger created";
 #endif
-_current_state->opened(*this);
-  }
-  return (_current_state != 0);
-!!!776454.cpp!!!	received() : bool
-  if (_current_state != 0) {
- Deduce_Size_Coinbase & stm {*this};
-#ifdef VERBOSE_STATE_MACHINE
-   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger received";
-#endif
-_current_state->received(*this);
+_current_state->created(*this);
   }
   return (_current_state != 0);
