@@ -12,4 +12,5 @@ change_size_ = stod(tree.get<string>("size"));
 trade_id_ = stol(tree.get<string>("trade_id"));
 side_ = (tree.get<string>("side") == "buy" ? kBid : kAsk);
 order_id_ = gen(tree.get<string>("maker_order_id"));
+baseIncrement(reconstructor.base_increment_);
 taker_order_id_ = gen(tree.get<string>("taker_order_id"));

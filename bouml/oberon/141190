@@ -1,6 +1,6 @@
 format 223
 "Reconstructor" // Standalone application::Reconstructor
-  revision 189
+  revision 191
   modified_by 6 "petr"
   // class settings
   
@@ -1050,7 +1050,7 @@ ${items}};
       end
 
       operation 1263494 "remaining"
-	const cpp_inline public return_type class_ref 305798 // Volume
+	const public return_type class_ref 305798 // Volume
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -1064,7 +1064,7 @@ ${items}};
       end
 
       operation 1263622 "remaining"
-	public explicit_return_type "void"
+	cpp_virtual public explicit_return_type "void"
 	nparams 1
 	  param in name "remaining_size" type class_ref 305798 // Volume
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
@@ -1226,6 +1226,21 @@ ${items}};
 	public explicit_return_type "void"
 	nparams 1
 	  param in name "state" type class_ref 299014 // OrderState
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1307910 "baseIncrement"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "base_increment" type class_ref 305798 // Volume
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -1515,7 +1530,7 @@ ${inlines}
       end
 
       operation 1292550 "remaining"
-	public explicit_return_type "void"
+	cpp_override public explicit_return_type "void"
 	nparams 1
 	  param in name "remaining_size" type class_ref 305798 // Volume
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};

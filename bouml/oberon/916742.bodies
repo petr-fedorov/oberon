@@ -1,0 +1,19 @@
+class Feeder_State
+!!!1300614.cpp!!!	create(inout stm : Feeder) : void
+  {
+    if (stm.d_) {
+      stm._set_currentState(stm._feeder_state._busy_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Feeder.Busy";
+#endif
+    }
+    else {
+      stm._feeder_state._junction1(stm);
+    }
+  }
+!!!1300742.cpp!!!	_junction1(inout stm : Feeder) : void
+  {
+      stm._final();
+  }
+!!!1300998.cpp!!!	_upper(inout stm : Feeder) : Feeder::AnyState
+  return 0;

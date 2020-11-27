@@ -1,0 +1,78 @@
+format 223
+
+pseudostatecanvas 128006 pseudostate_ref 376326 // initial 
+   xyz 106 59 2000
+end
+pseudostatecanvas 128134 pseudostate_ref 376454 // choice 
+   xyz 210 50 2000
+end
+pseudostatecanvas 128390 pseudostate_ref 376582 // final 
+   xyz 471 15 2000
+end
+pseudostatecanvas 128518 pseudostate_ref 376710 // junction 
+   xyz 478 140 2000
+end
+statecanvas 128902 state_ref 295558 // Busy
+  
+  xyzwh 90 227 2000 665 349
+end
+statecanvas 129286 state_ref 295686 // Connect
+  
+  xyzwh 211 319 2005 69 41
+end
+pseudostatecanvas 129414 pseudostate_ref 376838 // initial 
+   xyz 120 328 2005
+end
+statecanvas 129670 state_ref 295814 // Subscribe
+  
+  xyzwh 430 318 2005 79 41
+end
+statecanvas 129798 state_ref 295942 // Receive
+  
+  xyzwh 437 427 2005 65 41
+end
+transitioncanvas 128262 transition_ref 557574 // <transition>
+  
+  from ref 128006 z 2001 to ref 128134
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 128646 transition_ref 557702 // <transition>
+  
+  from ref 128134 z 2001 label "[created using default constructor]" xyz 247 58 3000 to point 438 65
+  line 128774 z 2001 to ref 128518
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129030 transition_ref 557830 // <transition>
+  decenter_begin 560
+  decenter_end 207
+  
+  from ref 128134 z 2001 label "[else]" xyz 211 147 3000 to ref 128902
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129158 transition_ref 557958 // <transition>
+  
+  from ref 128518 z 2001 to ref 128390
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129542 transition_ref 558086 // <transition>
+  
+  from ref 129414 z 2006 to ref 129286
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129926 transition_ref 558214 // Failed
+  decenter_begin 598
+  
+  from ref 128902 z 2001 label "failure" xyz 470 181 3000 to ref 128518
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 130054 transition_ref 558342 // Connected
+  
+  from ref 129286 z 2006 label "success" xyz 332 329 3000 to ref 129670
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 130182 transition_ref 558470 // Subscribed
+  
+  from ref 129670 z 2006 label "success" xyz 441 381.5 3000 to ref 129798
+  write_horizontally default show_definition default drawing_language default
+end
+end

@@ -36,7 +36,10 @@ if (event) {
   date::to_stream(buffer, "%FT%TZ,", event->timestamp());
 
   // s
-  buffer << event->state() << ",";
+  if(event->state() != OrderEvent::OrderState::kNA)
+    buffer << event->state() << ",";
+  else
+    buffer << "NA,";
 
   // p
   buffer << std::fixed << std::setprecision(quote_precision_) << event->price() << ",";
