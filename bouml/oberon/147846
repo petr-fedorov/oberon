@@ -1,6 +1,6 @@
 format 223
 "std" // std
-  revision 31
+  revision 33
   modified_by 6 "petr"
   // class settings
   
@@ -52,13 +52,30 @@ format 223
     
     activitydiagramsettings
      end
-    class 195590 "less"
+    class 889734 "vector"
       visibility package 
       nformals 1
-      formal name "Key" type "class" explicit_default_value ""
+      formal name "T" type "class" explicit_default_value ""
         explicit_extends ""
       cpp_external cpp_decl "${name}
-#include <functional>
+#include <vector>
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+    end
+
+    class 889478 "unique_ptr"
+      visibility package 
+      nformals 1
+      formal name "T" type "class" explicit_default_value ""
+        explicit_extends ""
+      cpp_external cpp_decl "${name}
+#include <memory>
 "
       java_decl ""
       php_decl ""
@@ -78,115 +95,6 @@ format 223
         explicit_extends ""
       cpp_external cpp_decl "${name}
 #include <utility>
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      mysql_decl ""
-      
-    end
-
-    class 195206 "allocator"
-      visibility package 
-      cpp_external cpp_decl "${name}
-#include <memory>
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      mysql_decl ""
-      
-    end
-
-    class 194822 "map"
-      visibility package 
-      nformals 4
-      formal name "Key" type "class" explicit_default_value ""
-        explicit_extends ""
-      formal name "T" type "class" explicit_default_value ""
-        explicit_extends ""
-      formal name "Compare" type "class" explicit_default_value ""
-        explicit_extends ""
-      formal name "Allocator" type "class" explicit_default_value ""
-        explicit_extends ""
-      cpp_external cpp_decl "${name}
-#include <${name}>
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      mysql_decl ""
-      
-      operation 188422 "get"
-	cpp_inline public explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      classrelation 413574 // <directional aggregation>
-	relation 410630 o-->
-	  a role_name "" multiplicity "*" private
-	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type} *> ${name}${value};
-"
-	    classrelation_ref 413574 // <directional aggregation>
-	  b multiplicity "1" parent class_ref 195078 // pair
-      end
-    end
-
-    class 222726 "exception"
-      visibility package 
-      cpp_external cpp_decl "${name}
-#include <exception>
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      mysql_decl ""
-      
-    end
-
-    class 492934 "vector"
-      visibility package 
-      nformals 1
-      formal name "T" type "class" explicit_default_value ""
-        explicit_extends ""
-      cpp_external cpp_decl "${name}
-#include <${name}>
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      mysql_decl ""
-      
-    end
-
-    class 493190 "unique_ptr"
-      visibility package 
-      nformals 2
-      formal name "T" type "class" explicit_default_value ""
-        explicit_extends ""
-      formal name "Deleter" type "class" explicit_default_value "std::default_delete<T>"
-        explicit_extends ""
-      cpp_external cpp_decl "${name}
-#include <memory>
 "
       java_decl ""
       php_decl ""
@@ -259,66 +167,10 @@ format 223
       
     end
 
-    class 699654 "stringstream"
-      visibility package 
-      cpp_external cpp_decl "${name}
-#include <sstream>
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      mysql_decl ""
-      
-    end
-
-    class 699782 "size_t"
-      visibility package 
-      cpp_external cpp_decl "${name}
-#include <cstdio>
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      mysql_decl ""
-      
-    end
-
-    class 766470 "thread"
-      visibility package 
-      cpp_external cpp_decl "${name}
-#include <thread>
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      mysql_decl ""
-      
-    end
-
     class 766598 "atomic_bool"
       visibility package 
       cpp_external cpp_decl "${name}
 #include <atomic>
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      mysql_decl ""
-      
-    end
-
-    class 780294 "ostream"
-      visibility package 
-      cpp_external cpp_decl "${name}
-#include <ostream>
 "
       java_decl ""
       php_decl ""

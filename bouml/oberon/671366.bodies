@@ -22,7 +22,7 @@ if (!them->empty() && !comp(opened->price(), them->begin()->first)) {
 #endif
   received_->deleted(true);
   us->insert(typename std::remove_reference<decltype(*us)>::type::value_type{
-      opened->price(), std::unique_ptr<OrderEvent>(opened->clone())});
+      opened->price(), std::make_unique<BitstampOpened>(*opened)});
   //received_.reset(nullptr);
   output_.push_back(std::move(received_));
 } else {
@@ -30,7 +30,7 @@ if (!them->empty() && !comp(opened->price(), them->begin()->first)) {
   std::cout << opened->toString() << "\nOutput\n";
 #endif
   us->insert(typename std::remove_reference<decltype(*us)>::type::value_type{
-      opened->price(), std::unique_ptr<OrderEvent>(opened->clone())});
+      opened->price(),std::make_unique<BitstampOpened>(*opened)});
   output_.push_back(std::move(received_));
 }
 return true;
@@ -75,7 +75,7 @@ if (!them->empty() &&
 #endif
   received_->deleted(true);
   us->insert(typename std::remove_reference<decltype(*us)>::type::value_type{
-      msg->price(), std::unique_ptr<OrderEvent>(msg->clone())});
+      msg->price(), std::make_unique<BitstampChanged>(*msg)});
 #ifdef VERBOSE_BITSTAMP_CLASSIFIER
   std::cout << msg->toString() <<" added to LOB \nDropped\n";
 #endif
@@ -83,7 +83,7 @@ if (!them->empty() &&
   output_.push_back(std::move(received_));
 } else {
   us->insert(typename std::remove_reference<decltype(*us)>::type::value_type{
-      msg->price(), std::unique_ptr<OrderEvent>(msg->clone())});
+      msg->price(), std::make_unique<BitstampChanged>(*msg)});
 #ifdef VERBOSE_BITSTAMP_CLASSIFIER
   std::cout << msg->toString() <<" added to LOB \nOutput\n";
 #endif
