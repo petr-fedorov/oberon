@@ -8,8 +8,7 @@ d_->strand_ = std::make_unique<boost::asio::io_context::strand>(*ioc);
 d_->timer_ = std::make_unique<boost::asio::deadline_timer>(*ioc);
 
 using namespace boost::property_tree;
-ptree p, h, c;
-
+ptree h, p, c;
 p.put("", product);
 h.put("", "heartbeat");
 c.put("", "full");
@@ -18,6 +17,7 @@ d_->products_.push_back(std::make_pair("", p));
 d_->channels_.push_back(std::make_pair("", h));
 d_->channels_.push_back(std::make_pair("", c));
 _machine_name = "Feeder - ";
+
 !!!1199238.cpp!!!	create() : bool
 if (_current_state == 0)
   (_current_state = &(*this)._feeder_state)->create(*this);

@@ -1,6 +1,6 @@
 format 223
 "Standalone application" // Standalone application
-  revision 74
+  revision 75
   modified_by 6 "petr"
   // class settings
   
@@ -8890,23 +8890,23 @@ operator<<(std::basic_ostream<CharT, Traits>& os,
 
     artifact 173702 "main"
       stereotype "source"
-      cpp_src "#include <thread>
-#include \"receiver/coinbase/Receiver.h\"
-#include \"receiver/coinbase/Feeder.h\"
-#include \"receiver/coinbase/Snapshot.h\"
+      cpp_src "#include \"receiver/bitstamp/Feeder.h\"
 #include \"receiver/bitstamp/Receiver.h\"
+#include \"receiver/coinbase/Feeder.h\"
+#include \"receiver/coinbase/Receiver.h\"
+#include \"receiver/coinbase/Snapshot.h\"
 #include \"reconstructor/CoinbaseReconstructor.h\"
 #include \"reconstructor/File.h\"
-#include <boost/beast.hpp>
-#include <boost/asio/connect.hpp>
 #include <boost/asio/bind_executor.hpp>
-#include <boost/property_tree/json_parser.hpp>
+#include <boost/asio/connect.hpp>
+#include <boost/beast.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/property_tree/json_parser.hpp>
+#include <thread>
 using boost::posix_time::seconds;
 
 // TEMPORARY
 #include <boost/property_tree/json_parser.hpp>
-
 
 int main(int argc, char **argv) {
   namespace rec = oberon::receiver;
@@ -8923,28 +8923,52 @@ int main(int argc, char **argv) {
   using namespace oberon::receiver;
   using Receiver = coinbase::Receiver;
 
-
   // The io_context is required for all I/O
-  std::shared_ptr<boost::asio::io_context> ioc = std::make_shared<boost::asio::io_context>();
-  auto feeder = std::make_shared<oberon::receiver::coinbase::Feeder>(ioc, product);
-  auto snapshot = std::make_shared<oberon::receiver::coinbase::Snapshot>(ioc, product);
-  auto reconstructor = CoinbaseReconstructor{std::make_unique<File>(exchange, product, 8, 2), 0.001,0.00000001, false};
-  auto coinbase = std::make_shared<Receiver>( ioc, feeder, snapshot, std::bind(&CoinbaseReconstructor::process, &reconstructor, std::placeholders::_1));
-  feeder->registerHandlers(std::bind(&Receiver::postEvent, coinbase, &Receiver::success), std::bind(&Receiver::postEvent, coinbase, &Receiver::failure), std::bind(&Receiver::postMessage, coinbase, std::placeholders::_1)); 
-  snapshot->registerHandlers(std::bind(&Receiver::postEvent, coinbase, &Receiver::failure), std::bind(&Receiver::postSnapshot, coinbase, std::placeholders::_1)); 
-  //feeder->registerHandlers([]() { std::cout << \"Success\\n\"; }, []() {std::cout << \"Failure\\n\";}, [](std::shared_ptr<boost::property_tree::ptree> && tree) { boost::property_tree::write_json(std::cout, *tree, false); });
-  // feeder->create();
-  // feeder->engage(); 
-  coinbase->create();
-  // Run the I/O service in two threads.
-  // snapshot->create();
-  std::thread t1 {[&ioc]() { ioc->run(); }};
-  std::thread t2 {[&ioc]() { ioc->run(); }};
-  std::thread t3 {[&ioc]() { ioc->run(); }};
-  ioc->run();
-  t1.join();
-  t2.join();
-  t3.join();
+  std::shared_ptr<boost::asio::io_context> ioc =
+      std::make_shared<boost::asio::io_context>();
+  if (!std::strcmp(exchange, \"Bitstamp\")) {
+    auto feeder =
+        std::make_shared<oberon::receiver::bitstamp::Feeder>(ioc, product);
+    feeder->registerHandlers(
+        []() { std::cout << \"Success\\n\"; }, []() { std::cout << \"Failure\\n\"; },
+        [](std::shared_ptr<boost::property_tree::ptree> &&tree) {
+          boost::property_tree::write_json(std::cout, *tree, false);
+        });
+    feeder->create();
+    ioc->run();
+  } else if (!std::strcmp(exchange,\"Coinbase\")) {
+    auto feeder =
+        std::make_shared<oberon::receiver::coinbase::Feeder>(ioc, product);
+    auto snapshot =
+        std::make_shared<oberon::receiver::coinbase::Snapshot>(ioc, product);
+    auto reconstructor =
+        CoinbaseReconstructor{std::make_unique<File>(exchange, product, 8, 2),
+                              0.001, 0.00000001, false};
+    auto coinbase = std::make_shared<Receiver>(
+        ioc, feeder, snapshot,
+        std::bind(&CoinbaseReconstructor::process, &reconstructor,
+                  std::placeholders::_1));
+    feeder->registerHandlers(
+        std::bind(&Receiver::postEvent, coinbase, &Receiver::success),
+        std::bind(&Receiver::postEvent, coinbase, &Receiver::failure),
+        std::bind(&Receiver::postMessage, coinbase, std::placeholders::_1));
+    snapshot->registerHandlers(
+        std::bind(&Receiver::postEvent, coinbase, &Receiver::failure),
+        std::bind(&Receiver::postSnapshot, coinbase, std::placeholders::_1));
+    // feeder->registerHandlers([]() { std::cout << \"Success\\n\"; }, []() { std::cout << \"Failure\\n\"; }, [](std::shared_ptr<boost::property_tree::ptree> && tree) { boost::property_tree::write_json(std::cout, *tree, false); });
+    // feeder->create();
+    // feeder->engage();
+    coinbase->create();
+    // Run the I/O service in two threads.
+    // snapshot->create();
+    std::thread t1{[&ioc]() { ioc->run(); }};
+    std::thread t2{[&ioc]() { ioc->run(); }};
+    std::thread t3{[&ioc]() { ioc->run(); }};
+    ioc->run();
+    t1.join();
+    t2.join();
+    t3.join();
+  }
 
   return EXIT_SUCCESS;
 }
@@ -8970,7 +8994,6 @@ int main(int argc, char **argv) {
 	artifact_ref 273542 // Snapshot
 	artifact_ref 286598 // SnapshotData
 	artifact_ref 286726 // ReceiverData
-	artifact_ref 293254 // FeederData
 	artifact_ref 299782 // Created
 	artifact_ref 299910 // Changed
 	artifact_ref 300038 // Filled
@@ -8980,6 +9003,8 @@ int main(int argc, char **argv) {
 	artifact_ref 306950 // Era
 	artifact_ref 307078 // OrderEvent
 	artifact_ref 307206 // Elapsed
+	artifact_ref 313734 // Feeder
+	artifact_ref 313862 // FeederData
       end
       ncouples 10
       key "genpro pro" value "/tmp/oberon/cpp/oberon.pro"

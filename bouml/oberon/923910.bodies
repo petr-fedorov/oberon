@@ -1,0 +1,30 @@
+class Handshake_SSL_State
+!!!1317894.cpp!!!	success(inout stm : Feeder) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._feeder_state._busy_state._handshake_websocket_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Feeder.Busy.Handshake websocket";
+#endif
+    stm._feeder_state._busy_state._handshake_websocket_state.create(stm);
+  }
+!!!1318022.cpp!!!	create(inout stm : Feeder) : void
+	_doentry(stm);
+!!!1318150.cpp!!!	_doentry(inout stm : Feeder) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Feeder.Busy.Handshake SSL";
+#endif
+stm.d_->ws_->next_layer().async_handshake(
+    boost::asio::ssl::stream_base::client,
+    boost::asio::bind_executor(*stm.d_->strand_,
+                               [&stm](const boost::system::error_code &ec) {
+                                 if (ec) {
+                                   stm.d_->ec_ = ec;
+				   stm.d_->error_message_ = ec.message();
+                                   stm.failure();
+                                 } else {
+                                   stm.success();
+                                 }
+                               }));
+!!!1318278.cpp!!!	_upper(inout stm : Feeder) : Feeder::AnyState
+  return &stm._feeder_state._busy_state;

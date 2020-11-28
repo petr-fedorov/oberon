@@ -1,0 +1,33 @@
+class Resolve_State
+!!!1315590.cpp!!!	success(inout stm : Feeder) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._feeder_state._busy_state._connect_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Feeder.Busy.Connect";
+#endif
+    stm._feeder_state._busy_state._connect_state.create(stm);
+  }
+!!!1315718.cpp!!!	create(inout stm : Feeder) : void
+	_doentry(stm);
+!!!1315846.cpp!!!	_doentry(inout stm : Feeder) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Feeder.Busy.Resolve";
+#endif
+stm.d_->resolver_->async_resolve(
+    stm.d_->host_, stm.d_->port_,
+    boost::asio::bind_executor(
+        *stm.d_->strand_,
+        [&stm](const boost::system::error_code &ec,
+               boost::asio::ip::tcp::resolver::results_type results) {
+          if (ec) {
+            stm.d_->ec_ = ec;
+            stm.d_->error_message_ = ec.message();
+            stm.failure();
+          } else {
+            stm.d_->results_ = results;
+            stm.success();
+          }
+        }));
+!!!1315974.cpp!!!	_upper(inout stm : Feeder) : Feeder::AnyState
+  return &stm._feeder_state._busy_state;

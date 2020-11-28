@@ -6,6 +6,7 @@ class Feeder_State
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Feeder.Busy";
 #endif
+      stm._feeder_state._busy_state.create(stm);
     }
     else {
       stm._feeder_state._junction1(stm);
@@ -13,6 +14,10 @@ class Feeder_State
   }
 !!!1300742.cpp!!!	_junction1(inout stm : Feeder) : void
   {
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition <transition>";
+#endif
+if(stm.d_->fh_) stm.d_->fh_();
       stm._final();
   }
 !!!1300998.cpp!!!	_upper(inout stm : Feeder) : Feeder::AnyState

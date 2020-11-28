@@ -1,3 +1,74 @@
 class Busy_State
 !!!1300870.cpp!!!	_upper(inout stm : Feeder) : Feeder::AnyState
   return &stm._feeder_state;
+!!!1316102.cpp!!!	create(inout stm : Feeder) : void
+  _doentry(stm);
+  {
+    stm._set_currentState(stm._feeder_state._busy_state._resolve_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Feeder.Busy.Resolve";
+#endif
+    stm._feeder_state._busy_state._resolve_state.create(stm);
+  }
+!!!1317254.cpp!!!	failure(inout stm : Feeder) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._feeder_state._busy_state._doexit(stm);
+    stm._set_currentState(stm._feeder_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Feeder";
+#endif
+    stm._feeder_state._junction1(stm);
+  }
+!!!1318918.cpp!!!	_completion(inout stm : Feeder) : bool
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._feeder_state._busy_state._doexit(stm);
+    stm._set_currentState(stm._feeder_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Feeder";
+#endif
+    stm._feeder_state._junction1(stm);
+    return (bool) 1;
+  }
+!!!1319046.cpp!!!	_doentry(inout stm : Feeder) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Feeder.Busy";
+#endif
+stm.d_->ctx_ = std::make_unique<boost::asio::ssl::context>(
+    boost::asio::ssl::context::sslv23_client);
+load_root_certificates(*stm.d_->ctx_);
+stm.d_->resolver_ = std::make_unique<boost::asio::ip::tcp::resolver>(*stm.d_->ioc_);
+stm.d_->ws_ = std::make_unique<FeederData::WebsocketStream>(*stm.d_->ioc_, *stm.d_->ctx_);
+
+if (!SSL_set_tlsext_host_name(stm.d_->ws_->next_layer().native_handle(),
+                              stm.d_->host_.c_str())) {
+  boost::system::error_code ec{static_cast<int>(::ERR_get_error()),
+                               boost::asio::error::get_ssl_category()};
+  std::cerr << ec.message() << "\n";
+}
+/*
+SSL_CTX_set_keylog_callback(stm.d_->ctx_->native_handle(),
+      [](const SSL *ssl, const char *line) {
+  ofstream f{"./key.txt", ios_base::app };
+  f << line << "\n";
+  f.close();
+      });
+*/
+!!!1319174.cpp!!!	_doexit(inout stm : Feeder) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute exit behavior of .Feeder.Busy";
+#endif
+stm.d_->timer_->cancel();
+stm.d_->ws_->next_layer().next_layer().shutdown(boost::asio::ip::tcp::socket::shutdown_both);
+stm.d_->ws_->next_layer().next_layer().cancel();
+stm.d_->ws_->next_layer().next_layer().close();
+!!!1320326.cpp!!!	exhausted(inout stm : Feeder) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._feeder_state._busy_state._doexit(stm);
+    stm._set_currentState(stm._feeder_state._exhausted_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Feeder.Exhausted";
+#endif
+  }

@@ -1,0 +1,21 @@
+class Exhausted_State
+!!!1320454.cpp!!!	success(inout stm : Feeder) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._feeder_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Feeder";
+#endif
+    stm._feeder_state._junction1(stm);
+  }
+!!!1320582.cpp!!!	failure(inout stm : Feeder) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._feeder_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Feeder";
+#endif
+    stm._feeder_state._junction1(stm);
+  }
+!!!1320710.cpp!!!	_upper(inout stm : Feeder) : Feeder::AnyState
+  return &stm._feeder_state;

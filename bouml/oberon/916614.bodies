@@ -1,0 +1,34 @@
+class AnyState
+!!!1315462.cpp!!!	success(inout stm : Feeder) : void
+  AnyState * st = _upper(stm);
+
+  if (st != 0)
+    st->success(stm);
+#ifdef VERBOSE_STATE_MACHINE
+  else
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "transition success not expected";
+#endif
+#endif
+!!!1317126.cpp!!!	failure(inout stm : Feeder) : void
+  AnyState * st = _upper(stm);
+
+  if (st != 0)
+    st->failure(stm);
+#ifdef VERBOSE_STATE_MACHINE
+  else
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "transition failure not expected";
+#endif
+#endif
+!!!1320198.cpp!!!	exhausted(inout stm : Feeder) : void
+  AnyState * st = _upper(stm);
+
+  if (st != 0)
+    st->exhausted(stm);
+#ifdef VERBOSE_STATE_MACHINE
+  else
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "transition exhausted not expected";
+#endif
+#endif

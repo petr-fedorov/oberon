@@ -1,0 +1,54 @@
+class Receive_State
+!!!1316870.cpp!!!	_upper(inout stm : Feeder) : Feeder::AnyState
+  return &stm._feeder_state._busy_state;
+!!!1319686.cpp!!!	success(inout stm : Feeder) : void
+  {
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition Received";
+#endif
+if(stm.d_->rh_ && stm.d_->tree_) stm.d_->rh_(std::move(stm.d_->tree_));
+
+
+    create(stm);
+  }
+!!!1319814.cpp!!!	create(inout stm : Feeder) : void
+	_doentry(stm);
+!!!1319942.cpp!!!	_doentry(inout stm : Feeder) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Feeder.Busy.Receive";
+#endif
+stm.d_->ws_->async_read(
+    stm.d_->buffer_,
+    boost::asio::bind_executor(
+        *stm.d_->strand_, [&stm](const boost::system::error_code &ec,
+                                 std::size_t bytes_transferred) {
+          boost::ignore_unused(bytes_transferred);
+          if (ec) {
+            stm.d_->ec_ = ec;
+            stm.d_->error_message_ = ec.message();
+            stm.failure();
+          } else {
+            using namespace boost::property_tree;
+            auto local_timestamp = date::format(
+                "%FT%TZ",
+                std::chrono::time_point_cast<std::chrono::microseconds>(
+                    std::chrono::system_clock::now()));
+            std::stringstream m;
+            m << boost::beast::buffers(stm.d_->buffer_.data());
+            stm.d_->tree_ = std::make_unique<boost::property_tree::ptree>();
+            boost::property_tree::read_json(m, *stm.d_->tree_);
+            auto event = stm.d_->tree_->get<std::string>("event");
+            if (!event.compare("order_created") ||
+                !event.compare("order_changed") ||
+                !event.compare("order_deleted") || !event.compare("trade")) {
+              stm.d_->tree_->put("local_timestamp", local_timestamp);
+            }
+            else 
+              stm.d_->tree_.reset();
+            stm.d_->buffer_.consume(stm.d_->buffer_.size());
+#ifndef NDEBUG
+            BOOST_LOG_TRIVIAL(debug) << stm._machine_name << m.str();
+#endif
+            stm.success();
+          }
+        }));

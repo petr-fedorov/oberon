@@ -1,6 +1,6 @@
 format 223
 "Receiver" // Standalone application::Receiver
-  revision 25
+  revision 26
   modified_by 6 "petr"
   // class settings
   
@@ -562,6 +562,16 @@ ${includes}
 ${namespace_start}
 ${members}
 ${namespace_end}"
+      idl_src "#ifndef ${MODULE}_${NAME}_H
+#define ${MODULE}_${NAME}_H
+
+${comment}
+${includes}
+${module_start}
+${definition}
+${module_end}
+#endif
+"
       associated_elems
 	class_ref 793350 // Receiver
 	class_ref 867718 // Received
@@ -738,6 +748,7 @@ ${module_end}
 #endif
 "
       associated_elems
+	class_ref 876038 // FeederData
       end
     end
   end

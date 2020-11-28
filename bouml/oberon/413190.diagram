@@ -14,22 +14,42 @@ pseudostatecanvas 128518 pseudostate_ref 376710 // junction
 end
 statecanvas 128902 state_ref 295558 // Busy
   
-  xyzwh 90 227 2000 665 349
+  xyzwh 120 186 2000 681 583
 end
-statecanvas 129286 state_ref 295686 // Connect
+statecanvas 129286 state_ref 295686 // Resolve
   
-  xyzwh 211 319 2005 69 41
+  xyzwh 233 275 2005 115 77
 end
 pseudostatecanvas 129414 pseudostate_ref 376838 // initial 
-   xyz 120 328 2005
+   xyz 158 301 2005
 end
-statecanvas 129670 state_ref 295814 // Subscribe
+statecanvas 129670 state_ref 295814 // Subscribe live_trades
   
-  xyzwh 430 318 2005 79 41
+  xyzwh 368 425 2005 145 77
 end
 statecanvas 129798 state_ref 295942 // Receive
   
-  xyzwh 437 427 2005 65 41
+  xyzwh 394 621 2005 115 77
+end
+statecanvas 130438 state_ref 302470 // Connect
+  
+  xyzwh 412 275 2005 115 77
+end
+statecanvas 130950 state_ref 302598 // Handshake SSL
+  
+  xyzwh 616 275 2005 115 77
+end
+statecanvas 131206 state_ref 302726 // Handshake websocket
+  
+  xyzwh 598 422 2005 151 77
+end
+statecanvas 132358 state_ref 302854 // Exhausted
+  
+  xyzwh 288 99 2000 81 41
+end
+statecanvas 133126 state_ref 302982 // Subsribe live_orders
+  
+  xyzwh 159 430 2005 139 77
 end
 transitioncanvas 128262 transition_ref 557574 // <transition>
   
@@ -37,21 +57,22 @@ transitioncanvas 128262 transition_ref 557574 // <transition>
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 128646 transition_ref 557702 // <transition>
+  decenter_begin 567
   
-  from ref 128134 z 2001 label "[created using default constructor]" xyz 247 58 3000 to point 438 65
+  from ref 128134 z 2001 label "[created using default constructor]" xyz 247 59.5 2001 to point 438 65
   line 128774 z 2001 to ref 128518
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 129030 transition_ref 557830 // <transition>
-  decenter_begin 560
-  decenter_end 207
+  decenter_begin 756
+  decenter_end 166
   
-  from ref 128134 z 2001 label "[else]" xyz 211 147 3000 to ref 128902
+  from ref 128134 z 2001 label "[else]" xyz 216.5 126 2001 to ref 128902
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 129158 transition_ref 557958 // <transition>
   
-  from ref 128518 z 2001 to ref 128390
+  from ref 128518 z 2001 label "/ report failure" xyz 446 80 3000 to ref 128390
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 129542 transition_ref 558086 // <transition>
@@ -62,17 +83,71 @@ end
 transitioncanvas 129926 transition_ref 558214 // Failed
   decenter_begin 598
   
-  from ref 128902 z 2001 label "failure" xyz 470 181 3000 to ref 128518
+  from ref 128902 z 2001 label "failure" xyz 493 159.5 2001 to ref 128518
   write_horizontally default show_definition default drawing_language default
 end
-transitioncanvas 130054 transition_ref 558342 // Connected
+transitioncanvas 130566 transition_ref 564998 // Resolved
   
-  from ref 129286 z 2006 label "success" xyz 332 329 3000 to ref 129670
+  from ref 129286 z 2006 label "success" xyz 357 303.5 3000 to ref 130438
   write_horizontally default show_definition default drawing_language default
 end
-transitioncanvas 130182 transition_ref 558470 // Subscribed
+transitioncanvas 131078 transition_ref 565126 // connected
   
-  from ref 129670 z 2006 label "success" xyz 441 381.5 3000 to ref 129798
+  from ref 130438 z 2006 label "success" xyz 548 303.5 3000 to ref 130950
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 131334 transition_ref 565254 // ssl handshaked
+  
+  from ref 130950 z 2006 label "success" xyz 651 377 3000 to ref 131206
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 131462 transition_ref 565382 // websocket handshaked
+  
+  from ref 131206 z 2006 label "success" xyz 500.5 441 3000 to ref 129670
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 131590 transition_ref 565510 // <transition>
+  decenter_begin 422
+  
+  from ref 128902 z 2001 to ref 128518
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 131974 transition_ref 565766 // Received
+  decenter_begin 113
+  decenter_end 895
+  
+  from ref 129798 z 2006 to point 404 727
+  line 132102 z 2006 label "success" xyz 429.5 719 3000 to point 496 726
+  line 132230 z 2006 to ref 129798
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 132486 transition_ref 565894 // <transition>
+  decenter_begin 303
+  
+  from ref 128902 z 2001 label "exhausted" xyz 298 152.5 3000 to ref 132358
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 132614 transition_ref 566022 // <transition>
+  
+  from ref 132358 z 2001 label "success" xyz 368.5 135.5 3000 to point 411 152
+  line 132742 z 2001 to ref 128518
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 132870 transition_ref 566150 // <transition>
+  
+  from ref 132358 z 2001 label "failure" xyz 385 101 3000 to point 432 106
+  line 132998 z 2001 to ref 128518
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 133254 transition_ref 566278 // live_trades subscribed
+  
+  from ref 129670 z 2006 label "success" xyz 310 443.5 3000 to ref 133126
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 133382 transition_ref 566406 // <transition>
+  
+  from ref 133126 z 2006 label "success / report subscribed, start timer" xyz 127 574 3000 to point 231 659
+  line 133510 z 2006 to ref 129798
   write_horizontally default show_definition default drawing_language default
 end
 end

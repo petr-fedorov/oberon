@@ -1,6 +1,6 @@
 format 223
 "Coinbase" // Standalone application::Receiver::Coinbase
-  revision 17
+  revision 18
   modified_by 6 "petr"
   // class settings
   
@@ -7097,39 +7097,6 @@ ${members}
 ${namespace_end}"
       associated_elems
 	class_ref 843526 // Feeder
-      end
-    end
-
-    artifact 293254 "FeederData"
-      stereotype "source"
-      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
-#define ${NAMESPACE}_${NAME}_H
-
-${comment}
-${includes}
-${declarations}
-${namespace_start}
-${definition}
-${namespace_end}
-#endif
-"
-      cpp_src "${comment}
-${includes}
-${namespace_start}
-${members}
-${namespace_end}"
-      idl_src "#ifndef ${MODULE}_${NAME}_H
-#define ${MODULE}_${NAME}_H
-
-${comment}
-${includes}
-${module_start}
-${definition}
-${module_end}
-#endif
-"
-      associated_elems
-	class_ref 876038 // FeederData
       end
     end
 

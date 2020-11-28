@@ -1,0 +1,43 @@
+class Subscribe_live_trades_State
+!!!1321094.cpp!!!	success(inout stm : Feeder) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._feeder_state._busy_state._subsribe_live_orders_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Feeder.Busy.Subsribe live_orders";
+#endif
+    stm._feeder_state._busy_state._subsribe_live_orders_state.create(stm);
+  }
+!!!1321222.cpp!!!	create(inout stm : Feeder) : void
+	_doentry(stm);
+!!!1321350.cpp!!!	_doentry(inout stm : Feeder) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Feeder.Busy.Subscribe live_trades";
+#endif
+using namespace boost::property_tree;
+ptree tree, c;
+std::ostringstream request;
+tree.put("event", "bts:subscribe");
+c.put("channel", "live_trades_"+ stm.d_->product_);
+tree.add_child("data",c); 
+write_json(request, tree, false);
+
+#ifndef NDEBUG
+BOOST_LOG_TRIVIAL(debug) << "Request: " << request.str();
+#endif
+stm.d_->ws_->async_write(
+    boost::asio::buffer(request.str()),
+    boost::asio::bind_executor(*stm.d_->strand_,
+                               [&stm](const boost::system::error_code &ec,
+                                      std::size_t bytes_transferred) {
+                                 boost::ignore_unused(bytes_transferred);
+                                 if (ec) {
+				   stm.d_->ec_ = ec;
+				   stm.d_->error_message_ = ec.message();
+                                   stm.failure();
+				   }
+                                 else
+                                   stm.success();
+                               }));
+!!!1321478.cpp!!!	_upper(inout stm : Feeder) : Feeder::AnyState
+  return &stm._feeder_state._busy_state;
