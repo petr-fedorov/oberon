@@ -1,6 +1,6 @@
 format 223
 "Receiver" // Standalone application::Receiver
-  revision 26
+  revision 27
   modified_by 6 "petr"
   // class settings
   
@@ -478,6 +478,299 @@ ${members}};
       end
     end
 
+    class 866566 "SnapshotData"
+      visibility package stereotype "struct"
+      cpp_decl "${comment}${template}struct ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl "${comment}struct ${name} {
+${members}};
+"
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      class 875910 "SslStream"
+	visibility public stereotype "typedef" base_type class_ref 698118 // stream
+	nactuals 1
+	actual class class_ref 698118 // stream
+	  rank 0 value class_ref 697990 // socket
+	cpp_decl "${comment}typedef ${type} ${name};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl "${comment}typedef ${type} ${name};
+"
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 998278 // <realization>
+	  relation 987910 -_-|>
+	    stereotype "bind"
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 998278 // <realization>
+	    b parent class_ref 698118 // stream
+	end
+      end
+
+      class 739974 "HttpResponseWithStringBody"
+	visibility public stereotype "typedef" base_type class_ref 739462 // response
+	nactuals 1
+	actual class class_ref 739462 // response
+	  rank 0 value class_ref 739846 // string_body
+	cpp_decl "${comment}typedef ${type} ${name};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl "${comment}typedef ${type} ${name};
+"
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 829062 // <realization>
+	  relation 818950 -_-|>
+	    stereotype "bind"
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 829062 // <realization>
+	    b parent class_ref 739462 // response
+	end
+      end
+
+      class 740230 "HttpRequestWithEmptyBody"
+	visibility public stereotype "typedef" base_type class_ref 739590 // request
+	nactuals 1
+	actual class class_ref 739590 // request
+	  rank 0 value class_ref 740102 // empty_body
+	cpp_decl "${comment}typedef ${type} ${name};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl "${comment}typedef ${type} ${name};
+"
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 829190 // <realization>
+	  relation 819078 -_-|>
+	    stereotype "bind"
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 829190 // <realization>
+	    b parent class_ref 739590 // request
+	end
+      end
+
+      operation 1328518 "SnapshotData"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "h" explicit_type "string"
+	  param in name "p" explicit_type "string"
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw} : host_{h}, port_{p} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      attribute 748166 "error_message_"
+	public explicit_type "string"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 748038 "ec_"
+	public type class_ref 699270 // error_code
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 747910 "results_"
+	public type class_ref 699142 // results_type
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 650374 "host_"
+	const_attribute public explicit_type "string"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 650502 "port_"
+	const_attribute public explicit_type "string"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 650758 "address_"
+	public type class_ref 713862 // address
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 657414 "req_"
+	public type class_ref 740230 // HttpRequestWithEmptyBody
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 657542 "res_"
+	public type class_ref 739974 // HttpResponseWithStringBody
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 657286 "buffer_"
+	public type class_ref 739334 // flat_buffer
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 784646 "rh_"
+	public type class_ref 867846 // ReceivedHandler
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 784774 "fh_"
+	public type class_ref 867974 // FailureHandler
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      classrelation 984582 // resolver_ (<directional composition>)
+	relation 974214 *-->
+	  a role_name "resolver_" public
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::unique_ptr<${type}> ${name}${value};
+"
+	    classrelation_ref 984582 // resolver_ (<directional composition>)
+	  b parent class_ref 697862 // resolver
+      end
+
+      classrelation 984838 // ctx_ (<directional composition>)
+	relation 974470 *-->
+	  a role_name "ctx_" public
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::unique_ptr<${type}> ${name}${value};
+"
+	    classrelation_ref 984838 // ctx_ (<directional composition>)
+	  b parent class_ref 698886 // context
+      end
+
+      classrelation 984966 // strand_ (<directional composition>)
+	relation 974598 *-->
+	  a role_name "strand_" public
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::unique_ptr<${type}> ${name}${value};
+"
+	    classrelation_ref 984966 // strand_ (<directional composition>)
+	  b parent class_ref 753414 // strand
+      end
+
+      classrelation 985094 // ioc_ (<directional aggregation>)
+	relation 974726 o-->
+	  a role_name "ioc_" public
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::shared_ptr<${type}> ${name}${value};
+"
+	    classrelation_ref 985094 // ioc_ (<directional aggregation>)
+	  b parent class_ref 698758 // io_context
+      end
+
+      classrelation 987654 // snapshot_tree_ (<directional composition>)
+	relation 977286 *-->
+	  a role_name "snapshot_tree_" public
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::unique_ptr<${type}> ${name}${value};
+"
+	    classrelation_ref 987654 // snapshot_tree_ (<directional composition>)
+	  b parent class_ref 174214 // ptree
+      end
+
+      classrelation 998406 // https_ (<directional composition>)
+	relation 988038 *-->
+	  a role_name "https_" public
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::unique_ptr<${type}> ${name}${value};
+"
+	    classrelation_ref 998406 // https_ (<directional composition>)
+	  b parent class_ref 875910 // SslStream
+      end
+    end
+
     class 793350 "Receiver"
       active visibility package stereotype "interface"
       cpp_decl "${comment}${template}class ${name}${inherit} {
@@ -543,6 +836,29 @@ ${members}};
     //deployment diagram settings
     deploymentdiagramsettings
      end
+    artifact 286598 "SnapshotData"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 866566 // SnapshotData
+      end
+    end
+
     artifact 260102 "common"
       stereotype "source"
       cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
