@@ -1,6 +1,6 @@
 format 223
 "Bitstamp" // Standalone application::Receiver::Bitstamp
-  revision 3
+  revision 4
   modified_by 6 "petr"
   // class settings
   
@@ -728,7 +728,6 @@ stm.d_->ws_->async_write(
 "
 	    external 
 	  end
-
 	end
 
 	transition 558214 "Failed"
@@ -871,7 +870,6 @@ stm.d_->timer_->async_wait(boost::asio::bind_executor(
 	    external 
 	  end
 	end
-
       end
 
       state 302854 "Exhausted"
@@ -1793,7 +1791,6 @@ ${inlines}
 	      key "STM generated" value ""
 	      comment " perform the 'entry behavior'"
 	    end
-
 	  end
 
 	  class 924294 "Subscribe_live_trades_State"
@@ -2574,7 +2571,7 @@ ${inlines}
 	relation 1038854 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 1049222 // <dependency>
 	  b parent class_ref 923398 // Resolve_State
       end
@@ -2583,7 +2580,7 @@ ${inlines}
 	relation 1039366 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 1049734 // <dependency>
 	  b parent class_ref 923654 // Receive_State
       end
@@ -2626,7 +2623,7 @@ ${inlines}
 	relation 1039622 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 1049990 // <dependency>
 	  b parent class_ref 923782 // Connect_State
       end
@@ -2635,7 +2632,7 @@ ${inlines}
 	relation 1039878 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 1050246 // <dependency>
 	  b parent class_ref 923910 // Handshake_SSL_State
       end
@@ -2644,7 +2641,7 @@ ${inlines}
 	relation 1040134 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 1050502 // <dependency>
 	  b parent class_ref 924038 // Handshake_websocket_State
       end
@@ -2670,7 +2667,7 @@ ${inlines}
 	relation 1040390 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 1050758 // <dependency>
 	  b parent class_ref 924166 // Exhausted_State
       end
@@ -2679,7 +2676,7 @@ ${inlines}
 	relation 1040646 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 1051014 // <dependency>
 	  b parent class_ref 924294 // Subscribe_live_trades_State
       end
@@ -2688,7 +2685,7 @@ ${inlines}
 	relation 1040902 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 1051270 // <dependency>
 	  b parent class_ref 924422 // Subsribe_live_orders_State
       end
@@ -2752,4 +2749,5 @@ ${namespace_end}"
       end
     end
   end
+
 end
