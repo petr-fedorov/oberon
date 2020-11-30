@@ -19,8 +19,7 @@ if (stm.d_->timer_->expires_from_now(seconds(1)) > 0) {
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Feeder.Busy";
 #endif
-    if ((stm.d_->tree_->get<std::string>("type") == "heartbeat" ||
- stm.d_->tree_->get<std::string>("type") == "subscriptions")
+    if (stm.isControlMessage()
 ) {
       stm._set_currentState(stm._feeder_state._busy_state._receive_state);
 #ifdef VERBOSE_STATE_MACHINE
@@ -29,7 +28,7 @@ if (stm.d_->timer_->expires_from_now(seconds(1)) > 0) {
       stm._feeder_state._busy_state._receive_state.create(stm);
     }
     else {
-      if ((stm.d_->last_sequence_ && stm.d_->tree_->get<long long>("sequence") != stm.d_->last_sequence_ + 1)
+      if (!stm.isGoodSeqNum()
 ) {
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition bad sequence number";
@@ -43,10 +42,7 @@ BOOST_LOG_TRIVIAL(warning) << stm._machine_name
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition report data received";
 #endif
-stm.d_->last_sequence_ = stm.d_->tree_->get<long long>("sequence");
-if(stm.d_->rh_) stm.d_->rh_(std::move(stm.d_->tree_));
-
-
+stm.reportReceived();
         stm._set_currentState(stm._feeder_state._busy_state._receive_state);
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Feeder.Busy.Receive";

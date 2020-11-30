@@ -29,29 +29,4 @@ stm.d_->timer_->async_wait(boost::asio::bind_executor(
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Feeder.Busy.Subscribe";
 #endif
-using namespace boost::property_tree;
-ptree tree;
-std::ostringstream request;
-tree.put("type", "subscribe");
-
-tree.add_child("product_ids", stm.d_->products_);
-tree.add_child("channels", stm.d_->channels_);
-
-write_json(request, tree, false);
-#ifdef DEBUG
-BOOST_LOG_TRIVIAL(debug) << "Request: " << request.str();
-#endif
-stm.d_->ws_->async_write(
-    boost::asio::buffer(request.str()),
-    boost::asio::bind_executor(*stm.d_->strand_,
-                               [&stm](const boost::system::error_code &ec,
-                                      std::size_t bytes_transferred) {
-                                 boost::ignore_unused(bytes_transferred);
-                                 if (ec) {
-				   stm.d_->ec_ = ec;
-				   stm.d_->error_message_ = ec.message();
-                                   stm.failure();
-				   }
-                                 else
-                                   stm.success();
-                               }));
+stm.subscribe();
