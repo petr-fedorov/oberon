@@ -1,0 +1,106 @@
+class Receiver
+!!!1344134.cpp!!!	Receiver(inout ioc : io_context, inout feeder : Feeder, inout snapshot : Snapshot, inout processor : ConsumerFn)
+_machine_name = "BitstampReceiver - ";
+!!!1344262.cpp!!!	isStale() : bool
+return !d_->messages_.size() ||
+       d_->messages_.front()->get<long long>("data.microtimestamp") >=
+           d_->snapshot_tree_->get<long long>("microtimestamp");
+!!!1344390.cpp!!!	saveSnapshot() : void
+auto iter = d_ -> messages_.begin();
+auto snapshot_t = d_->snapshot_tree_->get<long long>("microtimestamp");
+for (; iter != d_->messages_.end() &&
+       (*iter)->get<long long>("data.microtimestamp") < snapshot_t;
+     d_->messages_.erase(iter++))
+  ;
+auto era_time =
+    d_ -> messages_.front() -> get<std::string>("data.microtimestamp");
+auto local_timestamp =
+    d_ -> messages_.front() -> get<std::string>("local_timestamp");
+auto self = shared_from_this();
+
+// Start new era in another thread since it takes a lot of time ...
+boost::asio::post(boost::asio::bind_executor(
+    *d_->processing_strand_, [this, era_time, local_timestamp, self]() {
+      this->d_->stop_thread_.store(false);
+
+      try {
+        boost::property_tree::ptree era;
+        era.put<std::string>("event", "era");
+        era.put<std::string>("microtimestamp", era_time);
+        era.put<std::string>("local_timestamp", local_timestamp);
+        if (!this->d_->process(era))
+          throw std::logic_error("Couldn't process era message");
+
+        boost::property_tree::ptree order_tree;
+
+        for (auto iter = this->d_->snapshot_tree_->get_child("bids").begin();
+             iter != this->d_->snapshot_tree_->get_child("bids").end() &&
+             !this->d_->stop_thread_;
+             ++iter) {
+          order_tree.clear();
+          order_tree.put<std::string>("data.microtimestamp", era_time);
+          order_tree.put<std::string>("event", "order_created");
+          order_tree.put<std::string>("data.order_type", "0");
+
+          auto iter2 = iter->second.begin();
+          order_tree.put<std::string>("data.price_str",
+                                      iter2++->second.get_value<std::string>());
+          order_tree.put<std::string>("data.amount_str",
+                                      iter2++->second.get_value<std::string>());
+          order_tree.put<std::string>("data.id_str",
+                                      iter2++->second.get_value<std::string>());
+          order_tree.put<std::string>("local_timestamp", local_timestamp);
+          if (!this->d_->process(order_tree))
+            throw std::logic_error("Couldn't process bid message");
+        }
+        for (auto iter = this->d_->snapshot_tree_->get_child("asks").begin();
+             iter != this->d_->snapshot_tree_->get_child("asks").end() &&
+             !this->d_->stop_thread_;
+             ++iter) {
+          order_tree.clear();
+          order_tree.put<std::string>("data.microtimestamp", era_time);
+          order_tree.put<std::string>("event", "order_created");
+          order_tree.put<std::string>("data.order_type", "1");
+
+          auto iter2 = iter->second.begin();
+          order_tree.put<std::string>("data.price_str",
+                                      iter2++->second.get_value<std::string>());
+          order_tree.put<std::string>("data.amount_str",
+                                      iter2++->second.get_value<std::string>());
+          order_tree.put<std::string>("data.id_str",
+                                      iter2++->second.get_value<std::string>());
+          order_tree.put<std::string>("local_timestamp", local_timestamp);
+          if (!this->d_->process(order_tree))
+            throw std::logic_error("Couldn't process ask message");
+        }
+        if (!this->d_->stop_thread_) // We don't care too much about race
+                                     // condition here
+          this->postEvent(&Receiver::success);
+        else
+          this->_post([this, self]() {
+            this->d_->error_message_ =
+                "Snapshot saved has been stopped, exiting ...";
+            this->failure();
+          });
+      } catch (const std::logic_error &e) {
+        std::string w{e.what()};
+        this->_post([this, self, w]() {
+          this->d_->error_message_ = w;
+          this->stop(); // We can't process received messages, so we stop the
+                        // machine
+        });
+      } catch (const std::exception &e) {
+        std::string w{e.what()};
+        this->_post([this, self, w]() {
+          this->d_->error_message_ = w;
+          this->failure();
+        });
+
+      } catch (...) {
+        this->_post([this, self]() {
+          this->d_->error_message_ =
+              "Snapshot saved failed due to an exception, exiting ...";
+          this->failure();
+        });
+      }
+    }));

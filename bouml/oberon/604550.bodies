@@ -1,11 +1,12 @@
 class BitstampChanged
 !!!759302.cpp!!!	BitstampChanged(in tree : ptree, in reconstructor : BitstampReconstructor)
-order_id_ = toUuid(tree.get<std::string>("id"));
-timestamp_ = toTimestamp(tree.get<std::string>("microtimestamp"));
+order_id_ = toUuid(tree.get<std::string>("data.id_str"));
+timestamp_ = Timestamp{std::chrono::microseconds{std::stoll(tree.get<std::string>("data.microtimestamp"))}};
 heard_ = toTimestamp(tree.get<std::string>("local_timestamp"));
-price_ = std::strtod(tree.get<std::string>("price").c_str(), nullptr);
-remaining(std::strtod(tree.get<std::string>("amount").c_str(), nullptr));
-if (tree.get<std::string>("order_type") == "buy")
+price_ = std::strtod(tree.get<std::string>("data.price_str").c_str(), nullptr);
+remaining(std::strtod(tree.get<std::string>("data.amount_str").c_str(), nullptr));
+state_ = kActive;
+if (tree.get<std::string>("data.order_type") == "0")
   side_ = kBid;
 else
   side_ = kAsk;

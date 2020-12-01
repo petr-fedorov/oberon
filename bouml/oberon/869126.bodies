@@ -10,9 +10,7 @@ BOOST_LOG_TRIVIAL(info) << stm._machine_name << "Received the order book snapsho
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver.Engage.Feeder Engaged.Making Snapshot";
 #endif
-    if (!stm.d_->messages_.size() ||
-    stm.d_->messages_.front()->get<long long>("sequence") >=
-         stm.d_->snapshot_tree_->get<long long>("sequence")
+    if (stm.isStale()
 ) {
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition <transition>";

@@ -1,6 +1,8 @@
-class ReconstructorImplementation
+class Reconstructor
 !!!766982.cpp!!!	toUuid(in id : string) : uuid
 std::stringstream buf;
+// std::right gives us different numbers on the right of UUID (the 
+// first digits do not change often)
 buf << std::setw(32) << std::setfill('0') << std::right << std::stol(id);
 return boost::uuids::string_generator{}(buf.str());
 
@@ -30,7 +32,7 @@ return messages;
 store_->handle(event_number_generator_->handle(std::move(messages)));
 return true;
 
-!!!827910.cpp!!!	ReconstructorImplementation()
+!!!827910.cpp!!!	Reconstructor()
 deduplicator_ = std::unique_ptr<TokenHandler>();
 taker_filter_ = std::unique_ptr<TokenHandler>();
 size_deducer_ = std::unique_ptr<TokenHandler>();

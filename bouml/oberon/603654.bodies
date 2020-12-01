@@ -24,9 +24,12 @@ else if (type == "order_changed")
   output.push_back(make_unique<BitstampChanged>(tree, *this));
 else if (type == "order_deleted") {
     output.push_back(make_unique<BitstampCanceled>(tree, *this));
-} else if (type == "match") {
+} else if (type == "trade") {
   output.push_back(make_unique<BitstampFilled>(tree, *this));
+} else if (type == "era") {
+  output.push_back(make_unique<BitstampEra>(tree, *this));
 }
+
 if (size_deducer_)
   return size_deducer_->handle(std::move(output));
 else

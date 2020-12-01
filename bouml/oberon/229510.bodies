@@ -42,10 +42,18 @@ if (event) {
     buffer << "NA,";
 
   // p
-  buffer << std::fixed << std::setprecision(quote_precision_) << event->price() << ",";
+  if(event->price() != OrderEvent::kNaPrice)
+    buffer << std::fixed << std::setprecision(quote_precision_)
+           << event->price() << ",";
+  else
+    buffer << "NA,";
 
   // v
-  buffer << std::fixed << std::setprecision(base_precision_) << sign*event->remaining() << ",";
+  if( !std::isnan(event->remaining()))
+    buffer << std::fixed << std::setprecision(base_precision_)
+           << sign * event->remaining() << ",";
+  else
+    buffer << "NA,";
 
   // f
   if (event->trade() != OrderEvent::kNaTradeId)
@@ -54,7 +62,11 @@ if (event) {
     buffer << "NA,";
 
   // delta_v
-  buffer << std::fixed << std::setprecision(base_precision_) << sign*event->change() << ",";
+  if( !std::isnan(event->change()))
+    buffer << std::fixed << std::setprecision(base_precision_)
+           << sign * event->change() << ",";
+  else
+    buffer << "NA,";
 
   // taker_i
   if (event->taker() != OrderEvent::kNaOrderId)

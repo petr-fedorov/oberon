@@ -1,6 +1,6 @@
 format 223
 "Bitstamp" // Standalone application::Receiver::Bitstamp
-  revision 5
+  revision 6
   modified_by 6 "petr"
   // class settings
   
@@ -53,26 +53,7 @@ format 223
     
     activitydiagramsettings
      end
-    state 260102 "Receiver"
-      stereotype "machine"
-      statediagram 406406 "Receiver"
-	statediagramsettings
-	 end
-	size A4
-      end
-
-      pseudostate 334214 initial ""
-	transition 499334 "<transition>"
-	  on state_ref 260230 // Receive
-	  external 
-	end
-      end
-
-      state 260230 "Receive"
-      end
-    end
-
-    class 825350 "Receiver"
+    class 937734 "Receiver"
       visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -85,437 +66,72 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
-      ncouples 1
-      key "STM generated" value ""
-      comment " implement the state machine Receiver"
-      class 825478 "AnyState"
-	abstract visibility protected 
-	cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
+      operation 1344134 "Receiver"
+	public explicit_return_type ""
+	nparams 4
+	  param inout name "ioc" type class_ref 698758 // io_context
+	  param inout name "feeder" type class_ref 843526 // Feeder
+	  param inout name "snapshot" type class_ref 825862 // Snapshot
+	  param inout name "processor" type class_ref 909958 // ConsumerFn
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}std::shared_ptr< ${t0} > ${p0}${v0}, std::shared_ptr< ${t1} >  && ${p1}${v1}, std::shared_ptr< ${t2} > & ${p2}${v2}, ${t3} ${p3}${v3}${)}${volatile}${throw};
 "
-	java_decl ""
-	php_decl ""
-	python_2_2 python_decl ""
-	idl_decl ""
-	explicit_switch_type ""
-	mysql_decl ""
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}std::shared_ptr< ${t0} > ${p0}, std::shared_ptr< ${t1} > && ${p1}, std::shared_ptr< ${t2} > & ${p2}, ${t3} ${p3}${)}${throw} : oberon::receiver::Receiver{ioc, std::move(feeder), snapshot, processor} {
+  ${body}}
+"
 	
-	ncouples 1
-	key "STM generated" value ""
-	comment " Mother class of all the classes representing states"
-	operation 1139334 "~AnyState"
-	  force_body_gen cpp_virtual public explicit_return_type ""
-	  nparams 0
-	  cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	  ncouples 1
-	  key "STM generated" value ""
-	end
-
-	operation 1139462 "_upper"
-	  abstract force_body_gen cpp_virtual public return_type class_ref 825478 // AnyState
-	  nparams 1
-	    param inout name "stm" type class_ref 825350 // Receiver
-	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} &${)}${const}${volatile}${throw}${abstract};
-"
-	  
-	  
-	  
-	  
-	  ncouples 1
-	  key "STM generated" value ""
-	  comment " return the upper state"
-	end
-
-	operation 1139590 "_do"
-	  force_body_gen cpp_virtual public explicit_return_type "void"
-	  nparams 1
-	    param inout name "stm" type class_ref 825350 // Receiver
-	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} &${)}${const}${volatile}${throw}${abstract};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} &${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	  ncouples 1
-	  key "STM generated" value ""
-	  comment " perform the 'do activity'"
-	end
-
-	operation 1139718 "_doentry"
-	  force_body_gen cpp_virtual public explicit_return_type "void"
-	  nparams 1
-	    param inout name "stm" type class_ref 825350 // Receiver
-	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} &${)}${const}${volatile}${throw}${abstract};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} &${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	  ncouples 1
-	  key "STM generated" value ""
-	  comment " performs the 'entry activity'"
-	end
-
-	operation 1139846 "_doexit"
-	  force_body_gen cpp_virtual public explicit_return_type "void"
-	  nparams 1
-	    param inout name "stm" type class_ref 825350 // Receiver
-	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} &${)}${const}${volatile}${throw}${abstract};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} &${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	  ncouples 1
-	  key "STM generated" value ""
-	  comment " performs the 'exit activity'"
-	end
-
-	operation 1140614 "create"
-	  force_body_gen cpp_virtual public explicit_return_type "void"
-	  nparams 1
-	    param inout name "stm" type class_ref 825350 // Receiver
-	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} &${)}${const}${volatile}${throw}${abstract};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} &${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	  ncouples 1
-	  key "STM generated" value ""
-	end
+	
+	
+	
       end
 
-      class 825606 "Receiver_State"
-	visibility protected 
-	cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-	java_decl ""
-	php_decl ""
-	python_2_2 python_decl ""
-	idl_decl ""
-	explicit_switch_type ""
-	mysql_decl ""
-	
-	ncouples 1
-	key "STM generated" value ""
-	comment " implement the state Receiver"
-	class 825734 "Receive_State"
-	  visibility public 
-	  cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-	  java_decl ""
-	  php_decl ""
-	  python_2_2 python_decl ""
-	  idl_decl ""
-	  explicit_switch_type ""
-	  mysql_decl ""
-	  
-	  ncouples 1
-	  key "STM generated" value ""
-	  comment " implement the state Receive"
-	  operation 1140102 "~Receive_State"
-	    force_body_gen cpp_virtual public explicit_return_type ""
-	    nparams 0
-	    cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
-"
-	    cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
-  ${body}}
-"
-	    
-	    
-	    
-	    
-	    ncouples 1
-	    key "STM generated" value ""
-	  end
-
-	  classrelation 928390 // <generalisation>
-	    relation 918150 ---|>
-	      a public
-		cpp default "${type}"
-		classrelation_ref 928390 // <generalisation>
-	      b parent class_ref 825478 // AnyState
-	  end
-
-	  operation 1140870 "_upper"
-	    force_body_gen cpp_virtual public return_type class_ref 825478 // AnyState
-	    nparams 1
-	      param inout name "stm" type class_ref 825350 // Receiver
-	    cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-	    cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	    
-	    
-	    
-	    
-	    ncouples 1
-	    key "STM generated" value ""
-	    comment " returns the state containing the current"
-	  end
-	end
-
-	operation 1139974 "~Receiver_State"
-	  force_body_gen cpp_virtual public explicit_return_type ""
-	  nparams 0
-	  cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	  ncouples 1
-	  key "STM generated" value ""
-	end
-
-	attribute 743686 "_receive_state"
-	  public type class_ref 825734 // Receive_State
-	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	  java_decl ""
-	  php_decl ""
-	  python_decl ""
-	  idl_decl ""
-	  mysql_decl ""
-	  MysqlColumn
-	  ncouples 1
-	  key "STM generated" value ""
-	  comment " memorize the instance of the state Receive, internal"
-	end
-
-	classrelation 928262 // <generalisation>
-	  relation 918022 ---|>
-	    a public
-	      cpp default "${type}"
-	      classrelation_ref 928262 // <generalisation>
-	    b parent class_ref 825478 // AnyState
-	end
-
-	operation 1140742 "create"
-	  force_body_gen cpp_virtual public explicit_return_type "void"
-	  nparams 1
-	    param inout name "stm" type class_ref 825350 // Receiver
-	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	  ncouples 1
-	  key "STM generated" value ""
-	  comment " to manage the event create"
-	end
-
-	operation 1140998 "_upper"
-	  force_body_gen cpp_virtual public return_type class_ref 825478 // AnyState
-	  nparams 1
-	    param inout name "stm" type class_ref 825350 // Receiver
-	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} &${)}${const}${volatile}${throw}${abstract};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} &${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	  ncouples 1
-	  key "STM generated" value ""
-	  comment " returns the state containing the current"
-	end
-      end
-
-      attribute 743430 "_machine_name"
-	public explicit_type "string"
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-	ncouples 1
-	key "STM generated" value ""
-	comment " a (unique) name of the machine "
-      end
-
-      attribute 743558 "_receiver_state"
-	protected type class_ref 825606 // Receiver_State
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-	ncouples 1
-	key "STM generated" value ""
-	comment " memorize the instance of the state Receiver, internal"
-      end
-
-      operation 1140230 "Receiver"
-	force_body_gen public explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${)}${volatile}${throw};
-"
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
-  ${body}}
-"
-	
-	
-	
-	
-	ncouples 1
-	key "STM generated" value ""
-      end
-
-      operation 1140358 "~Receiver"
-	force_body_gen cpp_virtual public explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
-"
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
-  ${body}}
-"
-	
-	
-	
-	
-	ncouples 1
-	key "STM generated" value ""
-      end
-
-      operation 1140486 "create"
-	force_body_gen public explicit_return_type "bool"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-	ncouples 1
-	key "STM generated" value ""
-	comment " the operation you call to signal the event create"
-      end
-
-      classrelation 928518 // <dependency>
-	relation 918278 -_->
-	  stereotype "friend"
+      classrelation 1064966 // <generalisation>
+	relation 1054598 ---|>
 	  a public
 	    cpp default "${type}"
-	    classrelation_ref 928518 // <dependency>
-	  b parent class_ref 825734 // Receive_State
+	    classrelation_ref 1064966 // <generalisation>
+	  b parent class_ref 712966 // Receiver
       end
 
-      classrelation 928646 // <dependency>
-	relation 918406 -_->
-	  stereotype "friend"
+      operation 1344262 "isStale"
+	cpp_virtual public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1344390 "saveSnapshot"
+	cpp_virtual public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 1065094 // <dependency>
+	relation 1054726 -_->
 	  a public
-	    cpp default "${type}"
-	    classrelation_ref 928646 // <dependency>
-	  b parent class_ref 825606 // Receiver_State
+	    cpp default "#include in source"
+	    classrelation_ref 1065094 // <dependency>
+	  b parent class_ref 868230 // ReceiverData
       end
+    end
 
-      operation 1141126 "doActivity"
-	force_body_gen public explicit_return_type "void"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-	ncouples 1
-	key "STM generated" value ""
-	comment " to execute the current state 'do activity'"
-      end
-
-      operation 1141254 "_set_currentState"
-	force_body_gen cpp_inline protected explicit_return_type "void"
-	nparams 1
-	  param inout name "st" type class_ref 825478 // AnyState
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-	ncouples 1
-	key "STM generated" value ""
-	comment " change the current state, internal"
-      end
-
-      operation 1141382 "_final"
-	force_body_gen protected explicit_return_type "void"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-	ncouples 1
-	key "STM generated" value ""
-	comment " execution done, internal"
-      end
-
-      classrelation 928774 // _current_state (<directional aggregation>)
-	relation 918534 o-->
-	  a role_name "_current_state" protected
-	    comment " contains the current state, internal"
-	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 928774 // _current_state (<directional aggregation>)
-	  b parent class_ref 825478 // AnyState
-      end
+    classdiagram 426886 "Bitstamp Receiver"
+      classdiagramsettings member_max_width 0 end
+      size A4
     end
   end
 
@@ -694,12 +310,14 @@ ${namespace_end}
 "
       cpp_src "${comment}
 #include <boost/log/trivial.hpp>
+#include <boost/asio/post.hpp>
+#include <boost/asio/bind_executor.hpp>
 ${includes}
 ${namespace_start}
 ${members}
 ${namespace_end}"
       associated_elems
-	class_ref 825350 // Receiver
+	class_ref 937734 // Receiver
       end
     end
 
