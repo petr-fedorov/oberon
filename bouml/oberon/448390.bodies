@@ -5,8 +5,6 @@ buf << Message::toString() << " " << order_id_ << " " << event_no_ << " "
     << (side_ == kBid ? 'B' : 'A') << price_ << " " << remaining_size_ << " "
     << change_size_ << ( is_deleted_ ? " DELETED " : ""); 
 return buf.str();
-!!!723590.cpp!!!	roundToBaseIncrement(in volume : OrderEvent::Volume) : OrderEvent::Volume
-return std::round(volume/getBaseIncrement())*getBaseIncrement();
 !!!1285510.cpp!!!	accept(in mh : TokenHandler [1]) : bool
 return mh->orderEvent();
 !!!1263238.cpp!!!	maker() : OrderEvent::OrderId

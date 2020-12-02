@@ -6,7 +6,7 @@ base_increment_ = base_increment;
 extract_only_ = extract_only;
 size_deducer_ =std::make_unique<DeduceSizeBitstamp>();
 deduplicator_ = std::make_unique<Deduplicator>(*this);
-taker_filter_ = std::make_unique<Classifier>(*this);
+taker_filter_ = std::make_unique<Classifier>();
 
 !!!759814.cpp!!!	extract(in tree : ptree [1]) : Tokens [1..*]
 using namespace date;
@@ -27,7 +27,7 @@ else if (type == "order_deleted") {
 } else if (type == "trade") {
   output.push_back(make_unique<BitstampFilled>(tree, *this));
 } else if (type == "era") {
-  output.push_back(make_unique<BitstampEra>(tree, *this));
+  output.push_back(make_unique<BitstampEra>(tree));
 }
 
 if (size_deducer_)

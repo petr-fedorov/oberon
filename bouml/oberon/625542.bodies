@@ -4,6 +4,7 @@ timestamp_ = toTimestamp(tree.get<std::string>("mts"));
 heard_ = toTimestamp(tree.get<std::string>("local_timestamp"));
 price_ = std::stod(tree.get<std::string>("price"));
 change_size_ = std::stod(tree.get<std::string>("amount"));
+baseIncrement(reconstructor.base_increment_);
 if(change_size_ < 0) {
   change_size_ *= -1;
   side_ = kBid;

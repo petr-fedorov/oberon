@@ -8,6 +8,7 @@ remaining(std::strtod(tree.get<std::string>("data.amount_str").c_str(), nullptr)
 change_size_ = 0;
 event_no_ = 1;
 state_ = kActive;
+baseIncrement(reconstructor.base_increment_);
 if(tree.get<std::string>("data.order_type") == "0")
 side_ = kBid;
 else

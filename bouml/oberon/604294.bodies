@@ -6,6 +6,7 @@ heard_ = toTimestamp(tree.get<std::string>("local_timestamp"));
 price_ = std::strtod(tree.get<std::string>("data.price_str").c_str(), nullptr);
 remaining(std::strtod(tree.get<std::string>("data.amount_str").c_str(), nullptr));
 state_=kFinished;
+baseIncrement(reconstructor.base_increment_);
 if (tree.get<std::string>("data.order_type") == "0")
   side_ = kBid;
 else

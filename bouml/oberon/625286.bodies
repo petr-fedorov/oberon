@@ -5,6 +5,7 @@ heard_ = toTimestamp(tree.get<std::string>("local_timestamp"));
 order_id_ = toUuid(tree.get<std::string>("order_id"));
 price_ = std::stod(tree.get<std::string>("price"));
 auto r = std::stod(tree.get<std::string>("amount"));
+baseIncrement(reconstructor.base_increment_);
 if (r < 0) {
   remaining(-r);
   side_ = kAsk;
