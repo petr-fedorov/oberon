@@ -15,10 +15,21 @@ try {
   else if (type == "done") {
     if (tree.get<string>("reason") == "canceled")
       output.push_back(make_unique<CoinbaseDoneCanceled>(tree, *this));
+    else
+      output.push_back(make_unique<CoinbaseDoneFilled>(tree, *this));
   } else if (type == "match") {
     output.push_back(make_unique<CoinbaseMatch>(tree, *this));
   } else if (type == "era") {
     output.push_back(make_unique<CoinbaseEra>(tree));
+    era(output.back()->timestamp());
+  }
+  if (output.size()) {
+    if (output.back()->timestamp() < era())
+      output.back()->deleted(true);
+  } else {
+    std::stringstream s;
+    boost::property_tree::write_json(s, tree, false);
+    BOOST_LOG_TRIVIAL(error) << "Unable to extract: " << s.str();
   }
 } catch (const std::exception & e) {
   std::stringstream s;
@@ -38,3 +49,4 @@ size_deducer_->create();
 // Deduplication is not needed for CoinBase
 deduplicator_ = std::unique_ptr<TokenHandler>();
 event_number_generator_ = std::make_unique<EventNumberGenerator>();
+era_ = era_.max();

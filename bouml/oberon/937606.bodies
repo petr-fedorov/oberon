@@ -10,12 +10,14 @@ auto iter = d_->messages_.begin();
 auto snapshot_seq_number = d_->snapshot_tree_->get<long long>("sequence");
 for (; iter != d_->messages_.end() &&
        (*iter)->get<long long>("sequence") != snapshot_seq_number;
-     d_->messages_.erase(iter++))
+     iter++)
   ;
-auto era_time = d_->messages_.front() -> get<std::string>("time");
-auto product_id = d_->messages_.front() -> get<std::string>("product_id");
-auto local_timestamp = d_->messages_.front() -> get<std::string>("local_timestamp");
-d_->messages_.erase(d_->messages_.begin());
+std::istringstream ss{(*iter) -> get<std::string>("time")};
+reconstructor::Message::Timestamp tp;
+ss >> date::parse("%FT%TZ", tp);
+auto era_time = date::format("%FT%TZ", tp + std::chrono::microseconds{1});
+auto product_id = (*iter) -> get<std::string>("product_id");
+auto local_timestamp = (*iter) -> get<std::string>("local_timestamp");
 auto self = shared_from_this();
 // Start new era in another thread since it takes a lot of time ...
 boost::asio::post(boost::asio::bind_executor(

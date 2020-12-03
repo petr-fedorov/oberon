@@ -6,25 +6,18 @@ return !d_->messages_.size() ||
        d_->messages_.front()->get<long long>("data.microtimestamp") >=
            d_->snapshot_tree_->get<long long>("microtimestamp");
 !!!1344390.cpp!!!	saveSnapshot() : void
-auto iter = d_ -> messages_.begin();
-auto snapshot_t = d_->snapshot_tree_->get<long long>("microtimestamp");
-for (; iter != d_->messages_.end() &&
-       (*iter)->get<long long>("data.microtimestamp") < snapshot_t;
-     d_->messages_.erase(iter++))
-  ;
-auto era_time =
-    d_ -> messages_.front() -> get<std::string>("data.microtimestamp");
-auto local_timestamp =
-    d_ -> messages_.front() -> get<std::string>("local_timestamp");
 auto self = shared_from_this();
 
 // Start new era in another thread since it takes a lot of time ...
 boost::asio::post(boost::asio::bind_executor(
-    *d_->processing_strand_, [this, era_time, local_timestamp, self]() {
+    *d_->processing_strand_, [this, self]() {
       this->d_->stop_thread_.store(false);
 
       try {
         boost::property_tree::ptree era;
+        auto era_time = this->d_->snapshot_tree_->get<std::string>("microtimestamp");
+        auto local_timestamp = this->d_->snapshot_tree_->get<std::string>("local_timestamp");
+
         era.put<std::string>("event", "era");
         era.put<std::string>("microtimestamp", era_time);
         era.put<std::string>("local_timestamp", local_timestamp);

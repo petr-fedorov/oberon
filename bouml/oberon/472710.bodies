@@ -1,5 +1,5 @@
 class CoinbaseDoneCanceled
-!!!651526.cpp!!!	CoinbaseDoneCanceled(in tree : ptree [1], in reconstructor : CoinbaseReconstructor [1])
+!!!651526.cpp!!!	CoinbaseDoneCanceled(in tree : ptree [1], in reconstructor : CoinbaseReconstructor)
 using namespace date;
 using namespace std;
 boost::uuids::string_generator gen;
@@ -10,7 +10,7 @@ ss >> parse("%FT%TZ", heard_);
 order_id_ = gen(tree.get<string>("order_id"));
 price_ = stod(tree.get<string>("price"));
 remaining(stod(tree.get<string>("remaining_size")));
-change_size_ = 0;
+change(0);
 side_ = tree.get<string>("side") == "buy" ? kBid : kAsk;
 state_ = OrderEvent::OrderState::kFinished;
 baseIncrement(reconstructor.base_increment_);

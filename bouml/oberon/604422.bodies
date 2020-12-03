@@ -13,6 +13,6 @@ else {
 timestamp_ = Timestamp{std::chrono::microseconds{std::stoll(tree.get<std::string>("data.microtimestamp"))}};
 heard_ = toTimestamp(tree.get<std::string>("local_timestamp"));
 price_ = std::strtod(tree.get<std::string>("data.price_str").c_str(), nullptr);
-change_size_ = std::strtod(tree.get<std::string>("data.amount").c_str(), nullptr);
+change(std::strtod(tree.get<std::string>("data.amount").c_str(), nullptr));
 baseIncrement(reconstructor.base_increment_);
 trade_id_ = std::stoll(tree.get<std::string>("data.id")); 

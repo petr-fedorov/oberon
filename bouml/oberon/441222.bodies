@@ -9,11 +9,12 @@ for(auto& msg: messages) {
 #ifdef VERBOSE_STATE_MACHINE
     BOOST_LOG_TRIVIAL(debug) << getHandlerName() << " received " << msg->toString(); 
 #endif
-    if(!msg->deleted()) {
+    if(handle_deleted_ || !msg->deleted()) {
       received_ = std::move(msg);
-      std::string s{received_->toString()};
-      if(!received_->accept(this))
+      if(!received_->accept(this)) {
+        std::string s{received_->toString()};
         throw std::logic_error(s);
+      }
     }
     else 
       output_.push_back(std::move(msg));

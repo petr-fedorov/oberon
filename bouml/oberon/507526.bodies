@@ -10,8 +10,7 @@ ss >> parse("%FT%TZ", heard_);
 order_id_ = gen(tree.get<string>("order_id"));
 price_ = stod(tree.get<string>("price"));
 remaining(stod(tree.get<string>("remaining_size")));
-change_size_ =
-    0; // Open message signifies the first appearance of the order in LOB
+change(0);
 event_no_ = 1;
 side_ = tree.get<string>("side") == "buy" ? kBid : kAsk;
 state_ = OrderEvent::OrderState::kActive;

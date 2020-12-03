@@ -14,11 +14,17 @@ order_id_ = order_id;
 !!!1263494.cpp!!!	remaining() : OrderEvent::Volume
 return remaining_size_;
 !!!1263622.cpp!!!	remaining(in remaining_size : OrderEvent::Volume) : void
-remaining_size_ = remaining_size;
+if(remaining_size < base_increment_)
+  remaining_size_ = 0.0;
+else
+  remaining_size_ = remaining_size;
 !!!1263750.cpp!!!	change() : OrderEvent::Volume
 return change_size_;
 !!!1263878.cpp!!!	change(in change_size : OrderEvent::Volume) : void
-change_size_ = change_size;
+if (change_size < base_increment_)
+  change_size_ = 0.0;
+else
+  change_size_ = change_size;
 !!!1264006.cpp!!!	ordinal() : OrderEvent::EventNo
 return event_no_;
 !!!1264134.cpp!!!	ordinal(in event_no : OrderEvent::EventNo) : void
@@ -39,3 +45,5 @@ return state_;
 state_ = state;
 !!!1307910.cpp!!!	baseIncrement(in base_increment : OrderEvent::Volume) : void
 base_increment_ = base_increment;
+!!!1351046.cpp!!!	source() : string
+return source_;

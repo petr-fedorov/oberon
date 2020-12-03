@@ -1,18 +1,27 @@
 # Order Book Events ReconstructiON (OBERON)
-A stand-alone application for collection of data that allows re-construction of a cryptocurrency exchange order book dynamics. Connects to an API of the specified exchange and produces `.csv` file containing re-constructed *order events* in an exchange-independent format:
+A stand-alone application for collection of data that allows re-construction of a cryptocurrency exchange order book dynamics. Connects to an API of the specified exchange and produces `.csv` file containing reconstructed [order events]((https://petr-fedorov.github.io/oberon/methods.html#order-and-trade)) in the **exchange-independent** format described below:
 
-|i|n|t|s|p|v|f|delta_v|taker_i|local_t|
-| --- | ---| --- | ---| --- | ---| --- | ---| --- | ---|
-|[UUID](https://www.boost.org/doc/libs/1_67_0/libs/uuid/doc/index.html)|long|timestamp|bool|double|double|long long|double|UUID|timestamp|
+|maker|ordinal|timestamp|state|price|volume|change|trade|taker|heard|deleted|
+| --- | ---| --- | ---| --- | ---| --- | ---| --- | ---| ---|
+|[UUID](https://www.boost.org/doc/libs/1_67_0/libs/uuid/doc/index.html)|long|timestamp|bool|double|double|double|long long|UUID|timestamp|bool|
 
-The content of the first seven columns is described in [Definition 2.11 (Order Event)](https://petr-fedorov.github.io/oberon/methods.html#order-and-trade). Three additional columns contain the following data:
+The columns contain the following data:
 
-   * `delta_v` - change of the order `i` volume relative to the previous event - a derived value that equals to a trade volume if the event is originated from the trade,
-   * `taker_id` - if the event is originated from a trade then it is the id of the taker order in the trade, otherwise - empty,
-   * `local_t` - a timestamp revealing the moment when information about the event was received by the application, so the delay of information delivery can be easily seen.
+   * `maker` - UUID of the open order on the order book,
+   * `ordinal` - a sequential number of the event (by `maker`). When an order opens on the order book, the related event has `ordinal` equals to 1; next event for `maker` will have 'ordinal' equals to 2 etc.,
+   * `timestamp` - time the event occured on an exchange
+   * `state` - 1, if the order is open on the order book after the event, otherwise empty,
+   * `price` - price of the order
+   * `volume` - volume of the order; it is a negative value for asks and positive for bids,
+   * `change` - a increase or decrease of the order volume relative to the previous event; it is an exchange-provided trade volume when the event is originated from a trade or a calculated value (the difference between `volume` of this and the previous event),
+   * `trade` - an exchange-generated trade identification number; empty, if the event is not originated from a trade,
+   * `taker` - UUID of the taker order in a trade when the event is originated from the trade, otherwise - empty,
+   * `heard` - time the information that the event occured was received by OBERON,
+   * `deleted` - 1, if the event was deleted by cleansing (for example, it was a duplicate event), otherwise - empty.
 
+The unknown value of the field is shown by `NA`.
 
- See [here](https://petr-fedorov.github.io/oberon/) to understand how to re-construct the order book dynamics from these events.
+See [here](https://petr-fedorov.github.io/oberon/) to understand how to re-construct the order book dynamics from these events.
 
 ## Installation
 
@@ -45,7 +54,7 @@ Supported parameter pairs are shown below:
 
 | `<exchange name>` | `<pair name>`|
 |----|---|
-|coinbase| Any pair supported by [the full channel of Coinbase's websocket feed](https://docs.pro.coinbase.com/#the-full-channel) |
+|Coinbase| Any pair supported by [the full channel of Coinbase's websocket feed](https://docs.pro.coinbase.com/#the-full-channel) |
 
 The output file will have the name in the following format: `<exchange name>_<pair_name>_<timestamp>.csv`
 where `timestamp` is the timestamp of an initial order book snapshot. The file starts from the events having this `timestamp` collectively producing the snapshot. The other messages in the file are updates of the snapshot.

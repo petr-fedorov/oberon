@@ -1,5 +1,5 @@
-class CoinbaseReceived
-!!!685574.cpp!!!	CoinbaseReceived(in tree : ptree [1], in reconstructor : CoinbaseReconstructor [1])
+class CoinbaseDoneFilled
+!!!1351430.cpp!!!	CoinbaseDoneFilled(in tree : ptree [1], in reconstructor : CoinbaseReconstructor)
 using namespace date;
 using namespace std;
 boost::uuids::string_generator gen;
@@ -9,9 +9,6 @@ ss.str(tree.get<string>("local_timestamp"));
 ss >> parse("%FT%TZ", heard_);
 order_id_ = gen(tree.get<string>("order_id"));
 side_ = tree.get<string>("side") == "buy" ? kBid : kAsk;
-price_ = stod(tree.get("price", "0.0"));
-remaining(stod(tree.get("size", "0.0")));
-change(0);
-state_ = OrderEvent::OrderState::kNA;
+state_ = OrderEvent::OrderState::kFinished;
 baseIncrement(reconstructor.base_increment_);
-
+deleted(true);

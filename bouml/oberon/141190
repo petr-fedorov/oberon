@@ -1,6 +1,6 @@
 format 223
 "Reconstructor" // Standalone application::Reconstructor
-  revision 194
+  revision 198
   modified_by 6 "petr"
   // class settings
   
@@ -861,7 +861,7 @@ ${items}};
       end
 
       attribute 437382 "change_size_"
-	protected type class_ref 305798 // Volume
+	private type class_ref 305798 // Volume
 	init_value "kNaVolume"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -940,6 +940,18 @@ ${items}};
       attribute 820102 "base_increment_"
 	protected type class_ref 305798 // Volume
 	init_value "0.0"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 826630 "source_"
+	protected explicit_type "string"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -1204,6 +1216,20 @@ ${items}};
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1351046 "source"
+	const constvalue public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type}& ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type}& ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
@@ -1542,6 +1568,19 @@ ${inlines}
 	MysqlColumn
       end
 
+      attribute 827142 "handle_deleted_"
+	protected explicit_type "bool"
+	init_value "false"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
       operation 1093254 "era"
 	cpp_virtual public explicit_return_type "bool"
 	nparams 0
@@ -1863,6 +1902,18 @@ The order price must be a multiple of this increment (i.e. if the increment is 0
 	MysqlColumn
       end
 
+      attribute 827014 "era_"
+	protected type class_ref 230278 // Timestamp
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
       class 500486 "Message"
 	visibility protected stereotype "typedef" base_type class_ref 245766 // Message
 	cpp_decl "${comment}typedef ${type} ${name};
@@ -2031,6 +2082,35 @@ The order price must be a multiple of this increment (i.e. if the increment is 0
 	    classrelation_ref 1027846 // store_ (<directional aggregation>)
 	  b parent class_ref 441222 // TokenHandler
       end
+
+      operation 1351174 "era"
+	const public return_type class_ref 230278 // Timestamp
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1351302 "era"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "era" type class_ref 230278 // Timestamp
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
     end
 
     class 564230 "EventNumberGenerator"
@@ -2180,14 +2260,16 @@ ${inlines}
       
       operation 1072262 "File"
 	cpp_inline public explicit_return_type ""
-	nparams 4
+	nparams 5
 	  param in name "exchange" explicit_type "string"
 	  param in name "product" explicit_type "string"
 	  param in name "base_precision" explicit_type "int"
 	  param in name "quote_precision" explicit_type "int"
-	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, ${t2} ${p2}${v2}, ${t3} ${p3}${v3}${)}${volatile}${throw};
+	  param in name "source" explicit_type "bool"
+	    defaultvalue "false"
+	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, ${t2} ${p2}${v2}, ${t3} ${p3}${v3}, ${t4} ${p4}${v4}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${volatile}${throw}: exchange_{exchange}, product_{product}, base_precision_{base_precision}, quote_precision_{quote_precision} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${)}${volatile}${throw}: exchange_{exchange}, product_{product}, base_precision_{base_precision}, quote_precision_{quote_precision}, source_{source} {
   ${body}}
 "
 	
@@ -2258,7 +2340,31 @@ ${inlines}
 	MysqlColumn
       end
 
+      attribute 826758 "source_"
+	private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
       attribute 711558 "f_"
+	private type class_ref 800134 // ofstream
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 826886 "s_"
 	private type class_ref 800134 // ofstream
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -2622,7 +2728,6 @@ ${inlines}
 	  
 	  
 	end
-
       end
 
       class 472710 "CoinbaseDoneCanceled"
@@ -2662,7 +2767,45 @@ ${inlines}
 	  
 	  
 	end
+      end
 
+      class 944390 "CoinbaseDoneFilled"
+	visibility private 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 1071878 // <generalisation>
+	  relation 1061510 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 1071878 // <generalisation>
+	    b parent class_ref 328710 // Cancelled
+	end
+
+	operation 1351430 "CoinbaseDoneFilled"
+	  public explicit_return_type ""
+	  nparams 2
+	    param in name "tree" type class_ref 174214 // ptree
+	  multiplicity "1"
+	    param in name "reconstructor" type class_ref 486406 // CoinbaseReconstructor
+	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${volatile}${throw};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
       end
 
       class 507526 "CoinbaseOpen"
@@ -4577,7 +4720,6 @@ ${inlines}
 	  
 	  
 	end
-
       end
 
       class 604422 "BitstampFilled"
@@ -4616,7 +4758,6 @@ ${inlines}
 	  
 	  
 	end
-
       end
 
       class 604550 "BitstampChanged"
@@ -4655,7 +4796,6 @@ ${inlines}
 	  
 	  
 	end
-
       end
 
       operation 759686 "BitstampReconstructor"
@@ -5146,7 +5286,6 @@ ${inlines}
 	      classrelation_ref 680326 // <generalisation>
 	    b parent class_ref 328710 // Cancelled
 	end
-
       end
 
       class 625542 "BitfinexFilled"

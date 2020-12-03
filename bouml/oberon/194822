@@ -1,6 +1,6 @@
 format 223
 "Receiver" // Standalone application::Receiver
-  revision 30
+  revision 31
   modified_by 6 "petr"
   // class settings
   
@@ -2990,11 +2990,15 @@ boost::beast::http::async_read(
 	    cpp_on_entry "auto self(stm.shared_from_this());
 boost::asio::post(*stm.d_->ioc_, [&stm]() {
       // BOOST_LOG_TRIVIAL(debug) << stm.d_->res_.body();
+      auto local_timestamp = date::format(
+          \"%FT%TZ\", std::chrono::time_point_cast<std::chrono::microseconds>(
+                        std::chrono::system_clock::now()));
       std::istringstream is{stm.d_->res_.body()};
       stm.d_->res_.body().clear();
       stm.d_->snapshot_tree_ = std::make_unique<boost::property_tree::ptree>();
       try {
         read_json(is, *stm.d_->snapshot_tree_);
+        stm.d_->snapshot_tree_->put(\"local_timestamp\", local_timestamp);
         stm.d_->buffer_.consume(stm.d_->buffer_.size());
         boost::asio::post(
             boost::asio::bind_executor(*stm.d_->strand_, [&stm]() { stm.success(); }));
@@ -7242,7 +7246,6 @@ ${members}};
 	  b parent class_ref 174214 // ptree
       end
     end
-
   end
 
   classview 220550 "Coinbase Receiver"
@@ -7353,6 +7356,7 @@ ${namespace_end}
 #include <boost/beast/http/write.hpp>
 #include <boost/beast/version.hpp>
 #include \"root_certificates.h\"
+#include \"../date.h\"
 ${includes}
 ${namespace_start}
 ${members}

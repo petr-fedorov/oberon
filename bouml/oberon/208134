@@ -1,6 +1,6 @@
 format 223
 "Coinbase" // Standalone application::Receiver::Coinbase
-  revision 22
+  revision 23
   modified_by 6 "petr"
   // class settings
   
@@ -126,6 +126,14 @@ ${inlines}
 	
 	
 	
+      end
+
+      classrelation 1071750 // <dependency>
+	relation 1061382 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1071750 // <dependency>
+	  b parent class_ref 245766 // Message
       end
     end
 
