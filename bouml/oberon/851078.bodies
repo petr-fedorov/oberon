@@ -7,7 +7,7 @@ class Receive_State
 #endif
 using boost::posix_time::seconds;
 
-if (stm.d_->timer_->expires_from_now(seconds(1)) > 0) {
+if (stm.d_->timer_->expires_from_now(seconds(stm.d_->exhausted_after)) > 0) {
   // We managed to cancel the timer. Start new asynchronous wait.
   stm.d_->timer_->async_wait(boost::asio::bind_executor(
       *stm.d_->strand_, [&stm](const boost::system::error_code &ec) {

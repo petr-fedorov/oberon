@@ -1,6 +1,6 @@
 format 223
 "Receiver" // Standalone application::Receiver
-  revision 31
+  revision 32
   modified_by 6 "petr"
   // class settings
   
@@ -213,7 +213,7 @@ stm.d_->ws_->next_layer().next_layer().close();
 	end
 
 	state 275078 "Receive"
-	    uml_on_entry "absync_read next message"
+	    uml_on_entry "async_read next message"
 	    cpp_on_entry "stm.d_->ws_->async_read(
     stm.d_->buffer_,
     boost::asio::bind_executor(
@@ -251,7 +251,7 @@ stm.d_->ws_->next_layer().next_layer().close();
 	      cpp_trigger "success"
 	      cpp_expr "using boost::posix_time::seconds;
 
-if (stm.d_->timer_->expires_from_now(seconds(1)) > 0) {
+if (stm.d_->timer_->expires_from_now(seconds(stm.d_->exhausted_after)) > 0) {
   // We managed to cancel the timer. Start new asynchronous wait.
   stm.d_->timer_->async_wait(boost::asio::bind_executor(
       *stm.d_->strand_, [&stm](const boost::system::error_code &ec) {
@@ -2078,15 +2078,16 @@ ${inlines}
 
       operation 1335302 "Feeder"
 	public explicit_return_type ""
-	nparams 5
+	nparams 6
 	  param inout name "ioc" type class_ref 698758 // io_context
 	  param in name "product" explicit_type "string"
 	  param in name "host" explicit_type "string"
 	  param in name "port" explicit_type "string"
 	  param in name "target" explicit_type "string"
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(} std::shared_ptr<${t0}> & ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}, const ${t4} & ${p4}${v4}${)}${volatile}${throw};
+	  param in name "exhausted_after" explicit_type "int"
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(} std::shared_ptr<${t0}> & ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}, const ${t4} & ${p4}${v4}, ${t5} ${p5}${v5}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}std::shared_ptr<${t0}> & ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, const ${t4} & ${p4}${)}${volatile}${throw} : d_{std::make_unique<FeederData>(host, port, target)} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}std::shared_ptr<${t0}> & ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, const ${t4} & ${p4}, ${t5} ${p5}${)}${volatile}${throw} : d_{std::make_unique<FeederData>(host, port, target)} {
   ${body}}
 "
 	
@@ -2613,6 +2614,18 @@ ${members}};
 
       attribute 617094 "target_"
 	const_attribute public explicit_type "string"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 833670 "exhausted_after"
+	public explicit_type "int"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""

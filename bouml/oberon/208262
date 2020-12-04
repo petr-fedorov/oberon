@@ -1,6 +1,6 @@
 format 223
 "Bitstamp" // Standalone application::Receiver::Bitstamp
-  revision 7
+  revision 8
   modified_by 6 "petr"
   // class settings
   
@@ -175,12 +175,13 @@ ${inlines}
       
       operation 1335430 "Feeder"
 	public explicit_return_type ""
-	nparams 2
+	nparams 3
 	  param inout name "ioc" type class_ref 698758 // io_context
 	  param in name "product" explicit_type "string"
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(} std::shared_ptr<${t0}> & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${volatile}${throw};
+	  param in name "exhausted_after" explicit_type "int"
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(} std::shared_ptr<${t0}> & ${p0}${v0}, const ${t1} & ${p1}${v1}, ${t2} ${p2}${v2}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}std::shared_ptr<${t0}> & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw} : oberon::receiver::Feeder{ioc,product,\"ws.bitstamp.net\", \"443\", \"/\" } {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}std::shared_ptr<${t0}> & ${p0}, const ${t1} & ${p1}, ${t2} ${p2}${)}${volatile}${throw} : oberon::receiver::Feeder{ioc,product,\"ws.bitstamp.net\", \"443\", \"/\", exhausted_after } {
   ${body}}
 "
 	

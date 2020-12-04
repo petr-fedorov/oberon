@@ -1,11 +1,12 @@
 class Feeder
 !!!1190534.cpp!!!	Feeder()
   _current_state = 0;
-!!!1335302.cpp!!!	Feeder(inout ioc : io_context, in product : string, in host : string, in port : string, in target : string)
+!!!1335302.cpp!!!	Feeder(inout ioc : io_context, in product : string, in host : string, in port : string, in target : string, in exhausted_after : int)
 d_->product_ = product;
 d_->ioc_ = ioc;
 d_->strand_ = std::make_unique<boost::asio::io_context::strand>(*ioc);
 d_->timer_ = std::make_unique<boost::asio::deadline_timer>(*ioc);
+d_->exhausted_after = exhausted_after;
 
 !!!1199238.cpp!!!	create() : bool
 if (_current_state == 0)
