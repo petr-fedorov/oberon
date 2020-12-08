@@ -1,0 +1,31 @@
+class Deduce_State
+!!!1375110.cpp!!!	_exit1(inout stm : SizeDeducer) : void
+  _doexit(stm);
+  {
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition output message";
+#endif
+stm.output_.push_back(std::move(stm.em_));    stm._set_currentState(stm._sizededucer_state._wait_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .SizeDeducer.Wait";
+#endif
+  }
+!!!1375238.cpp!!!	create(inout stm : SizeDeducer) : void
+	_doentry(stm);
+!!!1375366.cpp!!!	_doentry(inout stm : SizeDeducer) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .SizeDeducer.Deduce";
+#endif
+stm.previous_size_ = OrderEvent::kNaVolume;
+
+try {
+  stm.previous_size_ = stm.previous_sizes_.at(stm.em_->maker());
+}
+catch (...) {};
+!!!1375494.cpp!!!	_doexit(inout stm : SizeDeducer) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute exit behavior of .SizeDeducer.Deduce";
+#endif
+
+!!!1375622.cpp!!!	_upper(inout stm : SizeDeducer) : SizeDeducer::AnyState
+  return &stm._sizededucer_state;

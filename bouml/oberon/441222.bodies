@@ -1,28 +1,33 @@
 class TokenHandler
-!!!1093254.cpp!!!	era() : bool
-return message();
-!!!692230.cpp!!!	create() : bool
-return true;
-!!!590214.cpp!!!	handle(inout messages : Tokens [*]) : Tokens [*]
-for(auto& msg: messages) {
+!!!590214.cpp!!!	handle(inout episode : Tokens [*]) : bool [*]
+for(auto& msg: episode) {
   if(msg) {
-#ifdef VERBOSE_STATE_MACHINE
-    BOOST_LOG_TRIVIAL(debug) << getHandlerName() << " received " << msg->toString(); 
+#ifndef NDEBUG
+    BOOST_LOG_TRIVIAL(debug) << handler_name_ << " received " << msg->toString(); 
 #endif
-    if(handle_deleted_ || !msg->deleted()) {
+    if(is_handles_deleted_ || !msg->deleted()) {
       received_ = std::move(msg);
       if(!received_->accept(this)) {
-        std::string s{received_->toString()};
-        throw std::logic_error(s);
+        BOOST_LOG_TRIVIAL(error) << handler_name_ << " not accepted " << received_->toString();
+        return false;
       }
+      
     }
     else 
       output_.push_back(std::move(msg));
   }
 }
-return std::move(output_);
-!!!692742.cpp!!!	getHandlerName() : string
-return "Default TokenHandler";
+return after_handle();
+!!!1357958.cpp!!!	after_handle() : bool
+bool result = true;
+if (next_)
+  result = next_->handle(std::move(output_));
+output_.clear();
+return result;
+!!!1093254.cpp!!!	era() : bool
+return message();
+!!!692230.cpp!!!	create() : bool
+return true;
 !!!721926.cpp!!!	message() : bool
 output_.push_back(std::move(received_));
 return true;
@@ -33,10 +38,6 @@ return message();
 !!!752646.cpp!!!	created() : bool
 return orderEvent();
 
-!!!484486.cpp!!!	received() : bool
-return created();
-!!!625542.cpp!!!	opened() : bool
-return created();
 !!!730118.cpp!!!	changed() : bool
 return orderEvent();
 

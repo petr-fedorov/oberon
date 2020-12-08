@@ -1,0 +1,27 @@
+class Save_State
+!!!1375750.cpp!!!	_completion(inout stm : SizeDeducer) : bool
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition output saved";
+#endif
+stm.output_.push_back(std::move(stm.em_));
+    stm._set_currentState(stm._sizededucer_state._wait_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .SizeDeducer.Wait";
+#endif
+    return (bool) 1;
+  }
+!!!1375878.cpp!!!	create(inout stm : SizeDeducer) : void
+	_doentry(stm);
+	_completion(stm);
+!!!1376006.cpp!!!	_doentry(inout stm : SizeDeducer) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .SizeDeducer.Save";
+#endif
+if(stm.em_->remaining())
+  stm.previous_sizes_[stm.em_->maker()] = stm.em_->remaining();
+else
+  stm.previous_sizes_.erase(stm.em_->maker());
+!!!1376134.cpp!!!	_upper(inout stm : SizeDeducer) : SizeDeducer::AnyState
+  return &stm._sizededucer_state;

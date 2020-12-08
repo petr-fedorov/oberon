@@ -13,31 +13,22 @@ Message::Timestamp output;
 ss >> parse("%FT%TZ", output);
 return output;
 !!!575878.cpp!!!	process(in message : ptree [1]) : bool
-try{
-if (extract_only_)
-  return transmit(extract(message));
+auto msg = extract(message);
+if(msg) {
+  if(episode_.empty() || msg->timestamp() == episode_.back()->timestamp()) {
+    episode_.push_back(std::move(msg));
+    return true;
+  }
+  else {
+    if (handler_) {
+       auto result = handler_->handle(std::move(episode_));
+       episode_.clear();
+       episode_.push_back(std::move(msg));
+       return result;
+    }
+    else
+      return false;
+  }
+}
 else
-  return transmit(cleanse(extract(message)));
-}
-catch (const std::logic_error &e) {
-  throw;
-}
-!!!641798.cpp!!!	cleanse(inout messages : Tokens [1..*]) : Tokens [*]
-if(deduplicator_)
-  messages = deduplicator_->handle(std::move(messages));
-if(taker_filter_)
-  messages = taker_filter_->handle(std::move(messages));
-return messages;
-!!!641926.cpp!!!	transmit(inout messages : Tokens [*]) : bool
-store_->handle(event_number_generator_->handle(std::move(messages)));
-return true;
-
-!!!827910.cpp!!!	Reconstructor()
-deduplicator_ = std::unique_ptr<TokenHandler>();
-taker_filter_ = std::unique_ptr<TokenHandler>();
-size_deducer_ = std::unique_ptr<TokenHandler>();
-event_number_generator_ = std::make_unique<EventNumberGenerator>(); 
-!!!1351174.cpp!!!	era() : Message::Timestamp
-return era_;
-!!!1351302.cpp!!!	era(in era : Message::Timestamp) : void
-era_ = era;
+  return false;

@@ -1,55 +1,31 @@
-class EventNumberGenerator
-!!!722438.cpp!!!	exchangeMessage() : bool
-OrderEvent *em = dynamic_cast<OrderEvent *>(received_.get());
-#ifdef VERBOSE_STATE_MACHINE
-BOOST_LOG_TRIVIAL(debug) << "exchangeMessage " << em->toString();
-#endif
-try {
-  em->ordinal(eventNumbers_.at(em->maker()) + 1);
-  eventNumbers_[em->maker()] = em->ordinal();
-} catch (const std::out_of_range &) {
-}
-output_.push_back(std::move(received_));
-return true;
+class EventCounter
 !!!722566.cpp!!!	created() : bool
 OrderEvent *em = dynamic_cast<OrderEvent *>(received_.get());
-#ifdef VERBOSE_STATE_MACHINE
-BOOST_LOG_TRIVIAL(debug) << "created " << em->toString(); 
-#endif
 eventNumbers_[em->maker()] = 1;
 em->ordinal(1);
 output_.push_back(std::move(received_));
 return true;
 !!!722694.cpp!!!	canceled() : bool
 OrderEvent *em = dynamic_cast<OrderEvent *>(received_.get());
-#ifdef VERBOSE_STATE_MACHINE
-BOOST_LOG_TRIVIAL(debug) << "fullyCanceled " << em->toString(); 
-#endif
 
 try {
   em->ordinal(eventNumbers_.at(em->maker()) + 1);
   eventNumbers_.erase(em->maker());
-  output_.push_back(std::move(received_));
 } catch (const std::out_of_range &) {
-  received_.release();
+  em->deleted(true);
 }
+output_.push_back(std::move(received_));
 return true;
 !!!722822.cpp!!!	filled() : bool
 OrderEvent *em = dynamic_cast<OrderEvent *>(received_.get());
-#ifdef VERBOSE_STATE_MACHINE
-BOOST_LOG_TRIVIAL(debug) << "filled " << em->toString(); 
-#endif
-
 try {
   em->ordinal(eventNumbers_.at(em->maker()) + 1);
-  if (!em->remaining())
-    eventNumbers_.erase(em->maker());
-  else
+  if (em->state() == OrderEvent::OrderState::kActive)
     eventNumbers_[em->maker()] = em->ordinal();
-  output_.push_back(std::move(received_));
+  else
+    eventNumbers_.erase(em->maker());
 } catch (const std::out_of_range &) {
-  received_.release();
+  em->deleted(true);
 }
+output_.push_back(std::move(received_));
 return true;
-!!!723078.cpp!!!	getHandlerName() : string
-return "EventNumberGenerator";

@@ -1,32 +1,28 @@
-class CoinbaseReconstructor
-!!!576134.cpp!!!	extract(in tree : ptree [1]) : Tokens [1..*]
+class Reconstructor
+!!!576134.cpp!!!	extract(in tree : ptree [1]) : Token [1..*]
 using namespace date;
 using namespace std;
-vector<unique_ptr<Message>> output;
+Token output;
 try {
   Message::Timestamp timestamp = toTimestamp(tree.get<string>("time"));
   string type = tree.get<string>("type");
   if (type == "elapsed")
-    output.push_back(make_unique<Elapsed>(timestamp));
+    output=make_unique<Elapsed>(timestamp);
   else if (type == "received")
-    output.push_back(make_unique<CoinbaseReceived>(tree, *this));
+    output=make_unique<CoinbaseReceived>(tree, *this);
   else if (type == "open")
-    output.push_back(make_unique<CoinbaseOpen>(tree, *this));
+    output=make_unique<CoinbaseOpen>(tree, *this);
   else if (type == "done") {
     if (tree.get<string>("reason") == "canceled")
-      output.push_back(make_unique<CoinbaseDoneCanceled>(tree, *this));
+      output=make_unique<CoinbaseDoneCanceled>(tree, *this);
     else
-      output.push_back(make_unique<CoinbaseDoneFilled>(tree, *this));
+      output=make_unique<CoinbaseDoneFilled>(tree, *this);
   } else if (type == "match") {
-    output.push_back(make_unique<CoinbaseMatch>(tree, *this));
+    output=make_unique<CoinbaseMatch>(tree, *this);
   } else if (type == "era") {
-    output.push_back(make_unique<CoinbaseEra>(tree));
-    era(output.back()->timestamp());
+    output=make_unique<CoinbaseEra>(tree);
   }
-  if (output.size()) {
-    if (output.back()->timestamp() < era())
-      output.back()->deleted(true);
-  } else {
+  if (!output) {
     std::stringstream s;
     boost::property_tree::write_json(s, tree, false);
     BOOST_LOG_TRIVIAL(error) << "Unable to extract: " << s.str();
@@ -38,15 +34,4 @@ try {
   BOOST_LOG_TRIVIAL(error) << "Exception " << e.what() << " while processing " << s.str();
   throw;
 };
-return size_deducer_->handle(move(output));
-!!!582918.cpp!!!	CoinbaseReconstructor(inout store : Store, in base_min_size : OrderEvent::Volume, in base_increment : OrderEvent::Volume, in extract_only : bool)
-store_ = std::move(store);
-base_min_size_ = base_min_size;
-base_increment_ = base_increment;
-extract_only_ = extract_only;
-size_deducer_ = std::make_unique<Deduce_Size_Coinbase>();
-size_deducer_->create();
-// Deduplication is not needed for CoinBase
-deduplicator_ = std::unique_ptr<TokenHandler>();
-event_number_generator_ = std::make_unique<EventNumberGenerator>();
-era_ = era_.max();
+return output;

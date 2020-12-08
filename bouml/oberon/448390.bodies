@@ -1,9 +1,35 @@
 class OrderEvent
 !!!650374.cpp!!!	toString() : string
 std::stringstream buf;
-buf << Message::toString() << " " << order_id_ << " " << event_no_ << " "
-    << (side_ == kBid ? 'B' : 'A') << price_ << " " << remaining_size_ << " "
-    << change_size_ << ( is_deleted_ ? " DELETED " : ""); 
+buf << Message::toString();
+buf << " ";
+if (order_id_ == kNaOrderId)
+  buf << "NA";
+else
+  buf << order_id_;
+buf << " ";
+if (event_no_ == kNaEventNo)
+  buf << "NA";
+else
+  buf << event_no_;
+buf << " ";
+buf << (side_ == kBid ? 'B' : 'A');
+buf << " ";
+if (std::isnan(price_))
+  buf << "NA";
+else
+  buf << price_;
+buf << " ";
+if (std::isnan(remaining_size_))
+  buf << "NA";
+else
+  buf << remaining_size_;
+buf << " ";
+if (std::isnan(change_size_))
+  buf << "NA";
+else
+  buf << change_size_;
+buf << (is_deleted_ ? " DELETED " : "");
 return buf.str();
 !!!1285510.cpp!!!	accept(in mh : TokenHandler [1]) : bool
 return mh->orderEvent();

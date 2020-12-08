@@ -1,38 +1,23 @@
 class BitstampReconstructor
-!!!759686.cpp!!!	BitstampReconstructor(inout store : Store, in base_min_size : OrderEvent::Volume, in base_increment : OrderEvent::Volume, in extract_only : bool)
-store_ = std::move(store);
-base_min_size_ = base_min_size;
-base_increment_ = base_increment;
-extract_only_ = extract_only;
-size_deducer_ =std::make_unique<DeduceSizeBitstamp>();
-deduplicator_ = std::make_unique<Deduplicator>(*this);
-taker_filter_ = std::make_unique<Classifier>();
-era_ = era_.max();
-!!!759814.cpp!!!	extract(in tree : ptree [1]) : Tokens [1..*]
+!!!759814.cpp!!!	extract(in tree : ptree [1]) : Token [1..*]
 using namespace date;
 using namespace std;
 string type = tree.get<string>("event");
-vector<unique_ptr<Message>> output;
+Token output;
 if (type == "elapsed") {
   Message::Timestamp timestamp;
   std::istringstream ss{tree.get<string>("timestamp")};
   ss >> parse("%FT%TZ", timestamp);
-  output.push_back(make_unique<Elapsed>(timestamp));
+  output=make_unique<Elapsed>(timestamp);
 } else if (type == "order_created")
-  output.push_back(make_unique<BitstampOpened>(tree, *this));
+  output=make_unique<BitstampOpened>(tree, *this);
 else if (type == "order_changed")
-  output.push_back(make_unique<BitstampChanged>(tree, *this));
+  output=make_unique<BitstampChanged>(tree, *this);
 else if (type == "order_deleted") {
-    output.push_back(make_unique<BitstampCanceled>(tree, *this));
+    output=make_unique<BitstampCanceled>(tree, *this);
 } else if (type == "trade") {
-  output.push_back(make_unique<BitstampFilled>(tree, *this));
+  output=make_unique<BitstampFilled>(tree, *this);
 } else if (type == "era") {
-  output.push_back(make_unique<BitstampEra>(tree));
-  era(output.back()->timestamp());
+  output=make_unique<BitstampEra>(tree);
 }
-if(output.back()->timestamp() < era())
-  output.back()->deleted(true);
-if (size_deducer_)
-  return size_deducer_->handle(std::move(output));
-else
-  return output;
+return output;

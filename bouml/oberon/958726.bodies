@@ -1,0 +1,65 @@
+class Wait_State
+!!!1372550.cpp!!!	created(inout stm : SizeDeducer) : void
+  if (static_cast<OrderEvent*>(stm.received_.get())->state() == OrderEvent::OrderState::kActive
+) {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._sizededucer_state._wait_state._doexit(stm);
+    stm._set_currentState(stm._sizededucer_state._save_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .SizeDeducer.Save";
+#endif
+    stm._sizededucer_state._save_state.create(stm);
+  }
+  else if (static_cast<OrderEvent*>(stm.received_.get())->state() == OrderEvent::OrderState::kNA
+) {
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition created";
+#endif
+static_cast<OrderEvent*>(stm.received_.get())->deleted(true);
+stm.output_.push_back(std::move(stm.received_));
+  }
+!!!1372806.cpp!!!	elapsed(inout stm : SizeDeducer) : void
+  {
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition elapsed";
+#endif
+stm.output_.push_back(std::move(stm.received_));
+  }
+!!!1373062.cpp!!!	era(inout stm : SizeDeducer) : void
+  {
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition era";
+#endif
+stm.previous_sizes_.clear();
+stm.output_.push_back(std::move(stm.received_));
+  }
+!!!1373318.cpp!!!	filled(inout stm : SizeDeducer) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._sizededucer_state._wait_state._doexit(stm);
+    stm._sizededucer_state._deduce_state._doentry(stm);
+    stm._set_currentState(stm._sizededucer_state._deduce_state._remaining_size_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .SizeDeducer.Deduce.Remaining size";
+#endif
+    stm._sizededucer_state._deduce_state._remaining_size_state.create(stm);
+  }
+!!!1373574.cpp!!!	message(inout stm : SizeDeducer) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._sizededucer_state._wait_state._doexit(stm);
+    stm._sizededucer_state._deduce_state._doentry(stm);
+    stm._set_currentState(stm._sizededucer_state._deduce_state._size_change_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .SizeDeducer.Deduce.Size change";
+#endif
+    stm._sizededucer_state._deduce_state._size_change_state.create(stm);
+  }
+!!!1373702.cpp!!!	_doexit(inout stm : SizeDeducer) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute exit behavior of .SizeDeducer.Wait";
+#endif
+stm.em_ = std::unique_ptr<OrderEvent>(
+    dynamic_cast<OrderEvent *>(stm.received_.release()));
+!!!1373830.cpp!!!	_upper(inout stm : SizeDeducer) : SizeDeducer::AnyState
+  return &stm._sizededucer_state;

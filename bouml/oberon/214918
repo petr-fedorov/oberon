@@ -1,0 +1,783 @@
+format 223
+"Bitstamp" // Standalone application::Reconstructor::Bitstamp
+  revision 1
+  modified_by 6 "petr"
+  // class settings
+  
+  classdiagramsettings member_max_width 0 end
+  
+  classcompositediagramsettings end
+  
+  usecasediagramsettings end
+  
+  sequencediagramsettings end
+  
+  collaborationdiagramsettings end
+  
+  objectdiagramsettings end
+  
+  objectcompositediagramsettings end
+  
+  componentdiagramsettings
+   end
+  
+  deploymentdiagramsettings
+   end
+  
+  statediagramsettings
+   end
+  
+  activitydiagramsettings
+   end
+  
+  cpp_h_dir "cpp/reconstructor/bitstamp"
+  cpp_src_dir "cpp/reconstructor/bitstamp"
+  cpp_namespace "oberon::reconstructor::bitstamp"
+  classview 207494 "Reconstructor"
+    
+    classdiagramsettings member_max_width 0 end
+    
+    classcompositediagramsettings end
+    
+    collaborationdiagramsettings end
+    
+    objectdiagramsettings end
+    
+    objectcompositediagramsettings end
+    
+    sequencediagramsettings end
+    
+    statediagramsettings
+     end
+    
+    
+    activitydiagramsettings
+     end
+    classdiagram 320774 "Bitstamp Messages"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
+    classdiagram 333958 "Bitstamp Deduce Size"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
+    classdiagram 340614 "Bitstamp Filter out takers"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
+    classdiagram 347142 "Bitstamp Deduplicate"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
+    classdiagram 366854 "Classifier"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
+    class 603654 "Reconstructor"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      class 632198 "DeduceSizeBitstamp"
+	visibility protected 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 694790 // <generalisation>
+	  relation 684678 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 694790 // <generalisation>
+	    b parent class_ref 441222 // TokenHandler
+	end
+
+	operation 800134 "created"
+	  cpp_virtual protected explicit_return_type "bool"
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 800262 "changed"
+	  cpp_virtual protected explicit_return_type "bool"
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 800390 "canceled"
+	  cpp_virtual protected explicit_return_type "bool"
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	attribute 500614 "sizes_"
+	  private type class_ref 305798 // Volume
+	  multiplicity "*"
+	  stereotype "map"
+	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<OrderEvent::OrderId, ${type}> ${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	end
+      end
+
+      class 651782 "Deduplicator"
+	visibility protected 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 714374 // <generalisation>
+	  relation 704262 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 714374 // <generalisation>
+	    b parent class_ref 441222 // TokenHandler
+	end
+
+	operation 820230 "elapsed"
+	  cpp_virtual protected explicit_return_type "bool"
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 820358 "filled"
+	  cpp_virtual protected explicit_return_type "bool"
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 820486 "exchangeMessage"
+	  cpp_virtual protected explicit_return_type "bool"
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	attribute 520198 "other_messages_"
+	  private type class_ref 448390 // OrderEvent
+	  multiplicity "*"
+	  stereotype "list"
+	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<std::unique_ptr<${type}>> ${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	end
+
+	attribute 520326 "fills_"
+	  private type class_ref 246022 // Filled
+	  multiplicity "*"
+	  stereotype "list"
+	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<std::unique_ptr<${type}>> ${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	end
+
+	attribute 520454 "reconstructor_"
+	  const_attribute private type class_ref 603654 // Reconstructor
+	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} &${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	end
+
+	operation 820614 "Deduplicator"
+	  public explicit_return_type ""
+	  nparams 1
+	    param in name "reconstructor" type class_ref 603654 // Reconstructor
+	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw}: reconstructor_{reconstructor} {
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+      end
+
+      class 937862 "BitstampEra"
+	visibility protected 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	operation 1344518 "BitstampEra"
+	  public explicit_return_type ""
+	  nparams 1
+	    param in name "tree" type class_ref 174214 // ptree
+	  multiplicity "1"
+	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} {
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	classrelation 1065222 // <generalisation>
+	  relation 1054854 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 1065222 // <generalisation>
+	    b parent class_ref 521478 // Era
+	end
+      end
+
+      class 603910 "BitstampOpened"
+	visibility public 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	operation 759174 "BitstampOpened"
+	  public explicit_return_type ""
+	  nparams 2
+	    param in name "tree" type class_ref 174214 // ptree
+	    param in name "reconstructor" type class_ref 603654 // Reconstructor
+	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${volatile}${throw};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw} {
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	classrelation 665350 // <dependency>
+	  relation 655238 -_->
+	    a public
+	      cpp default "#include in source"
+	      classrelation_ref 665350 // <dependency>
+	    b parent class_ref 507910 // string_generator
+	end
+
+	classrelation 1035142 // <generalisation>
+	  relation 1024774 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 1035142 // <generalisation>
+	    b parent class_ref 597126 // Created
+	end
+      end
+
+      class 604294 "BitstampCanceled"
+	visibility public 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 657670 // <generalisation>
+	  relation 647558 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 657670 // <generalisation>
+	    b parent class_ref 328710 // Cancelled
+	end
+
+	operation 759430 "BitstampCanceled"
+	  public explicit_return_type ""
+	  nparams 2
+	    param in name "tree" type class_ref 174214 // ptree
+	    param in name "reconstructor" type class_ref 603654 // Reconstructor
+	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${volatile}${throw};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw} {
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+      end
+
+      class 604422 "BitstampFilled"
+	visibility public 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 657798 // <generalisation>
+	  relation 647686 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 657798 // <generalisation>
+	    b parent class_ref 246022 // Filled
+	end
+
+	operation 759558 "BitstampFilled"
+	  public explicit_return_type ""
+	  nparams 2
+	    param in name "tree" type class_ref 174214 // ptree
+	    param in name "reconstructor" type class_ref 603654 // Reconstructor
+	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${volatile}${throw};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw} {
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+      end
+
+      class 604550 "BitstampChanged"
+	visibility public 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 657926 // <generalisation>
+	  relation 647814 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 657926 // <generalisation>
+	    b parent class_ref 570886 // Changed
+	end
+
+	operation 759302 "BitstampChanged"
+	  public explicit_return_type ""
+	  nparams 2
+	    param in name "tree" type class_ref 174214 // ptree
+	    param in name "reconstructor" type class_ref 603654 // Reconstructor
+	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${volatile}${throw};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw} {
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+      end
+
+      operation 759686 "Reconstructor"
+	public explicit_return_type ""
+	nparams 3
+	  param in name "handler" type class_ref 950918 // TokenHandler_SP
+	  param in name "quote_increment" type class_ref 305798 // Volume
+	  param in name "base_increment" type class_ref 305798 // Volume
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}${)}${throw} : oberon::reconstructor::Reconstructor {handler, quote_increment, base_increment} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 658182 // <generalisation>
+	relation 648070 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 658182 // <generalisation>
+	  b parent class_ref 486278 // Reconstructor
+      end
+
+      operation 759814 "extract"
+	cpp_override protected return_type class_ref 902918 // Token
+	multiplicity "1..*"
+	nparams 1
+	  param in name "tree" type class_ref 174214 // ptree
+	multiplicity "1"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      class 671366 "Classifier"
+	visibility private 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	operation 845318 "Classifier"
+	  public explicit_return_type ""
+	  nparams 0
+	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	attribute 541062 "bids_"
+	  private type class_ref 448390 // OrderEvent
+	  multiplicity "*"
+	  stereotype "multimap"
+	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<OrderEvent::Price, std::unique_ptr<${type}>, std::greater<OrderEvent::Price>> ${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	end
+
+	attribute 541190 "asks_"
+	  private type class_ref 448390 // OrderEvent
+	  multiplicity "*"
+	  stereotype "multimap"
+	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<OrderEvent::Price, std::unique_ptr<${type}>, std::less<OrderEvent::Price>> ${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	end
+
+	attribute 541318 "prices_"
+	  private type class_ref 305542 // Price
+	  multiplicity "*"
+	  stereotype "map"
+	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<OrderEvent::OrderId, ${type}> ${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	end
+
+	classrelation 727686 // <generalisation>
+	  relation 717574 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 727686 // <generalisation>
+	    b parent class_ref 441222 // TokenHandler
+	end
+
+	operation 844166 "opened"
+	  cpp_virtual protected explicit_return_type "bool"
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 844294 "classifyOpened"
+	  cpp_inline private explicit_return_type "bool"
+	  nparams 2
+	    param inout name "us" explicit_type "U"
+	    param inout name "them" explicit_type "T"
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} * ${p0}${v0}, ${t1} * ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  nformals 2
+	  formal name "U" type "class" explicit_default_value ""
+	    explicit_extends ""
+	  formal name "T" type "class" explicit_default_value ""
+	    explicit_extends ""
+	  
+	  
+	  
+	  
+	end
+
+	operation 844678 "changed"
+	  cpp_virtual protected explicit_return_type "bool"
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 844806 "classifyChanged"
+	  cpp_inline private explicit_return_type "bool"
+	  nparams 2
+	    param inout name "us" explicit_type "U"
+	    param inout name "them" explicit_type "T"
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} * ${p0}${v0}, ${t1} * ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  nformals 2
+	  formal name "U" type "class" explicit_default_value ""
+	    explicit_extends ""
+	  formal name "T" type "class" explicit_default_value ""
+	    explicit_extends ""
+	  
+	  
+	  
+	  
+	end
+
+	operation 844934 "canceled"
+	  cpp_virtual protected explicit_return_type "bool"
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 845062 "classifyCanceled"
+	  cpp_inline private explicit_return_type "bool"
+	  nparams 2
+	    param inout name "us" explicit_type "U"
+	    param inout name "them" explicit_type "T"
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} * ${p0}${v0}, ${t1} * ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  nformals 2
+	  formal name "U" type "class" explicit_default_value ""
+	    explicit_extends ""
+	  formal name "T" type "class" explicit_default_value ""
+	    explicit_extends ""
+	  
+	  
+	  
+	  
+	end
+
+	operation 851846 "filled"
+	  cpp_virtual protected explicit_return_type "bool"
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 851974 "classifyFilled"
+	  cpp_inline private explicit_return_type "bool"
+	  nparams 2
+	    param in name "us" explicit_type "U"
+	    param in name "them" explicit_type "T"
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  nformals 2
+	  formal name "U" type "class" explicit_default_value ""
+	    explicit_extends ""
+	  formal name "T" type "class" explicit_default_value ""
+	    explicit_extends ""
+	  
+	  
+	  
+	  
+	end
+      end
+    end
+  end
+
+  deploymentview 193670 "Source files"
+    //deployment diagram settings
+    deploymentdiagramsettings
+     end
+    artifact 213766 "Reconstructor"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+#include <iostream>
+${declarations}
+${namespace_start}
+class DedupOrchestrator;
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+#include <iostream>
+#include <cmath>
+#include \"date.h\"
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 603654 // Reconstructor
+      end
+    end
+  end
+end

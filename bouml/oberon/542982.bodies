@@ -1,10 +1,12 @@
-class Deduce_Size_Coinbase
-!!!686854.cpp!!!	Deduce_Size_Coinbase()
+class SizeDeducer
+!!!686854.cpp!!!	SizeDeducer()
+  _current_state = 0;
+!!!1370630.cpp!!!	SizeDeducer(in next : TokenHandler::TokenHandler_SP)
   _current_state = 0;
 !!!687494.cpp!!!	elapsed() : bool
   if (_current_state != 0) {
  #ifdef VERBOSE_STATE_MACHINE
-Deduce_Size_Coinbase & stm {*this};
+SizeDeducer & stm {*this};
  #endif
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger elapsed";
@@ -15,7 +17,7 @@ _current_state->elapsed(*this);
 !!!687878.cpp!!!	era() : bool
   if (_current_state != 0) {
  #ifdef VERBOSE_STATE_MACHINE
-Deduce_Size_Coinbase & stm {*this};
+SizeDeducer & stm {*this};
  #endif
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger era";
@@ -26,7 +28,7 @@ _current_state->era(*this);
 !!!688262.cpp!!!	filled() : bool
   if (_current_state != 0) {
  #ifdef VERBOSE_STATE_MACHINE
-Deduce_Size_Coinbase & stm {*this};
+SizeDeducer & stm {*this};
  #endif
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger filled";
@@ -37,7 +39,7 @@ _current_state->filled(*this);
 !!!688646.cpp!!!	message() : bool
   if (_current_state != 0) {
  #ifdef VERBOSE_STATE_MACHINE
-Deduce_Size_Coinbase & stm {*this};
+SizeDeducer & stm {*this};
  #endif
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger message";
@@ -45,24 +47,20 @@ Deduce_Size_Coinbase & stm {*this};
 _current_state->message(*this);
   }
   return (_current_state != 0);
-!!!689414.cpp!!!	create() : bool
-if (_current_state == 0)
-  (_current_state = &(*this)._deduce_size_coinbase_state)->create(*this);
-return (_current_state != 0);
 !!!691846.cpp!!!	doActivity() : void
   _current_state->_do(*this);
 !!!691974.cpp!!!	_set_currentState(inout st : AnyState) : void
   _current_state = &st;
 !!!692102.cpp!!!	_final() : void
   _current_state = 0;
-Deduce_Size_Coinbase &stm {*this};
+SizeDeducer &stm {*this};
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "final state reached";
 #endif
 !!!1292038.cpp!!!	created() : bool
   if (_current_state != 0) {
  #ifdef VERBOSE_STATE_MACHINE
-Deduce_Size_Coinbase & stm {*this};
+SizeDeducer & stm {*this};
  #endif
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger created";
@@ -70,3 +68,7 @@ Deduce_Size_Coinbase & stm {*this};
 _current_state->created(*this);
   }
   return (_current_state != 0);
+!!!1374086.cpp!!!	create() : bool
+if (_current_state == 0)
+  (_current_state = &(*this)._sizededucer_state)->create(*this);
+return (_current_state != 0);

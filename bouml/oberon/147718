@@ -1,6 +1,6 @@
 format 223
 "Standalone application" // Standalone application
-  revision 80
+  revision 81
   modified_by 6 "petr"
   // class settings
   
@@ -356,6 +356,7 @@ format 223
     end
 
     activity 175238 "R.1 Reconstruct Order Book"
+      specification operation_ref 575878 // process
       activitydiagram 274822 "R.1 Reconstruct Order Book"
 	activitydiagramsettings
 	 end
@@ -370,16 +371,6 @@ format 223
 	end
       end
 
-      parameter 178822 "time_order_error" explicit_type ""
-	 multiplicity "1" unordered is_control
-	out exception
-      end
-
-      parameter 198918 "logic_error" explicit_type ""
-	unordered 
-	out exception
-      end
-
       activityaction 226950 "R.2 Extract"
 	call_operation_action
 	operation_ref 576006 // extract
@@ -388,37 +379,17 @@ format 223
 	  in
 	end
 
-	pin 281990 "message" type class_ref 245766 // Message
-	   multiplicity "1..*" fifo is_control
+	pin 281990 "" type class_ref 902918 // Token
+	   multiplicity "1" fifo is_control
 	  return
-	  flow 290054 "<flow>"
-	    on activitynode_ref 236166 // decision
+	  flow 423174 "<flow>"
+	    on activityobject_ref 207238 // activity object New Token
 	  end
 	end
 
 	pin 282118 "" type class_ref 174214 // ptree
 	   multiplicity "1" unordered 
 	  in
-	end
-      end
-
-      parameter 185350 "target" type class_ref 486278 // Reconstructor
-	 multiplicity "1" unordered 
-	in
-	flow 281734 "<flow>"
-	  on activityobject_ref 154502 // activity object this
-	end
-      end
-
-      activitynode 236166 decision ""
-	flow 280582 "<flow>"
-	  on parameter_ref 178822 // time_order_error
-	    uml_guard "wrong time order"
-	end
-
-	flow 344198 "<flow>"
-	  on activitynode_ref 276742 // decision
-	    uml_guard "correct time order"
 	end
       end
 
@@ -435,18 +406,6 @@ format 223
 	      uml_transformation "To be defined"
 	end
 
-	flow 314374 "<flow>"
-	  on pin_ref 297606 // target
-	end
-
-	flow 315398 "<flow>"
-	  on pin_ref 298374 // target
-	end
-
-	flow 344326 "<flow>"
-	  on activitynode_ref 276742 // decision
-	      uml_transformation "extract.only"
-	end
       end
 
       activityaction 240006 "To be defined"
@@ -470,81 +429,22 @@ format 223
 
       activityaction 247174 "R.3 Cleanse"
 	call_operation_action
-	synchronous operation_ref 641798 // cleanse
-	pin 297606 "target" type class_ref 486278 // Reconstructor
+	synchronous operation_ref 590214 // handle
+	pin 364038 "target" type class_ref 441222 // TokenHandler
 	  unordered 
 	  in
 	end
 
-	pin 297734 "output" type class_ref 245766 // Message
-	   multiplicity "*" fifo is_control
+	pin 364166 "" explicit_type "bool"
+	  unordered 
 	  return
-	  flow 344710 "<flow>"
-	    on activitynode_ref 276870 // merge
-	  end
 	end
 
-	pin 297862 "message" type class_ref 245766 // Message
-	   multiplicity "1..*" unordered is_control
-	  in
-	end
-
-	pin 318982 "logic_error" explicit_type ""
-	  unordered 
-	  out exception
-	  flow 374150 "<flow>"
-	    on parameter_ref 198918 // logic_error
-	  end
-	end
-      end
-
-      activityaction 247430 "R.4 Transmit"
-	call_operation_action
-	synchronous operation_ref 641926 // transmit
-	pin 298374 "target" type class_ref 486278 // Reconstructor
+	pin 364294 "episode" type class_ref 903046 // Tokens
 	  unordered 
 	  in
 	end
 
-	pin 298502 "messages" type class_ref 245766 // Message
-	   multiplicity "*" unordered is_control
-	  in
-	end
-
-	pin 333318 "events" explicit_type ""
-	   multiplicity "*" unordered 
-	  out
-	  flow 390278 "<flow>"
-	    on parameter_ref 212614 // events
-	  end
-	end
-
-	flow 408582 "<flow>"
-	  on activitynode_ref 310534 // merge
-	end
-      end
-
-      activitynode 276742 decision ""
-	flow 344454 "<flow>"
-	  on pin_ref 297862 // message
-	    uml_guard "not extract.only"
-	end
-
-	flow 344582 "<flow>"
-	  on activitynode_ref 276870 // merge
-	    uml_guard "extract.only"
-	end
-      end
-
-      activitynode 276870 merge ""
-	flow 344838 "<flow>"
-	  on pin_ref 298502 // messages
-	end
-      end
-
-      parameter 212614 "events" explicit_type ""
-	 multiplicity "*" ordered 
-	out stream
       end
 
       activitynode 310534 merge ""
@@ -558,6 +458,31 @@ format 223
 	  on activitynode_ref 310534 // merge
 	end
       end
+
+      activityaction 267142 "Read self"
+	read_self_action
+	pin 364934 "result" type class_ref 486278 // Reconstructor
+	   multiplicity "1" unordered 
+	  out
+	  flow 422534 "<flow>"
+	    on activityobject_ref 154502 // activity object this
+	  end
+	end
+      end
+
+      activityobject 207110 "Episode"
+	stereotype "datastore"
+	 type class_ref 902918 // Token
+	 multiplicity "*" unordered 
+	flow 422918 "<flow>"
+	  on pin_ref 364294 // episode
+	end
+      end
+
+      activityobject 207238 "New Token"
+	 explicit_type ""
+	unordered 
+      end
     end
 
     activity 181894 "R.2 Extract"
@@ -565,7 +490,6 @@ format 223
     end
 
     activity 181766 "R.3 Cleanse"
-      specification operation_ref 641798 // cleanse
       activitydiagram 300934 "R.3 Cleanse"
 	activitydiagramsettings
 	 end
@@ -715,7 +639,6 @@ format 223
     end
 
     activity 182022 "R.4 Transmit"
-      specification operation_ref 641926 // transmit
       activitydiagram 301062 "R.4 Transmit"
 	activitydiagramsettings
 	 end
@@ -8895,22 +8818,53 @@ operator<<(std::basic_ostream<CharT, Traits>& os,
 #include \"receiver/coinbase/Feeder.h\"
 #include \"receiver/coinbase/Receiver.h\"
 #include \"receiver/Snapshot.h\"
-#include \"reconstructor/CoinbaseReconstructor.h\"
-#include \"reconstructor/BitstampReconstructor.h\"
+#include \"reconstructor/Reconstructor.h\"
+#include \"reconstructor/EventCounter.h\"
+#include \"reconstructor/coinbase/Reconstructor.h\"
+#include \"reconstructor/coinbase/Synchronizer.h\"
+#include \"reconstructor/coinbase/SizeDeducer.h\"
+#include \"reconstructor/bitstamp/Reconstructor.h\"
 #include \"reconstructor/File.h\"
 #include <boost/asio/bind_executor.hpp>
 #include <boost/asio/connect.hpp>
 #include <boost/beast.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/property_tree/json_parser.hpp>
+#include <boost/log/core.hpp>
+#include <boost/log/expressions.hpp>
+#include <boost/log/sinks/text_file_backend.hpp>
+#include <boost/log/trivial.hpp>
+#include <boost/log/utility/setup/common_attributes.hpp>
+#include <boost/log/utility/setup/file.hpp>
+
 #include <thread>
 using boost::posix_time::seconds;
 
 // TEMPORARY
 #include <boost/property_tree/json_parser.hpp>
 
+
+namespace logging = boost::log;
+namespace src = boost::log::sources;
+namespace sinks = boost::log::sinks;
+namespace keywords = boost::log::keywords;
+
+void init() {
+  logging::add_file_log(keywords::file_name = \"oberon_%N.log\",
+                        keywords::rotation_size = 100 * 1024 * 1024,
+                        keywords::time_based_rotation =
+                            sinks::file::rotation_at_time_point(0, 0, 0),
+                        keywords::format = \"[%TimeStamp%]: %Message%\");
+
+  logging::core::get()->set_filter(logging::trivial::severity >=
+                                   logging::trivial::info);
+}
+
+
+
 int main(int argc, char **argv) {
   namespace rec = oberon::receiver;
+
   // Check command line arguments.
   if (argc != 3) {
     std::cerr << \"Usage: obtain <exchange> <product> \\n\"
@@ -8920,25 +8874,32 @@ int main(int argc, char **argv) {
   }
   auto const exchange = argv[1];
   const std::string product {argv[2]};
-  using namespace oberon::reconstructor;
-  using namespace oberon::receiver;
+  using namespace oberon;
+  using Snapshot = oberon::receiver::Snapshot;
+  using EventCounter = oberon::reconstructor::EventCounter;
+
+  init();
+  logging::add_common_attributes();
 
   // The io_context is required for all I/O
   std::shared_ptr<boost::asio::io_context> ioc =
       std::make_shared<boost::asio::io_context>();
   if (!std::strcmp(exchange, \"Bitstamp\")) {
+    using Receiver=oberon::receiver::bitstamp::Receiver;
+    using Feeder=oberon::receiver::bitstamp::Feeder;
+    using Reconstructor=oberon::reconstructor::bitstamp::Reconstructor;
     auto feeder =
-        std::make_shared<oberon::receiver::bitstamp::Feeder>(ioc, product, 2);
+        std::make_shared<Feeder>(ioc, product, 2);
     auto snapshot =
-        std::make_shared<oberon::receiver::Snapshot>(ioc,\"www.bitstamp.net\", \"443\",\"/api/v2/order_book/\" + product + \"?group=2\");
+        std::make_shared<Snapshot>(ioc,\"www.bitstamp.net\", \"443\",\"/api/v2/order_book/\" + product + \"?group=2\");
 
     auto reconstructor =
-        BitstampReconstructor{std::make_unique<File>(exchange, product, 8, 2),
-                              0.001, 0.00000001, true};
+        Reconstructor{std::make_unique<reconstructor::File>(exchange, product, 8, 2),
+                              0.001, 0.00000001};
 
-    auto receiver = std::make_shared<bitstamp::Receiver>(
+    auto receiver = std::make_shared<Receiver>(
         ioc, std::static_pointer_cast<Feeder>(feeder), snapshot,
-        std::bind(&BitstampReconstructor::process, &reconstructor,
+        std::bind(&Reconstructor::process, &reconstructor,
                   std::placeholders::_1));
     feeder->registerHandlers(
         std::bind(&Receiver::postEvent, receiver, &Receiver::success),
@@ -8961,16 +8922,26 @@ int main(int argc, char **argv) {
     t2.join();
     t3.join();
   } else if (!std::strcmp(exchange,\"Coinbase\")) {
+
+    using Receiver=oberon::receiver::coinbase::Receiver;
+    using Feeder=oberon::receiver::coinbase::Feeder;
+    using Synchronizer=oberon::reconstructor::coinbase::Synchronizer;
+    using SizeDeducer=oberon::reconstructor::coinbase::SizeDeducer;
+    using Reconstructor=oberon::reconstructor::coinbase::Reconstructor;
+
     auto feeder =
-        std::make_shared<oberon::receiver::coinbase::Feeder>(ioc, product, 1);
+        std::make_shared<Feeder>(ioc, product, 1);
     auto snapshot =
-        std::make_shared<oberon::receiver::Snapshot>(ioc,\"api.pro.coinbase.com\", \"443\",\"/products/\" + product + \"/book?level=3\");
-    auto reconstructor =
-        CoinbaseReconstructor{std::make_unique<File>(exchange, product, 8, 2),
-                              0.001, 0.00000001, false};
-    auto coinbase = std::make_shared<coinbase::Receiver>(
+        std::make_shared<Snapshot>(ioc,\"api.pro.coinbase.com\", \"443\",\"/products/\" + product + \"/book?level=3\");
+    auto store = std::make_shared<reconstructor::File>(exchange, product, 8, 2);
+    auto event_counter = std::make_shared<EventCounter>(store);
+    auto size_deducer = std::make_shared<SizeDeducer>(event_counter);
+    size_deducer->create();
+    auto cleaner = std::make_shared<Synchronizer>(size_deducer);
+    auto reconstructor = Reconstructor{cleaner, 0.001, 0.00000001};
+    auto coinbase = std::make_shared<Receiver>(
         ioc, std::static_pointer_cast<Feeder>(feeder), snapshot,
-        std::bind(&CoinbaseReconstructor::process, &reconstructor,
+        std::bind(&Reconstructor::process, &reconstructor,
                   std::placeholders::_1));
     feeder->registerHandlers(
         std::bind(&Receiver::postEvent, coinbase, &Receiver::success),
@@ -9006,9 +8977,9 @@ int main(int argc, char **argv) {
       associated_artifacts
 	artifact_ref 173702 // main
 	artifact_ref 180998 // Reconstructor
-	artifact_ref 213638 // CoinbaseReconstructor
-	artifact_ref 213766 // BitstampReconstructor
-	artifact_ref 233350 // BitfinexReconstructor
+	artifact_ref 213638 // Reconstructor
+	artifact_ref 213766 // Reconstructor
+	artifact_ref 233350 // Reconstructor
 	artifact_ref 246406 // Receiver
 	artifact_ref 260102 // common
 	artifact_ref 266630 // File
@@ -9031,6 +9002,9 @@ int main(int argc, char **argv) {
 	artifact_ref 313862 // FeederData
 	artifact_ref 320390 // Feeder
 	artifact_ref 326918 // Receiver
+	artifact_ref 333446 // SizeDeducer
+	artifact_ref 333574 // Synchronizer
+	artifact_ref 333702 // EventCounter
       end
       ncouples 10
       key "genpro pro" value "/tmp/oberon/cpp/oberon.pro"
@@ -9038,7 +9012,7 @@ int main(int argc, char **argv) {
       key "genpro target" value "/tmp/oberon/build/oberon"
       key "genpro tmplt" value "app"
       key "genpro config" value "debug  qt"
-      key "genpro defines" value "BOOST_LOG_DYN_LINK NO_VERBOSE_STATE_MACHINE NDEBUG"
+      key "genpro defines" value "BOOST_LOG_DYN_LINK NO_VERBOSE_STATE_MACHINE DEBUG"
       key "genpro includepath" value ""
       key "genpro dependpath" value ""
       key "genpro objectsdir" value ""
@@ -9050,7 +9024,7 @@ CONFIG -= app_bundle
 CONFIG += thread
 CONFIG += object_parallel_to_source
 CONFIG -= qt
-LIBS +=-lboost_system -lssl -lcrypto -lboost_log"
+LIBS +=-lssl -lcrypto  -lboost_log  -lboost_log_setup -lboost_thread -lpthread -lboost_system"
     end
   end
 end

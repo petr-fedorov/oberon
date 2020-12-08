@@ -31,7 +31,7 @@ stm.d_->signal_set_->async_wait(boost::asio::bind_executor(
     *stm.d_->receiving_strand_, [&stm](const boost::system::error_code &ec, int signal_number) {
       boost::ignore_unused(signal_number);
       if (!ec) {
-        BOOST_LOG_TRIVIAL(info) << stm._machine_name << "Termination requested ...";
+        BOOST_LOG_TRIVIAL(info) << stm._machine_name << "Termination requested. Unprocessed queue size is " << stm.d_->messages_.size();
         stm.stop();
       }
     }));

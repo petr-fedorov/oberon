@@ -1,0 +1,10 @@
+class Synchronizer
+!!!1370118.cpp!!!	era() : bool
+era_ = received_->timestamp();
+return message();
+!!!1370246.cpp!!!	orderEvent() : bool
+if(received_->timestamp() < era_)
+  received_->deleted(true);
+return message();
+!!!1370374.cpp!!!	Synchronizer(in next : TokenHandler::TokenHandler_SP)
+era_ = era_.max();

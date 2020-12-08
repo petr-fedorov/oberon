@@ -2,80 +2,35 @@ format 223
 
 classcanvas 128006 class_ref 486278 // Reconstructor
   classdiagramsettings show_members_visibility yes member_max_width 0 end
-  xyzwh 199 339 2000 191 253
+  xyzwh 199 339 2000 191 291
 end
-classcanvas 128390 class_ref 486406 // CoinbaseReconstructor
+classcanvas 128390 class_ref 486406 // Reconstructor
   classdiagramsettings member_max_width 0 end
-  xyz 433 395 2000
-end
-classcanvas 130182 class_ref 508038 // nil_generator
-  classdiagramsettings member_max_width 0 end
-  xyz 568 696 2000
+  xyz 474 441 2000
 end
 classcanvas 132358 class_ref 441222 // TokenHandler
   classdiagramsettings member_max_width 0 end
-  xyz 42 587 2006
-end
-classcanvas 133126 class_ref 564230 // EventNumberGenerator
-  classdiagramsettings member_max_width 0 end
-  xyz 366 724 2000
-end
-classcanvas 133638 class_ref 611078 // iomanip
-  classdiagramsettings member_max_width 0 end
-  xyz 547 535 2000
+  xyz 232 707 2006
 end
 classcanvas 133894 class_ref 507910 // string_generator
   classdiagramsettings member_max_width 0 end
   xyz 460 590 2006
 end
-classcanvas 134278 class_ref 624902 // BitfinexReconstructor
+classcanvas 134278 class_ref 624902 // Reconstructor
   classdiagramsettings member_max_width 0 end
   xyz 454 157 2000
 end
-classcanvas 134534 class_ref 603654 // BitstampReconstructor
+classcanvas 134534 class_ref 603654 // Reconstructor
   classdiagramsettings member_max_width 0 end
-  xyz 502 259 2006
+  xyz 216 125 2006
 end
 relationcanvas 128518 relation_ref 500486 // <generalisation>
   from ref 128390 z 2001 to ref 128006
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
-relationcanvas 132614 relation_ref 589958 // <directional composition>
-  decenter_begin 312
-  decenter_end 230
-  from ref 128006 z 2007 to point 68 415
-  line 132742 z 2007 to ref 132358
-  role_a_pos 65 531 3000 no_role_b
-  multiplicity_a_pos 53 562 3000 multiplicity_b_pos 168 426 3000
-end
-relationcanvas 133254 relation_ref 605318 // <generalisation>
-  decenter_begin 487
-  decenter_end 726
-  from ref 133126 z 2007 to ref 132358
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
-end
-relationcanvas 133382 relation_ref 605446 // <directional composition>
-  decenter_begin 431
-  decenter_end 238
-  from ref 128006 z 2007 to point 276 626
-  line 133510 z 2007 to ref 132358
-  role_a_pos 196 656 3000 no_role_b
-  multiplicity_a_pos 196 689 3000 multiplicity_b_pos 251 600 3000
-end
-relationcanvas 133766 relation_ref 671110 // <dependency>
-  from ref 128006 z 2001 to ref 133638
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
-end
 relationcanvas 134022 relation_ref 551430 // <dependency>
   from ref 128390 z 2007 to ref 133894
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
-end
-relationcanvas 134150 relation_ref 671238 // <dependency>
-  from ref 128006 z 2007 to ref 133894
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
@@ -89,25 +44,18 @@ relationcanvas 134662 relation_ref 648070 // <generalisation>
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
-relationcanvas 135046 relation_ref 590086 // <directional composition>
-  decenter_begin 950
-  from ref 128006 z 2007 to point 372 710
-  line 135174 z 2007 to ref 132358
-  role_a_pos 196 744 3000 no_role_b
-  multiplicity_a_pos 196 777 3000 multiplicity_b_pos 350 600 3000
+relationcanvas 136326 relation_ref 1068038 // <directional aggregation>
+  decenter_begin 187
+  decenter_end 426
+  from ref 132358 z 2007 stereotype "<<shared_ptr>>" xyz 101 787 3000 to point 55 786
+  line 136454 z 2007 to point 54 890
+  line 136582 z 2007 to ref 132358
+  role_a_pos 192 848 3000 no_role_b
+  no_multiplicity_a no_multiplicity_b
 end
-relationcanvas 135302 relation_ref 710918 // <directional composition>
-  decenter_begin 661
-  decenter_end 395
-  from ref 128006 z 2007 to point 320 676
-  line 135430 z 2007 to ref 132358
-  role_a_pos 196 722 3000 no_role_b
-  multiplicity_a_pos 196 755 3000 multiplicity_b_pos 295 600 3000
-end
-relationcanvas 135686 relation_ref 1017478 // <directional aggregation>
-  from ref 128006 z 2007 stereotype "<<unique_ptr>>" xyz 111 464 3000 to point 106 462
-  line 135814 z 2007 to ref 132358
-  role_a_pos 116 562 3000 no_role_b
-  multiplicity_a_pos 89 562 3000 no_multiplicity_b
+relationcanvas 137094 relation_ref 1074822 // <directional aggregation>
+  from ref 128006 z 2007 stereotype "<<shared_ptr>>" xyz 252 667 3000 to ref 132358
+  role_a_pos 304 682 3000 no_role_b
+  multiplicity_a_pos 277 682 3000 no_multiplicity_b
 end
 end

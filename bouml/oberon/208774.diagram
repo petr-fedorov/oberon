@@ -2,7 +2,7 @@ format 223
 
 classcanvas 128774 class_ref 229510 // File
   classdiagramsettings member_max_width 0 end
-  xyzwh 210 273 2000 103 211
+  xyzwh 210 273 2000 103 251
 end
 classcanvas 131078 class_ref 441222 // TokenHandler
   classdiagramsettings member_max_width 0 end
@@ -10,11 +10,7 @@ classcanvas 131078 class_ref 441222 // TokenHandler
 end
 classcanvas 131206 class_ref 903430 // Store
   classdiagramsettings member_max_width 0 end
-  xyz 59 219 2000
-end
-classcanvas 131334 class_ref 889478 // unique_ptr
-  classdiagramsettings member_max_width 0 end
-  xyz 85 93 2005
+  xyz 46 199 2000
 end
 classcanvas 131718 class_ref 448390 // OrderEvent
   classdiagramsettings member_max_width 0 end
@@ -24,10 +20,9 @@ classcanvas 131974 class_ref 521478 // Era
   classdiagramsettings member_max_width 0 end
   xyz 332 553 2000
 end
-relationcanvas 131462 relation_ref 1017606 // <realization>
-  from ref 131206 z 2006 label "<T->TokenHandler>" max_width 255 xyz 56 167 2006 stereotype "<<bind>>" xyz 84 185 3000 to ref 131334
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
+classcanvas 132614 class_ref 852614 // shared_ptr
+  classdiagramsettings member_max_width 0 end
+  xyz 51 59 2010
 end
 relationcanvas 131590 relation_ref 1017734 // <generalisation>
   from ref 128774 z 2006 to ref 131078
@@ -41,6 +36,18 @@ relationcanvas 131846 relation_ref 1017862 // <dependency>
 end
 relationcanvas 132102 relation_ref 1017990 // <dependency>
   from ref 128774 z 2001 to ref 131974
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 132230 relation_ref 1068038 // <directional aggregation>
+  from ref 131078 z 2006 stereotype "<<shared_ptr>>" xyz 362 94 3000 to point 389 55
+  line 132358 z 2006 to point 389 85
+  line 132486 z 2006 to ref 131078
+  role_a_pos 424 114 3000 no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 132742 relation_ref 1074950 // <realization>
+  from ref 131206 z 2011 label "<T->TokenHandler>" max_width 255 xyz 32 140 2011 stereotype "<<bind>>" xyz 60 158 3000 to ref 132614
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
