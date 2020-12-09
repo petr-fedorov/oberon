@@ -5,7 +5,7 @@ eventNumbers_[em->maker()] = 1;
 em->ordinal(1);
 output_.push_back(std::move(received_));
 return true;
-!!!722694.cpp!!!	canceled() : bool
+!!!722694.cpp!!!	cancelled() : bool
 OrderEvent *em = dynamic_cast<OrderEvent *>(received_.get());
 
 try {
@@ -27,5 +27,20 @@ try {
 } catch (const std::out_of_range &) {
   em->deleted(true);
 }
+output_.push_back(std::move(received_));
+return true;
+!!!1382918.cpp!!!	changed() : bool
+OrderEvent *em = dynamic_cast<OrderEvent *>(received_.get());
+try {
+  em->ordinal(eventNumbers_.at(em->maker()) + 1);
+  eventNumbers_[em->maker()] = em->ordinal();
+} catch (const std::out_of_range &) {
+  em->deleted(true);
+}
+output_.push_back(std::move(received_));
+return true;
+
+!!!1385478.cpp!!!	reset() : bool
+eventNumbers_.clear();
 output_.push_back(std::move(received_));
 return true;

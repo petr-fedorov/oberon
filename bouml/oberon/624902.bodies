@@ -1,5 +1,5 @@
-class BitfinexReconstructor
-!!!793222.cpp!!!	BitfinexReconstructor(inout handler : Store, in quote_increment : OrderEvent::Volume, in base_increment : OrderEvent::Volume)
+class Reconstructor
+!!!793222.cpp!!!	Reconstructor(inout handler : Store, in quote_increment : OrderEvent::Volume, in base_increment : OrderEvent::Volume)
 
 !!!792582.cpp!!!	extract(in tree : ptree [1]) : Token [1..*]
 using namespace date;
@@ -14,7 +14,7 @@ if (type == "elapsed") {
 } else if (type == "order_changed")
   output=make_unique<BitfinexChanged>(tree, *this);
 else if (type == "order_deleted") {
-  output=make_unique<BitfinexCanceled>(tree, *this);
+  output=make_unique<BitfinexCancelled>(tree, *this);
 
 } else if (type == "match") {
   output=make_unique<BitfinexFilled>(tree, *this);

@@ -1,4 +1,4 @@
-class BitstampReconstructor
+class Reconstructor
 !!!759814.cpp!!!	extract(in tree : ptree [1]) : Token [1..*]
 using namespace date;
 using namespace std;
@@ -14,10 +14,12 @@ if (type == "elapsed") {
 else if (type == "order_changed")
   output=make_unique<BitstampChanged>(tree, *this);
 else if (type == "order_deleted") {
-    output=make_unique<BitstampCanceled>(tree, *this);
+    output=make_unique<BitstampCancelled>(tree, *this);
 } else if (type == "trade") {
   output=make_unique<BitstampFilled>(tree, *this);
 } else if (type == "era") {
   output=make_unique<BitstampEra>(tree);
+} else if (type == "reset") {
+  output=make_unique<Reset>();
 }
 return output;

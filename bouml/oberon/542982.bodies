@@ -14,17 +14,6 @@ SizeDeducer & stm {*this};
 _current_state->elapsed(*this);
   }
   return (_current_state != 0);
-!!!687878.cpp!!!	era() : bool
-  if (_current_state != 0) {
- #ifdef VERBOSE_STATE_MACHINE
-SizeDeducer & stm {*this};
- #endif
-#ifdef VERBOSE_STATE_MACHINE
-   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger era";
-#endif
-_current_state->era(*this);
-  }
-  return (_current_state != 0);
 !!!688262.cpp!!!	filled() : bool
   if (_current_state != 0) {
  #ifdef VERBOSE_STATE_MACHINE
@@ -34,17 +23,6 @@ SizeDeducer & stm {*this};
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger filled";
 #endif
 _current_state->filled(*this);
-  }
-  return (_current_state != 0);
-!!!688646.cpp!!!	message() : bool
-  if (_current_state != 0) {
- #ifdef VERBOSE_STATE_MACHINE
-SizeDeducer & stm {*this};
- #endif
-#ifdef VERBOSE_STATE_MACHINE
-   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger message";
-#endif
-_current_state->message(*this);
   }
   return (_current_state != 0);
 !!!691846.cpp!!!	doActivity() : void
@@ -72,3 +50,25 @@ _current_state->created(*this);
 if (_current_state == 0)
   (_current_state = &(*this)._sizededucer_state)->create(*this);
 return (_current_state != 0);
+!!!1385862.cpp!!!	reset() : bool
+  if (_current_state != 0) {
+ #ifdef VERBOSE_STATE_MACHINE
+SizeDeducer & stm {*this};
+ #endif
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger reset";
+#endif
+_current_state->reset(*this);
+  }
+  return (_current_state != 0);
+!!!1386246.cpp!!!	orderEvent() : bool
+  if (_current_state != 0) {
+ #ifdef VERBOSE_STATE_MACHINE
+SizeDeducer & stm {*this};
+ #endif
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger orderEvent";
+#endif
+_current_state->orderEvent(*this);
+  }
+  return (_current_state != 0);

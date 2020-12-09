@@ -1,5 +1,5 @@
 class TokenHandler
-!!!590214.cpp!!!	handle(inout episode : Tokens [*]) : bool [*]
+!!!590214.cpp!!!	handle(in episode : Tokens [*]) : bool [*]
 for(auto& msg: episode) {
   if(msg) {
 #ifndef NDEBUG
@@ -33,6 +33,8 @@ output_.push_back(std::move(received_));
 return true;
 !!!483590.cpp!!!	elapsed() : bool
 return message();
+!!!1385094.cpp!!!	reset() : bool
+return message();
 !!!721798.cpp!!!	orderEvent() : bool
 return message();
 !!!752646.cpp!!!	created() : bool
@@ -43,5 +45,5 @@ return orderEvent();
 
 !!!485126.cpp!!!	filled() : bool
 return orderEvent();
-!!!485382.cpp!!!	canceled() : bool
+!!!485382.cpp!!!	cancelled() : bool
 return orderEvent();

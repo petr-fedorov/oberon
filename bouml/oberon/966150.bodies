@@ -1,0 +1,14 @@
+class Synchronizer
+!!!1384198.cpp!!!	era() : bool
+era_ = received_->timestamp();
+return message();
+!!!1384326.cpp!!!	orderEvent() : bool
+if(received_->timestamp() < era_)
+  received_->deleted(true);
+return message();
+!!!1384454.cpp!!!	Synchronizer(in next : TokenHandler::TokenHandler_SP)
+era_ = era_.max();
+!!!1385222.cpp!!!	reset() : bool
+era_ = era_.max();
+output_.push_back(std::move(received_));
+return true;

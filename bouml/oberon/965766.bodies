@@ -1,0 +1,22 @@
+class Deduplicator
+!!!1383174.cpp!!!	changed() : bool
+events_.push_back(output_.size());
+output_.push_back(std::move(received_));
+return true;
+!!!1384582.cpp!!!	cancelled() : bool
+events_.push_back(output_.size());
+output_.push_back(std::move(received_));
+return true;
+!!!1383302.cpp!!!	filled() : bool
+fills_.push_back(output_.size());
+output_.push_back(std::move(received_));
+return true;
+!!!1383430.cpp!!!	after_handle() : bool
+for(auto f: fills_)
+  for(auto c: events_)
+  if((static_cast<OrderEvent*>(output_[f].get()))->maker() ==
+        (static_cast<OrderEvent*>(output_[c].get()))->maker())
+      output_[c]->deleted(true);
+events_.clear();
+fills_.clear();
+return TokenHandler::after_handle();

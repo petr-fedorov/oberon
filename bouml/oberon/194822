@@ -1,6 +1,6 @@
 format 223
 "Receiver" // Standalone application::Receiver
-  revision 33
+  revision 34
   modified_by 6 "petr"
   // class settings
   
@@ -5098,7 +5098,23 @@ ${members}};
 stm.d_->feeder_->postEvent(&Feeder::stop);"
 	state 219526 "Engaging Feeder"
 	    uml_on_entry "engage Feeder"
-	    cpp_on_entry "stm.d_->feeder_->create();"
+	    cpp_on_entry "boost::asio::post(
+    boost::asio::bind_executor(*stm.d_->processing_strand_, [&stm]() {
+      boost::property_tree::ptree reset;
+      reset.put<std::string>(\"type\", \"reset\");  // Coinbase
+      reset.put<std::string>(\"event\", \"reset\"); // Bitstamp
+      try {
+        if (stm.d_->process(reset))
+          return;
+      } catch (...) {
+      }
+      stm._post([&stm]() {
+        stm.d_->error_message_ = \"Couldn't reset\";
+        stm.stop();
+      });
+    }));
+stm.d_->feeder_->create();
+"
 	  transition 441990 "success"
 	    on state_ref 226694 // Feeder Engaged
 	      uml_trigger "success"
