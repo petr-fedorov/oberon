@@ -1,6 +1,6 @@
 format 223
 "Receiver" // Standalone application::Receiver
-  revision 34
+  revision 35
   modified_by 6 "petr"
   // class settings
   
@@ -249,9 +249,7 @@ stm.d_->ws_->next_layer().next_layer().close();
 	      uml_trigger "success"
 	      uml_expr "restart timer"
 	      cpp_trigger "success"
-	      cpp_expr "using boost::posix_time::seconds;
-
-if (stm.d_->timer_->expires_from_now(seconds(stm.d_->exhausted_after)) > 0) {
+	      cpp_expr "if (stm.d_->timer_->expires_after(std::chrono::seconds(stm.d_->exhausted_after)) > 0) {
   // We managed to cancel the timer. Start new asynchronous wait.
   stm.d_->timer_->async_wait(boost::asio::bind_executor(
       *stm.d_->strand_, [&stm](const boost::system::error_code &ec) {
@@ -355,8 +353,7 @@ boost::asio::async_connect(
 	      cpp_trigger "success"
 	      cpp_expr "if(stm.d_->sh_) stm.d_->sh_();
 stm.d_->last_sequence_ = 0;
-using boost::posix_time::seconds;
-stm.d_->timer_->expires_from_now(seconds(5));
+stm.d_->timer_->expires_after(std::chrono::seconds(5));
 stm.d_->timer_->async_wait(boost::asio::bind_executor(
     *stm.d_->strand_, [&stm](const boost::system::error_code &ec) {
       if (ec != boost::asio::error::operation_aborted) {
@@ -2741,15 +2738,6 @@ ${members}};
 	  b parent class_ref 876166 // WebsocketStream
       end
 
-      classrelation 999174 // timer_ (<directional composition>)
-	relation 988806 *-->
-	  a role_name "timer_" public
-	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::unique_ptr<${type}> ${name}${value};
-"
-	    classrelation_ref 999174 // timer_ (<directional composition>)
-	  b parent class_ref 706310 // deadline_timer
-      end
-
       classrelation 999302 // resolver_ (<directional composition>)
 	relation 988934 *-->
 	  a role_name "resolver_" public
@@ -2793,6 +2781,16 @@ ${members}};
 "
 	    classrelation_ref 1006214 // strand_ (<directional composition>)
 	  b parent class_ref 753414 // strand
+      end
+
+      classrelation 1102982 // timer_ (<directional aggregation>)
+	relation 1092614 o-->
+	  stereotype "unique_ptr"
+	  a role_name "timer_" multiplicity "0..1" public
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${stereotype}<${const}${type}> ${name}${value};
+"
+	    classrelation_ref 1102982 // timer_ (<directional aggregation>)
+	  b parent class_ref 972806 // system_timer
       end
     end
 
@@ -7647,7 +7645,6 @@ ${namespace_end}
 #include <sstream>
 #include \"root_certificates.h\"
 #include \"../date.h\"
-#include <boost/date_time/posix_time/posix_time.hpp>
 ${includes}
 ${namespace_start}
 ${members}
