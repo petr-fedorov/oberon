@@ -1,0 +1,107 @@
+format 223
+
+statecanvas 128006 state_ref 295430 // Unsynchronised
+  
+  xyzwh 193 74 2000 191 93
+end
+pseudostatecanvas 128134 pseudostate_ref 376326 // initial 
+   xyz 71 84 2000
+end
+statecanvas 128390 state_ref 295558 // Synchronizing
+  
+  xyzwh 202 273 2000 297 77
+end
+statecanvas 130182 state_ref 295686 // Synchronized
+  
+  xyzwh 312 511 2000 311 77
+end
+transitioncanvas 128262 transition_ref 557574 // <transition>
+  
+  from ref 128134 z 2001 to ref 128006
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 128518 transition_ref 557702 // era
+  decenter_begin 903
+  decenter_end 90
+  
+  from ref 128006 z 2001 label "era" xyz 134 170 2001 to point 93 201
+  line 130054 z 2001 to ref 128390
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 128646 transition_ref 557830 // reset
+  decenter_begin 838
+  decenter_end 805
+  
+  from ref 128390 z 2001 label "reset" xyz 406 219 2001 to point 390 183
+  line 129926 z 2001 to ref 128006
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 128774 transition_ref 557958 // reset
+  decenter_begin 911
+  decenter_end 79
+  
+  from ref 128006 z 2001 to point 381 21
+  line 128902 z 2001 label "reset" xyz 277 15 2001 to point 198 23
+  line 129030 z 2001 to ref 128006
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129158 transition_ref 558086 // message
+  decenter_end 172
+  
+  from ref 128006 z 2001 to point 141 29
+  line 129286 z 2001 label "message / buffer before" xyz 57 36 2001 to point 96 57
+  line 129414 z 2001 to ref 128006
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129542 transition_ref 558214 // era continue
+  
+  from ref 128390 z 2001 to point 124 272
+  line 129670 z 2001 label "message [message.timestamp == era] / move to era buffer" xyz -29 336 2001 to point 124 414
+  line 129798 z 2001 to ref 128390
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 130310 transition_ref 558342 // era
+  decenter_begin 516
+  decenter_end 148
+  
+  from ref 128390 z 2001 to point 342 200
+  line 130438 z 2001 label "era" xyz 284 191 2001 to point 240 197
+  line 130566 z 2001 to ref 128390
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 130694 transition_ref 558470 // era ended
+  
+  from ref 128390 z 2001 label "message [message.timestamp > era] / synchronize buffers before and era" xyz 156 428 2001 to point 339 483
+  line 132230 z 2001 to ref 130182
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 131462 transition_ref 558598 // before era
+  decenter_end 967
+  
+  from ref 128390 z 2001 to point 572 109
+  line 132742 z 2001 label "message [message.timestamp < era] / move to before buffer" xyz 429 154 2001 to point 603 214
+  line 131718 z 2001 to ref 128390
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 131846 transition_ref 558726 // message
+  
+  from ref 130182 z 2001 to point 102 501
+  line 131974 z 2001 label "message / pass to output" xyz 37 548 2001 to point 102 610
+  line 132102 z 2001 to ref 130182
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 132358 transition_ref 558854 // reset
+  decenter_begin 951
+  
+  from ref 130182 z 2007 label "reset" xyz 682 428 2007 to point 784 362
+  line 132870 z 2007 to point 656 51
+  line 132614 z 2007 to ref 128006
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 133510 transition_ref 559110 // era
+  
+  from ref 130182 z 2001 label "era" xyz 572 409 2001 to point 663 326
+  line 133766 z 2001 to ref 128390
+  write_horizontally default show_definition default drawing_language default
+end
+end

@@ -5,32 +5,35 @@ using namespace std;
 Token output;
 try {
   string type = tree.get<string>("type");
-  if (type == "elapsed") 
+  if (type == "elapsed")
     output = make_unique<Elapsed>(toTimestamp(tree.get<string>("time")));
   else if (type == "received")
-    output=make_unique<CoinbaseReceived>(tree, *this);
+    output = make_unique<CoinbaseReceived>(tree, *this);
   else if (type == "open")
-    output=make_unique<CoinbaseOpen>(tree, *this);
+    output = make_unique<CoinbaseOpen>(tree, *this);
   else if (type == "done") {
     if (tree.get<string>("reason") == "canceled")
-      output=make_unique<CoinbaseDoneCancelled>(tree, *this);
+      output = make_unique<CoinbaseDoneCancelled>(tree, *this);
     else
-      output=make_unique<CoinbaseDoneFilled>(tree, *this);
+      output = make_unique<CoinbaseDoneFilled>(tree, *this);
   } else if (type == "match") {
-    output=make_unique<CoinbaseMatch>(tree, *this);
+    output = make_unique<CoinbaseMatch>(tree, *this);
   } else if (type == "era") {
-    output=make_unique<CoinbaseEra>(tree);
+    output = make_unique<CoinbaseEra>(tree);
+  } else if (type == "reset") {
+    output = make_unique<Reset>();
   }
   if (!output) {
     std::stringstream s;
     boost::property_tree::write_json(s, tree, false);
     BOOST_LOG_TRIVIAL(error) << "Unable to extract: " << s.str();
   }
-} catch (const std::exception & e) {
+} catch (const std::exception &e) {
   std::stringstream s;
   boost::property_tree::write_json(s, tree, false);
-  std::string msg { s.str() };
-  BOOST_LOG_TRIVIAL(error) << "Exception " << e.what() << " while processing " << s.str();
+  std::string msg{s.str()};
+  BOOST_LOG_TRIVIAL(error) << "Exception " << e.what() << " while processing "
+                           << s.str();
   throw;
 };
 return output;

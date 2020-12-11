@@ -1,0 +1,11 @@
+class Synchronizer_State
+!!!1395974.cpp!!!	create(inout stm : Synchronizer) : void
+  {
+    stm._set_currentState(stm._synchronizer_state._unsynchronised_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Synchronizer.Unsynchronised";
+#endif
+    stm._synchronizer_state._unsynchronised_state.create(stm);
+  }
+!!!1397126.cpp!!!	_upper(inout stm : Synchronizer) : Synchronizer::AnyState
+  return 0;

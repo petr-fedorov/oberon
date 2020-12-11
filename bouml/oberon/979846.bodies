@@ -1,0 +1,59 @@
+class Synchronizing_State
+!!!1396102.cpp!!!	reset(inout stm : Synchronizer) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._synchronizer_state._unsynchronised_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Synchronizer.Unsynchronised";
+#endif
+    stm._synchronizer_state._unsynchronised_state.create(stm);
+  }
+!!!1396230.cpp!!!	message(inout stm : Synchronizer) : void
+  if (stm.received_->timestamp() == stm.era_->timestamp()) {
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition era continue";
+#endif
+stm.era_messages_.push_back(std::move(stm.received_));
+  }
+  else if (stm.received_->timestamp() > stm.era_->timestamp()) {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition era ended";
+#endif
+for(auto &msg: stm.era_messages_) {
+  auto iter = std::find_if(stm.before_messages_.begin(), stm.before_messages_.end(),
+                      [order_id = static_cast<OrderEvent *>(msg.get())->maker()](const Token &b) {
+                        auto e = static_cast<OrderEvent*>(b.get());
+                        return e->maker() == order_id &&
+                               e->state() == OrderEvent::OrderState::kFinished;
+                      });
+  if(iter != stm.before_messages_.end())
+    msg->deleted(true);
+}
+    stm._set_currentState(stm._synchronizer_state._synchronized_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Synchronizer.Synchronized";
+#endif
+    stm._synchronizer_state._synchronized_state.create(stm);
+  }
+  else {
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition before era";
+#endif
+stm.received_->deleted(true);
+stm.before_messages_.push_back(std::move(stm.received_));
+  }
+!!!1396358.cpp!!!	era(inout stm : Synchronizer) : void
+  {
+    create(stm);
+  }
+!!!1396486.cpp!!!	_upper(inout stm : Synchronizer) : Synchronizer::AnyState
+  return &stm._synchronizer_state;
+!!!1397766.cpp!!!	create(inout stm : Synchronizer) : void
+	_doentry(stm);
+!!!1397894.cpp!!!	_doentry(inout stm : Synchronizer) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Synchronizer.Synchronizing";
+#endif
+stm.era_ = std::move(stm.received_);
+stm.era_messages_.clear();

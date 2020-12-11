@@ -1,0 +1,35 @@
+class Unsynchronised_State
+!!!1394694.cpp!!!	era(inout stm : Synchronizer) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._synchronizer_state._synchronizing_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Synchronizer.Synchronizing";
+#endif
+    stm._synchronizer_state._synchronizing_state.create(stm);
+  }
+!!!1395078.cpp!!!	reset(inout stm : Synchronizer) : void
+  {
+    create(stm);
+  }
+!!!1395462.cpp!!!	message(inout stm : Synchronizer) : void
+  {
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition message";
+#endif
+stm.received_->deleted(true);
+stm.before_messages_.push_back(std::move(stm.received_));
+  }
+!!!1395590.cpp!!!	_upper(inout stm : Synchronizer) : Synchronizer::AnyState
+  return &stm._synchronizer_state;
+!!!1404422.cpp!!!	create(inout stm : Synchronizer) : void
+	_doentry(stm);
+!!!1404550.cpp!!!	_doentry(inout stm : Synchronizer) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Synchronizer.Unsynchronised";
+#endif
+stm.before_messages_.clear();
+stm.era_messages_.clear();
+stm.era_.reset();
+//
+

@@ -4,15 +4,11 @@ classcanvas 128134 class_ref 441222 // TokenHandler
   classdiagramsettings member_max_width 0 end
   xyz 182 167 2005
 end
-classcanvas 128262 class_ref 535942 // Deduce_Size_Coinbase_Extensions
-  classdiagramsettings member_max_width 0 end
-  xyz 128 265 2011
-end
-classcanvas 128518 class_ref 542982 // Deduce_Size_Coinbase
+classcanvas 128518 class_ref 542982 // SizeDeducer
   classdiagramsettings member_max_width 0 end
   xyz 164 369 2000
 end
-classcanvas 128774 class_ref 486406 // CoinbaseReconstructor
+classcanvas 128774 class_ref 486406 // Reconstructor
   classdiagramsettings member_max_width 0 end
   xyz 432 246 2000
 end
@@ -24,15 +20,9 @@ classcanvas 130822 class_ref 564358 // cmath
   classdiagramsettings member_max_width 0 end
   xyz 192 464 2000
 end
-relationcanvas 128390 relation_ref 580614 // <generalisation>
-  from ref 128262 z 2012 to ref 128134
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
-end
-relationcanvas 128646 relation_ref 589830 // <generalisation>
-  from ref 128518 z 2012 to ref 128262
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
+classcanvas 131590 class_ref 966278 // Reset
+  classdiagramsettings member_max_width 0 end
+  xyz 445 422 2000
 end
 relationcanvas 130054 relation_ref 590342 // <dependency>
   from ref 128774 z 2001 to ref 128518
@@ -46,6 +36,23 @@ relationcanvas 130310 relation_ref 551430 // <dependency>
 end
 relationcanvas 130950 relation_ref 626822 // <dependency>
   from ref 128518 z 2001 to ref 130822
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131078 relation_ref 1076742 // <generalisation>
+  from ref 128518 z 2006 to ref 128134
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131206 relation_ref 1068038 // <directional aggregation>
+  from ref 128134 z 2006 stereotype "<<shared_ptr>>" xyz 125 172 3000 to point 152 167
+  line 131334 z 2006 to point 152 197
+  line 131462 z 2006 to ref 128134
+  role_a_pos 142 167 3000 no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131718 relation_ref 1100422 // <dependency>
+  from ref 128774 z 2001 to ref 131590
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end

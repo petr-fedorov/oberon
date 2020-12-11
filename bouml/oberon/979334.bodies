@@ -1,0 +1,50 @@
+class Synchronizer
+!!!1394182.cpp!!!	Synchronizer()
+  _current_state = 0;
+!!!1394438.cpp!!!	era() : bool
+  if (_current_state != 0) {
+ #ifdef VERBOSE_STATE_MACHINE
+Synchronizer & stm {*this};
+ #endif
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger era";
+#endif
+_current_state->era(*this);
+  }
+  return (_current_state != 0);
+!!!1394822.cpp!!!	reset() : bool
+  if (_current_state != 0) {
+ #ifdef VERBOSE_STATE_MACHINE
+Synchronizer & stm {*this};
+ #endif
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger reset";
+#endif
+_current_state->reset(*this);
+  }
+  return (_current_state != 0);
+!!!1395206.cpp!!!	message() : bool
+  if (_current_state != 0) {
+ #ifdef VERBOSE_STATE_MACHINE
+Synchronizer & stm {*this};
+ #endif
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger message";
+#endif
+_current_state->message(*this);
+  }
+  return (_current_state != 0);
+!!!1395718.cpp!!!	create() : bool
+if (_current_state == 0)
+  (_current_state = &(*this)._synchronizer_state)->create(*this);
+return (_current_state != 0);
+!!!1397254.cpp!!!	doActivity() : void
+  _current_state->_do(*this);
+!!!1397382.cpp!!!	_set_currentState(inout st : Synchronizer::AnyState) : void
+  _current_state = &st;
+!!!1397510.cpp!!!	_final() : void
+  _current_state = 0;
+Synchronizer &stm {*this};
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "final state reached";
+#endif

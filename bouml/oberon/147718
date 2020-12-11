@@ -1,6 +1,6 @@
 format 223
 "Standalone application" // Standalone application
-  revision 84
+  revision 86
   modified_by 6 "petr"
   // class settings
   
@@ -8906,6 +8906,7 @@ int main(int argc, char **argv) {
     auto deduplicator=std::make_shared<Deduplicator>(size_deducer);
     auto time_order_enforcer = std::make_shared<TimeOrderEnforcer>(deduplicator, 1);
     auto cleaner = std::make_shared<Synchronizer>(time_order_enforcer);
+    cleaner->create();
     auto reconstructor =
         Reconstructor{cleaner, 0.001, 0.00000001};
 
@@ -9025,8 +9026,8 @@ int main(int argc, char **argv) {
       key "genpro path" value "/home/petr/repos/oberon/cpp"
       key "genpro target" value "/tmp/oberon/build/oberon"
       key "genpro tmplt" value "app"
-      key "genpro config" value "debug  qt"
-      key "genpro defines" value "BOOST_LOG_DYN_LINK NO_VERBOSE_STATE_MACHINE DEBUG"
+      key "genpro config" value "  qt"
+      key "genpro defines" value "BOOST_LOG_DYN_LINK NO_VERBOSE_STATE_MACHINE NDEBUG"
       key "genpro includepath" value ""
       key "genpro dependpath" value ""
       key "genpro objectsdir" value ""

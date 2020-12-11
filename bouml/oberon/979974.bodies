@@ -1,0 +1,38 @@
+class Synchronized_State
+!!!1396614.cpp!!!	message(inout stm : Synchronizer) : void
+  {
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition message";
+#endif
+stm.output_.push_back(std::move(stm.received_));
+  }
+!!!1396742.cpp!!!	reset(inout stm : Synchronizer) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._synchronizer_state._unsynchronised_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Synchronizer.Unsynchronised";
+#endif
+    stm._synchronizer_state._unsynchronised_state.create(stm);
+  }
+!!!1396870.cpp!!!	era(inout stm : Synchronizer) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._synchronizer_state._synchronizing_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Synchronizer.Synchronizing";
+#endif
+    stm._synchronizer_state._synchronizing_state.create(stm);
+  }
+!!!1396998.cpp!!!	_upper(inout stm : Synchronizer) : Synchronizer::AnyState
+  return &stm._synchronizer_state;
+!!!1404678.cpp!!!	create(inout stm : Synchronizer) : void
+	_doentry(stm);
+!!!1404806.cpp!!!	_doentry(inout stm : Synchronizer) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Synchronizer.Synchronized";
+#endif
+stm.output_.push_back(std::move(stm.era_));
+std::move(stm.before_messages_.begin(), stm.before_messages_.end(), std::back_inserter(stm.output_));
+std::move(stm.era_messages_.begin(), stm.era_messages_.end(), std::back_inserter(stm.output_));
+stm.output_.push_back(std::move(stm.received_));

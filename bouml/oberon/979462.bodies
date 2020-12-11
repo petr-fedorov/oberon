@@ -1,0 +1,34 @@
+class AnyState
+!!!1394566.cpp!!!	era(inout stm : Synchronizer) : void
+  AnyState * st = _upper(stm);
+
+  if (st != 0)
+    st->era(stm);
+#ifdef VERBOSE_STATE_MACHINE
+  else
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "transition era not expected";
+#endif
+#endif
+!!!1394950.cpp!!!	reset(inout stm : Synchronizer) : void
+  AnyState * st = _upper(stm);
+
+  if (st != 0)
+    st->reset(stm);
+#ifdef VERBOSE_STATE_MACHINE
+  else
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "transition reset not expected";
+#endif
+#endif
+!!!1395334.cpp!!!	message(inout stm : Synchronizer) : void
+  AnyState * st = _upper(stm);
+
+  if (st != 0)
+    st->message(stm);
+#ifdef VERBOSE_STATE_MACHINE
+  else
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "transition message not expected";
+#endif
+#endif

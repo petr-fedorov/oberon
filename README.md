@@ -55,6 +55,7 @@ Supported parameter pairs are shown below:
 | `<exchange name>` | `<pair name>`|
 |----|---|
 |Coinbase| Any pair supported by [the full channel of Coinbase's websocket feed](https://docs.pro.coinbase.com/#the-full-channel) |
+|Bitstamp| Any pair supported by [Bitstamp's Websocket API v2](https://www.bitstamp.net/websocket/v2/) "Live ticker" and "Live orders" channels|
 
 The output file will have the name in the following format: `<exchange name>_<pair_name>_<timestamp>.csv`
 where `timestamp` is the timestamp of an initial order book snapshot. The file starts from the events having this `timestamp` collectively producing the snapshot. The other messages in the file are updates of the snapshot.
