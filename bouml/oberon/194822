@@ -1,6 +1,6 @@
 format 223
 "Receiver" // Standalone application::Receiver
-  revision 36
+  revision 37
   modified_by 6 "petr"
   // class settings
   
@@ -254,11 +254,60 @@ stm.d_->ws_->next_layer().next_layer().close();
   stm.d_->timer_->async_wait(boost::asio::bind_executor(
       *stm.d_->strand_, [&stm](const boost::system::error_code &ec) {
         if (ec != boost::asio::error::operation_aborted)
-          stm.exhausted();
+          stm.check();
       }));
 }
 "
 	    external 
+	  end
+
+	  state 302214 "Connected"
+	    transition 565766 "check"
+	      on state_ref 302342 // Ping
+		uml_trigger "check"
+		cpp_trigger "check"
+	      external 
+	    end
+
+	    transition 566022 "pong"
+	      on state_ref 302214 // Connected
+		uml_trigger "pong"
+		cpp_trigger "pong"
+	    end
+	  end
+
+	  state 302342 "Ping"
+	      uml_on_entry "send ping, set timer"
+	      cpp_on_entry "stm.d_->ws_->async_ping(\"\",
+                        boost::asio::bind_executor(
+                            *stm.d_->strand_,
+                            [&stm](const boost::system::error_code &ec) {
+                              if (ec) {
+                                BOOST_LOG_TRIVIAL(warning)
+                                    << stm._machine_name
+                                    << \"Couldn't send ping to check websocket \";
+                              }
+                            }));
+stm.d_->timer_->expires_after(std::chrono::seconds(stm.d_->exhausted_after));
+stm.d_->timer_->async_wait(boost::asio::bind_executor(
+    *stm.d_->strand_, [&stm](const boost::system::error_code &ec) {
+      if (ec != boost::asio::error::operation_aborted)
+        stm.exhausted();
+    }));
+"
+	    transition 565894 "pong"
+	      on state_ref 302214 // Connected
+		uml_trigger "pong"
+		cpp_trigger "pong"
+	      external 
+	    end
+	  end
+
+	  pseudostate 382982 initial ""
+	    transition 566150 "<transition>"
+	      on state_ref 302214 // Connected
+	      external 
+	    end
 	  end
 	end
 
@@ -351,7 +400,8 @@ boost::asio::async_connect(
 	      uml_trigger "success"
 	      uml_expr "report subscribed, start timer"
 	      cpp_trigger "success"
-	      cpp_expr "if(stm.d_->sh_) stm.d_->sh_();
+	      cpp_expr "if (stm.d_->sh_)
+  stm.d_->sh_();
 stm.d_->last_sequence_ = 0;
 stm.d_->timer_->expires_after(std::chrono::seconds(5));
 stm.d_->timer_->async_wait(boost::asio::bind_executor(
@@ -360,6 +410,30 @@ stm.d_->timer_->async_wait(boost::asio::bind_executor(
         stm.exhausted();
       }
     }));
+using frame_type = boost::beast::websocket::frame_type;
+
+stm.d_->ws_->control_callback(boost::asio::bind_executor(
+    *stm.d_->strand_,
+    [&stm](frame_type kind, boost::beast::string_view payload) {
+      std::string kind_str;
+      if (kind == frame_type::pong) {
+#ifndef NDEBUG
+      BOOST_LOG_TRIVIAL(debug)
+          << stm._machine_name << \"pong received\";
+#endif
+        if (stm.d_->timer_->expires_after(
+                std::chrono::seconds(stm.d_->exhausted_after)) > 0) {
+          // We managed to cancel the timer. Start new asynchronous wait.
+          stm.d_->timer_->async_wait(boost::asio::bind_executor(
+              *stm.d_->strand_, [&stm](const boost::system::error_code &ec) {
+                if (ec != boost::asio::error::operation_aborted)
+                  stm.check();
+              }));
+        }
+        stm.pong();
+      }
+    }));
+
 "
 	    external 
 	  end
@@ -725,6 +799,42 @@ ${inlines}
 	  ncouples 1
 	  key "STM generated" value ""
 	  comment " the current state doesn't manage the event stop, give it to the upper state"
+	end
+
+	operation 1411718 "check"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 843526 // Feeder
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " the current state doesn't manage the event check, give it to the upper state"
+	end
+
+	operation 1412102 "pong"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 843526 // Feeder
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " the current state doesn't manage the event pong, give it to the upper state"
 	end
       end
 
@@ -1531,6 +1641,214 @@ ${inlines}
 	    ncouples 1
 	    key "STM generated" value ""
 	    comment " implement the state Receive"
+	    class 986502 "Connected_State"
+	      visibility public 
+	      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	      java_decl ""
+	      php_decl ""
+	      python_2_2 python_decl ""
+	      idl_decl ""
+	      explicit_switch_type ""
+	      mysql_decl ""
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " implement the state Connected"
+	      operation 1411334 "~Connected_State"
+		force_body_gen cpp_virtual public explicit_return_type ""
+		nparams 0
+		cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+		cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+	      end
+
+	      classrelation 1123846 // <generalisation>
+		relation 1113478 ---|>
+		  a public
+		    cpp default "${type}"
+		    classrelation_ref 1123846 // <generalisation>
+		  b parent class_ref 843654 // AnyState
+	      end
+
+	      operation 1411846 "check"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 843526 // Feeder
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event check"
+	      end
+
+	      operation 1412230 "pong"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 843526 // Feeder
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event pong"
+	      end
+
+	      operation 1412358 "_upper"
+		force_body_gen cpp_virtual public return_type class_ref 843654 // AnyState
+		nparams 1
+		  param inout name "stm" type class_ref 843526 // Feeder
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " returns the state containing the current"
+	      end
+	    end
+
+	    class 986630 "Ping_State"
+	      visibility public 
+	      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	      java_decl ""
+	      php_decl ""
+	      python_2_2 python_decl ""
+	      idl_decl ""
+	      explicit_switch_type ""
+	      mysql_decl ""
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " implement the state Ping"
+	      operation 1411462 "~Ping_State"
+		force_body_gen cpp_virtual public explicit_return_type ""
+		nparams 0
+		cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+		cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+	      end
+
+	      classrelation 1124102 // <generalisation>
+		relation 1113734 ---|>
+		  a public
+		    cpp default "${type}"
+		    classrelation_ref 1124102 // <generalisation>
+		  b parent class_ref 843654 // AnyState
+	      end
+
+	      operation 1412614 "pong"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 843526 // Feeder
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event pong"
+	      end
+
+	      operation 1412742 "create"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 843526 // Feeder
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event create"
+	      end
+
+	      operation 1412870 "_doentry"
+		force_body_gen public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 843526 // Feeder
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " perform the 'entry behavior'"
+	      end
+
+	      operation 1412998 "_upper"
+		force_body_gen cpp_virtual public return_type class_ref 843654 // AnyState
+		nparams 1
+		  param inout name "stm" type class_ref 843526 // Feeder
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " returns the state containing the current"
+	      end
+	    end
+
 	    operation 1198214 "~Receive_State"
 	      force_body_gen cpp_virtual public explicit_return_type ""
 	      nparams 0
@@ -1626,6 +1944,37 @@ ${inlines}
 	      key "STM generated" value ""
 	      comment " perform the 'entry behavior'"
 	    end
+
+	    attribute 863366 "_connected_state"
+	      public type class_ref 986502 // Connected_State
+	      cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	      java_decl ""
+	      php_decl ""
+	      python_decl ""
+	      idl_decl ""
+	      mysql_decl ""
+	      MysqlColumn
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " memorize the instance of the state Connected, internal"
+	    end
+
+	    attribute 863494 "_ping_state"
+	      public type class_ref 986630 // Ping_State
+	      cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	      java_decl ""
+	      php_decl ""
+	      python_decl ""
+	      idl_decl ""
+	      mysql_decl ""
+	      MysqlColumn
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " memorize the instance of the state Ping, internal"
+	    end
+
 	  end
 
 	  operation 1197958 "~Busy_State"
@@ -1961,24 +2310,6 @@ ${inlines}
 	  comment " to manage the event create"
 	end
 
-	operation 1204102 "_junction1"
-	  force_body_gen public explicit_return_type "void"
-	  nparams 1
-	    param inout name "stm" type class_ref 843526 // Feeder
-	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	  ncouples 1
-	  key "STM generated" value ""
-	  comment " implement a junction, through an operation because shared, internal"
-	end
-
 	attribute 777478 "_exhausted_state"
 	  public type class_ref 859270 // Exhausted_State
 	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
@@ -2025,6 +2356,24 @@ ${inlines}
 	  ncouples 1
 	  key "STM generated" value ""
 	  comment " memorize the instance of the state Stopping, internal"
+	end
+
+	operation 1413254 "_junction1"
+	  force_body_gen public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 843526 // Feeder
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " implement a junction, through an operation because shared, internal"
 	end
       end
 
@@ -2468,6 +2817,58 @@ ${inlines}
 	
 	
 	
+      end
+
+      operation 1411590 "check"
+	force_body_gen public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " the operation you call to signal the event check"
+      end
+
+      operation 1411974 "pong"
+	force_body_gen public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " the operation you call to signal the event pong"
+      end
+
+      classrelation 1123974 // <dependency>
+	relation 1113606 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1123974 // <dependency>
+	  b parent class_ref 986502 // Connected_State
+      end
+
+      classrelation 1124230 // <dependency>
+	relation 1113862 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1124230 // <dependency>
+	  b parent class_ref 986630 // Ping_State
       end
     end
 

@@ -10,7 +10,7 @@ if (stm.d_->timer_->expires_after(std::chrono::seconds(stm.d_->exhausted_after))
   stm.d_->timer_->async_wait(boost::asio::bind_executor(
       *stm.d_->strand_, [&stm](const boost::system::error_code &ec) {
         if (ec != boost::asio::error::operation_aborted)
-          stm.exhausted();
+          stm.check();
       }));
 }
     stm._set_currentState(stm._feeder_state._busy_state);
@@ -52,7 +52,13 @@ stm.reportReceived();
 !!!1200134.cpp!!!	_upper(inout stm : Feeder) : Feeder::AnyState
   return &stm._feeder_state._busy_state;
 !!!1205766.cpp!!!	create(inout stm : Feeder) : void
-	_doentry(stm);
+  _doentry(stm);
+  {
+    stm._set_currentState(stm._feeder_state._busy_state._receive_state._connected_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Feeder.Busy.Receive.Connected";
+#endif
+  }
 !!!1205894.cpp!!!	_doentry(inout stm : Feeder) : void
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Feeder.Busy.Receive";

@@ -1,0 +1,33 @@
+class Ping_State
+!!!1412614.cpp!!!	pong(inout stm : Feeder) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._feeder_state._busy_state._receive_state._connected_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Feeder.Busy.Receive.Connected";
+#endif
+  }
+!!!1412742.cpp!!!	create(inout stm : Feeder) : void
+	_doentry(stm);
+!!!1412870.cpp!!!	_doentry(inout stm : Feeder) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Feeder.Busy.Receive.Ping";
+#endif
+stm.d_->ws_->async_ping("",
+                        boost::asio::bind_executor(
+                            *stm.d_->strand_,
+                            [&stm](const boost::system::error_code &ec) {
+                              if (ec) {
+                                BOOST_LOG_TRIVIAL(warning)
+                                    << stm._machine_name
+                                    << "Couldn't send ping to check websocket ";
+                              }
+                            }));
+stm.d_->timer_->expires_after(std::chrono::seconds(stm.d_->exhausted_after));
+stm.d_->timer_->async_wait(boost::asio::bind_executor(
+    *stm.d_->strand_, [&stm](const boost::system::error_code &ec) {
+      if (ec != boost::asio::error::operation_aborted)
+        stm.exhausted();
+    }));
+!!!1412998.cpp!!!	_upper(inout stm : Feeder) : Feeder::AnyState
+  return &stm._feeder_state._busy_state._receive_state;

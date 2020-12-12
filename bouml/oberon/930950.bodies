@@ -1,5 +1,5 @@
 class Feeder
-!!!1213702.cpp!!!	Feeder(inout ioc : io_context, in product : string)
+!!!1213702.cpp!!!	Feeder(inout ioc : io_context, in product : string, in exhausted_after : int)
 d_->product_ = product;
 d_->ioc_ = ioc;
 _machine_name = "CoinbaseFeeder - ";
@@ -8,11 +8,9 @@ _machine_name = "CoinbaseFeeder - ";
 using namespace boost::property_tree;
 ptree h, p, c, products, channels;
 p.put("", d_->product_);
-h.put("", "heartbeat");
 c.put("", "full");
 
 products.push_back(std::make_pair("", p));
-channels.push_back(std::make_pair("", h));
 channels.push_back(std::make_pair("", c));
 
 
@@ -45,8 +43,7 @@ d_->ws_->async_write(
 
 
 !!!1336198.cpp!!!	isControlMessage() : bool
-return (d_->tree_->get<std::string>("type") == "heartbeat" ||
- d_->tree_->get<std::string>("type") == "subscriptions");
+return (d_->tree_->get<std::string>("type") == "subscriptions");
 
 !!!1336326.cpp!!!	isGoodSeqNum() : bool
 return !(d_->last_sequence_ && d_->tree_->get<long long>("sequence") != d_->last_sequence_ + 1);

@@ -6,14 +6,14 @@ statecanvas 128134 state_ref 259846 // Busy
 end
 statecanvas 128518 state_ref 268166 // Resolve
   
-  xyzwh 128.6 324 2005 115 77
+  xyzwh 131.6 335 2005 115 77
 end
 pseudostatecanvas 128902 pseudostate_ref 348294 // initial 
    xyz 95.2 39.4 2000
 end
 statecanvas 130054 state_ref 275078 // Receive
   
-  xyzwh 78.4 667.2 2005 233 77
+  xyzwh 78.4 666.2 2005 377 197
 end
 pseudostatecanvas 130694 pseudostate_ref 348550 // initial 
    xyz 56 359.4 2005
@@ -45,13 +45,13 @@ pseudostatecanvas 134150 pseudostate_ref 355462 // junction
    xyz 461.4 139.8 2000
 end
 pseudostatecanvas 135046 pseudostate_ref 355590 // choice 
-   xyz 464.8 677 2005
+   xyz 612.8 720 2005
 end
 pseudostatecanvas 135558 pseudostate_ref 355846 // choice 
-   xyz 463 806.2 2005
+   xyz 614 869.2 2005
 end
 pseudostatecanvas 136326 pseudostate_ref 356102 // final 
-   xyz 664.8 812.2 2005
+   xyz 480.8 791.2 2005
 end
 statecanvas 137478 state_ref 282246 // Exhausted
   
@@ -63,6 +63,17 @@ end
 pseudostatecanvas 138886 pseudostate_ref 369670 // final 
    xyz 454.8 39.8 2005
 end
+statecanvas 140678 state_ref 302214 // Connected
+  
+  xyzwh 136 765 2010 83 41
+end
+statecanvas 141062 state_ref 302342 // Ping
+  
+  xyzwh 246 746 2010 189 77
+end
+pseudostatecanvas 142214 pseudostate_ref 382982 // initial 
+   xyz 94 773 2010
+end
 transitioncanvas 131334 transition_ref 524038 // <transition>
   
   from ref 130694 z 2006 to ref 128518
@@ -70,7 +81,7 @@ transitioncanvas 131334 transition_ref 524038 // <transition>
 end
 transitioncanvas 131462 transition_ref 524166 // success
   
-  from ref 128518 z 2006 label "success" xyz 272 346 2006 to ref 130822
+  from ref 128518 z 2006 label "success" xyz 276.5 363 2006 to ref 130822
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 131590 transition_ref 524294 // success
@@ -91,7 +102,7 @@ end
 transitioncanvas 131974 transition_ref 524678 // success
   decenter_end 133
   
-  from ref 131206 z 2006 label "success / report subscribed, start timer" xyz 145 541 2006 to point 104 549
+  from ref 131206 z 2006 label "success / report subscribed, start timer" xyz 155 542 2006 to point 124 550
   line 133766 z 2006 to ref 130054
   write_horizontally default show_definition default drawing_language default
 end
@@ -131,22 +142,23 @@ end
 transitioncanvas 135174 transition_ref 532742 // success
   decenter_begin 375
   
-  from ref 130054 z 2006 label "success / restart timer" xyz 326 685 2006 to ref 135046
+  from ref 130054 z 2006 label "success / restart timer" xyz 472 728.5 2006 to ref 135046
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 135686 transition_ref 532998 // data
   
-  from ref 135046 z 2006 label "[else]" xyz 461 750 2006 to ref 135558
+  from ref 135046 z 2006 label "[else]" xyz 610.5 803 2006 to ref 135558
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 136966 transition_ref 533510 // bad sequence number
   
-  from ref 135558 z 2006 label "[bad sequence num]" xyz 521 815 2006 to ref 136326
+  from ref 135558 z 2006 label "[bad sequence num]" xyz 504.5 834.5 2006 to ref 136326
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 137222 transition_ref 533638 // report data received
+  decenter_begin 405
   
-  from ref 135558 z 2006 label "[else] / report received" xyz 266 814 2006 to point 187 821
+  from ref 135558 z 2006 label "[else] / report received" xyz 376.5 874.5 2006 to point 257 882
   line 137350 z 2006 to ref 130054
   write_horizontally default show_definition default drawing_language default
 end
@@ -173,8 +185,8 @@ transitioncanvas 137990 transition_ref 534022 // success
 end
 transitioncanvas 138246 transition_ref 534150 // heartbeat or subscriptions
   
-  from ref 135046 z 2006 to point 471 627
-  line 138630 z 2006 label "[heartbeat or subscription]" xyz 261 619 2006 to point 186 626
+  from ref 135046 z 2006 to point 621 627
+  line 138630 z 2006 label "[heartbeat or subscription]" xyz 372 620 2006 to point 258 628
   line 138502 z 2006 to ref 130054
   write_horizontally default show_definition default drawing_language default
 end
@@ -204,6 +216,35 @@ transitioncanvas 140422 transition_ref 550534 // create
   
   from ref 138758 z 2001 label "[created with a default constructor]" xyz 238 38 2001 to point 426 45
   line 140550 z 2001 to ref 134150
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 141190 transition_ref 565766 // check
+  decenter_begin 487
+  decenter_end 505
+  
+  from ref 140678 z 2011 label "check" xyz 215.5 775 3000 to ref 141062
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 141446 transition_ref 565894 // pong
+  decenter_begin 645
+  
+  from ref 141062 z 2011 to point 365 833
+  line 141702 z 2011 label "pong" xyz 258.5 825.5 3000 to point 174 833
+  line 141574 z 2011 to ref 140678
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 141830 transition_ref 566022 // pong
+  decenter_begin 879
+  decenter_end 108
+  
+  from ref 140678 z 2011 to point 207 741
+  line 141958 z 2011 label "pong" xyz 162 734 3000 to point 140 741
+  line 142086 z 2011 to ref 140678
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 142342 transition_ref 566150 // <transition>
+  
+  from ref 142214 z 2011 to ref 140678
   write_horizontally default show_definition default drawing_language default
 end
 end

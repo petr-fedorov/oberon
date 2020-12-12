@@ -1,0 +1,15 @@
+class Connected_State
+!!!1411846.cpp!!!	check(inout stm : Feeder) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._feeder_state._busy_state._receive_state._ping_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Feeder.Busy.Receive.Ping";
+#endif
+    stm._feeder_state._busy_state._receive_state._ping_state.create(stm);
+  }
+!!!1412230.cpp!!!	pong(inout stm : Feeder) : void
+  {
+  }
+!!!1412358.cpp!!!	_upper(inout stm : Feeder) : Feeder::AnyState
+  return &stm._feeder_state._busy_state._receive_state;

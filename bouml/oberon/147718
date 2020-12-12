@@ -1,6 +1,6 @@
 format 223
 "Standalone application" // Standalone application
-  revision 86
+  revision 87
   modified_by 6 "petr"
   // class settings
   
@@ -8850,8 +8850,8 @@ namespace src = boost::log::sources;
 namespace sinks = boost::log::sinks;
 namespace keywords = boost::log::keywords;
 
-void init() {
-  logging::add_file_log(keywords::file_name = \"oberon_%N.log\",
+void init(const std::string& exchange, const std::string& product) {
+  logging::add_file_log(keywords::file_name = exchange+ \"_\" + product +\"_%N.log\",
                         keywords::rotation_size = 100 * 1024 * 1024,
                         keywords::time_based_rotation =
                             sinks::file::rotation_at_time_point(0, 0, 0),
@@ -8880,7 +8880,7 @@ int main(int argc, char **argv) {
   using EventCounter = oberon::reconstructor::EventCounter;
   using SizeDeducer = oberon::reconstructor::SizeDeducer;
 
-  init();
+  init(exchange, product);
   logging::add_common_attributes();
 
   // The io_context is required for all I/O
@@ -9026,7 +9026,7 @@ int main(int argc, char **argv) {
       key "genpro path" value "/home/petr/repos/oberon/cpp"
       key "genpro target" value "/tmp/oberon/build/oberon"
       key "genpro tmplt" value "app"
-      key "genpro config" value "  qt"
+      key "genpro config" value "debug  qt"
       key "genpro defines" value "BOOST_LOG_DYN_LINK NO_VERBOSE_STATE_MACHINE NDEBUG"
       key "genpro includepath" value ""
       key "genpro dependpath" value ""

@@ -76,3 +76,25 @@ _current_state->stop(*this);
 !!!1256582.cpp!!!	postEvent(inout event : Feeder::FeederEventFn) : void
 boost::asio::post(*d_->strand_, std::bind(event, shared_from_this()));
 
+!!!1411590.cpp!!!	check() : bool
+  if (_current_state != 0) {
+ #ifdef VERBOSE_STATE_MACHINE
+Feeder & stm {*this};
+ #endif
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger check";
+#endif
+_current_state->check(*this);
+  }
+  return (_current_state != 0);
+!!!1411974.cpp!!!	pong() : bool
+  if (_current_state != 0) {
+ #ifdef VERBOSE_STATE_MACHINE
+Feeder & stm {*this};
+ #endif
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger pong";
+#endif
+_current_state->pong(*this);
+  }
+  return (_current_state != 0);
