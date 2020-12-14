@@ -48,16 +48,31 @@ The application is designed in BOUML -  a free UML 2 tool box including a modele
 
 ## Usage
 
-      oberon <exchange name> <pair name>
+      oberon [options] <exchange name> <product>
 
-Supported parameter pairs are shown below:
+Supported exchanges and products are shown in the table below:
 
-| `<exchange name>` | `<pair name>`|
+| `<exchange name>` | `<product>`|
 |----|---|
 |Coinbase| Any pair supported by [the full channel of Coinbase's websocket feed](https://docs.pro.coinbase.com/#the-full-channel) |
 |Bitstamp| Any pair supported by [Bitstamp's Websocket API v2](https://www.bitstamp.net/websocket/v2/) "Live ticker" and "Live orders" channels|
 
-The output file will have the name in the following format: `<exchange name>_<pair_name>_<timestamp>.csv`
+Options are:
+
+    -q [ --quote-increment ] arg (=0.01) specifies the minimum increment for the
+                                         quote currency (i.e. USD in BTC-USD)
+    -b [ --base-increment ] arg (=0.01)  specifies the minimum increment for the
+                                         base currency (i.e. BTC in BTC-USD)
+    -p [ --pong-wait-time ] arg (=1)     specifies the maximum waiting time in
+                                         seconds for pong message after sending
+                                         ping to an exchange
+
+`quote-increment` and `base-increment` depend on the exchange and the product chosen.
+
+Coinbase's [list of products](https://api.pro.coinbase.com/products/) contains parameters values for each pair. Bitstamp's [list of product](https://www.bitstamp.net/api/v2/trading-pairs-info/) provides  `counter_decimals` and `base_decimals` for each pair.
+
+
+The output file will have the name in the following format: `<exchange name>_<product>_<timestamp>.csv`
 where `timestamp` is the timestamp of an initial order book snapshot. The file starts from the events having this `timestamp` collectively producing the snapshot. The other messages in the file are updates of the snapshot.
 
-There might be several files produced, with different `timestamp`s. That happens when an exchange websocket dries up. In this case the application quitely restarts and starts a new output file.
+There might be several files produced, with different `timestamp`s. That happens when an exchange websocket gets disconnected (i.e. when the exchainge does not respond to ping messages longer than `--pong-wait-time` seconds). In this case the application quitely restarts and creates a new output file.
