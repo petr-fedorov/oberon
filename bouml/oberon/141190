@@ -1,6 +1,6 @@
 format 223
 "Reconstructor" // Standalone application::Reconstructor
-  revision 203
+  revision 204
   modified_by 6 "petr"
   // class settings
   
@@ -3541,12 +3541,12 @@ ${inlines}
       mysql_decl ""
       
       operation 1072262 "File"
-	cpp_inline public explicit_return_type ""
+	public explicit_return_type ""
 	nparams 5
 	  param in name "exchange" explicit_type "string"
 	  param in name "product" explicit_type "string"
-	  param in name "base_precision" explicit_type "int"
 	  param in name "quote_precision" explicit_type "int"
+	  param in name "base_precision" explicit_type "int"
 	  param in name "source" explicit_type "bool"
 	    defaultvalue "false"
 	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, ${t2} ${p2}${v2}, ${t3} ${p3}${v3}, ${t4} ${p4}${v4}${)}${volatile}${throw};
@@ -3994,6 +3994,7 @@ ${namespace_end}
       cpp_src "${comment}
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/uuid/nil_generator.hpp>
+#include <boost/log/trivial.hpp>
 #include <iomanip>
 #include <sstream>
 #include \"date.h\"

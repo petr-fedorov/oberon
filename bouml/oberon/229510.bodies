@@ -1,6 +1,8 @@
 class File
-!!!1072262.cpp!!!	File(in exchange : string, in product : string, in base_precision : int, in quote_precision : int, in source : bool = false)
+!!!1072262.cpp!!!	File(in exchange : string, in product : string, in quote_precision : int, in base_precision : int, in source : bool = false)
 is_handles_deleted_ = true;
+BOOST_LOG_TRIVIAL(info) << "Output: quote_precision=" << quote_precision
+<< " base_precision=" << base_precision;
 !!!1072134.cpp!!!	~File()
 f_.close();
 s_.close();

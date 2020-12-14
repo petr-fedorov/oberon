@@ -1,6 +1,6 @@
 format 223
 "Standalone application" // Standalone application
-  revision 87
+  revision 90
   modified_by 6 "petr"
   // class settings
   
@@ -8837,6 +8837,10 @@ operator<<(std::basic_ostream<CharT, Traits>& os,
 #include <boost/log/trivial.hpp>
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/log/utility/setup/file.hpp>
+#include <boost/program_options/options_description.hpp>
+#include <boost/program_options/positional_options.hpp>
+#include <boost/program_options/variables_map.hpp>
+#include <boost/program_options/parsers.hpp>
 
 #include <thread>
 using boost::posix_time::seconds;
@@ -8864,17 +8868,38 @@ void init(const std::string& exchange, const std::string& product) {
 
 
 int main(int argc, char **argv) {
-  namespace rec = oberon::receiver;
+
+
+  namespace po=boost::program_options;
+
+  po::options_description options(\"Options\"), hidden;
+
+  double quote_increment, base_increment;
+  int pong_wait_time;
+
+  options.add_options()
+    (\"quote-increment,q\", po::value<double>(&quote_increment)->default_value(0.01), \"specifies the minimum increment for the quote currency (i.e. USD in BTC-USD)\")
+    (\"base-increment,b\", po::value<double>(&base_increment)->default_value(0.01),\"specifies the minimum increment for the base currency (i.e. BTC in BTC-USD)\")
+    (\"pong-wait-time,p\", po::value<int>(&pong_wait_time)->default_value(1), \"specifies the maximum waiting time in seconds for pong message after sending ping to an exchange\");
+  hidden.add_options()(\"exchange\",\"\")(\"product\",\"\"); 
+  po::positional_options_description p;
+  p.add(\"exchange\",1).add(\"product\",1);
+
+  po::options_description all;
+  all.add(options).add(hidden);
+
+  po::variables_map vm;
+  po::store(po::command_line_parser(argc, argv).options(all).positional(p).run(), vm);
+  po::notify(vm);
+
 
   // Check command line arguments.
-  if (argc != 3) {
-    std::cerr << \"Usage: obtain <exchange> <product> \\n\"
-              << \"Example:\\n\"
-              << \"    obtain Coinbase BTC-USD \\n\";
+  if (!(vm.count(\"exchange\") && vm.count(\"product\"))) {
+    std::cerr << \"Usage: oberon [options] <exchange> <product> \\n\" << options;
     return EXIT_FAILURE;
   }
-  auto const exchange = argv[1];
-  const std::string product {argv[2]};
+  std::string const exchange {vm[\"exchange\"].as<std::string>()};
+  const std::string product {vm[\"product\"].as<std::string>()};
   using namespace oberon;
   using Snapshot = oberon::receiver::Snapshot;
   using EventCounter = oberon::reconstructor::EventCounter;
@@ -8887,8 +8912,10 @@ int main(int argc, char **argv) {
   std::shared_ptr<boost::asio::io_context> ioc =
       std::make_shared<boost::asio::io_context>();
 
-  auto store = std::make_shared<reconstructor::File>(exchange, product, 8, 2);
-  if (!std::strcmp(exchange, \"Bitstamp\")) {
+  auto store = std::make_shared<reconstructor::File>(
+      exchange, product, -std::floor(std::log10(quote_increment)),
+      -std::floor(std::log10(base_increment)));
+  if (exchange == \"Bitstamp\") {
     using Receiver=oberon::receiver::bitstamp::Receiver;
     using Feeder=oberon::receiver::bitstamp::Feeder;
     using Deduplicator=oberon::reconstructor::bitstamp::Deduplicator;
@@ -8896,7 +8923,7 @@ int main(int argc, char **argv) {
     using TimeOrderEnforcer=oberon::reconstructor::bitstamp::TimeOrderEnforcer;
     using Synchronizer=oberon::reconstructor::bitstamp::Synchronizer;
     auto feeder =
-        std::make_shared<Feeder>(ioc, product, 2);
+        std::make_shared<Feeder>(ioc, product, pong_wait_time);
     auto snapshot =
         std::make_shared<Snapshot>(ioc,\"www.bitstamp.net\", \"443\",\"/api/v2/order_book/\" + product + \"?group=2\");
 
@@ -8908,7 +8935,7 @@ int main(int argc, char **argv) {
     auto cleaner = std::make_shared<Synchronizer>(time_order_enforcer);
     cleaner->create();
     auto reconstructor =
-        Reconstructor{cleaner, 0.001, 0.00000001};
+        Reconstructor{cleaner, quote_increment, base_increment};
 
     auto receiver = std::make_shared<Receiver>(
         ioc, std::static_pointer_cast<Feeder>(feeder), snapshot,
@@ -8934,7 +8961,7 @@ int main(int argc, char **argv) {
     t1.join();
     t2.join();
     t3.join();
-  } else if (!std::strcmp(exchange,\"Coinbase\")) {
+  } else if (exchange == \"Coinbase\") {
 
     using Receiver=oberon::receiver::coinbase::Receiver;
     using Feeder=oberon::receiver::coinbase::Feeder;
@@ -8942,14 +8969,14 @@ int main(int argc, char **argv) {
     using Reconstructor=oberon::reconstructor::coinbase::Reconstructor;
 
     auto feeder =
-        std::make_shared<Feeder>(ioc, product, 1);
+        std::make_shared<Feeder>(ioc, product, pong_wait_time);
     auto snapshot =
         std::make_shared<Snapshot>(ioc,\"api.pro.coinbase.com\", \"443\",\"/products/\" + product + \"/book?level=3\");
     auto event_counter = std::make_shared<EventCounter>(store);
     auto size_deducer = std::make_shared<SizeDeducer>(event_counter);
     size_deducer->create();
     auto cleaner = std::make_shared<Synchronizer>(size_deducer);
-    auto reconstructor = Reconstructor{cleaner, 0.001, 0.00000001};
+    auto reconstructor = Reconstructor{cleaner, quote_increment, base_increment };
     auto coinbase = std::make_shared<Receiver>(
         ioc, std::static_pointer_cast<Feeder>(feeder), snapshot,
         std::bind(&Reconstructor::process, &reconstructor,
@@ -9039,7 +9066,7 @@ CONFIG -= app_bundle
 CONFIG += thread
 CONFIG += object_parallel_to_source
 CONFIG -= qt
-LIBS +=-lssl -lcrypto  -lboost_log  -lboost_log_setup -lboost_thread -lpthread -lboost_system"
+LIBS +=-lssl -lcrypto  -lboost_log  -lboost_log_setup -lboost_thread -lboost_program_options -lpthread -lboost_system "
     end
   end
 end
