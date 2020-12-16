@@ -1,6 +1,6 @@
 format 223
 "Standalone application" // Standalone application
-  revision 90
+  revision 91
   modified_by 6 "petr"
   // class settings
   
@@ -9058,15 +9058,19 @@ int main(int argc, char **argv) {
       key "genpro includepath" value ""
       key "genpro dependpath" value ""
       key "genpro objectsdir" value ""
-      key "genpro footer" value "QMAKE_CC=clang-11
-QMAKE_CXX=clang++-11
-QMAKE_LINK=clang++-11
-CONFIG += console c++11
+      key "genpro footer" value "QMAKE_CC=clang
+QMAKE_CXX=clang++
+QMAKE_LINK=clang++
+CONFIG += console 
 CONFIG -= app_bundle
 CONFIG += thread
 CONFIG += object_parallel_to_source
 CONFIG -= qt
-LIBS +=-lssl -lcrypto  -lboost_log  -lboost_log_setup -lboost_thread -lboost_program_options -lpthread -lboost_system "
+QMAKE_CXXFLAGS += -std=c++14
+#INCLUDEPATH += /usr/include/boost169
+LIBS +=-lssl -lcrypto  
+#LIBS += -L/usr/lib64/boost169
+LIBS += -lboost_log  -lboost_log_setup -lboost_thread -lboost_program_options -lpthread -lboost_system "
     end
   end
 end

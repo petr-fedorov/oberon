@@ -31,7 +31,6 @@ BOOST_LOG_TRIVIAL(warning) << stm._machine_name << stm.d_->error_message_;
 #endif
 stm.d_->ctx_ = std::make_unique<boost::asio::ssl::context>(
     boost::asio::ssl::context::sslv23_client);
-load_root_certificates(*stm.d_->ctx_);
 stm.d_->resolver_ = std::make_unique<boost::asio::ip::tcp::resolver>(*stm.d_->ioc_);
 stm.d_->ws_ = std::make_unique<FeederData::WebsocketStream>(*stm.d_->ioc_, *stm.d_->ctx_);
 
