@@ -1,6 +1,6 @@
 format 223
 "Receiver" // Standalone application::Receiver
-  revision 38
+  revision 39
   modified_by 6 "petr"
   // class settings
   
@@ -5493,7 +5493,7 @@ ${members}};
 	  cpp_on_exit "stm.d_->signal_set_->cancel();
 stm.d_->feeder_->postEvent(&Feeder::stop);"
 	state 219526 "Engaging Feeder"
-	    uml_on_entry "engage Feeder"
+	    uml_on_entry "post reset, engage Feeder"
 	    cpp_on_entry "boost::asio::post(
     boost::asio::bind_executor(*stm.d_->processing_strand_, [&stm]() {
       boost::property_tree::ptree reset;

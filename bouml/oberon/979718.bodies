@@ -10,7 +10,10 @@ class Unsynchronised_State
   }
 !!!1395078.cpp!!!	reset(inout stm : Synchronizer) : void
   {
-    create(stm);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition reset";
+#endif
+stm.output_.push_back(std::move(stm.received_));    create(stm);
   }
 !!!1395462.cpp!!!	message(inout stm : Synchronizer) : void
   {
@@ -31,5 +34,4 @@ stm.before_messages_.push_back(std::move(stm.received_));
 stm.before_messages_.clear();
 stm.era_messages_.clear();
 stm.era_.reset();
-//
 

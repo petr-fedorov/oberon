@@ -1,6 +1,6 @@
 format 223
 "Bitstamp" // Standalone application::Reconstructor::Bitstamp
-  revision 4
+  revision 6
   modified_by 6 "petr"
   // class settings
   
@@ -550,7 +550,7 @@ ${inlines}
       end
 
       operation 1383686 "message"
-	cpp_virtual public explicit_return_type "bool"
+	cpp_override public explicit_return_type "bool"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -564,7 +564,7 @@ ${inlines}
       end
 
       operation 1383814 "after_handle"
-	cpp_virtual public explicit_return_type "bool"
+	cpp_override public explicit_return_type "bool"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -636,7 +636,6 @@ ${inlines}
 	  cpp_on_entry "stm.before_messages_.clear();
 stm.era_messages_.clear();
 stm.era_.reset();
-//
 
 "
 	transition 557702 "era"
@@ -649,7 +648,9 @@ stm.era_.reset();
 	transition 557958 "reset"
 	  on state_ref 295430 // Unsynchronised
 	    uml_trigger "reset"
+	    uml_expr "pass reset to next"
 	    cpp_trigger "reset"
+	    cpp_expr "stm.output_.push_back(std::move(stm.received_));"
 	  external 
 	end
 
@@ -751,7 +752,9 @@ stm.output_.push_back(std::move(stm.received_));"
 	transition 558854 "reset"
 	  on state_ref 295430 // Unsynchronised
 	    uml_trigger "reset"
+	    uml_expr "pass reset to next"
 	    cpp_trigger "reset"
+	    cpp_expr "stm.output_.push_back(std::move(stm.received_));"
 	  external 
 	end
 
@@ -1650,7 +1653,7 @@ ${inlines}
       end
 
       operation 1395718 "create"
-	force_body_gen public explicit_return_type "bool"
+	force_body_gen cpp_override public explicit_return_type "bool"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "

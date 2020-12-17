@@ -16,7 +16,6 @@ if (!episode_.empty()) {
     std::move(episode_.begin(), episode_.end(), std::inserter(buffer_, iter));
   }
   episode_.clear();
-  auto threshold = latest_ - delay_;
   auto iter = buffer_.begin();
   for (; iter != buffer_.end(); ++iter)
     if ((*iter)->timestamp() > latest_ - delay_)

@@ -15,8 +15,11 @@ return true;
 for(auto f: fills_)
   for(auto c: events_)
   if((static_cast<OrderEvent*>(output_[f].get()))->maker() ==
-        (static_cast<OrderEvent*>(output_[c].get()))->maker())
+        (static_cast<OrderEvent*>(output_[c].get()))->maker()) {
       output_[c]->deleted(true);
+      std::swap(output_[c], output_[f]);
+      break;
+  }
 events_.clear();
 fills_.clear();
 return TokenHandler::after_handle();

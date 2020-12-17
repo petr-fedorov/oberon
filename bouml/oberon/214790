@@ -1,6 +1,6 @@
 format 223
 "Coinbase" // Standalone application::Reconstructor::Coinbase
-  revision 3
+  revision 4
   modified_by 6 "petr"
   // class settings
   
@@ -481,6 +481,20 @@ ${inlines}
 	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} ${p0}${v0}${)}${volatile}${throw};
 "
 	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${throw} : TokenHandler{next, \"Synchronizer\"} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1419782 "reset"
+	cpp_override public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
