@@ -1,10 +1,10 @@
 format 223
 
-classcanvas 128006 class_ref 486406 // CoinbaseReconstructor
+classcanvas 128006 class_ref 486406 // Reconstructor
   classdiagramsettings member_max_width 0 end
   xyz 133 519 2000
 end
-classcanvas 128134 class_ref 472710 // CoinbaseDoneCanceled
+classcanvas 128134 class_ref 472710 // CoinbaseDoneCancelled
   classdiagramsettings member_max_width 0 end
   xyz 362 378 2006
 end
@@ -52,6 +52,14 @@ classcanvas 139526 class_ref 597126 // Created
   classdiagramsettings member_max_width 0 end
   xyz 621 295 2029
 end
+classcanvas 141062 class_ref 993158 // CoinbaseChanged
+  classdiagramsettings member_max_width 0 end
+  xyz 833 405 2006
+end
+classcanvas 141318 class_ref 570886 // Changed
+  classdiagramsettings member_max_width 0 end
+  xyz 859 300 2029
+end
 line 128262 ---+ decenter_begin 627 decenter_end 209
   from ref 128134 z 2007 to point 322 405
   line 137478 z 2007 to point 322 525
@@ -70,9 +78,9 @@ relationcanvas 129286 relation_ref 449798 // <generalisation>
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 129926 relation_ref 543750 // <directional composition>
-  from ref 128006 z 2001 stereotype "<<map>>" xyz 179.5 372 3000 to ref 129798
-  role_a_pos 215 236 3000 no_role_b
-  multiplicity_a_pos 190 236 3000 no_multiplicity_b
+  from ref 128006 z 2001 stereotype "<<map>>" xyz 179 372 3000 to ref 129798
+  role_a_pos 211 236 3000 no_role_b
+  multiplicity_a_pos 186 236 3000 no_multiplicity_b
 end
 line 130182 ---+ decenter_begin 627
   from ref 130054 z 2007 to point 451 488
@@ -81,7 +89,7 @@ line 130182 ---+ decenter_begin 627
 line 130566 ---+ decenter_begin 348 decenter_end 939
   from ref 130438 z 2007 to ref 128006
 line 130950 ---+ geometry HV unfixed
-  from ref 130822 z 2013 to point 205 646
+  from ref 130822 z 2013 to point 178 646
   line 134278 z 2013 to ref 128006
 relationcanvas 131206 relation_ref 544134 // <generalisation>
   from ref 130822 z 2013 to ref 128902
@@ -102,7 +110,7 @@ relationcanvas 133254 relation_ref 640390 // <generalisation>
   no_multiplicity_a no_multiplicity_b
 end
 line 133510 ---+ geometry HV unfixed decenter_end 214
-  from ref 133382 z 2007 to point 162 265
+  from ref 133382 z 2007 to point 151 265
   line 135686 z 2007 to ref 128006
 relationcanvas 133766 relation_ref 558214 // <generalisation>
   geometry VHV unfixed
@@ -134,6 +142,18 @@ relationcanvas 140422 relation_ref 1024646 // <generalisation>
   from ref 130054 z 2030 to point 549 420
   line 140550 z 2030 to point 647 420
   line 140678 z 2030 to ref 139526
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+line 141190 ---+
+  from ref 141062 z 2007 to ref 128006
+relationcanvas 141446 relation_ref 612358 // <generalisation>
+  from ref 141318 z 2030 to ref 129030
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 141574 relation_ref 1120390 // <generalisation>
+  from ref 141062 z 2030 to ref 141318
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end

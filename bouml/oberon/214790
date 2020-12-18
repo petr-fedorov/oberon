@@ -1,6 +1,6 @@
 format 223
 "Coinbase" // Standalone application::Reconstructor::Coinbase
-  revision 4
+  revision 5
   modified_by 6 "petr"
   // class settings
   
@@ -306,6 +306,45 @@ ${inlines}
 	      cpp default "${type}"
 	      classrelation_ref 903814 // <generalisation>
 	    b parent class_ref 521478 // Era
+	end
+      end
+
+      class 993158 "CoinbaseChanged"
+	visibility public 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	operation 1426310 "CoinbaseChanged"
+	  public explicit_return_type ""
+	  nparams 2
+	    param in name "tree" type class_ref 174214 // ptree
+	  multiplicity "1"
+	    param in name "reconstructor" type class_ref 486406 // Reconstructor
+	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${volatile}${throw};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw} {
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	classrelation 1130758 // <generalisation>
+	  relation 1120390 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 1130758 // <generalisation>
+	    b parent class_ref 570886 // Changed
 	end
       end
 

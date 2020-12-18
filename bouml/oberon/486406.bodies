@@ -18,6 +18,8 @@ try {
       output = make_unique<CoinbaseDoneFilled>(tree, *this);
   } else if (type == "match") {
     output = make_unique<CoinbaseMatch>(tree, *this);
+  } else if (type == "change") {
+    output = make_unique<CoinbaseChanged>(tree, *this);
   } else if (type == "era") {
     output = make_unique<CoinbaseEra>(tree);
   } else if (type == "reset") {
