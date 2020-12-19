@@ -1,6 +1,6 @@
 format 223
 "Standalone application" // Standalone application
-  revision 95
+  revision 96
   modified_by 6 "petr"
   // class settings
   
@@ -8880,6 +8880,7 @@ int main(int argc, char **argv) {
   options.add_options()
     (\"quote-increment,q\", po::value<double>(&quote_increment)->default_value(0.01), \"specifies the minimum increment for the quote currency (i.e. USD in BTC-USD)\")
     (\"base-increment,b\", po::value<double>(&base_increment)->default_value(0.01),\"specifies the minimum increment for the base currency (i.e. BTC in BTC-USD)\")
+    (\"deleted,d\",\"output deleted events too\") 
     (\"pong-wait-time,p\", po::value<int>(&pong_wait_time)->default_value(1), \"specifies the maximum waiting time in seconds for pong message after sending ping to an exchange\");
   hidden.add_options()(\"exchange\",\"\")(\"product\",\"\"); 
   po::positional_options_description p;
@@ -8912,9 +8913,13 @@ int main(int argc, char **argv) {
   std::shared_ptr<boost::asio::io_context> ioc =
       std::make_shared<boost::asio::io_context>();
 
+  bool deleted = false;
+  if(vm.count(\"deleted\"))
+    deleted = true;
+
   auto store = std::make_shared<reconstructor::File>(
       exchange, product, -std::floor(std::log10(quote_increment)),
-      -std::floor(std::log10(base_increment)));
+      -std::floor(std::log10(base_increment)), deleted);
   if (exchange == \"Bitstamp\") {
     using Receiver=oberon::receiver::bitstamp::Receiver;
     using Feeder=oberon::receiver::bitstamp::Feeder;

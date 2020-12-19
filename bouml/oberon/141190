@@ -1,6 +1,6 @@
 format 223
 "Reconstructor" // Standalone application::Reconstructor
-  revision 205
+  revision 206
   modified_by 6 "petr"
   // class settings
   
@@ -3184,12 +3184,14 @@ ${inlines}
 
       operation 722182 "TokenHandler"
 	public explicit_return_type ""
-	nparams 1
+	nparams 2
 	  param in name "handler_name" explicit_type "string"
 	    defaultvalue "\"<a token handler>\""
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw};
+	  param in name "handle_deleted" explicit_type "bool"
+	    defaultvalue "false"
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, ${t1} ${p1}${v1}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} : handler_name_{handler_name} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}${)}${volatile}${throw} : handler_name_{handler_name}, is_handles_deleted_{handle_deleted} {
   ${body}}
 "
 	
@@ -3200,13 +3202,15 @@ ${inlines}
 
       operation 1358086 "TokenHandler"
 	public explicit_return_type ""
-	nparams 2
+	nparams 3
 	  param in name "next" type class_ref 950918 // TokenHandler_SP
 	  param in name "handler_name" explicit_type "string"
 	    defaultvalue "\"< a token handler>\""
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${volatile}${throw};
+	  param in name "handle_deleted" explicit_type "bool"
+	    defaultvalue "false"
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} ${p0}${v0}, const ${t1} & ${p1}${v1}, ${t2} ${p2}${v2}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)}${volatile}${throw} : handler_name_{handler_name}, next_{next} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}, const ${t1} & ${p1}, ${t2} ${p2}${)}${volatile}${throw} : handler_name_{handler_name}, next_{next}, is_handles_deleted_{handle_deleted} {
   ${body}}
 "
 	
@@ -3542,16 +3546,18 @@ ${inlines}
       
       operation 1072262 "File"
 	public explicit_return_type ""
-	nparams 5
+	nparams 6
 	  param in name "exchange" explicit_type "string"
 	  param in name "product" explicit_type "string"
 	  param in name "quote_precision" explicit_type "int"
 	  param in name "base_precision" explicit_type "int"
+	  param in name "handle_deleted" explicit_type "bool"
+	    defaultvalue "false"
 	  param in name "source" explicit_type "bool"
 	    defaultvalue "false"
-	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, ${t2} ${p2}${v2}, ${t3} ${p3}${v3}, ${t4} ${p4}${v4}${)}${volatile}${throw};
+	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, ${t2} ${p2}${v2}, ${t3} ${p3}${v3}, ${t4} ${p4}${v4}, ${t5} ${p5}${v5}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${)}${volatile}${throw}: TokenHandler{\"File\"}, exchange_{exchange}, product_{product}, base_precision_{base_precision}, quote_precision_{quote_precision}, source_{source} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}${)}${volatile}${throw}: TokenHandler{\"File\", handle_deleted}, exchange_{exchange}, product_{product}, base_precision_{base_precision}, quote_precision_{quote_precision}, source_{source} {
   ${body}}
 "
 	

@@ -56,6 +56,8 @@ Supported exchanges and products are shown in the table below:
 |----|---|
 |Coinbase| Any pair supported by [the full channel of Coinbase's websocket feed](https://docs.pro.coinbase.com/#the-full-channel) |
 |Bitstamp| Any pair supported by [Bitstamp's Websocket API v2](https://www.bitstamp.net/websocket/v2/) "Live ticker" and "Live orders" channels|
+|Bitfinex| TBD|
+|KuCoin|TBD|
 
 Options are:
 
@@ -63,6 +65,7 @@ Options are:
                                          quote currency (i.e. USD in BTC-USD)
     -b [ --base-increment ] arg (=0.01)  specifies the minimum increment for the
                                          base currency (i.e. BTC in BTC-USD)
+    -d [ --deleted ]                     output deleted events too
     -p [ --pong-wait-time ] arg (=1)     specifies the maximum waiting time in
                                          seconds for pong message after sending
                                          ping to an exchange
