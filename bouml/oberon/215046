@@ -1,6 +1,6 @@
 format 223
 "Bitfinex" // Standalone application::Reconstructor::Bitfinex
-  revision 3
+  revision 4
   modified_by 6 "petr"
   // class settings
   
@@ -303,6 +303,14 @@ ${inlines}
 	    cpp default "${type}"
 	    classrelation_ref 688134 // <generalisation>
 	  b parent class_ref 486278 // Reconstructor
+      end
+
+      classrelation 1137542 // <dependency>
+	relation 1127174 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1137542 // <dependency>
+	  b parent class_ref 441478 // Elapsed
       end
     end
   end
