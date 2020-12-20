@@ -10,13 +10,13 @@ if (type == "elapsed") {
   OrderEvent::Timestamp timestamp;
   std::istringstream ss{tree.get<string>("timestamp")};
   ss >> parse("%FT%TZ", timestamp);
-  output=make_unique<Elapsed>(timestamp);
+  output=boost::make_unique<Elapsed>(timestamp);
 } else if (type == "order_changed")
-  output=make_unique<BitfinexChanged>(tree, *this);
+  output=boost::make_unique<BitfinexChanged>(tree, *this);
 else if (type == "order_deleted") {
-  output=make_unique<BitfinexCancelled>(tree, *this);
+  output=boost::make_unique<BitfinexCancelled>(tree, *this);
 
 } else if (type == "match") {
-  output=make_unique<BitfinexFilled>(tree, *this);
+  output=boost::make_unique<BitfinexFilled>(tree, *this);
 }
 return output;

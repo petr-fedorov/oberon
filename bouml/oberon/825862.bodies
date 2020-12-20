@@ -3,7 +3,7 @@ class Snapshot
   _current_state = 0;
 !!!1149318.cpp!!!	Snapshot(inout ioc : io_context, in host : string, in port : string, in target : string)
 d_->ioc_ = ioc;
-d_->strand_ = std::make_unique<boost::asio::io_context::strand>(*ioc);
+d_->strand_ = boost::make_unique<boost::asio::io_context::strand>(*ioc);
 
 namespace http = boost::beast::http;
 d_->req_.method(http::verb::get);

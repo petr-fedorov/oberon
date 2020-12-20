@@ -1,6 +1,6 @@
 format 223
 "Receiver" // Standalone application::Receiver
-  revision 39
+  revision 40
   modified_by 6 "petr"
   // class settings
   
@@ -160,10 +160,10 @@ format 223
       state 259846 "Busy"
 	  uml_on_entry "create websocket"
 	  uml_on_exit "close websocket"
-	  cpp_on_entry "stm.d_->ctx_ = std::make_unique<boost::asio::ssl::context>(
+	  cpp_on_entry "stm.d_->ctx_ = boost::make_unique<boost::asio::ssl::context>(
     boost::asio::ssl::context::sslv23_client);
-stm.d_->resolver_ = std::make_unique<boost::asio::ip::tcp::resolver>(*stm.d_->ioc_);
-stm.d_->ws_ = std::make_unique<FeederData::WebsocketStream>(*stm.d_->ioc_, *stm.d_->ctx_);
+stm.d_->resolver_ = boost::make_unique<boost::asio::ip::tcp::resolver>(*stm.d_->ioc_);
+stm.d_->ws_ = boost::make_unique<FeederData::WebsocketStream>(*stm.d_->ioc_, *stm.d_->ctx_);
 
 if (!SSL_set_tlsext_host_name(stm.d_->ws_->next_layer().native_handle(),
                               stm.d_->host_.c_str())) {
@@ -232,7 +232,7 @@ stm.d_->ws_->next_layer().next_layer().close();
                     std::chrono::system_clock::now()));
             std::stringstream m;
             m << boost::beast::buffers(stm.d_->buffer_.data());
-            stm.d_->tree_ = std::make_unique<boost::property_tree::ptree>();
+            stm.d_->tree_ = boost::make_unique<boost::property_tree::ptree>();
             boost::property_tree::read_json(m, *stm.d_->tree_);
             stm.d_->tree_->put(\"local_timestamp\", local_timestamp);
             stm.d_->buffer_.consume(stm.d_->buffer_.size());
@@ -2431,7 +2431,7 @@ ${inlines}
 	  param in name "exhausted_after" explicit_type "int"
 	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(} std::shared_ptr<${t0}> & ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}, const ${t4} & ${p4}${v4}, ${t5} ${p5}${v5}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}std::shared_ptr<${t0}> & ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, const ${t4} & ${p4}, ${t5} ${p5}${)}${volatile}${throw} : d_{std::make_unique<FeederData>(host, port, target)} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}std::shared_ptr<${t0}> & ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, const ${t4} & ${p4}, ${t5} ${p5}${)}${volatile}${throw} : d_{boost::make_unique<FeederData>(host, port, target)} {
   ${body}}
 "
 	
@@ -3211,10 +3211,10 @@ ${members}};
       state 260358 "Obtaining"
 	  uml_on_entry "create https stream"
 	  uml_on_exit "close https stream"
-	  cpp_on_entry "stm.d_->resolver_ = std::make_unique<boost::asio::ip::tcp::resolver>(*stm.d_->ioc_);
-stm.d_->ctx_ = std::make_unique<boost::asio::ssl::context>(
+	  cpp_on_entry "stm.d_->resolver_ = boost::make_unique<boost::asio::ip::tcp::resolver>(*stm.d_->ioc_);
+stm.d_->ctx_ = boost::make_unique<boost::asio::ssl::context>(
     boost::asio::ssl::context::sslv23_client);
-stm.d_->https_ = std::make_unique<SnapshotData::SslStream>(*stm.d_->ioc_, *stm.d_->ctx_);
+stm.d_->https_ = boost::make_unique<SnapshotData::SslStream>(*stm.d_->ioc_, *stm.d_->ctx_);
 
 if (!SSL_set_tlsext_host_name(stm.d_->https_->native_handle(), stm.d_->host_.c_str())) {
   boost::system::error_code ec{static_cast<int>(::ERR_get_error()),
@@ -3404,7 +3404,7 @@ boost::asio::post(*stm.d_->ioc_, [&stm]() {
                         std::chrono::system_clock::now()));
       std::istringstream is{stm.d_->res_.body()};
       stm.d_->res_.body().clear();
-      stm.d_->snapshot_tree_ = std::make_unique<boost::property_tree::ptree>();
+      stm.d_->snapshot_tree_ = boost::make_unique<boost::property_tree::ptree>();
       try {
         read_json(is, *stm.d_->snapshot_tree_);
         stm.d_->snapshot_tree_->put(\"local_timestamp\", local_timestamp);
@@ -4899,7 +4899,7 @@ ${inlines}
 	  param in name "target" explicit_type "string"
 	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}std::shared_ptr< ${t0} > ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}std::shared_ptr< ${t0} > ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}${)}${throw} : d_{std::make_unique<SnapshotData>(host, port)} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}std::shared_ptr< ${t0} > ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}${)}${throw} : d_{boost::make_unique<SnapshotData>(host, port)} {
   ${body}}
 "
 	
@@ -7088,7 +7088,7 @@ ${inlines}
 	  param inout name "processor" type class_ref 909958 // ConsumerFn
 	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}std::shared_ptr< ${t0} > ${p0}${v0}, std::shared_ptr< ${t1} >  && ${p1}${v1}, std::shared_ptr< ${t2} > & ${p2}${v2}, ${t3} ${p3}${v3}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}std::shared_ptr< ${t0} > ${p0}, std::shared_ptr< ${t1} > && ${p1}, std::shared_ptr< ${t2} > & ${p2}, ${t3} ${p3}${)}${throw} : _current_state{0}, d_{std::make_unique<ReceiverData>()} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}std::shared_ptr< ${t0} > ${p0}, std::shared_ptr< ${t1} > && ${p1}, std::shared_ptr< ${t2} > & ${p2}, ${t3} ${p3}${)}${throw} : _current_state{0}, d_{boost::make_unique<ReceiverData>()} {
   ${body}}
 "
 	
@@ -7746,6 +7746,7 @@ ${namespace_end}
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/log/trivial.hpp>
+#include <boost/smart_ptr/make_unique.hpp>
 #include \"../date.h\"
 ${includes}
 ${namespace_start}
@@ -7779,6 +7780,7 @@ ${namespace_end}
 #include <boost/beast/http/read.hpp>
 #include <boost/beast/http/write.hpp>
 #include <boost/beast/version.hpp>
+#include <boost/smart_ptr/make_unique.hpp>
 #include \"../date.h\"
 ${includes}
 ${namespace_start}
@@ -7900,6 +7902,7 @@ ${namespace_end}
 #include <boost/asio/bind_executor.hpp>
 #include <boost/asio/connect.hpp>
 #include <boost/property_tree/json_parser.hpp>
+#include <boost/smart_ptr/make_unique.hpp>
 #include <sstream>
 #include \"../date.h\"
 ${includes}

@@ -6,24 +6,24 @@ Token output;
 try {
   string type = tree.get<string>("type");
   if (type == "elapsed")
-    output = make_unique<Elapsed>(toTimestamp(tree.get<string>("time")));
+    output = boost::make_unique<Elapsed>(toTimestamp(tree.get<string>("time")));
   else if (type == "received")
-    output = make_unique<CoinbaseReceived>(tree, *this);
+    output = boost::make_unique<CoinbaseReceived>(tree, *this);
   else if (type == "open")
-    output = make_unique<CoinbaseOpen>(tree, *this);
+    output = boost::make_unique<CoinbaseOpen>(tree, *this);
   else if (type == "done") {
     if (tree.get<string>("reason") == "canceled")
-      output = make_unique<CoinbaseDoneCancelled>(tree, *this);
+      output = boost::make_unique<CoinbaseDoneCancelled>(tree, *this);
     else
-      output = make_unique<CoinbaseDoneFilled>(tree, *this);
+      output = boost::make_unique<CoinbaseDoneFilled>(tree, *this);
   } else if (type == "match") {
-    output = make_unique<CoinbaseMatch>(tree, *this);
+    output = boost::make_unique<CoinbaseMatch>(tree, *this);
   } else if (type == "change") {
-    output = make_unique<CoinbaseChanged>(tree, *this);
+    output = boost::make_unique<CoinbaseChanged>(tree, *this);
   } else if (type == "era") {
-    output = make_unique<CoinbaseEra>(tree);
+    output = boost::make_unique<CoinbaseEra>(tree);
   } else if (type == "reset") {
-    output = make_unique<Reset>();
+    output = boost::make_unique<Reset>();
   }
   if (!output) {
     std::stringstream s;

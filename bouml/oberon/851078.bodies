@@ -82,7 +82,7 @@ stm.d_->ws_->async_read(
                     std::chrono::system_clock::now()));
             std::stringstream m;
             m << boost::beast::buffers(stm.d_->buffer_.data());
-            stm.d_->tree_ = std::make_unique<boost::property_tree::ptree>();
+            stm.d_->tree_ = boost::make_unique<boost::property_tree::ptree>();
             boost::property_tree::read_json(m, *stm.d_->tree_);
             stm.d_->tree_->put("local_timestamp", local_timestamp);
             stm.d_->buffer_.consume(stm.d_->buffer_.size());

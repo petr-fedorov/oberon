@@ -8,18 +8,18 @@ if (type == "elapsed") {
   Message::Timestamp timestamp;
   std::istringstream ss{tree.get<string>("timestamp")};
   ss >> parse("%FT%TZ", timestamp);
-  output=make_unique<Elapsed>(timestamp);
+  output=boost::make_unique<Elapsed>(timestamp);
 } else if (type == "order_created")
-  output=make_unique<BitstampOpened>(tree, *this);
+  output=boost::make_unique<BitstampOpened>(tree, *this);
 else if (type == "order_changed")
-  output=make_unique<BitstampChanged>(tree, *this);
+  output=boost::make_unique<BitstampChanged>(tree, *this);
 else if (type == "order_deleted") {
-    output=make_unique<BitstampCancelled>(tree, *this);
+    output=boost::make_unique<BitstampCancelled>(tree, *this);
 } else if (type == "trade") {
-  output=make_unique<BitstampFilled>(tree, *this);
+  output=boost::make_unique<BitstampFilled>(tree, *this);
 } else if (type == "era") {
-  output=make_unique<BitstampEra>(tree);
+  output=boost::make_unique<BitstampEra>(tree);
 } else if (type == "reset") {
-  output=make_unique<Reset>();
+  output=boost::make_unique<Reset>();
 }
 return output;

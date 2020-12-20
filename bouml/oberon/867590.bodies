@@ -22,7 +22,7 @@ boost::asio::post(*stm.d_->ioc_, [&stm]() {
                         std::chrono::system_clock::now()));
       std::istringstream is{stm.d_->res_.body()};
       stm.d_->res_.body().clear();
-      stm.d_->snapshot_tree_ = std::make_unique<boost::property_tree::ptree>();
+      stm.d_->snapshot_tree_ = boost::make_unique<boost::property_tree::ptree>();
       try {
         read_json(is, *stm.d_->snapshot_tree_);
         stm.d_->snapshot_tree_->put("local_timestamp", local_timestamp);

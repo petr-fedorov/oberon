@@ -43,10 +43,10 @@ BOOST_LOG_TRIVIAL(warning) << stm._machine_name << stm.d_->error_message_;
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Snapshot.Obtaining";
 #endif
-stm.d_->resolver_ = std::make_unique<boost::asio::ip::tcp::resolver>(*stm.d_->ioc_);
-stm.d_->ctx_ = std::make_unique<boost::asio::ssl::context>(
+stm.d_->resolver_ = boost::make_unique<boost::asio::ip::tcp::resolver>(*stm.d_->ioc_);
+stm.d_->ctx_ = boost::make_unique<boost::asio::ssl::context>(
     boost::asio::ssl::context::sslv23_client);
-stm.d_->https_ = std::make_unique<SnapshotData::SslStream>(*stm.d_->ioc_, *stm.d_->ctx_);
+stm.d_->https_ = boost::make_unique<SnapshotData::SslStream>(*stm.d_->ioc_, *stm.d_->ctx_);
 
 if (!SSL_set_tlsext_host_name(stm.d_->https_->native_handle(), stm.d_->host_.c_str())) {
   boost::system::error_code ec{static_cast<int>(::ERR_get_error()),

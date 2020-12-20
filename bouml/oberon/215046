@@ -1,6 +1,6 @@
 format 223
 "Bitfinex" // Standalone application::Reconstructor::Bitfinex
-  revision 2
+  revision 3
   modified_by 6 "petr"
   // class settings
   
@@ -325,8 +325,9 @@ ${namespace_end}
 #endif
 "
       cpp_src "${comment}
-${includes}
+#include <boost/smart_ptr/make_unique.hpp>
 #include \"date.h\"
+${includes}
 ${namespace_start}
 ${members}
 ${namespace_end}"
