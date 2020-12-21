@@ -31,7 +31,7 @@
     "map" "std::map" "Map" "dict" "sequence"
     "multimap" "std::multimap" "multimap" "" ""
     "unique_ptr" "std::unique_ptr" "" "" ""
-    "shared_ptr" "std::shared_ptr" "" "" ""
+    "shared_ptr" "boost::shared_ptr" "" "" ""
   
   classes_stereotypes 17 // uml cpp java php python idl
     "class" "class" "class" "class" "class" "valuetype"
@@ -110,9 +110,9 @@ ${items}};
     "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type}* ${name}${multiplicity}${value};
 " // multiplicity [..]
   cpp_aggregation_by_value_declaration
-    "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::unique_ptr<${type}> ${name}${value};
+    "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 " // multiplicity 1
-    "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<std::unique_ptr<${type}>> ${name}${value};
+    "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
 " // multiplicity * a..b
     "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${multiplicity}${value};
 " // multiplicity [..]

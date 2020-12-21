@@ -1,6 +1,6 @@
 format 223
 "Receiver" // Standalone application::Receiver
-  revision 40
+  revision 41
   modified_by 6 "petr"
   // class settings
   
@@ -2389,6 +2389,29 @@ ${inlines}
 	
       end
 
+      class 999814 "Feeder_SP"
+	visibility public stereotype "template_typedef"
+	nactuals 1
+	actual class class_ref 852614 // shared_ptr
+	  rank 0 value class_ref 843526 // Feeder
+	cpp_decl "${comment}${template}using ${name} = ${inherit};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 1144198 // <realization>
+	  relation 1133830 -_-|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 1144198 // <realization>
+	    b parent class_ref 852614 // shared_ptr
+	end
+      end
+
       attribute 754822 "_feeder_state"
 	protected type class_ref 843782 // Feeder_State
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
@@ -2423,15 +2446,15 @@ ${inlines}
       operation 1335302 "Feeder"
 	public explicit_return_type ""
 	nparams 6
-	  param inout name "ioc" type class_ref 698758 // io_context
+	  param in name "ioc" type class_ref 999686 // io_context_SP
 	  param in name "product" explicit_type "string"
 	  param in name "host" explicit_type "string"
 	  param in name "port" explicit_type "string"
 	  param in name "target" explicit_type "string"
 	  param in name "exhausted_after" explicit_type "int"
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(} std::shared_ptr<${t0}> & ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}, const ${t4} & ${p4}${v4}, ${t5} ${p5}${v5}${)}${volatile}${throw};
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}, const ${t4} & ${p4}${v4}, ${t5} ${p5}${v5}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}std::shared_ptr<${t0}> & ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, const ${t4} & ${p4}, ${t5} ${p5}${)}${volatile}${throw} : d_{boost::make_unique<FeederData>(host, port, target)} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, const ${t4} & ${p4}, ${t5} ${p5}${)}${volatile}${throw} : _current_state{0}, d_{boost::make_unique<FeederData>(host, port, target)} {
   ${body}}
 "
 	
@@ -3166,8 +3189,9 @@ ${members}};
 
       classrelation 999686 // ioc_ (<directional aggregation>)
 	relation 989318 o-->
+	  stereotype "shared_ptr"
 	  a role_name "ioc_" public
-	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::shared_ptr<${type}> ${name}${value};
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
 "
 	    classrelation_ref 999686 // ioc_ (<directional aggregation>)
 	  b parent class_ref 698758 // io_context
@@ -4844,6 +4868,29 @@ ${inlines}
 	end
       end
 
+      class 999942 "Snapshot_SP"
+	visibility public stereotype "template_typedef"
+	nactuals 1
+	actual class class_ref 852614 // shared_ptr
+	  rank 0 value class_ref 825862 // Snapshot
+	cpp_decl "${comment}${template}using ${name} = ${inherit};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 1144326 // <realization>
+	  relation 1133958 -_-|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 1144326 // <realization>
+	    b parent class_ref 852614 // shared_ptr
+	end
+      end
+
       attribute 743814 "_machine_name"
 	public explicit_type "string"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
@@ -4893,13 +4940,13 @@ ${inlines}
       operation 1149318 "Snapshot"
 	public explicit_return_type ""
 	nparams 4
-	  param inout name "ioc" type class_ref 698758 // io_context
+	  param in name "ioc" type class_ref 999686 // io_context_SP
 	  param in name "host" explicit_type "string"
 	  param in name "port" explicit_type "string"
 	  param in name "target" explicit_type "string"
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}std::shared_ptr< ${t0} > ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}${)}${volatile}${throw};
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}std::shared_ptr< ${t0} > ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}${)}${throw} : d_{boost::make_unique<SnapshotData>(host, port)} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}${)}${throw} : _current_state{0},  d_{boost::make_unique<SnapshotData>(host, port)} {
   ${body}}
 "
 	
@@ -5437,8 +5484,9 @@ ${members}};
 
       classrelation 985094 // ioc_ (<directional aggregation>)
 	relation 974726 o-->
+	  stereotype "shared_ptr"
 	  a role_name "ioc_" public
-	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::shared_ptr<${type}> ${name}${value};
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
 "
 	    classrelation_ref 985094 // ioc_ (<directional aggregation>)
 	  b parent class_ref 698758 // io_context
@@ -7051,6 +7099,29 @@ ${inlines}
 	end
       end
 
+      class 1000070 "ptree_SP"
+	visibility public stereotype "template_typedef"
+	nactuals 1
+	actual class class_ref 852614 // shared_ptr
+	  rank 0 value class_ref 174214 // ptree
+	cpp_decl "${comment}${template}using ${name} = ${inherit};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 1144454 // <realization>
+	  relation 1134086 -_-|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 1144454 // <realization>
+	    b parent class_ref 852614 // shared_ptr
+	end
+      end
+
       attribute 769670 "product_"
 	private explicit_type "string"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
@@ -7082,13 +7153,13 @@ ${inlines}
       operation 917382 "Receiver"
 	public explicit_return_type ""
 	nparams 4
-	  param inout name "ioc" type class_ref 698758 // io_context
-	  param inout name "feeder" type class_ref 843526 // Feeder
-	  param inout name "snapshot" type class_ref 825862 // Snapshot
+	  param in name "ioc" type class_ref 999686 // io_context_SP
+	  param in name "feeder" type class_ref 999814 // Feeder_SP
+	  param in name "snapshot" type class_ref 999942 // Snapshot_SP
 	  param inout name "processor" type class_ref 909958 // ConsumerFn
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}std::shared_ptr< ${t0} > ${p0}${v0}, std::shared_ptr< ${t1} >  && ${p1}${v1}, std::shared_ptr< ${t2} > & ${p2}${v2}, ${t3} ${p3}${v3}${)}${volatile}${throw};
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, ${t3} ${p3}${v3}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}std::shared_ptr< ${t0} > ${p0}, std::shared_ptr< ${t1} > && ${p1}, std::shared_ptr< ${t2} > & ${p2}, ${t3} ${p3}${)}${throw} : _current_state{0}, d_{boost::make_unique<ReceiverData>()} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, ${t3} ${p3}${)}${throw} : _current_state{0}, d_{boost::make_unique<ReceiverData>()} {
   ${body}}
 "
 	
@@ -7369,10 +7440,10 @@ ${inlines}
       operation 1230214 "postSnapshot"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "tree" type class_ref 174214 // ptree
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}std::shared_ptr<${t0}> && ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+	  param in name "tree" type class_ref 1000070 // ptree_SP
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} && ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
 "
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}std::shared_ptr<${t0}> && ${p0}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} && ${p0}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
@@ -7384,10 +7455,10 @@ ${inlines}
       operation 1230342 "on_snapshot"
 	public explicit_return_type "void"
 	nparams 1
-	  param in name "tree" type class_ref 174214 // ptree
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(} std::shared_ptr<${t0}> ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+	  param in name "tree" type class_ref 1000070 // ptree_SP
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
 "
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(} std::shared_ptr<${t0}> ${p0}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
@@ -7399,10 +7470,10 @@ ${inlines}
       operation 1205254 "postMessage"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "tree" type class_ref 174214 // ptree
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}std::shared_ptr<${t0}> && ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+	  param in name "tree" type class_ref 1000070 // ptree_SP
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} && ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
 "
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}std::shared_ptr<${t0}> && ${p0}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} && ${p0}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
@@ -7414,10 +7485,10 @@ ${inlines}
       operation 1205382 "on_message"
 	public explicit_return_type "void"
 	nparams 1
-	  param in name "tree" type class_ref 174214 // ptree
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}std::shared_ptr<${t0}> ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+	  param in name "tree" type class_ref 1000070 // ptree_SP
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
 "
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}std::shared_ptr<${t0}> ${p0}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
@@ -7627,8 +7698,9 @@ ${members}};
 
       classrelation 991238 // snapshot_ (<directional aggregation>)
 	relation 980870 o-->
+	  stereotype "shared_ptr"
 	  a role_name "snapshot_" public
-	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::shared_ptr<${type}> ${name}${value};
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
 "
 	    classrelation_ref 991238 // snapshot_ (<directional aggregation>)
 	  b parent class_ref 825862 // Snapshot
@@ -7636,8 +7708,9 @@ ${members}};
 
       classrelation 991366 // feeder_ (<directional aggregation>)
 	relation 980998 o-->
+	  stereotype "shared_ptr"
 	  a role_name "feeder_" public
-	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::shared_ptr<${type}> ${name}${value};
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
 "
 	    classrelation_ref 991366 // feeder_ (<directional aggregation>)
 	  b parent class_ref 843526 // Feeder
@@ -7645,8 +7718,9 @@ ${members}};
 
       classrelation 991494 // snapshot_tree_ (<directional aggregation>)
 	relation 981126 o-->
+	  stereotype "shared_ptr"
 	  a role_name "snapshot_tree_" public
-	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::shared_ptr<${type}> ${name}${value};
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
 "
 	    classrelation_ref 991494 // snapshot_tree_ (<directional aggregation>)
 	  b parent class_ref 174214 // ptree
@@ -7654,21 +7728,45 @@ ${members}};
 
       classrelation 1006342 // tree_ (<directional aggregation>)
 	relation 995974 o-->
+	  stereotype "shared_ptr"
 	  a role_name "tree_" public
-	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}std::shared_ptr<${type}> ${name}${value};
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
 "
 	    classrelation_ref 1006342 // tree_ (<directional aggregation>)
 	  b parent class_ref 174214 // ptree
       end
 
-      classrelation 1006470 // messages_ (<directional aggregation>)
-	relation 996102 o-->
+      classrelation 1144582 // messages_ (<directional composition>)
+	relation 1134214 *-->
 	  stereotype "list"
 	  a role_name "messages_" multiplicity "*" public
-	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<std::shared_ptr<${type}>> ${name}${value};
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
 "
-	    classrelation_ref 1006470 // messages_ (<directional aggregation>)
-	  b parent class_ref 174214 // ptree
+	    classrelation_ref 1144582 // messages_ (<directional composition>)
+	  b parent class_ref 1000070 // ptree_SP
+      end
+    end
+
+    class 999686 "io_context_SP"
+      visibility package stereotype "template_typedef"
+      nactuals 1
+      actual class class_ref 852614 // shared_ptr
+        rank 0 value class_ref 698758 // io_context
+      cpp_decl "${comment}${template}using ${name} = ${inherit};
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 1144070 // <realization>
+	relation 1133702 -_-|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 1144070 // <realization>
+	  b parent class_ref 852614 // shared_ptr
       end
     end
   end
@@ -7833,21 +7931,12 @@ ${includes}
 ${namespace_start}
 ${members}
 ${namespace_end}"
-      idl_src "#ifndef ${MODULE}_${NAME}_H
-#define ${MODULE}_${NAME}_H
-
-${comment}
-${includes}
-${module_start}
-${definition}
-${module_end}
-#endif
-"
       associated_elems
 	class_ref 867718 // Received
 	class_ref 867974 // FailureHandler
 	class_ref 867846 // ReceivedHandler
 	class_ref 868102 // SuccessHandler
+	class_ref 999686 // io_context_SP
       end
     end
 

@@ -16,18 +16,6 @@ classcanvas 129158 class_ref 698886 // context
   classdiagramsettings member_max_width 0 end
   xyz 377 696 2006
 end
-classcanvas 132998 class_ref 866438 // Received
-  classdiagramsettings member_max_width 0 end
-  xyz 618 156 2006
-end
-classcanvas 133254 class_ref 866310 // ReceivedHandler
-  classdiagramsettings member_max_width 0 end
-  xyz 217 225 2006
-end
-classcanvas 133510 class_ref 866182 // FailureHandler
-  classdiagramsettings member_max_width 0 end
-  xyz 218 310 2006
-end
 classcanvas 134406 class_ref 753414 // strand
   classdiagramsettings member_max_width 0 end
   xyz 288 518 2006
@@ -48,36 +36,38 @@ classcanvas 136838 class_ref 875910 // SslStream
   classdiagramsettings member_max_width 0 end
   xyz 227 682 3005
 end
-line 133126 ---+ decenter_end 77
-  from ref 132998 z 2007 to ref 128006
-line 133382 ---+ decenter_end 175
-  from ref 133254 z 2007 to ref 128006
-line 133638 ---+ decenter_end 285
-  from ref 133510 z 2007 to ref 128006
+classcanvas 137350 class_ref 999942 // Snapshot_SP
+  classdiagramsettings member_max_width 0 end
+  xyz 257 203 2006
+end
+classcanvas 137606 class_ref 852614 // shared_ptr
+  classdiagramsettings member_max_width 0 end
+  xyz 277 95 2005
+end
 relationcanvas 135174 relation_ref 973830 // <directional composition>
   decenter_end 492
   from ref 128006 z 2001 to ref 135046
-  role_a_pos 125 374 3000 no_role_b
+  role_a_pos 125 370 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 135686 relation_ref 974214 // <directional composition>
   from ref 135046 z 2001 to ref 128902
-  role_a_pos 49 700 3000 no_role_b
+  role_a_pos 49 703 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 135942 relation_ref 974470 // <directional composition>
   from ref 135046 z 2007 to ref 129158
-  role_a_pos 348 680 3000 no_role_b
+  role_a_pos 350 683 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 136198 relation_ref 974598 // <directional composition>
   from ref 135046 z 2007 to ref 134406
-  role_a_pos 237 506 3000 no_role_b
+  role_a_pos 237 507 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 136326 relation_ref 974726 // <directional aggregation>
-  from ref 135046 z 2001 to ref 128134
-  role_a_pos 76 193 3000 no_role_b
+  from ref 135046 z 2001 stereotype "<<shared_ptr>>" xyz 24 220 3000 to ref 128134
+  role_a_pos 76 188 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 136454 relation_ref 974854 // <realization>
@@ -87,7 +77,7 @@ relationcanvas 136454 relation_ref 974854 // <realization>
 end
 relationcanvas 136710 relation_ref 977286 // <directional composition>
   from ref 135046 z 2001 to ref 136582
-  role_a_pos 154 434 3000 no_role_b
+  role_a_pos 154 435 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 line 136966 ---+
@@ -96,6 +86,13 @@ relationcanvas 137094 relation_ref 988038 // <directional composition>
   from ref 135046 z 3006 to point 172 628
   line 137222 z 3006 to ref 136838
   role_a_pos 187 666 3000 no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+line 137478 ---+
+  from ref 137350 z 2007 to ref 128006
+relationcanvas 137734 relation_ref 1133958 // <realization>
+  from ref 137350 z 2007 label "<T->Snapshot>" max_width 255 xyz 276 160 3000 to ref 137606
+  no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 end

@@ -1,6 +1,6 @@
 format 223
 "Bitstamp" // Standalone application::Receiver::Bitstamp
-  revision 9
+  revision 10
   modified_by 6 "petr"
   // class settings
   
@@ -69,13 +69,13 @@ ${inlines}
       operation 1344134 "Receiver"
 	public explicit_return_type ""
 	nparams 4
-	  param inout name "ioc" type class_ref 698758 // io_context
-	  param inout name "feeder" type class_ref 843526 // Feeder
-	  param inout name "snapshot" type class_ref 825862 // Snapshot
+	  param in name "ioc" type class_ref 999686 // io_context_SP
+	  param in name "feeder" type class_ref 999814 // Feeder_SP
+	  param in name "snapshot" type class_ref 999942 // Snapshot_SP
 	  param inout name "processor" type class_ref 909958 // ConsumerFn
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}std::shared_ptr< ${t0} > ${p0}${v0}, std::shared_ptr< ${t1} >  && ${p1}${v1}, std::shared_ptr< ${t2} > & ${p2}${v2}, ${t3} ${p3}${v3}${)}${volatile}${throw};
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, ${t3} ${p3}${v3}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}std::shared_ptr< ${t0} > ${p0}, std::shared_ptr< ${t1} > && ${p1}, std::shared_ptr< ${t2} > & ${p2}, ${t3} ${p3}${)}${throw} : oberon::receiver::Receiver{ioc, std::move(feeder), snapshot, processor} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, ${t3} ${p3}${)}${throw} : oberon::receiver::Receiver{ioc, std::move(feeder), snapshot, processor} {
   ${body}}
 "
 	
@@ -176,12 +176,12 @@ ${inlines}
       operation 1335430 "Feeder"
 	public explicit_return_type ""
 	nparams 3
-	  param inout name "ioc" type class_ref 698758 // io_context
+	  param in name "ioc" type class_ref 999686 // io_context_SP
 	  param in name "product" explicit_type "string"
 	  param in name "exhausted_after" explicit_type "int"
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(} std::shared_ptr<${t0}> & ${p0}${v0}, const ${t1} & ${p1}${v1}, ${t2} ${p2}${v2}${)}${volatile}${throw};
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, ${t2} ${p2}${v2}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}std::shared_ptr<${t0}> & ${p0}, const ${t1} & ${p1}, ${t2} ${p2}${)}${volatile}${throw} : oberon::receiver::Feeder{ioc,product,\"ws.bitstamp.net\", \"443\", \"/\", exhausted_after } {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, ${t2} ${p2}${)}${volatile}${throw} : oberon::receiver::Feeder{ioc,product,\"ws.bitstamp.net\", \"443\", \"/\", exhausted_after } {
   ${body}}
 "
 	

@@ -1,7 +1,7 @@
 class Receiver
 !!!915590.cpp!!!	Receiver()
   _current_state = 0;
-!!!917382.cpp!!!	Receiver(inout ioc : io_context, inout feeder : Feeder, inout snapshot : Snapshot, inout processor : ConsumerFn)
+!!!917382.cpp!!!	Receiver(in ioc : io_context_SP, in feeder : Feeder::Feeder_SP, in snapshot : Snapshot::Snapshot_SP, inout processor : ConsumerFn)
 d_->receiving_strand_ = boost::make_unique<boost::asio::io_context::strand>(*ioc);
 d_->processing_strand_ = boost::make_unique<boost::asio::io_context::strand>(*ioc);
 d_->signal_set_ = boost::make_unique<boost::asio::signal_set>(*ioc, SIGINT, SIGTERM);
@@ -14,7 +14,9 @@ d_->snapshot_ = snapshot;
   _current_state = &st;
 !!!916742.cpp!!!	_final() : void
   _current_state = 0;
-Receiver &stm {*this};
+ #ifdef VERBOSE_STATE_MACHINE
+Receiver & stm =*this;
+ #endif
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "final state reached";
 #endif
@@ -29,7 +31,7 @@ return (_current_state != 0);
 !!!1138566.cpp!!!	success() : bool
   if (_current_state != 0) {
  #ifdef VERBOSE_STATE_MACHINE
-Receiver & stm {*this};
+Receiver & stm =*this;
  #endif
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger success";
@@ -40,7 +42,7 @@ _current_state->success(*this);
 !!!1138694.cpp!!!	failure() : bool
   if (_current_state != 0) {
  #ifdef VERBOSE_STATE_MACHINE
-Receiver & stm {*this};
+Receiver & stm =*this;
  #endif
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger failure";
@@ -51,7 +53,7 @@ _current_state->failure(*this);
 !!!1138950.cpp!!!	message() : bool
   if (_current_state != 0) {
  #ifdef VERBOSE_STATE_MACHINE
-Receiver & stm {*this};
+Receiver & stm =*this;
  #endif
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger message";
@@ -62,7 +64,7 @@ _current_state->message(*this);
 !!!1139206.cpp!!!	stop() : bool
   if (_current_state != 0) {
  #ifdef VERBOSE_STATE_MACHINE
-Receiver & stm {*this};
+Receiver & stm =*this;
  #endif
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger stop";
@@ -73,17 +75,17 @@ _current_state->stop(*this);
 !!!1191174.cpp!!!	postEvent(inout event : Receiver::ReceiverEventFn) : void
 _post(std::bind(event, shared_from_this()));
 
-!!!1230214.cpp!!!	postSnapshot(inout tree : ptree) : void
+!!!1230214.cpp!!!	postSnapshot(in tree : Receiver::ptree_SP) : void
 boost::asio::post(*d_->receiving_strand_, std::bind(&Receiver::on_snapshot, shared_from_this(),tree));
 
 
-!!!1230342.cpp!!!	on_snapshot(in tree : ptree) : void
+!!!1230342.cpp!!!	on_snapshot(in tree : Receiver::ptree_SP) : void
 d_->snapshot_tree_ = std::move(tree);
 success();
-!!!1205254.cpp!!!	postMessage(inout tree : ptree) : void
+!!!1205254.cpp!!!	postMessage(in tree : Receiver::ptree_SP) : void
 boost::asio::post(*d_->receiving_strand_, std::bind(&Receiver::on_message, shared_from_this(),tree));
 
 
-!!!1205382.cpp!!!	on_message(in tree : ptree) : void
+!!!1205382.cpp!!!	on_message(in tree : Receiver::ptree_SP) : void
 d_->tree_ = std::move(tree);
 message();

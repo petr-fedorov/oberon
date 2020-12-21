@@ -4,7 +4,7 @@ class Synchronizer
 !!!1394438.cpp!!!	era() : bool
   if (_current_state != 0) {
  #ifdef VERBOSE_STATE_MACHINE
-Synchronizer & stm {*this};
+Synchronizer & stm =*this;
  #endif
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger era";
@@ -15,7 +15,7 @@ _current_state->era(*this);
 !!!1394822.cpp!!!	reset() : bool
   if (_current_state != 0) {
  #ifdef VERBOSE_STATE_MACHINE
-Synchronizer & stm {*this};
+Synchronizer & stm =*this;
  #endif
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger reset";
@@ -26,7 +26,7 @@ _current_state->reset(*this);
 !!!1395206.cpp!!!	message() : bool
   if (_current_state != 0) {
  #ifdef VERBOSE_STATE_MACHINE
-Synchronizer & stm {*this};
+Synchronizer & stm =*this;
  #endif
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger message";
@@ -44,7 +44,9 @@ return (_current_state != 0);
   _current_state = &st;
 !!!1397510.cpp!!!	_final() : void
   _current_state = 0;
-Synchronizer &stm {*this};
+ #ifdef VERBOSE_STATE_MACHINE
+Synchronizer & stm =*this;
+ #endif
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "final state reached";
 #endif

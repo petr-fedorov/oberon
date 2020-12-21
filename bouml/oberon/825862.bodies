@@ -1,7 +1,7 @@
 class Snapshot
 !!!1143302.cpp!!!	Snapshot()
   _current_state = 0;
-!!!1149318.cpp!!!	Snapshot(inout ioc : io_context, in host : string, in port : string, in target : string)
+!!!1149318.cpp!!!	Snapshot(in ioc : io_context_SP, in host : string, in port : string, in target : string)
 d_->ioc_ = ioc;
 d_->strand_ = boost::make_unique<boost::asio::io_context::strand>(*ioc);
 
@@ -18,7 +18,7 @@ return (_current_state != 0);
 !!!1143942.cpp!!!	success() : bool
   if (_current_state != 0) {
  #ifdef VERBOSE_STATE_MACHINE
-Snapshot & stm {*this};
+Snapshot & stm =*this;
  #endif
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger success";
@@ -29,7 +29,7 @@ _current_state->success(*this);
 !!!1144838.cpp!!!	failure() : bool
   if (_current_state != 0) {
  #ifdef VERBOSE_STATE_MACHINE
-Snapshot & stm {*this};
+Snapshot & stm =*this;
  #endif
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger failure";
@@ -43,7 +43,9 @@ _current_state->failure(*this);
   _current_state = &st;
 !!!1149190.cpp!!!	_final() : void
   _current_state = 0;
-Snapshot &stm {*this};
+ #ifdef VERBOSE_STATE_MACHINE
+Snapshot & stm =*this;
+ #endif
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "final state reached";
 #endif
@@ -54,7 +56,7 @@ d_->rh_ = r;
 !!!1255814.cpp!!!	stop() : bool
   if (_current_state != 0) {
  #ifdef VERBOSE_STATE_MACHINE
-Snapshot & stm {*this};
+Snapshot & stm =*this;
  #endif
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger stop";

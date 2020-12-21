@@ -1,6 +1,6 @@
 format 223
 "boost" // boost
-  revision 5
+  revision 6
   modified_by 6 "petr"
   // class settings
   
@@ -30,6 +30,7 @@ format 223
   activitydiagramsettings
    end
   
+  cpp_namespace "boost"
   comment "Sub-packages for individual C++ Boost libraries."
   classview 181126 "boost"
     
@@ -51,6 +52,40 @@ format 223
     
     activitydiagramsettings
      end
+    class 697734 "enable_shared_from_this"
+      visibility package 
+      nformals 1
+      formal name "T" type "class" explicit_default_value ""
+        explicit_extends ""
+      cpp_external cpp_decl "${name}
+#include <boost/smart_ptr/enable_shared_from_this.hpp>
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+    end
+
+    class 852614 "shared_ptr"
+      visibility package 
+      nformals 1
+      formal name "T" type "class" explicit_default_value ""
+        explicit_extends ""
+      cpp_external cpp_decl "${name}
+#include <boost/smart_ptr/shared_ptr.hpp>
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+    end
+
     classdiagram 267910 "boost"
       classdiagramsettings member_max_width 0 end
       size A4
@@ -83,5 +118,4 @@ format 223
   package_ref 168326 // beast
 
   package_ref 168454 // system
-
 end

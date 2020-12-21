@@ -1,7 +1,7 @@
 class Feeder
 !!!1190534.cpp!!!	Feeder()
   _current_state = 0;
-!!!1335302.cpp!!!	Feeder(inout ioc : io_context, in product : string, in host : string, in port : string, in target : string, in exhausted_after : int)
+!!!1335302.cpp!!!	Feeder(in ioc : io_context_SP, in product : string, in host : string, in port : string, in target : string, in exhausted_after : int)
 d_->product_ = product;
 d_->ioc_ = ioc;
 d_->strand_ = boost::make_unique<boost::asio::io_context::strand>(*ioc);
@@ -15,7 +15,7 @@ return (_current_state != 0);
 !!!1199750.cpp!!!	success() : bool
   if (_current_state != 0) {
  #ifdef VERBOSE_STATE_MACHINE
-Feeder & stm {*this};
+Feeder & stm =*this;
  #endif
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger success";
@@ -26,7 +26,7 @@ _current_state->success(*this);
 !!!1200262.cpp!!!	failure() : bool
   if (_current_state != 0) {
  #ifdef VERBOSE_STATE_MACHINE
-Feeder & stm {*this};
+Feeder & stm =*this;
  #endif
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger failure";
@@ -40,7 +40,9 @@ _current_state->failure(*this);
   _current_state = &st;
 !!!1204486.cpp!!!	_final() : void
   _current_state = 0;
-Feeder &stm {*this};
+ #ifdef VERBOSE_STATE_MACHINE
+Feeder & stm =*this;
+ #endif
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "final state reached";
 #endif
@@ -52,7 +54,7 @@ d_->rh_ = r;
 !!!1220742.cpp!!!	exhausted() : bool
   if (_current_state != 0) {
  #ifdef VERBOSE_STATE_MACHINE
-Feeder & stm {*this};
+Feeder & stm =*this;
  #endif
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger exhausted";
@@ -65,7 +67,7 @@ boost::asio::post(*d_->strand_,handler);
 !!!1254918.cpp!!!	stop() : bool
   if (_current_state != 0) {
  #ifdef VERBOSE_STATE_MACHINE
-Feeder & stm {*this};
+Feeder & stm =*this;
  #endif
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger stop";
@@ -79,7 +81,7 @@ boost::asio::post(*d_->strand_, std::bind(event, shared_from_this()));
 !!!1411590.cpp!!!	check() : bool
   if (_current_state != 0) {
  #ifdef VERBOSE_STATE_MACHINE
-Feeder & stm {*this};
+Feeder & stm =*this;
  #endif
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger check";
@@ -90,7 +92,7 @@ _current_state->check(*this);
 !!!1411974.cpp!!!	pong() : bool
   if (_current_state != 0) {
  #ifdef VERBOSE_STATE_MACHINE
-Feeder & stm {*this};
+Feeder & stm =*this;
  #endif
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger pong";

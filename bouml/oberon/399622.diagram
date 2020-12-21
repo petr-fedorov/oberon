@@ -6,11 +6,11 @@ classcanvas 128006 class_ref 712966 // Receiver
 end
 classcanvas 131334 class_ref 746886 // signal_set
   classdiagramsettings member_max_width 0 end
-  xyz 135 307.6 2000
+  xyz 32 563.6 2000
 end
 classcanvas 131590 class_ref 174214 // ptree
   classdiagramsettings member_max_width 0 end
-  xyz 320.2 326 2000
+  xyz 263.2 296 2000
 end
 classcanvas 132102 class_ref 697734 // enable_shared_from_this
   classdiagramsettings member_max_width 0 end
@@ -26,20 +26,32 @@ classcanvas 134918 class_ref 868230 // ReceiverData
 end
 classcanvas 136966 class_ref 843526 // Feeder
   classdiagramsettings hide_attributes yes hide_operations yes member_max_width 0 end
-  xyz 290 166.8 3005
+  xyz 59 331.8 3005
 end
 classcanvas 137478 class_ref 825862 // Snapshot
   classdiagramsettings hide_attributes yes hide_operations yes member_max_width 0 end
-  xyz 417.8 211.8 3005
+  xyz 480.8 339.8 3005
+end
+classcanvas 139142 class_ref 999686 // io_context_SP
+  classdiagramsettings member_max_width 0 end
+  xyz 46 195 2000
+end
+classcanvas 139270 class_ref 852614 // shared_ptr
+  classdiagramsettings member_max_width 0 end
+  xyz 73 63 2005
+end
+classcanvas 139654 class_ref 1000070 // ptree_SP
+  classdiagramsettings member_max_width 0 end
+  xyz 277 116 3011
 end
 relationcanvas 135174 relation_ref 977542 // <directional composition>
   from ref 128006 z 2001 to ref 134918
-  role_a_pos 328 545 3000 no_role_b
+  role_a_pos 328 540 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 135942 relation_ref 977926 // <directional composition>
   from ref 134918 z 2001 to ref 131334
-  role_a_pos 190 358 3000 no_role_b
+  role_a_pos 112 562 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 136070 relation_ref 978054 // <directional composition>
@@ -60,40 +72,52 @@ relationcanvas 136582 relation_ref 978438 // <realization>
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 137606 relation_ref 974854 // <realization>
-  from ref 137478 z 3006 label "<T->Snapshot>" max_width 255 xyz 457 145 3006 stereotype "<<bind>>" xyz 472 164 3006 to ref 132102
+  from ref 137478 z 3006 label "<T->Snapshot>" max_width 255 xyz 493 209 3006 stereotype "<<bind>>" xyz 508 228 3006 to ref 132102
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 137734 relation_ref 980870 // <directional aggregation>
-  from ref 134918 z 3006 to ref 137478
-  role_a_pos 443 262 3000 no_role_b
+  from ref 134918 z 3006 stereotype "<<shared_ptr>>" xyz 361 459 3000 to ref 137478
+  role_a_pos 423 349 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 137862 relation_ref 980998 // <directional aggregation>
-  from ref 134918 z 3006 to ref 136966
-  role_a_pos 320 217 3000 no_role_b
+  from ref 134918 z 3006 stereotype "<<shared_ptr>>" xyz 117 447.5 3000 to ref 136966
+  role_a_pos 115 379 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 138118 relation_ref 981126 // <directional aggregation>
-  from ref 134918 z 2001 to ref 131590
-  role_a_pos 343 377 3000 no_role_b
+  from ref 134918 z 2001 stereotype "<<shared_ptr>>" xyz 235.5 429 3000 to ref 131590
+  role_a_pos 293 344 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 138502 relation_ref 995974 // <directional aggregation>
-  from ref 134918 z 2001 to point 254 325
+  from ref 134918 z 2001 stereotype "<<shared_ptr>>" xyz 162 419.5 3000 to point 163 314
   line 138630 z 2001 to ref 131590
-  role_a_pos 282 319 3000 no_role_b
+  role_a_pos 225 295 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
-end
-relationcanvas 138758 relation_ref 996102 // <directional aggregation>
-  from ref 134918 z 2001 stereotype "<<list>>" xyz 383 456 3000 to point 489 370
-  line 138886 z 2001 to ref 131590
-  role_a_pos 374 327 3000 no_role_b
-  multiplicity_a_pos 374 360 3000 no_multiplicity_b
 end
 relationcanvas 139014 relation_ref 996742 // <realization>
-  from ref 136966 z 3006 label "<T->Feeder>" max_width 255 xyz 377 129 3006 stereotype "<<bind>>" xyz 386 146 3000 to ref 132102
+  from ref 136966 z 3006 label "<T->Feeder>" max_width 255 xyz 273 209.5 3006 stereotype "<<bind>>" xyz 282 226.5 3000 to ref 132102
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 139398 relation_ref 1133702 // <realization>
+  from ref 139142 z 2006 label "<T->io_context>" max_width 255 xyz 67 140 3000 to ref 139270
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+line 139782 ---+
+  from ref 139654 z 3012 to ref 128006
+relationcanvas 139910 relation_ref 1134086 // <realization>
+  from ref 139654 z 3012 label "<T->ptree>" max_width 255 xyz 181.5 97.5 3000 to ref 139270
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 140038 relation_ref 1134214 // <directional composition>
+  from ref 134918 z 3012 stereotype "<<list>>" xyz 338 412 3000 to point 416 299
+  line 140166 z 3012 to ref 139654
+  role_a_pos 370 184 3000 no_role_b
+  multiplicity_a_pos 345 184 3000 no_multiplicity_b
 end
 end

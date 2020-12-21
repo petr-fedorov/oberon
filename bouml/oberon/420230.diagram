@@ -8,9 +8,24 @@ classcanvas 128134 class_ref 876038 // FeederData
   classdiagramsettings member_max_width 0 end
   xyz 580 295 2006
 end
+classcanvas 128390 class_ref 999814 // Feeder_SP
+  classdiagramsettings member_max_width 0 end
+  xyz 41 358 2006
+end
+classcanvas 128646 class_ref 852614 // shared_ptr
+  classdiagramsettings member_max_width 0 end
+  xyz 77 190 2005
+end
 relationcanvas 128262 relation_ref 988166 // <directional composition>
   from ref 128006 z 2007 to ref 128134
-  role_a_pos 556 438 3000 no_role_b
+  role_a_pos 556 435 3000 no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+line 128518 ---+
+  from ref 128390 z 2007 to ref 128006
+relationcanvas 128774 relation_ref 1133830 // <realization>
+  from ref 128390 z 2007 label "<T->Feeder>" max_width 255 xyz 74.5 285.5 3000 to ref 128646
+  no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 end

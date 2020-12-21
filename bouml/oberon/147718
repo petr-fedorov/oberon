@@ -1,6 +1,6 @@
 format 223
 "Standalone application" // Standalone application
-  revision 98
+  revision 100
   modified_by 6 "petr"
   // class settings
   
@@ -954,7 +954,12 @@ namespace date
 //---------------+
 
 #ifndef ONLY_C_LOCALE
+// See https://github.com/HowardHinnant/date/issues/264
+#if __GNUC__ < 5
+#  define ONLY_C_LOCALE 1
+#else
 #  define ONLY_C_LOCALE 0
+#endif
 #endif
 
 #if defined(_MSC_VER) && (!defined(__clang__) || (_MSC_VER < 1910))
@@ -5411,8 +5416,12 @@ struct fields
     weekday               wd{8u};
     hh_mm_ss<Duration>    tod{};
     bool                  has_tod = false;
-
-    fields() = default;
+// See https://github.com/HowardHinnant/date/issues/264
+#if __GNUC__ < 5
+   fields() : ymd{year{0}/0/0}, wd{7u} {}
+#else 
+   fields() = default; 
+#endif
 
     fields(year_month_day ymd_) : ymd(ymd_) {}
     fields(weekday wd_) : wd(wd_) {}
@@ -8911,7 +8920,7 @@ int main(int argc, char **argv) {
   logging::add_common_attributes();
 
   // The io_context is required for all I/O
-  std::shared_ptr<boost::asio::io_context> ioc =
+  boost::shared_ptr<boost::asio::io_context> ioc =
       boost::make_shared<boost::asio::io_context>();
 
   bool deleted = false;
@@ -8944,7 +8953,7 @@ int main(int argc, char **argv) {
         Reconstructor{cleaner, quote_increment, base_increment};
 
     auto receiver = boost::make_shared<Receiver>(
-        ioc, std::static_pointer_cast<Feeder>(feeder), snapshot,
+        ioc, boost::static_pointer_cast<Feeder>(feeder), snapshot,
         std::bind(&Reconstructor::process, &reconstructor,
                   std::placeholders::_1));
     feeder->registerHandlers(
@@ -8956,13 +8965,13 @@ int main(int argc, char **argv) {
         std::bind(&Receiver::postSnapshot, receiver, std::placeholders::_1));
 
     receiver->create();
-    // feeder->registerHandlers( []() { std::cout << \"Success\\n\"; }, []() { std::cout << \"Failure\\n\"; }, [](std::shared_ptr<boost::property_tree::ptree> &&tree) { boost::property_tree::write_json(std::cout, *tree, false); });
-    // feeder->create();
-    // snapshot->registerHandlers( []() { std::cout << \"Failure\\n\"; }, [](std::shared_ptr<boost::property_tree::ptree> && tree) { boost::property_tree::write_json(std::cout, *tree, true); });
+    // feeder->registerHandlers( []() { std::cout << \"Success\\n\"; }, []() { std::cout << \"Failure\\n\"; }, [](boost::shared_ptr<boost::property_tree::ptree> &&tree) { boost::property_tree::write_json(std::cout, *tree, false); });
+    //feeder->create();
+    // snapshot->registerHandlers( []() { std::cout << \"Failure\\n\"; }, [](boost::shared_ptr<boost::property_tree::ptree> && tree) { boost::property_tree::write_json(std::cout, *tree, true); });
     // snapshot->create();
-    std::thread t1{[&ioc]() { ioc->run(); }};
-    std::thread t2{[&ioc]() { ioc->run(); }};
-    std::thread t3{[&ioc]() { ioc->run(); }};
+    std::thread t1{[ioc]() { ioc->run(); }};
+    std::thread t2{[ioc]() { ioc->run(); }};
+    std::thread t3{[ioc]() { ioc->run(); }};
     ioc->run();
     t1.join();
     t2.join();
@@ -8984,7 +8993,7 @@ int main(int argc, char **argv) {
     auto cleaner = boost::make_shared<Synchronizer>(size_deducer);
     auto reconstructor = Reconstructor{cleaner, quote_increment, base_increment };
     auto coinbase = boost::make_shared<Receiver>(
-        ioc, std::static_pointer_cast<Feeder>(feeder), snapshot,
+        ioc, boost::static_pointer_cast<Feeder>(feeder), snapshot,
         std::bind(&Reconstructor::process, &reconstructor,
                   std::placeholders::_1));
     feeder->registerHandlers(
@@ -8994,15 +9003,15 @@ int main(int argc, char **argv) {
     snapshot->registerHandlers(
         std::bind(&Receiver::postEvent, coinbase, &Receiver::failure),
         std::bind(&Receiver::postSnapshot, coinbase, std::placeholders::_1));
-    // feeder->registerHandlers([]() { std::cout << \"Success\\n\"; }, []() { std::cout << \"Failure\\n\"; }, [](std::shared_ptr<boost::property_tree::ptree> && tree) { boost::property_tree::write_json(std::cout, *tree, false); });
+    // feeder->registerHandlers([]() { std::cout << \"Success\\n\"; }, []() { std::cout << \"Failure\\n\"; }, [](boost::shared_ptr<boost::property_tree::ptree> && tree) { boost::property_tree::write_json(std::cout, *tree, false); });
     // feeder->create();
     // feeder->engage();
     coinbase->create();
     // Run the I/O service in two threads.
     // snapshot->create();
-    std::thread t1{[&ioc]() { ioc->run(); }};
-    std::thread t2{[&ioc]() { ioc->run(); }};
-    std::thread t3{[&ioc]() { ioc->run(); }};
+    std::thread t1{[ioc]() { ioc->run(); }};
+    std::thread t2{[ioc]() { ioc->run(); }};
+    std::thread t3{[ioc]() { ioc->run(); }};
     ioc->run();
     t1.join();
     t2.join();
@@ -9072,10 +9081,10 @@ CONFIG -= app_bundle
 CONFIG += thread
 CONFIG += object_parallel_to_source
 CONFIG -= qt
-QMAKE_CXXFLAGS += -std=c++11
-#INCLUDEPATH += /usr/include/boost169
+QMAKE_CXXFLAGS += -std=c++11 -Wfatal-errors
+INCLUDEPATH += /usr/include/boost169
 LIBS +=-lssl -lcrypto  
-#LIBS += -L/usr/lib64/boost169
+LIBS += -L/usr/lib64/boost169
 LIBS += -lboost_log  -lboost_log_setup -lboost_thread -lboost_program_options -lpthread -lboost_system "
     end
   end
