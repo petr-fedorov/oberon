@@ -32,32 +32,45 @@ if (event) {
   else
     buffer << "NA,";
 
-  // timestamp
-  date::to_stream(buffer, "%FT%TZ,", event->timestamp());
-
-  // state
-  if(event->state() != OrderEvent::OrderState::kNA) {
-    if(event->state())
-      buffer << event->state() << ",";
-    else 
-      buffer << ",";
+  // timestamp, seconds
+  auto s = toSeconds(event->timestamp().time_since_epoch());
+  if(s > latest_seconds_) {
+    using namespace std::chrono;
+    latest_seconds_ = s;
+    date::to_stream(buffer, "%FT%TZ,", time_point<system_clock,seconds>{s});
   }
   else
+    buffer << ",";
+
+  // timestamp, microseconds
+  buffer << (event->timestamp().time_since_epoch() - s).count() << ",";
+
+  // state
+  if (event->state() != OrderEvent::OrderState::kNA) {
+    if (event->state())
+      buffer << event->state() << ",";
+    else
+      buffer << ",";
+  } else
     buffer << "NA,";
 
   // price
-  if(!std::isnan(event->price()))
-    buffer << std::fixed << std::setprecision(quote_precision_) 
-           << event->price() << ",";
-  else
+  if (!std::isnan(event->price())) {
+    std::ostringstream ss;
+    ss << std::fixed << std::setprecision(quote_precision_) << event->price();
+    buffer << removeTrailingZeros(ss.str()) << ",";
+  } else
     buffer << "NA,";
 
   // volume
   if (!std::isnan(event->remaining())) {
     int sign = event->side() == OrderEvent::BookSide::kAsk ? -1 : 1;
-    if (event->remaining())
-      buffer << std::fixed << std::setprecision(base_precision_) 
-             << sign * event->remaining() << ",";
+    if (event->remaining()) {
+      std::ostringstream ss;
+      ss << std::fixed << std::setprecision(base_precision_) 
+             << sign * event->remaining(); 
+      buffer << removeTrailingZeros(ss.str()) << ",";
+    }
     else
       buffer << ",";
   } else
@@ -66,10 +79,12 @@ if (event) {
   // change
   if( !std::isnan(event->change())) {
     int sign = event->side() == OrderEvent::BookSide::kBid ? -1 : 1;
-    if (event->change())
-      buffer << std::fixed << std::setprecision(base_precision_)
-             << sign * event->change() << ",";
-    else
+    if (event->change()) {
+      std::ostringstream ss;
+      ss << std::fixed << std::setprecision(base_precision_)
+         << sign * event->change(); 
+      buffer << removeTrailingZeros(ss.str()) << ",";
+    } else
       buffer << ",";
   } else
     buffer << "NA,";
@@ -94,7 +109,7 @@ if (event) {
     buffer << "NA,";
 
   // heard
-  date::to_stream(buffer, "%FT%TZ,", event->heard());
+  buffer << (event->heard() - event->timestamp()).count();
 
   // deleted
   if(event->deleted())
@@ -114,7 +129,7 @@ if(f_.is_open())
   f_.close();
 auto base_name = exchange_ + "_" + product_ + "_" + format("%FT%H-%M-%SZ", era->timestamp());
 f_.open(base_name);
-f_ << "maker,ordinal,timestamp,state,price,volume,change,trade,taker,heard,deleted\n";
+f_ << "maker,ordinal,timestamp,mks,state,price,volume,change,trade,taker,heard,deleted\n";
 if(source_)
   s_.open(base_name + ".source");
 return f_.is_open();
@@ -122,3 +137,14 @@ return f_.is_open();
 if(f_.is_open()) f_.close();
 if(s_.is_open()) s_.close();
 return true;
+!!!1432838.cpp!!!	toSeconds(in d : microseconds) : seconds
+using namespace std::chrono;
+seconds t = duration_cast<seconds>(d);
+if( t > d)
+  return t - seconds{1};
+else
+  return t;
+!!!1432966.cpp!!!	removeTrailingZeros(in str : string) : string
+str.erase(str.find_last_not_of('0') + 1);
+str.erase(str.find_last_not_of('.') + 1);
+return std::move(str);
