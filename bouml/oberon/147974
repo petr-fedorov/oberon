@@ -1,6 +1,6 @@
 format 223
 "boost" // boost
-  revision 6
+  revision 7
   modified_by 6 "petr"
   // class settings
   
@@ -52,6 +52,23 @@ format 223
     
     activitydiagramsettings
      end
+    class 1013382 "optional"
+      visibility package 
+      nformals 1
+      formal name "T" type "class" explicit_default_value ""
+        explicit_extends ""
+      cpp_external cpp_decl "${name}
+#include <boost/optional/optional.hpp>
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+    end
+
     class 697734 "enable_shared_from_this"
       visibility package 
       nformals 1
@@ -118,4 +135,7 @@ format 223
   package_ref 168326 // beast
 
   package_ref 168454 // system
+
+  package_ref 221574 // program_options
+
 end

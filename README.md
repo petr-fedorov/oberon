@@ -49,9 +49,38 @@ The application is designed in BOUML -  a free UML 2 tool box including a modele
 
 ## Usage
 
-      oberon [options] <exchange name> <product>
+      oberon <command> [options]
 
-Supported exchanges and products are shown in the table below:
+  Commands are:
+
+  * **capture** live order events from an exchange
+  * **split** an event file into several
+  * **merge** several event files into one
+  * **transmute** event files into another types for the analysis of the collected information
+
+Options available depend on command. They are described below.
+
+### **capture**
+
+This command tells OBERON to capture live order events for a product on an exchange and save the events into one or more *event files* in an exchange-independent format described above.
+
+**capture** command recognizes the following options:
+
+    -e [ --exchange ] arg                specifies the exchange to capture data
+                                         from (mandatory)
+    -p [ --product ] arg                 specifies the exchange-specific code of
+                                         the product to be captured (mandatory)
+    -q [ --quote-increment ] arg (=0.01) specifies the minimum increment for the
+                                         quote currency (i.e. USD in BTC-USD)
+    -b [ --base-increment ] arg (=0.01)  specifies the minimum increment for the
+                                         base currency (i.e. BTC in BTC-USD)
+    -w [ --pong-wait-time ] arg (=1)     specifies the maximum waiting time for
+                                         the webosocket pong response before
+                                         re-connecting, secs
+    -d [ --deleted ]                     output deleted events too
+
+
+Supported values for `--exchange` and `--product` options are shown in the table below:
 
 | `<exchange name>` | `<product>`|
 |----|---|
@@ -60,23 +89,25 @@ Supported exchanges and products are shown in the table below:
 |Bitfinex| TBD|
 |KuCoin|TBD|
 
-Options are:
-
-    -q [ --quote-increment ] arg (=0.01) specifies the minimum increment for the
-                                         quote currency (i.e. USD in BTC-USD)
-    -b [ --base-increment ] arg (=0.01)  specifies the minimum increment for the
-                                         base currency (i.e. BTC in BTC-USD)
-    -d [ --deleted ]                     output deleted events too
-    -p [ --pong-wait-time ] arg (=1)     specifies the maximum waiting time in
-                                         seconds for pong message after sending
-                                         ping to an exchange
-
 `quote-increment` and `base-increment` depend on the exchange and the product chosen.
 
 Coinbase's [list of products](https://api.pro.coinbase.com/products/) contains parameters values for each pair. Bitstamp's [list of product](https://www.bitstamp.net/api/v2/trading-pairs-info/) provides  `counter_decimals` and `base_decimals` for each pair.
 
 
-The output file will have the name in the following format: `<exchange name>_<product>_<timestamp>.csv`
-where `timestamp` is the timestamp of an initial order book snapshot. The file starts from the events having this `timestamp` collectively producing the snapshot. The other messages in the file are updates of the snapshot.
+The event file will have its name in the following format: `<exchange name>_<product>_<timestamp>.csv`
+where `timestamp` is the timestamp of the initial order book snapshot. The file starts from the events having this `timestamp` collectively producing the snapshot. The following messages in the file are updates of the snapshot.
 
-There might be several files produced, with different `timestamp`s. That happens when an exchange websocket gets disconnected (i.e. when the exchainge does not respond to ping messages longer than `--pong-wait-time` seconds). In this case the application quitely restarts and creates a new output file.
+There might be several files produced, with different `timestamp`s. That happens, for example, when an exchange websocket gets disconnected (i.e. when the exchainge does not respond to ping messages longer than `--pong-wait-time` seconds). In this case the application quitely restarts and creates a new output file.
+
+### **split**
+
+TBD
+
+### **merge**
+
+TBD
+
+
+### **transmute**
+
+TBD

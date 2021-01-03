@@ -1,0 +1,183 @@
+class Main
+!!!1439494.cpp!!!	main(in argc : int, in argv : char **) : int
+namespace po = boost::program_options;
+
+po::options_description capture_options("Options are"), command_option, help_options;
+
+help_options.add_options()("help,h","produce this help message");
+capture_options.add_options()
+  ("exchange,e", po::value(&exchange_), "specifies the exchange to capture data from (mandatory)")
+  ("product,p", po::value(&product_), "specifies the exchange-specific code of the product to be captured (mandatory)")(
+    "quote-increment,q", po::value<double>(&quote_increment_)->default_value(0.01), "specifies the minimum increment for the quote currency " "(i.e. USD in BTC-USD)")(
+    "base-increment,b", po::value<double>(&base_increment_)->default_value(0.01),
+    "specifies the minimum increment for the base currency (i.e. BTC in "
+    "BTC-USD)")(
+    "pong-wait-time,w", po::value<int>(&pong_wait_time_)->default_value(1),
+    "specifies the maximum waiting time for the websocket pong response before re-connecting, secs")("deleted,d","also output events deleted by cleansing");
+
+boost::optional<std::string> command;
+command_option.add_options()("command",  po::value(&command), "");
+po::positional_options_description p;
+p.add("command", 1);
+
+po::options_description all;
+all.add(capture_options).add(help_options).add(command_option);
+
+po::variables_map vm;
+po::store(po::command_line_parser(argc, argv).options(all).positional(p).run(), vm);
+po::notify(vm);
+
+if (vm.count("help"))
+  help_ = true;
+
+// Check command line arguments.
+if (command) {
+  if( *command == "capture") {
+    capture_options.add(help_options);
+    return capture(capture_options);
+  }
+  else if( *command == "transmute") 
+    return not_yet_implemented();
+  else if( *command == "split")
+    return not_yet_implemented();
+}
+std::cerr << "Usage: oberon <command> [options]\n"
+          << "Commands are:\n capture\n transmute\n split\nRun oberon "
+             "<command> --help for the list of options per command.\n";
+return EXIT_FAILURE;
+!!!1439622.cpp!!!	init(in exchange : string, in product : string) : void
+namespace logging = boost::log;
+namespace src = boost::log::sources;
+namespace sinks = boost::log::sinks;
+namespace keywords = boost::log::keywords;
+
+logging::add_file_log(
+    keywords::file_name = exchange + "_" + product + "_%N.log",
+    keywords::rotation_size = 100 * 1024 * 1024,
+    keywords::time_based_rotation = sinks::file::rotation_at_time_point(0, 0,
+                                                                        0),
+    keywords::format = "[%TimeStamp%]: %Message%");
+
+logging::core::get()->set_filter(logging::trivial::severity >=
+                                 logging::trivial::debug);
+logging::add_common_attributes();
+
+!!!1439750.cpp!!!	capture(in od : options_description) : int
+if (exchange_ && product_ && !help_) {
+  using Snapshot = oberon::receiver::Snapshot;
+  using EventCounter = oberon::reconstructor::EventCounter;
+  using SizeDeducer = oberon::reconstructor::SizeDeducer;
+  init(*exchange_, *product_);
+
+  // The io_context is required for all I/O
+  boost::shared_ptr<boost::asio::io_context> ioc =
+      boost::make_shared<boost::asio::io_context>();
+  auto store = boost::make_shared<reconstructor::File>(
+      *exchange_, *product_, -std::floor(std::log10(quote_increment_)),
+      -std::floor(std::log10(base_increment_)), deleted_ ? true : false);
+
+  if (*exchange_ == "Bitstamp") {
+    using Receiver = oberon::receiver::bitstamp::Receiver;
+    using Feeder = oberon::receiver::bitstamp::Feeder;
+    using Deduplicator = oberon::reconstructor::bitstamp::Deduplicator;
+    using Reconstructor = oberon::reconstructor::bitstamp::Reconstructor;
+    using TimeOrderEnforcer =
+        oberon::reconstructor::bitstamp::TimeOrderEnforcer;
+    using Synchronizer = oberon::reconstructor::bitstamp::Synchronizer;
+    auto feeder = boost::make_shared<Feeder>(ioc, *product_, pong_wait_time_);
+    auto snapshot = boost::make_shared<Snapshot>(ioc, "www.bitstamp.net", "443",
+                                                 "/api/v2/order_book/" +
+                                                     *product_ + "?group=2");
+
+    auto event_counter = boost::make_shared<EventCounter>(store);
+    auto size_deducer = boost::make_shared<SizeDeducer>(event_counter);
+    size_deducer->create();
+    auto deduplicator = boost::make_shared<Deduplicator>(size_deducer);
+    auto time_order_enforcer =
+        boost::make_shared<TimeOrderEnforcer>(deduplicator, 1);
+    auto cleaner = boost::make_shared<Synchronizer>(time_order_enforcer);
+    cleaner->create();
+    auto reconstructor =
+        Reconstructor{cleaner, quote_increment_, base_increment_};
+
+    auto receiver = boost::make_shared<Receiver>(
+        ioc, boost::static_pointer_cast<Feeder>(feeder), snapshot,
+        std::bind(&Reconstructor::process, &reconstructor,
+                  std::placeholders::_1));
+    feeder->registerHandlers(
+        std::bind(&Receiver::postEvent, receiver, &Receiver::success),
+        std::bind(&Receiver::postEvent, receiver, &Receiver::failure),
+        std::bind(&Receiver::postMessage, receiver, std::placeholders::_1));
+    snapshot->registerHandlers(
+        std::bind(&Receiver::postEvent, receiver, &Receiver::failure),
+        std::bind(&Receiver::postSnapshot, receiver, std::placeholders::_1));
+
+    receiver->create();
+    // feeder->registerHandlers( []() { std::cout << "Success\n"; }, []() {
+    // std::cout << "Failure\n"; },
+    // [](boost::shared_ptr<boost::property_tree::ptree> &&tree) {
+    // boost::property_tree::write_json(std::cout, *tree, false); });
+    // feeder->create();
+    // snapshot->registerHandlers( []() { std::cout << "Failure\n"; },
+    // [](boost::shared_ptr<boost::property_tree::ptree> && tree) {
+    // boost::property_tree::write_json(std::cout, *tree, true); });
+    // snapshot->create();
+    std::thread t1{[ioc]() { ioc->run(); }};
+    std::thread t2{[ioc]() { ioc->run(); }};
+    std::thread t3{[ioc]() { ioc->run(); }};
+    ioc->run();
+    t1.join();
+    t2.join();
+    t3.join();
+  } else if (*exchange_ == "Coinbase") {
+
+    using Receiver = oberon::receiver::coinbase::Receiver;
+    using Feeder = oberon::receiver::coinbase::Feeder;
+    using Synchronizer = oberon::reconstructor::coinbase::Synchronizer;
+    using Reconstructor = oberon::reconstructor::coinbase::Reconstructor;
+
+    auto feeder = boost::make_shared<Feeder>(ioc, *product_, pong_wait_time_);
+    auto snapshot = boost::make_shared<Snapshot>(
+        ioc, "api.pro.coinbase.com", "443",
+        "/products/" + *product_ + "/book?level=3");
+    auto event_counter = boost::make_shared<EventCounter>(store);
+    auto size_deducer = boost::make_shared<SizeDeducer>(event_counter);
+    size_deducer->create();
+    auto cleaner = boost::make_shared<Synchronizer>(size_deducer);
+    auto reconstructor =
+        Reconstructor{cleaner, quote_increment_, base_increment_};
+    auto coinbase = boost::make_shared<Receiver>(
+        ioc, boost::static_pointer_cast<Feeder>(feeder), snapshot,
+        std::bind(&Reconstructor::process, &reconstructor,
+                  std::placeholders::_1));
+    feeder->registerHandlers(
+        std::bind(&Receiver::postEvent, coinbase, &Receiver::success),
+        std::bind(&Receiver::postEvent, coinbase, &Receiver::failure),
+        std::bind(&Receiver::postMessage, coinbase, std::placeholders::_1));
+    snapshot->registerHandlers(
+        std::bind(&Receiver::postEvent, coinbase, &Receiver::failure),
+        std::bind(&Receiver::postSnapshot, coinbase, std::placeholders::_1));
+    // feeder->registerHandlers([]() { std::cout << "Success\n"; }, []() {
+    // std::cout << "Failure\n"; },
+    // [](boost::shared_ptr<boost::property_tree::ptree> && tree) {
+    // boost::property_tree::write_json(std::cout, *tree, false); });
+    // feeder->create();
+    // feeder->engage();
+    coinbase->create();
+    // Run the I/O service in two threads.
+    // snapshot->create();
+    std::thread t1{[ioc]() { ioc->run(); }};
+    std::thread t2{[ioc]() { ioc->run(); }};
+    std::thread t3{[ioc]() { ioc->run(); }};
+    ioc->run();
+    t1.join();
+    t2.join();
+    t3.join();
+  }
+  return EXIT_SUCCESS;
+}
+std::cerr << "Usage: oberon capture [options]\n" << od;
+return EXIT_FAILURE;
+!!!1439878.cpp!!!	not_yet_implemented() : int
+std::cerr << "Not yet implemented.\n";
+return EXIT_FAILURE;

@@ -1,6 +1,6 @@
 format 223
 "Bitstamp" // Standalone application::Reconstructor::Bitstamp
-  revision 11
+  revision 12
   modified_by 6 "petr"
   // class settings
   
@@ -1816,7 +1816,7 @@ ${inlines}
 	  param in name "next" type class_ref 950918 // TokenHandler_SP
 	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} :TokenHandler{next, \"Synchronizer\"} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} : _current_state{0}, TokenHandler{next, \"Synchronizer\"} {
   ${body}}
 "
 	

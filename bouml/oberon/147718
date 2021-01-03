@@ -1,6 +1,6 @@
 format 223
 "Standalone application" // Standalone application
-  revision 101
+  revision 102
   modified_by 6 "petr"
   // class settings
   
@@ -32,7 +32,7 @@ format 223
   
   cpp_h_dir "cpp"
   cpp_src_dir "cpp"
-  cpp_namespace "oberon::standalone"
+  cpp_namespace "oberon"
   usecaseview 134534 "Diagrams"
     
     usecasediagramsettings end
@@ -851,6 +851,385 @@ format 223
   package_ref 194822 // Receiver
 
   package_ref 141190 // Reconstructor
+
+  classview 306950 "Application"
+    
+    classdiagramsettings member_max_width 0 end
+    
+    classcompositediagramsettings end
+    
+    collaborationdiagramsettings end
+    
+    objectdiagramsettings end
+    
+    objectcompositediagramsettings end
+    
+    sequencediagramsettings end
+    
+    statediagramsettings
+     end
+    
+    
+    activitydiagramsettings
+     end
+    class 1013126 "Main"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      class 1013510 "O_int"
+	visibility private stereotype "template_typedef"
+	nactuals 1
+	actual class class_ref 1013382 // optional
+	  rank 0 explicit_value "int"
+	cpp_decl "${comment}${template}using ${name} = ${inherit};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 1153286 // <realization>
+	  relation 1142918 -_-|>
+	    stereotype "bind"
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 1153286 // <realization>
+	    b parent class_ref 1013382 // optional
+	end
+      end
+
+      class 1013766 "O_string"
+	visibility private stereotype "template_typedef"
+	nactuals 1
+	actual class class_ref 1013382 // optional
+	  rank 0 explicit_value "std::string"
+	cpp_decl "${comment}${template}using ${name} = ${inherit};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 1153542 // <realization>
+	  relation 1143174 -_-|>
+	    stereotype "bind"
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 1153542 // <realization>
+	    b parent class_ref 1013382 // optional
+	end
+      end
+
+      class 1013894 "O_bool"
+	visibility private stereotype "template_typedef"
+	nactuals 1
+	actual class class_ref 1013382 // optional
+	  rank 0 explicit_value "bool"
+	cpp_decl "${comment}${template}using ${name} = ${inherit};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 1153670 // <realization>
+	  relation 1143302 -_-|>
+	    stereotype "bind"
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 1153670 // <realization>
+	    b parent class_ref 1013382 // optional
+	end
+      end
+
+      operation 1439494 "main"
+	public explicit_return_type "int"
+	nparams 2
+	  param in name "argc" explicit_type "int"
+	  param in name "argv" explicit_type "char **"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1439622 "init"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "exchange" explicit_type "string"
+	  param in name "product" explicit_type "string"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1439750 "capture"
+	public explicit_return_type "int"
+	nparams 1
+	  param in name "od" type class_ref 1014022 // options_description
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1439878 "not_yet_implemented"
+	public explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 1151110 // <dependency>
+	relation 1140742 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1151110 // <dependency>
+	  b parent class_ref 965766 // Deduplicator
+      end
+
+      classrelation 1151238 // <dependency>
+	relation 1140870 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1151238 // <dependency>
+	  b parent class_ref 624902 // Reconstructor
+      end
+
+      classrelation 1151366 // <dependency>
+	relation 1140998 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1151366 // <dependency>
+	  b parent class_ref 603654 // Reconstructor
+      end
+
+      classrelation 1151622 // <dependency>
+	relation 1141254 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1151622 // <dependency>
+	  b parent class_ref 486406 // Reconstructor
+      end
+
+      classrelation 1151750 // <dependency>
+	relation 1141382 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1151750 // <dependency>
+	  b parent class_ref 542982 // SizeDeducer
+      end
+
+      classrelation 1151878 // <dependency>
+	relation 1141510 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1151878 // <dependency>
+	  b parent class_ref 229510 // File
+      end
+
+      classrelation 1152006 // <dependency>
+	relation 1141638 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1152006 // <dependency>
+	  b parent class_ref 564230 // EventCounter
+      end
+
+      classrelation 1152134 // <dependency>
+	relation 1141766 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1152134 // <dependency>
+	  b parent class_ref 825862 // Snapshot
+      end
+
+      classrelation 1152262 // <dependency>
+	relation 1141894 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1152262 // <dependency>
+	  b parent class_ref 937734 // Receiver
+      end
+
+      classrelation 1152518 // <dependency>
+	relation 1142150 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1152518 // <dependency>
+	  b parent class_ref 937606 // Receiver
+      end
+
+      classrelation 1152646 // <dependency>
+	relation 1142278 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1152646 // <dependency>
+	  b parent class_ref 930950 // Feeder
+      end
+
+      classrelation 1152774 // <dependency>
+	relation 1142406 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1152774 // <dependency>
+	  b parent class_ref 931078 // Feeder
+      end
+
+      classrelation 1152902 // <dependency>
+	relation 1142534 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1152902 // <dependency>
+	  b parent class_ref 958342 // Synchronizer
+      end
+
+      classrelation 1153030 // <dependency>
+	relation 1142662 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1153030 // <dependency>
+	  b parent class_ref 979334 // Synchronizer
+      end
+
+      classrelation 1153158 // <dependency>
+	relation 1142790 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1153158 // <dependency>
+	  b parent class_ref 966022 // TimeOrderEnforcer
+      end
+
+      attribute 876550 "quote_increment_"
+	private type class_ref 305798 // Volume
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 876678 "base_increment_"
+	private type class_ref 305798 // Volume
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 876806 "exchange_"
+	private type class_ref 1013766 // O_string
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 876934 "product_"
+	private type class_ref 1013766 // O_string
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 877062 "deleted_"
+	private explicit_type "bool"
+	init_value "false"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 877190 "pong_wait_time_"
+	private explicit_type "int"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 877318 "help_"
+	private explicit_type "bool"
+	init_value "false"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+    end
+
+    classdiagram 459910 "Main"
+      classdiagramsettings hide_attributes yes hide_operations yes member_max_width 0 end
+      size A4
+    end
+  end
 
   deploymentview 160774 "Source files"
     //deployment diagram settings
@@ -8818,217 +9197,51 @@ operator<<(std::basic_ostream<CharT, Traits>& os,
       end
     end
 
-    artifact 173702 "main"
+    artifact 173702 "Main"
       stereotype "source"
-      cpp_src "#include \"receiver/bitstamp/Feeder.h\"
-#include \"receiver/bitstamp/Receiver.h\"
-#include \"receiver/coinbase/Feeder.h\"
-#include \"receiver/coinbase/Receiver.h\"
-#include \"receiver/Snapshot.h\"
-#include \"reconstructor/Reconstructor.h\"
-#include \"reconstructor/EventCounter.h\"
-#include \"reconstructor/SizeDeducer.h\"
-#include \"reconstructor/coinbase/Reconstructor.h\"
-#include \"reconstructor/coinbase/Synchronizer.h\"
-#include \"reconstructor/bitstamp/Reconstructor.h\"
-#include \"reconstructor/bitstamp/Deduplicator.h\"
-#include \"reconstructor/bitstamp/TimeOrderEnforcer.h\"
-#include \"reconstructor/bitstamp/Synchronizer.h\"
-#include \"reconstructor/File.h\"
-#include <boost/asio/bind_executor.hpp>
-#include <boost/asio/connect.hpp>
-#include <boost/beast.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/property_tree/json_parser.hpp>
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+#include <boost/program_options/options_description.hpp>
+#include <boost/program_options/positional_options.hpp>
+#include <boost/program_options/variables_map.hpp>
+#include <boost/program_options/parsers.hpp>
 #include <boost/log/core.hpp>
 #include <boost/log/expressions.hpp>
 #include <boost/log/sinks/text_file_backend.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/log/utility/setup/file.hpp>
-#include <boost/program_options/options_description.hpp>
-#include <boost/program_options/positional_options.hpp>
-#include <boost/program_options/variables_map.hpp>
-#include <boost/program_options/parsers.hpp>
-#include <boost/smart_ptr/make_shared.hpp>
-
 #include <thread>
-using boost::posix_time::seconds;
-
-// TEMPORARY
-#include <boost/property_tree/json_parser.hpp>
-
-
-namespace logging = boost::log;
-namespace src = boost::log::sources;
-namespace sinks = boost::log::sinks;
-namespace keywords = boost::log::keywords;
-
-void init(const std::string& exchange, const std::string& product) {
-  logging::add_file_log(keywords::file_name = exchange+ \"_\" + product +\"_%N.log\",
-                        keywords::rotation_size = 100 * 1024 * 1024,
-                        keywords::time_based_rotation =
-                            sinks::file::rotation_at_time_point(0, 0, 0),
-                        keywords::format = \"[%TimeStamp%]: %Message%\");
-
-  logging::core::get()->set_filter(logging::trivial::severity >=
-                                   logging::trivial::debug);
-}
-
-
+${includes}
+${namespace_start}
+${members}
+${namespace_end}
 
 int main(int argc, char **argv) {
 
-
-  namespace po=boost::program_options;
-
-  po::options_description options(\"Options\"), hidden;
-
-  double quote_increment, base_increment;
-  int pong_wait_time;
-
-  options.add_options()
-    (\"quote-increment,q\", po::value<double>(&quote_increment)->default_value(0.01), \"specifies the minimum increment for the quote currency (i.e. USD in BTC-USD)\")
-    (\"base-increment,b\", po::value<double>(&base_increment)->default_value(0.01),\"specifies the minimum increment for the base currency (i.e. BTC in BTC-USD)\")
-    (\"deleted,d\",\"output deleted events too\") 
-    (\"pong-wait-time,p\", po::value<int>(&pong_wait_time)->default_value(1), \"specifies the maximum waiting time in seconds for pong message after sending ping to an exchange\");
-  hidden.add_options()(\"exchange\",\"\")(\"product\",\"\"); 
-  po::positional_options_description p;
-  p.add(\"exchange\",1).add(\"product\",1);
-
-  po::options_description all;
-  all.add(options).add(hidden);
-
-  po::variables_map vm;
-  po::store(po::command_line_parser(argc, argv).options(all).positional(p).run(), vm);
-  po::notify(vm);
-
-
-  // Check command line arguments.
-  if (!(vm.count(\"exchange\") && vm.count(\"product\"))) {
-    std::cerr << \"Usage: oberon [options] <exchange> <product> \\n\" << options;
-    return EXIT_FAILURE;
-  }
-  std::string const exchange {vm[\"exchange\"].as<std::string>()};
-  const std::string product {vm[\"product\"].as<std::string>()};
-  using namespace oberon;
-  using Snapshot = oberon::receiver::Snapshot;
-  using EventCounter = oberon::reconstructor::EventCounter;
-  using SizeDeducer = oberon::reconstructor::SizeDeducer;
-
-  init(exchange, product);
-  logging::add_common_attributes();
-
-  // The io_context is required for all I/O
-  boost::shared_ptr<boost::asio::io_context> ioc =
-      boost::make_shared<boost::asio::io_context>();
-
-  bool deleted = false;
-  if(vm.count(\"deleted\"))
-    deleted = true;
-
-  auto store = boost::make_shared<reconstructor::File>(
-      exchange, product, -std::floor(std::log10(quote_increment)),
-      -std::floor(std::log10(base_increment)), deleted);
-  if (exchange == \"Bitstamp\") {
-    using Receiver=oberon::receiver::bitstamp::Receiver;
-    using Feeder=oberon::receiver::bitstamp::Feeder;
-    using Deduplicator=oberon::reconstructor::bitstamp::Deduplicator;
-    using Reconstructor=oberon::reconstructor::bitstamp::Reconstructor;
-    using TimeOrderEnforcer=oberon::reconstructor::bitstamp::TimeOrderEnforcer;
-    using Synchronizer=oberon::reconstructor::bitstamp::Synchronizer;
-    auto feeder =
-        boost::make_shared<Feeder>(ioc, product, pong_wait_time);
-    auto snapshot =
-        boost::make_shared<Snapshot>(ioc,\"www.bitstamp.net\", \"443\",\"/api/v2/order_book/\" + product + \"?group=2\");
-
-    auto event_counter = boost::make_shared<EventCounter>(store);
-    auto size_deducer = boost::make_shared<SizeDeducer>(event_counter);
-    size_deducer->create();
-    auto deduplicator=boost::make_shared<Deduplicator>(size_deducer);
-    auto time_order_enforcer = boost::make_shared<TimeOrderEnforcer>(deduplicator, 1);
-    auto cleaner = boost::make_shared<Synchronizer>(time_order_enforcer);
-    cleaner->create();
-    auto reconstructor =
-        Reconstructor{cleaner, quote_increment, base_increment};
-
-    auto receiver = boost::make_shared<Receiver>(
-        ioc, boost::static_pointer_cast<Feeder>(feeder), snapshot,
-        std::bind(&Reconstructor::process, &reconstructor,
-                  std::placeholders::_1));
-    feeder->registerHandlers(
-        std::bind(&Receiver::postEvent, receiver, &Receiver::success),
-        std::bind(&Receiver::postEvent, receiver, &Receiver::failure),
-        std::bind(&Receiver::postMessage, receiver, std::placeholders::_1));
-    snapshot->registerHandlers(
-        std::bind(&Receiver::postEvent, receiver, &Receiver::failure),
-        std::bind(&Receiver::postSnapshot, receiver, std::placeholders::_1));
-
-    receiver->create();
-    // feeder->registerHandlers( []() { std::cout << \"Success\\n\"; }, []() { std::cout << \"Failure\\n\"; }, [](boost::shared_ptr<boost::property_tree::ptree> &&tree) { boost::property_tree::write_json(std::cout, *tree, false); });
-    //feeder->create();
-    // snapshot->registerHandlers( []() { std::cout << \"Failure\\n\"; }, [](boost::shared_ptr<boost::property_tree::ptree> && tree) { boost::property_tree::write_json(std::cout, *tree, true); });
-    // snapshot->create();
-    std::thread t1{[ioc]() { ioc->run(); }};
-    std::thread t2{[ioc]() { ioc->run(); }};
-    std::thread t3{[ioc]() { ioc->run(); }};
-    ioc->run();
-    t1.join();
-    t2.join();
-    t3.join();
-  } else if (exchange == \"Coinbase\") {
-
-    using Receiver=oberon::receiver::coinbase::Receiver;
-    using Feeder=oberon::receiver::coinbase::Feeder;
-    using Synchronizer=oberon::reconstructor::coinbase::Synchronizer;
-    using Reconstructor=oberon::reconstructor::coinbase::Reconstructor;
-
-    auto feeder =
-        boost::make_shared<Feeder>(ioc, product, pong_wait_time);
-    auto snapshot =
-        boost::make_shared<Snapshot>(ioc,\"api.pro.coinbase.com\", \"443\",\"/products/\" + product + \"/book?level=3\");
-    auto event_counter = boost::make_shared<EventCounter>(store);
-    auto size_deducer = boost::make_shared<SizeDeducer>(event_counter);
-    size_deducer->create();
-    auto cleaner = boost::make_shared<Synchronizer>(size_deducer);
-    auto reconstructor = Reconstructor{cleaner, quote_increment, base_increment };
-    auto coinbase = boost::make_shared<Receiver>(
-        ioc, boost::static_pointer_cast<Feeder>(feeder), snapshot,
-        std::bind(&Reconstructor::process, &reconstructor,
-                  std::placeholders::_1));
-    feeder->registerHandlers(
-        std::bind(&Receiver::postEvent, coinbase, &Receiver::success),
-        std::bind(&Receiver::postEvent, coinbase, &Receiver::failure),
-        std::bind(&Receiver::postMessage, coinbase, std::placeholders::_1));
-    snapshot->registerHandlers(
-        std::bind(&Receiver::postEvent, coinbase, &Receiver::failure),
-        std::bind(&Receiver::postSnapshot, coinbase, std::placeholders::_1));
-    // feeder->registerHandlers([]() { std::cout << \"Success\\n\"; }, []() { std::cout << \"Failure\\n\"; }, [](boost::shared_ptr<boost::property_tree::ptree> && tree) { boost::property_tree::write_json(std::cout, *tree, false); });
-    // feeder->create();
-    // feeder->engage();
-    coinbase->create();
-    // Run the I/O service in two threads.
-    // snapshot->create();
-    std::thread t1{[ioc]() { ioc->run(); }};
-    std::thread t2{[ioc]() { ioc->run(); }};
-    std::thread t3{[ioc]() { ioc->run(); }};
-    ioc->run();
-    t1.join();
-    t2.join();
-    t3.join();
-  }
-
-  return EXIT_SUCCESS;
+  oberon::Main app;
+  return app.main(argc, argv);
 }
 "
       associated_elems
+	class_ref 1013126 // Main
       end
     end
 
     artifact 174214 "oberon"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 173702 // main
+	artifact_ref 173702 // Main
 	artifact_ref 180998 // Reconstructor
 	artifact_ref 213638 // Reconstructor
 	artifact_ref 213766 // Reconstructor
