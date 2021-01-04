@@ -2,33 +2,63 @@ class Reconstructor
 !!!576134.cpp!!!	extract(in tree : ptree [1]) : Token [1..*]
 using namespace date;
 using namespace std;
-Token output;
+Token empty;
+boost::uuids::string_generator gen;
 try {
   string type = tree.get<string>("type");
   if (type == "elapsed")
-    output = boost::make_unique<Elapsed>(toTimestamp(tree.get<string>("time")));
-  else if (type == "received")
-    output = boost::make_unique<CoinbaseReceived>(tree, *this);
-  else if (type == "open")
-    output = boost::make_unique<CoinbaseOpen>(tree, *this);
-  else if (type == "done") {
-    if (tree.get<string>("reason") == "canceled")
-      output = boost::make_unique<CoinbaseDoneCancelled>(tree, *this);
-    else
-      output = boost::make_unique<CoinbaseDoneFilled>(tree, *this);
+    return boost::make_unique<Elapsed>(toTimestamp(tree.get<string>("time")));
+  else if (type == "received") {
+    auto output = boost::make_unique<Created>();
+    updateCommonAttributes(*output, tree);
+    output->maker(gen(tree.get<string>("order_id")));
+    output->change(0);
+    if (tree.get<string>("order_type") == "limit")
+      output->remaining(stod(tree.get("size", "0.0")));
+    return output;
+  } else if (type == "open") {
+    auto output = boost::make_unique<Created>();
+    updateCommonAttributes(*output, tree);
+    output->maker(gen(tree.get<string>("order_id")));
+    output->remaining(stod(tree.get<string>("remaining_size")));
+    output->change(0);
+    output->ordinal(1);
+    output->state(OrderEvent::OrderState::kActive);
+    return output;
+  } else if (type == "done") {
+    auto output = boost::make_unique<Cancelled>();
+    updateCommonAttributes(*output, tree);
+    output->maker(gen(tree.get<string>("order_id")));
+    output->state(OrderEvent::OrderState::kFinished);
+    if (tree.get<string>("reason") == "canceled") {
+      output->remaining(stod(tree.get<string>("remaining_size")));
+      output->change(0);
+    } else
+      output->deleted(true);
+    return output;
   } else if (type == "match") {
-    output = boost::make_unique<CoinbaseMatch>(tree, *this);
+    auto output = boost::make_unique<Filled>();
+    updateCommonAttributes(*output, tree);
+    output->change(stod(tree.get<string>("size")));
+    output->trade(stol(tree.get<string>("trade_id")));
+    output->maker(gen(tree.get<string>("maker_order_id")));
+    output->taker(gen(tree.get<string>("taker_order_id")));
+    return output;
   } else if (type == "change") {
-    output = boost::make_unique<CoinbaseChanged>(tree, *this);
+    auto output = boost::make_unique<Changed>();
+    updateCommonAttributes(*output, tree);
+    output->maker(gen(tree.get<string>("order_id")));
+    output->state(OrderEvent::OrderState::kActive);
+    output->change(0);
+    try {
+      output->remaining(stod(tree.get<string>("new_size")));
+    } catch (...) {
+    };
+    return output;
   } else if (type == "era") {
-    output = boost::make_unique<CoinbaseEra>(tree);
+    return boost::make_unique<Era>(toTimestamp(tree.get<string>("time")));
   } else if (type == "reset") {
-    output = boost::make_unique<Reset>();
-  }
-  if (!output) {
-    std::stringstream s;
-    boost::property_tree::write_json(s, tree, false);
-    BOOST_LOG_TRIVIAL(error) << "Unable to extract: " << s.str();
+    return boost::make_unique<Reset>();
   }
 } catch (const std::exception &e) {
   std::stringstream s;
@@ -38,4 +68,15 @@ try {
                            << s.str();
   throw;
 };
-return output;
+std::stringstream s;
+boost::property_tree::write_json(s, tree, false);
+BOOST_LOG_TRIVIAL(error) << "Unable to extract: " << s.str();
+return empty;
+!!!1446534.cpp!!!	updateCommonAttributes(inout event : OrderEvent, in tree : ptree) : void
+event.timestamp(toTimestamp(tree.get<std::string>("time")));
+event.heard(toTimestamp(tree.get<std::string>("local_timestamp")));
+
+event.side(tree.get<std::string>("side") == "buy" ? OrderEvent::BookSide::kBid : OrderEvent::BookSide::kAsk);
+event.price(stod(tree.get("price", "0.0")));
+event.baseIncrement(base_increment_);
+

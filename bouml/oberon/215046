@@ -1,6 +1,6 @@
 format 223
 "Bitfinex" // Standalone application::Reconstructor::Bitfinex
-  revision 4
+  revision 5
   modified_by 6 "petr"
   // class settings
   
@@ -131,7 +131,7 @@ ${inlines}
       end
     end
 
-    classdiagram 327302 "Bitfinex Messages"
+    classdiagram 327302 "Bitfinex Reconstructor"
       classdiagramsettings member_max_width 0 end
       size A4
     end
@@ -183,120 +183,6 @@ ${inlines}
 	
       end
 
-      class 625286 "BitfinexChanged"
-	visibility package 
-	cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-	java_decl ""
-	php_decl ""
-	python_2_2 python_decl ""
-	idl_decl ""
-	explicit_switch_type ""
-	mysql_decl ""
-	
-	classrelation 680198 // <generalisation>
-	  relation 670086 ---|>
-	    a public
-	      cpp default "${type}"
-	      classrelation_ref 680198 // <generalisation>
-	    b parent class_ref 570886 // Changed
-	end
-
-	operation 793094 "BitfinexChanged"
-	  public explicit_return_type ""
-	  nparams 2
-	    param in name "tree" type class_ref 174214 // ptree
-	    param in name "reconstructor" type class_ref 624902 // Reconstructor
-	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${volatile}${throw};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw} {
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	end
-      end
-
-      class 625414 "BitfinexCancelled"
-	visibility package 
-	cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-	java_decl ""
-	php_decl ""
-	python_2_2 python_decl ""
-	idl_decl ""
-	explicit_switch_type ""
-	mysql_decl ""
-	
-	operation 793478 "BitfinexCancelled"
-	  public explicit_return_type ""
-	  nparams 2
-	    param in name "tree" type class_ref 174214 // ptree
-	    param in name "reconstructor" type class_ref 624902 // Reconstructor
-	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${volatile}${throw};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw} {
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	end
-
-	classrelation 680326 // <generalisation>
-	  relation 670214 ---|>
-	    a public
-	      cpp default "${type}"
-	      classrelation_ref 680326 // <generalisation>
-	    b parent class_ref 328710 // Cancelled
-	end
-      end
-
-      class 625542 "BitfinexFilled"
-	visibility package 
-	cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-	java_decl ""
-	php_decl ""
-	python_2_2 python_decl ""
-	idl_decl ""
-	explicit_switch_type ""
-	mysql_decl ""
-	
-	classrelation 680454 // <generalisation>
-	  relation 670342 ---|>
-	    a public
-	      cpp default "${type}"
-	      classrelation_ref 680454 // <generalisation>
-	    b parent class_ref 246022 // Filled
-	end
-
-	operation 793350 "BitfinexFilled"
-	  public explicit_return_type ""
-	  nparams 2
-	    param in name "tree" type class_ref 174214 // ptree
-	    param in name "reconstructor" type class_ref 624902 // Reconstructor
-	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${volatile}${throw};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw} {
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	end
-      end
-
       classrelation 688134 // <generalisation>
 	relation 678022 ---|>
 	  a public
@@ -311,6 +197,30 @@ ${inlines}
 	    cpp default "#include in source"
 	    classrelation_ref 1137542 // <dependency>
 	  b parent class_ref 441478 // Elapsed
+      end
+
+      classrelation 1160838 // <dependency>
+	relation 1150470 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1160838 // <dependency>
+	  b parent class_ref 570886 // Changed
+      end
+
+      classrelation 1160966 // <dependency>
+	relation 1150598 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1160966 // <dependency>
+	  b parent class_ref 328710 // Cancelled
+      end
+
+      classrelation 1161094 // <dependency>
+	relation 1150726 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1161094 // <dependency>
+	  b parent class_ref 246022 // Filled
       end
     end
   end

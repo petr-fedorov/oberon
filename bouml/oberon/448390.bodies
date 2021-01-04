@@ -29,7 +29,7 @@ if (std::isnan(change_size_))
   buf << "NA";
 else
   buf << change_size_;
-buf << (is_deleted_ ? " DELETED " : "");
+buf << (deleted() ? " DELETED " : "");
 return buf.str();
 !!!1285510.cpp!!!	accept(in mh : TokenHandler [1]) : bool
 return mh->orderEvent();
@@ -57,14 +57,24 @@ return event_no_;
 event_no_ = event_no;
 !!!1264262.cpp!!!	price() : OrderEvent::Price
 return price_;
+!!!1447046.cpp!!!	price(in price : OrderEvent::Price) : void
+price_ = price; 
 !!!1264390.cpp!!!	heard() : Message::Timestamp
 return heard_;
+!!!1446790.cpp!!!	heard(in timestamp : Message::Timestamp) : void
+heard_ = timestamp;
 !!!1270918.cpp!!!	side() : OrderEvent::BookSide
 return side_;
+!!!1446918.cpp!!!	side(in side : OrderEvent::BookSide) : void
+side_ = side;
 !!!1277830.cpp!!!	taker() : OrderEvent::OrderId
 return taker_order_id_;
+!!!1447302.cpp!!!	taker(in taker_id : OrderEvent::OrderId) : void
+taker_order_id_ = taker_id;
 !!!1277958.cpp!!!	trade() : OrderEvent::TradeId
 return trade_id_;
+!!!1447174.cpp!!!	trade(in trade_id : OrderEvent::TradeId) : void
+trade_id_ = trade_id;
 !!!1278214.cpp!!!	state() : OrderEvent::OrderState
 return state_;
 !!!1292678.cpp!!!	state(in state : OrderEvent::OrderState) : void

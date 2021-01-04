@@ -1,6 +1,6 @@
 format 223
 "Bitstamp" // Standalone application::Reconstructor::Bitstamp
-  revision 12
+  revision 13
   modified_by 6 "petr"
   // class settings
   
@@ -71,204 +71,6 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
-      class 937862 "BitstampEra"
-	visibility protected 
-	cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-	java_decl ""
-	php_decl ""
-	python_2_2 python_decl ""
-	idl_decl ""
-	explicit_switch_type ""
-	mysql_decl ""
-	
-	operation 1344518 "BitstampEra"
-	  public explicit_return_type ""
-	  nparams 1
-	    param in name "tree" type class_ref 174214 // ptree
-	  multiplicity "1"
-	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} {
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	end
-
-	classrelation 1065222 // <generalisation>
-	  relation 1054854 ---|>
-	    a public
-	      cpp default "${type}"
-	      classrelation_ref 1065222 // <generalisation>
-	    b parent class_ref 521478 // Era
-	end
-      end
-
-      class 603910 "BitstampOpened"
-	visibility public 
-	cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-	java_decl ""
-	php_decl ""
-	python_2_2 python_decl ""
-	idl_decl ""
-	explicit_switch_type ""
-	mysql_decl ""
-	
-	operation 759174 "BitstampOpened"
-	  public explicit_return_type ""
-	  nparams 2
-	    param in name "tree" type class_ref 174214 // ptree
-	    param in name "reconstructor" type class_ref 603654 // Reconstructor
-	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${volatile}${throw};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw} {
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	end
-
-	classrelation 665350 // <dependency>
-	  relation 655238 -_->
-	    a public
-	      cpp default "#include in source"
-	      classrelation_ref 665350 // <dependency>
-	    b parent class_ref 507910 // string_generator
-	end
-
-	classrelation 1035142 // <generalisation>
-	  relation 1024774 ---|>
-	    a public
-	      cpp default "${type}"
-	      classrelation_ref 1035142 // <generalisation>
-	    b parent class_ref 597126 // Created
-	end
-      end
-
-      class 604294 "BitstampCancelled"
-	visibility public 
-	cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-	java_decl ""
-	php_decl ""
-	python_2_2 python_decl ""
-	idl_decl ""
-	explicit_switch_type ""
-	mysql_decl ""
-	
-	classrelation 657670 // <generalisation>
-	  relation 647558 ---|>
-	    a public
-	      cpp default "${type}"
-	      classrelation_ref 657670 // <generalisation>
-	    b parent class_ref 328710 // Cancelled
-	end
-
-	operation 759430 "BitstampCancelled"
-	  public explicit_return_type ""
-	  nparams 2
-	    param in name "tree" type class_ref 174214 // ptree
-	    param in name "reconstructor" type class_ref 603654 // Reconstructor
-	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${volatile}${throw};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw} {
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	end
-      end
-
-      class 604422 "BitstampFilled"
-	visibility public 
-	cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-	java_decl ""
-	php_decl ""
-	python_2_2 python_decl ""
-	idl_decl ""
-	explicit_switch_type ""
-	mysql_decl ""
-	
-	classrelation 657798 // <generalisation>
-	  relation 647686 ---|>
-	    a public
-	      cpp default "${type}"
-	      classrelation_ref 657798 // <generalisation>
-	    b parent class_ref 246022 // Filled
-	end
-
-	operation 759558 "BitstampFilled"
-	  public explicit_return_type ""
-	  nparams 2
-	    param in name "tree" type class_ref 174214 // ptree
-	    param in name "reconstructor" type class_ref 603654 // Reconstructor
-	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${volatile}${throw};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw} {
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	end
-      end
-
-      class 604550 "BitstampChanged"
-	visibility public 
-	cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-	java_decl ""
-	php_decl ""
-	python_2_2 python_decl ""
-	idl_decl ""
-	explicit_switch_type ""
-	mysql_decl ""
-	
-	classrelation 657926 // <generalisation>
-	  relation 647814 ---|>
-	    a public
-	      cpp default "${type}"
-	      classrelation_ref 657926 // <generalisation>
-	    b parent class_ref 570886 // Changed
-	end
-
-	operation 759302 "BitstampChanged"
-	  public explicit_return_type ""
-	  nparams 2
-	    param in name "tree" type class_ref 174214 // ptree
-	    param in name "reconstructor" type class_ref 603654 // Reconstructor
-	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${volatile}${throw};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw} {
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	end
-      end
-
       operation 759686 "Reconstructor"
 	public explicit_return_type ""
 	nparams 3
@@ -325,6 +127,46 @@ ${inlines}
 	    cpp default "#include in source"
 	    classrelation_ref 1137414 // <dependency>
 	  b parent class_ref 441478 // Elapsed
+      end
+
+      classrelation 1161222 // <dependency>
+	relation 1150854 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1161222 // <dependency>
+	  b parent class_ref 521478 // Era
+      end
+
+      classrelation 1161350 // <dependency>
+	relation 1150982 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1161350 // <dependency>
+	  b parent class_ref 597126 // Created
+      end
+
+      classrelation 1161478 // <dependency>
+	relation 1151110 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1161478 // <dependency>
+	  b parent class_ref 570886 // Changed
+      end
+
+      classrelation 1161606 // <dependency>
+	relation 1151238 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1161606 // <dependency>
+	  b parent class_ref 328710 // Cancelled
+      end
+
+      classrelation 1161734 // <dependency>
+	relation 1151366 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1161734 // <dependency>
+	  b parent class_ref 246022 // Filled
       end
     end
   end

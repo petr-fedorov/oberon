@@ -51,14 +51,14 @@ The application is designed in BOUML -  a free UML 2 tool box including a modele
 
       oberon <command> [options]
 
-  Commands are:
+  where `<command>` is one of:
 
   * **capture** live order events from an exchange
   * **split** an event file into several
   * **merge** several event files into one
-  * **transmute** event files into another types for the analysis of the collected information
+  * **transmute** event files into the files of different formats that are more suitable for visualization and analysis
 
-Options available depend on command. They are described below.
+Options available depend on the command. They are described below.
 
 ### **capture**
 

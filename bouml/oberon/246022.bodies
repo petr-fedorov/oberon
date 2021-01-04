@@ -5,10 +5,10 @@ return mh->filled();
 !!!649734.cpp!!!	toString() : string
 std::stringstream buf;
 buf << OrderEvent::toString() << " ";
-if (trade_id_ == kNaTradeId)
+if (trade() == kNaTradeId)
   buf << "NA";
 else
-  buf << trade_id_;
+  buf << trade();
 buf << " Filled";
 return buf.str();
 !!!1292550.cpp!!!	remaining(in remaining_size : OrderEvent::Volume) : void
