@@ -23,7 +23,7 @@ if (type == "elapsed") {
     output->remaining(r);
     output->side(OrderEvent::BookSide::kBid);
   }
-  return output;
+  return std::move(output);
 
 } else if (type == "order_deleted") {
   auto output = boost::make_unique<Cancelled>();
@@ -35,7 +35,7 @@ if (type == "elapsed") {
     output->side(OrderEvent::BookSide::kAsk);
   } else
     output->side(OrderEvent::BookSide::kBid);
-  return output;
+  return std::move(output);
 } else if (type == "match") {
   auto output = boost::make_unique<Filled>();
   output->timestamp(toTimestamp(tree.get<std::string>("mts")));
@@ -51,6 +51,6 @@ if (type == "elapsed") {
     output->side(OrderEvent::BookSide::kAsk);
   }
   output->trade(std::stol(tree.get<std::string>("id")));
-  return output;
+  return std::move(output);
 }
 return Token{};

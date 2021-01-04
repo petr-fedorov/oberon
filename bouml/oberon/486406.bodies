@@ -15,7 +15,7 @@ try {
     output->change(0);
     if (tree.get<string>("order_type") == "limit")
       output->remaining(stod(tree.get("size", "0.0")));
-    return output;
+    return std::move(output);
   } else if (type == "open") {
     auto output = boost::make_unique<Created>();
     updateCommonAttributes(*output, tree);
@@ -24,7 +24,7 @@ try {
     output->change(0);
     output->ordinal(1);
     output->state(OrderEvent::OrderState::kActive);
-    return output;
+    return std::move(output);
   } else if (type == "done") {
     auto output = boost::make_unique<Cancelled>();
     updateCommonAttributes(*output, tree);
@@ -35,7 +35,7 @@ try {
       output->change(0);
     } else
       output->deleted(true);
-    return output;
+    return std::move(output);
   } else if (type == "match") {
     auto output = boost::make_unique<Filled>();
     updateCommonAttributes(*output, tree);
@@ -43,7 +43,7 @@ try {
     output->trade(stol(tree.get<string>("trade_id")));
     output->maker(gen(tree.get<string>("maker_order_id")));
     output->taker(gen(tree.get<string>("taker_order_id")));
-    return output;
+    return std::move(output);
   } else if (type == "change") {
     auto output = boost::make_unique<Changed>();
     updateCommonAttributes(*output, tree);
@@ -54,7 +54,7 @@ try {
       output->remaining(stod(tree.get<string>("new_size")));
     } catch (...) {
     };
-    return output;
+    return std::move(output);
   } else if (type == "era") {
     return boost::make_unique<Era>(toTimestamp(tree.get<string>("time")));
   } else if (type == "reset") {

@@ -24,7 +24,7 @@ if (type == "elapsed") {
   else
     output->side(OrderEvent::BookSide::kAsk);
 
-  return output;
+  return std::move(output);
 }
 else if (type == "order_changed") {
   auto output=boost::make_unique<Changed>();
@@ -42,7 +42,7 @@ else if (type == "order_changed") {
     output->side(OrderEvent::BookSide::kAsk);
 
   output->state(OrderEvent::OrderState::kActive);
-  return output;
+  return std::move(output);
 }
 else if (type == "order_deleted") {
     auto output=boost::make_unique<Cancelled>();
@@ -61,7 +61,7 @@ else if (type == "order_deleted") {
       output->side(OrderEvent::BookSide::kAsk);
 
     output->state(OrderEvent::OrderState::kFinished);
-    return output;
+    return std::move(output);
 } else if (type == "trade") {
   auto output = boost::make_unique<Filled>();
   if (tree.get<std::string>("data.type") == "0") {
@@ -82,10 +82,10 @@ else if (type == "order_deleted") {
       std::strtod(tree.get<std::string>("data.amount").c_str(), nullptr));
   output->baseIncrement(base_increment_);
   output->trade(std::stoll(tree.get<std::string>("data.id")));
-  return output;
+  return std::move(output);
 } else if (type == "era") {
   return boost::make_unique<Era>(Timestamp{std::chrono::microseconds{std::stoll(tree.get<std::string>("microtimestamp"))}});
 } else if (type == "reset") {
   output=boost::make_unique<Reset>();
 }
-return output;
+return std::move(output);
