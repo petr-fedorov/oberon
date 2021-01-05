@@ -2,18 +2,24 @@ class Main
 !!!1439494.cpp!!!	main(in argc : int, in argv : char **) : int
 namespace po = boost::program_options;
 
-po::options_description capture_options("Options are"), command_option, help_options;
+po::options_description common_options("Options are"), slice_options, capture_options, command_option, help_options;
 
 help_options.add_options()("help,h","produce this help message");
-capture_options.add_options()
-  ("exchange,e", po::value(&exchange_), "specifies the exchange to capture data from (mandatory)")
-  ("product,p", po::value(&product_), "specifies the exchange-specific code of the product to be captured (mandatory)")(
+common_options.add_options()
+  ("exchange,e", po::value(&exchange_), "specifies the name of the exchange (mandatory)")
+  ("product,p", po::value(&product_), "specifies the exchange-specific code of the product (mandatory)")(
     "quote-increment,q", po::value<double>(&quote_increment_)->default_value(0.01), "specifies the minimum increment for the quote currency " "(i.e. USD in BTC-USD)")(
     "base-increment,b", po::value<double>(&base_increment_)->default_value(0.01),
     "specifies the minimum increment for the base currency (i.e. BTC in "
-    "BTC-USD)")(
+    "BTC-USD)");
+capture_options.add_options() (
     "pong-wait-time,w", po::value<int>(&pong_wait_time_)->default_value(1),
     "specifies the maximum waiting time for the websocket pong response before re-connecting, secs")("deleted,d","also output events deleted by cleansing");
+
+slice_options.add_options() (
+    "era,r", po::value<std::string>(&era_),
+    "specifies the timestamp of the era to be sliced (mandatory)")(
+    "max-duration,m", po::value<int>(&boundary_)->default_value(60),"specifies that a new era will be started every arg minutes since UNIX epoch");
 
 boost::optional<std::string> command;
 command_option.add_options()("command",  po::value(&command), "");
@@ -21,7 +27,7 @@ po::positional_options_description p;
 p.add("command", 1);
 
 po::options_description all;
-all.add(capture_options).add(help_options).add(command_option);
+all.add(common_options).add(capture_options).add(slice_options).add(help_options).add(command_option);
 
 po::variables_map vm;
 po::store(po::command_line_parser(argc, argv).options(all).positional(p).run(), vm);
@@ -33,13 +39,15 @@ if (vm.count("help"))
 // Check command line arguments.
 if (command) {
   if( *command == "capture") {
-    capture_options.add(help_options);
-    return capture(capture_options);
+    common_options.add(capture_options).add(help_options);
+    return capture(common_options);
   }
   else if( *command == "transmute") 
     return not_yet_implemented();
-  else if( *command == "split")
-    return not_yet_implemented();
+  else if( *command == "slice") {
+    common_options.add(slice_options).add(help_options);
+    return slice(common_options);
+  }
 }
 std::cerr << "Usage: oberon <command> [options]\n"
           << "Commands are:\n capture\n transmute\n split\nRun oberon "
@@ -179,6 +187,10 @@ if (exchange_ && product_ && !help_) {
 }
 std::cerr << "Usage: oberon capture [options]\n" << od;
 return EXIT_FAILURE;
+!!!1453958.cpp!!!	slice(in od : options_description) : int
+std::cerr << "Usage: oberon slice [options]\n" << od;
+return EXIT_FAILURE;
+
 !!!1439878.cpp!!!	not_yet_implemented() : int
 std::cerr << "Not yet implemented.\n";
 return EXIT_FAILURE;

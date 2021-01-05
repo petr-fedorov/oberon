@@ -1,5 +1,5 @@
 # Order Book Events ReconstructiON (OBERON)
-A stand-alone application for collection of data that allows re-construction of a cryptocurrency exchange order book dynamics. Connects to an API of the specified exchange and produces `.csv` file containing reconstructed [order events]((https://petr-fedorov.github.io/oberon/methods.html#order-and-trade)) in the **exchange-independent** format described below:
+A stand-alone application for collection of data that allows re-construction of a cryptocurrency exchange order book dynamics. Connects to an API of the specified exchange and produces `.csv` files called *eras* containing reconstructed [order events]((https://petr-fedorov.github.io/oberon/methods.html#order-and-trade)) in the **exchange-independent** format described below:
 
 |maker|ordinal|timestamp|mks|state|price|volume|change|trade|taker|heard|deleted|
 | --- | ---| --- | ---| --- |---| ---| --- | ---| --- | ---| ---|
@@ -54,15 +54,15 @@ The application is designed in BOUML -  a free UML 2 tool box including a modele
   where `<command>` is one of:
 
   * **capture** live order events from an exchange
-  * **split** an event file into several
-  * **merge** several event files into one
-  * **transmute** event files into the files of different formats that are more suitable for visualization and analysis
+  * **slice** an era file into several
+  * **merge** several era files into one
+  * **transmute** era files into the files of different formats that are more suitable for visualization and analysis
 
 Options available depend on the command. They are described below.
 
 ### **capture**
 
-This command tells OBERON to capture live order events for a product on an exchange and save the events into one or more *event files* in an exchange-independent format described above.
+This command tells OBERON to capture live order events for a product on an exchange and save the events into one or more *era files* in an exchange-independent format described above. *Era file* always starts from a snapshot of an order book. The snapshot is followed by order events updating the snapshot so the state of the order book can be reconstructed at any moment.
 
 **capture** command recognizes the following options:
 
@@ -99,7 +99,7 @@ where `timestamp` is the timestamp of the initial order book snapshot. The file 
 
 There might be several files produced, with different `timestamp`s. That happens, for example, when an exchange websocket gets disconnected (i.e. when the exchainge does not respond to ping messages longer than `--pong-wait-time` seconds). In this case the application quitely restarts and creates a new output file.
 
-### **split**
+### **slice**
 
 TBD
 

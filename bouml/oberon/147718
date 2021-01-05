@@ -1,6 +1,6 @@
 format 223
 "Standalone application" // Standalone application
-  revision 105
+  revision 106
   modified_by 6 "petr"
   // class settings
   
@@ -1004,6 +1004,21 @@ ${inlines}
 	
       end
 
+      operation 1453958 "slice"
+	public explicit_return_type "int"
+	nparams 1
+	  param in name "od" type class_ref 1014022 // options_description
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
       operation 1439878 "not_yet_implemented"
 	public explicit_return_type "int"
 	nparams 0
@@ -1214,6 +1229,30 @@ ${inlines}
       attribute 877318 "help_"
 	private explicit_type "bool"
 	init_value "false"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 883846 "era_"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 883974 "boundary_"
+	private explicit_type "int"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -9286,18 +9325,18 @@ int main(int argc, char **argv) {
       key "genpro includepath" value ""
       key "genpro dependpath" value ""
       key "genpro objectsdir" value ""
-      key "genpro footer" value "#QMAKE_CC=clang
-#QMAKE_CXX=clang++
-#QMAKE_LINK=clang++
+      key "genpro footer" value "QMAKE_CC=clang
+QMAKE_CXX=clang++
+QMAKE_LINK=clang++
 CONFIG += console 
 CONFIG -= app_bundle
 CONFIG += thread
 CONFIG += object_parallel_to_source
 CONFIG -= qt
 QMAKE_CXXFLAGS += -std=c++11 -Wfatal-errors
-INCLUDEPATH += /usr/include/boost169
+#INCLUDEPATH += /usr/include/boost169
 LIBS +=-lssl -lcrypto  
-LIBS += -L/usr/lib64/boost169
+#LIBS += -L/usr/lib64/boost169
 LIBS += -lboost_log  -lboost_log_setup -lboost_thread -lboost_program_options -lpthread -lboost_system "
     end
   end
