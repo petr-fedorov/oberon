@@ -1,0 +1,84 @@
+class Reconstructor
+!!!1453830.cpp!!!	extract(in tree : ptree [1]) : Token [1..*]
+//std::ostringstream ss;
+//boost::property_tree::write_json(ss, tree, false);
+std::string field;
+if (!(field = tree.get<std::string>("timestamp")).empty()) {
+  std::istringstream ss{field};
+  ss >> date::parse("%FT%TZ", timestamp_);
+}
+// std::cout << date::format("%FT%TZ", timestamp_ +
+// std::chrono::microseconds{tree.get<int>("mks")}) << "\n";
+if (tree.get<std::string>("type") == "event") {
+  std::unique_ptr<OrderEvent> output;
+  boost::uuids::string_generator gen;
+  std::string value;
+  if (!(field = tree.get<std::string>("trade")).empty()) {
+    output = boost::make_unique<Filled>();
+    output->trade(std::stol(field));
+    if (!(field = tree.get<std::string>("taker")).empty())
+      output->taker(gen(field));
+  } else if (tree.get<std::string>("state").empty()) {
+    output = boost::make_unique<Cancelled>();
+  } else if (tree.get<OrderEvent::EventNo>("ordinal") == 1) {
+    output = boost::make_unique<Created>();
+  } else {
+    output = boost::make_unique<Changed>();
+  }
+  output->maker(gen(tree.get<std::string>("maker")));
+  output->timestamp(timestamp_ +
+                    std::chrono::microseconds{tree.get<int>("mks")});
+  output->ordinal(tree.get<OrderEvent::EventNo>("ordinal"));
+  output->price(tree.get<double>("price"));
+  if (!tree.get<std::string>("volume").empty()) {
+    auto rem = tree.get<OrderEvent::Volume>("volume");
+    if (rem > 0) {
+      output->remaining(rem);
+      output->side(OrderEvent::BookSide::kBid);
+      if (!(field = tree.get<std::string>("change")).empty()) {
+        if (field != "NA")
+          output->change(-tree.get<OrderEvent::Volume>("change"));
+      } else
+        output->change(0);
+    } else {
+      output->remaining(-rem);
+      output->side(OrderEvent::BookSide::kAsk);
+      if (!(field = tree.get<std::string>("change")).empty()) {
+        if (field != "NA")
+          output->change(tree.get<OrderEvent::Volume>("change"));
+      }
+      else
+        output->change(0);
+    }
+  } else {
+    output->remaining(0.0);
+    if (!(field = tree.get<std::string>("change")).empty()) {
+      if (field != "NA") {
+        auto ch = tree.get<OrderEvent::Volume>("change");
+        if (ch > 0) {
+          output->change(ch);
+          output->side(OrderEvent::BookSide::kAsk);
+        } else {
+          output->change(-ch);
+          output->side(OrderEvent::BookSide::kBid);
+        }
+      }
+    }
+    else
+      output->change(0.0); // Note, that we couldn't determine side!
+  }
+  output->state(tree.get<std::string>("state").empty()
+                    ? OrderEvent::OrderState::kFinished
+                    : OrderEvent::OrderState::kActive);
+  output->deleted(tree.get<std::string>("deleted").empty() ? false : true);
+  output->heard(output->timestamp() +
+                std::chrono::microseconds{tree.get<int>("heard")});
+
+//  std::cout << output->toString() << "\n";
+  return output;
+} else if (tree.get<std::string>("type") == "era")
+  return boost::make_unique<Era>(
+      timestamp_ + std::chrono::microseconds{tree.get<int>("mks")});
+else if (tree.get<std::string>("type") == "reset")
+  return boost::make_unique<Reset>();
+return Token{};

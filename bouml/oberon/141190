@@ -1,6 +1,6 @@
 format 223
 "Reconstructor" // Standalone application::Reconstructor
-  revision 217
+  revision 220
   modified_by 6 "petr"
   // class settings
   
@@ -860,6 +860,7 @@ ${items}};
 	idl_decl ""
 	mysql_decl ""
 	MysqlColumn
+	comment "previous remaining_size_ - current remaining _size_, i.e. positive, if the remaining size decreased."
       end
 
       attribute 414470 "event_no_"
@@ -3635,6 +3636,23 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
+      operation 1460486 "name"
+	class_operation public explicit_return_type "string"
+	nparams 3
+	  param in name "exchange" explicit_type "string"
+	  param in name "product" explicit_type "string"
+	  param in name "era" type class_ref 230278 // Timestamp
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
       operation 1072262 "File"
 	public explicit_return_type ""
 	nparams 6

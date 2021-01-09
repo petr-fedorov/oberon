@@ -17,7 +17,7 @@ capture_options.add_options() (
     "specifies the maximum waiting time for the websocket pong response before re-connecting, secs")("deleted,d","also output events deleted by cleansing");
 
 slice_options.add_options() (
-    "era,r", po::value<std::string>(&era_),
+    "era,r", po::value(&era_),
     "specifies the timestamp of the era to be sliced (mandatory)")(
     "max-duration,m", po::value<int>(&boundary_)->default_value(60),"specifies that a new era will be started every arg minutes since UNIX epoch");
 
@@ -188,9 +188,43 @@ if (exchange_ && product_ && !help_) {
 std::cerr << "Usage: oberon capture [options]\n" << od;
 return EXIT_FAILURE;
 !!!1453958.cpp!!!	slice(in od : options_description) : int
+if (exchange_ && product_ && era_) {
+  std::istringstream ss{*era_};
+  reconstructor::Message::Timestamp output;
+  ss >> date::parse("%FT%TZ", output);
+  if (!ss.fail()) {
+    auto orig = reconstructor::File::name(*exchange_, *product_, output);
+    if(!std::rename(orig.c_str(), (orig + ".sliced").c_str())) {
+      std::ifstream input {orig + ".sliced"};
+      std::string header;
+      std::getline(input, header);
+      oberon::transmuter::CsvOrderEvent event {header};
+      auto store = boost::make_shared<reconstructor::File>(
+          *exchange_, *product_, -std::floor(std::log10(quote_increment_)),
+          -std::floor(std::log10(base_increment_)), deleted_ ? true : false);
+      reconstructor::independent::Reconstructor r {store, quote_increment_, base_increment_};
+      boost::property_tree::ptree control_message;
+      control_message.put("type", "era");
+      control_message.put("timestamp", *era_);
+      control_message.put("mks", "0");
+      r.process(control_message);
+      while(input >> event) {
+        // boost::property_tree::write_json(std::cout, event, false);
+        r.process(event);
+      }
+      control_message.clear();
+      control_message.put("type", "reset");
+      control_message.put("timestamp", "");
+      r.process(control_message);
+      return EXIT_SUCCESS;
+    }
+    else
+      std::cerr << "Couldn't rename " << orig << "\n";
+  } else
+    std::cerr << "Couldn't parse " << *era_ << "\n";
+}
 std::cerr << "Usage: oberon slice [options]\n" << od;
 return EXIT_FAILURE;
-
 !!!1439878.cpp!!!	not_yet_implemented() : int
 std::cerr << "Not yet implemented.\n";
 return EXIT_FAILURE;

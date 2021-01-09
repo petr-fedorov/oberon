@@ -47,7 +47,7 @@ else
 !!!1263750.cpp!!!	change() : OrderEvent::Volume
 return change_size_;
 !!!1263878.cpp!!!	change(in change_size : OrderEvent::Volume) : void
-if (change_size < base_increment_)
+if (std::abs(change_size) < base_increment_)
   change_size_ = 0.0;
 else
   change_size_ = change_size;

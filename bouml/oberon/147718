@@ -1,6 +1,6 @@
 format 223
 "Standalone application" // Standalone application
-  revision 106
+  revision 109
   modified_by 6 "petr"
   // class settings
   
@@ -852,6 +852,8 @@ format 223
 
   package_ref 141190 // Reconstructor
 
+  package_ref 234630 // Transmuter
+
   classview 306950 "Application"
     
     classdiagramsettings member_max_width 0 end
@@ -1240,7 +1242,7 @@ ${inlines}
       end
 
       attribute 883846 "era_"
-	private explicit_type "string"
+	private type class_ref 1013766 // O_string
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -1261,6 +1263,22 @@ ${inlines}
 	idl_decl ""
 	mysql_decl ""
 	MysqlColumn
+      end
+
+      classrelation 1174918 // <dependency>
+	relation 1164550 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1174918 // <dependency>
+	  b parent class_ref 1027206 // CsvOrderEvent
+      end
+
+      classrelation 1175046 // <dependency>
+	relation 1164678 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1175046 // <dependency>
+	  b parent class_ref 1020550 // Reconstructor
       end
     end
 
@@ -9260,7 +9278,10 @@ ${namespace_end}
 #include <boost/log/trivial.hpp>
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/log/utility/setup/file.hpp>
+#include <boost/property_tree/json_parser.hpp>
 #include <thread>
+#include <cstdio>
+#include \"date.h\"
 ${includes}
 ${namespace_start}
 ${members}
@@ -9314,6 +9335,9 @@ int main(int argc, char **argv) {
 	artifact_ref 340358 // TimeOrderEnforcer
 	artifact_ref 340486 // Synchronizer
 	artifact_ref 340614 // Reset
+	artifact_ref 347142 // Reconstructor
+	artifact_ref 347270 // EraSlicer
+	artifact_ref 347398 // CsvOrderEvent
       end
       ncouples 10
       key "genpro pro" value "/tmp/oberon/cpp/oberon.pro"
