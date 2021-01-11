@@ -5,3 +5,6 @@ return mh->cancelled();
 std::stringstream buf;
 buf << OrderEvent::toString() << " Canceled";
 return buf.str();
+!!!1475462.cpp!!!	clone() : OrderEvent::OrderEvent_UP
+return boost::make_unique<Cancelled>(*this);
+

@@ -1,0 +1,56 @@
+class EraSlicer
+!!!1474182.cpp!!!	cancelled() : bool
+slice();
+using OrderEvent=reconstructor::OrderEvent;
+OrderEvent *event = static_cast<OrderEvent*>(received_.get());
+if(event->side() == OrderEvent::BookSide::kBid) 
+  bids_.erase(event->maker());
+else 
+  asks_.erase(event->maker());
+output_.push_back(std::move(received_));
+return true;
+
+!!!1474566.cpp!!!	era() : bool
+using namespace date;
+using namespace std::chrono;
+next_era_ = reconstructor::OrderEvent::Timestamp{
+    minutes{time_point_cast<minutes>(received_->timestamp())
+                .time_since_epoch()
+                .count() /
+            boundary_ * boundary_}};
+if (next_era_ <= received_->timestamp())
+  next_era_ += minutes{boundary_};
+BOOST_LOG_TRIVIAL(info) << "Era " << format("%FT%TZ", received_->timestamp());
+output_.push_back(std::move(received_));
+return true;
+!!!1474950.cpp!!!	orderEvent() : bool
+slice();
+using OrderEvent=reconstructor::OrderEvent;
+OrderEvent *event = static_cast<OrderEvent*>(received_.get());
+if(event->side() == OrderEvent::BookSide::kBid) 
+  bids_[event->maker()] = event->clone();
+else 
+  asks_[event->maker()] = event->clone();
+output_.push_back(std::move(received_));
+return true;
+
+!!!1475846.cpp!!!	slice() : void
+using namespace date;
+using namespace std::chrono;
+if(received_->timestamp() > next_era_) {
+  BOOST_LOG_TRIVIAL(info) << "Slice " << format("%FT%TZ", next_era_); 
+  output_.push_back(boost::make_unique<reconstructor::Reset>());
+  output_.push_back(boost::make_unique<reconstructor::Era>(next_era_));
+  for(auto &p : bids_) {
+    auto event = p.second->clone();
+    event->timestamp(next_era_);
+    output_.push_back(std::move(event));
+  }
+  for(auto &p : asks_) {
+    auto event = p.second->clone();
+    event->timestamp(next_era_);
+    output_.push_back(std::move(event));
+  }
+  next_era_ += minutes {boundary_};
+  
+}

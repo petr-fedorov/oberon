@@ -1,6 +1,6 @@
 format 223
 "Standalone application" // Standalone application
-  revision 109
+  revision 111
   modified_by 6 "petr"
   // class settings
   
@@ -1035,6 +1035,21 @@ ${inlines}
 	
       end
 
+      operation 1475974 "fileExists"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "name" explicit_type "string"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
       classrelation 1151110 // <dependency>
 	relation 1140742 -_->
 	  a public
@@ -1279,6 +1294,14 @@ ${inlines}
 	    cpp default "#include in source"
 	    classrelation_ref 1175046 // <dependency>
 	  b parent class_ref 1020550 // Reconstructor
+      end
+
+      classrelation 1183110 // <dependency>
+	relation 1172742 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1183110 // <dependency>
+	  b parent class_ref 1020678 // EraSlicer
       end
     end
 

@@ -1,6 +1,6 @@
 format 223
 "Transmuter" // Standalone application::Transmuter
-  revision 3
+  revision 5
   modified_by 6 "petr"
   // class settings
   
@@ -125,10 +125,242 @@ ${inlines}
     end
   end
 
+  classview 313734 "Handlers"
+    
+    classdiagramsettings member_max_width 0 end
+    
+    classcompositediagramsettings end
+    
+    collaborationdiagramsettings end
+    
+    objectdiagramsettings end
+    
+    objectcompositediagramsettings end
+    
+    sequencediagramsettings end
+    
+    statediagramsettings
+     end
+    
+    
+    activitydiagramsettings
+     end
+    classdiagram 479494 "EraSlicer"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
+    class 1020678 "EraSlicer"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      operation 1475718 "EraSlicer"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "boundary" explicit_type "int"
+	  param in name "next" type class_ref 950918 // TokenHandler_SP
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throw} :TokenHandler{next, \"Era Slicer\"}, boundary_{boundary} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 1182470 // <generalisation>
+	relation 1172102 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 1182470 // <generalisation>
+	  b parent class_ref 441222 // TokenHandler
+      end
+
+      attribute 897158 "bids_"
+	private type class_ref 1040262 // OrderEvent_UP
+	multiplicity "*"
+	stereotype "map"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<reconstructor::OrderEvent::OrderId, ${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 897286 "asks_"
+	private type class_ref 1040262 // OrderEvent_UP
+	multiplicity "*"
+	stereotype "map"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<reconstructor::OrderEvent::OrderId, ${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      operation 1474182 "cancelled"
+	cpp_virtual public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1474566 "era"
+	cpp_virtual public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1474950 "orderEvent"
+	cpp_virtual public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 1182726 // <dependency>
+	relation 1172358 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1182726 // <dependency>
+	  b parent class_ref 448390 // OrderEvent
+      end
+
+      classrelation 1182854 // <dependency>
+	relation 1172486 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1182854 // <dependency>
+	  b parent class_ref 328710 // Cancelled
+      end
+
+      classrelation 1182982 // <dependency>
+	relation 1172614 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1182982 // <dependency>
+	  b parent class_ref 521478 // Era
+      end
+
+      attribute 897414 "boundary_"
+	private explicit_type "int"
+	init_value "5"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 897542 "next_era_"
+	private type class_ref 230278 // Timestamp
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      operation 1475846 "slice"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 1183238 // <dependency>
+	relation 1172870 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1183238 // <dependency>
+	  b parent class_ref 966278 // Reset
+      end
+    end
+  end
+
   deploymentview 206854 "Source files"
     //deployment diagram settings
     deploymentdiagramsettings
      end
+    artifact 347270 "EraSlicer"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+#include \"../date.h\"
+#include <iostream>
+#include <boost/smart_ptr/make_unique.hpp>
+#include <boost/log/trivial.hpp>
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 1020678 // EraSlicer
+      end
+    end
+
     artifact 347398 "CsvOrderEvent"
       stereotype "source"
       cpp_h "#ifndef ${NAMESPACE}_${NAME}_H

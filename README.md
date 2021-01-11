@@ -101,7 +101,20 @@ There might be several files produced, with different `timestamp`s. That happens
 
 ### **slice**
 
-TBD
+This command tells OBERON to slice an input era file into several smaller era files. The input era file is renamed (`.sliced` or `sliced.N` extension is added), the first sliced era file replaces the original file and the following sliced era files are named  as usual from exchange, product and their respective era timestamps.
+
+**slice** command recognizes the following options:
+
+    -q [ --quote-increment ] arg (=0.01) specifies the minimum increment for the
+                                         quote currency (i.e. USD in BTC-USD)
+    -b [ --base-increment ] arg (=0.01)  specifies the minimum increment for the
+                                         base currency (i.e. BTC in BTC-USD)
+
+    -i [ --input ] arg                   specifies the name of an era file to be
+                                         read (mandatory)
+    -m [ --max-duration ] arg (=60)      specifies that a new era will be started
+                                         every arg minutes since UNIX epoch
+
 
 ### **merge**
 

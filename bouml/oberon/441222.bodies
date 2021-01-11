@@ -1,19 +1,20 @@
 class TokenHandler
 !!!590214.cpp!!!	handle(in episode : Tokens [*]) : bool [*]
-for(auto& msg: episode) {
-  if(msg) {
+for (auto &msg : episode) {
+  if (msg) {
 #ifndef NDEBUG
-    BOOST_LOG_TRIVIAL(debug) << handler_name_ << " received " << msg->toString(); 
+    BOOST_LOG_TRIVIAL(debug)
+        << handler_name_ << " received " << msg->toString();
 #endif
-    if(is_handles_deleted_ || !msg->deleted()) {
+    if (is_handles_deleted_ || !msg->deleted()) {
       received_ = std::move(msg);
-      if(!received_->accept(this)) {
-        BOOST_LOG_TRIVIAL(error) << handler_name_ << " not accepted " << received_->toString();
+      if (!received_->accept(this)) {
+        BOOST_LOG_TRIVIAL(error)
+            << handler_name_ << " not accepted " << received_->toString();
         return false;
       }
-      
-    }
-    else 
+
+    } else
       output_.push_back(std::move(msg));
   }
 }

@@ -1,6 +1,6 @@
 format 223
 "Independent" // Standalone application::Reconstructor::Independent
-  revision 4
+  revision 6
   modified_by 6 "petr"
   // class settings
   
@@ -183,42 +183,6 @@ ${inlines}
     end
   end
 
-  classview 313734 "Handlers"
-    
-    classdiagramsettings member_max_width 0 end
-    
-    classcompositediagramsettings end
-    
-    collaborationdiagramsettings end
-    
-    objectdiagramsettings end
-    
-    objectcompositediagramsettings end
-    
-    sequencediagramsettings end
-    
-    statediagramsettings
-     end
-    
-    
-    activitydiagramsettings
-     end
-    class 1020678 "EraSlicer"
-      visibility package 
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      mysql_decl ""
-      
-    end
-  end
-
   deploymentview 200326 "Source files"
     //deployment diagram settings
     deploymentdiagramsettings
@@ -242,35 +206,13 @@ ${namespace_end}
 #include <boost/smart_ptr/make_unique.hpp>
 #include <boost/uuid/string_generator.hpp>
 #include <boost/property_tree/json_parser.hpp>
+#include <boost/log/trivial.hpp>
 ${includes}
 ${namespace_start}
 ${members}
 ${namespace_end}"
       associated_elems
 	class_ref 1020550 // Reconstructor
-      end
-    end
-
-    artifact 347270 "EraSlicer"
-      stereotype "source"
-      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
-#define ${NAMESPACE}_${NAME}_H
-
-${comment}
-${includes}
-${declarations}
-${namespace_start}
-${definition}
-${namespace_end}
-#endif
-"
-      cpp_src "${comment}
-${includes}
-${namespace_start}
-${members}
-${namespace_end}"
-      associated_elems
-	class_ref 1020678 // EraSlicer
       end
     end
   end

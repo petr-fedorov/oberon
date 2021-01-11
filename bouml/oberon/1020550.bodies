@@ -6,6 +6,10 @@ std::string field;
 if (!(field = tree.get<std::string>("timestamp")).empty()) {
   std::istringstream ss{field};
   ss >> date::parse("%FT%TZ", timestamp_);
+  if(ss.fail()) {
+    BOOST_LOG_TRIVIAL(error) << "Couldn't parse timestamp: " << field;
+    return Token{};
+  }
 }
 // std::cout << date::format("%FT%TZ", timestamp_ +
 // std::chrono::microseconds{tree.get<int>("mks")}) << "\n";

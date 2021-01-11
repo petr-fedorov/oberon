@@ -1,6 +1,6 @@
 format 223
 "Reconstructor" // Standalone application::Reconstructor
-  revision 220
+  revision 222
   modified_by 6 "petr"
   // class settings
   
@@ -357,7 +357,7 @@ ${inlines}
     end
 
     class 448390 "OrderEvent"
-      visibility protected 
+      abstract visibility protected 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -724,6 +724,30 @@ ${items}};
 	end
       end
 
+      class 1040262 "OrderEvent_UP"
+	visibility public stereotype "template_typedef"
+	nactuals 1
+	actual class class_ref 889478 // unique_ptr
+	  rank 0 value class_ref 448390 // OrderEvent
+	cpp_decl "${comment}${template}using ${name} = ${inherit};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 1182598 // <realization>
+	  relation 1172230 -_-|>
+	    stereotype "bind"
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 1182598 // <realization>
+	    b parent class_ref 889478 // unique_ptr
+	end
+      end
+
       attribute 465030 "kNaVolume"
 	class_attribute const_attribute public type class_ref 305798 // Volume
 	init_value "std::nan(\"1954\")"
@@ -950,6 +974,17 @@ ${items}};
 	idl_decl ""
 	mysql_decl ""
 	MysqlColumn
+      end
+
+      operation 1475078 "clone"
+	abstract cpp_virtual public return_type class_ref 1040262 // OrderEvent_UP
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	
+	
       end
 
       operation 650374 "toString"
@@ -1473,6 +1508,20 @@ ${inlines}
 	
 	
       end
+
+      operation 1475334 "clone"
+	cpp_override public return_type class_ref 1040262 // OrderEvent_UP
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
     end
 
     class 570886 "Changed"
@@ -1518,6 +1567,20 @@ ${inlines}
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0}* ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0}* ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1475206 "clone"
+	cpp_override public return_type class_ref 1040262 // OrderEvent_UP
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
@@ -1577,6 +1640,20 @@ ${inlines}
 	    cpp default "${type}"
 	    classrelation_ref 650502 // <generalisation>
 	  b parent class_ref 448390 // OrderEvent
+      end
+
+      operation 1475462 "clone"
+	cpp_override public return_type class_ref 1040262 // OrderEvent_UP
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
       end
     end
 
@@ -1639,6 +1716,20 @@ ${inlines}
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1475590 "clone"
+	cpp_override public return_type class_ref 1040262 // OrderEvent_UP
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
@@ -4207,6 +4298,7 @@ ${namespace_end}
 "
       cpp_src "${comment}
 #include <sstream>
+#include <boost/smart_ptr/make_unique.hpp>
 ${includes}
 ${namespace_start}
 ${members}
@@ -4231,6 +4323,7 @@ ${namespace_end}
 "
       cpp_src "${comment}
 #include <sstream>
+#include <boost/smart_ptr/make_unique.hpp>
 ${includes}
 ${namespace_start}
 ${members}
@@ -4255,6 +4348,7 @@ ${namespace_end}
 "
       cpp_src "${comment}
 #include <sstream>
+#include <boost/smart_ptr/make_unique.hpp>
 ${includes}
 ${namespace_start}
 ${members}
@@ -4279,7 +4373,7 @@ ${namespace_end}
 "
       cpp_src "${comment}
 #include <sstream>
-#include <boost/log/trivial.hpp>
+#include <boost/smart_ptr/make_unique.hpp>
 ${includes}
 ${namespace_start}
 ${members}

@@ -6,19 +6,19 @@ po::options_description common_options("Options are"), slice_options, capture_op
 
 help_options.add_options()("help,h","produce this help message");
 common_options.add_options()
-  ("exchange,e", po::value(&exchange_), "specifies the name of the exchange (mandatory)")
-  ("product,p", po::value(&product_), "specifies the exchange-specific code of the product (mandatory)")(
-    "quote-increment,q", po::value<double>(&quote_increment_)->default_value(0.01), "specifies the minimum increment for the quote currency " "(i.e. USD in BTC-USD)")(
+    ("quote-increment,q", po::value<double>(&quote_increment_)->default_value(0.01), "specifies the minimum increment for the quote currency " "(i.e. USD in BTC-USD)")(
     "base-increment,b", po::value<double>(&base_increment_)->default_value(0.01),
     "specifies the minimum increment for the base currency (i.e. BTC in "
     "BTC-USD)");
-capture_options.add_options() (
+capture_options.add_options() 
+  ("exchange,e", po::value(&exchange_), "specifies the name of the exchange (mandatory)")
+  ("product,p", po::value(&product_), "specifies the exchange-specific code of the product (mandatory)")(
     "pong-wait-time,w", po::value<int>(&pong_wait_time_)->default_value(1),
     "specifies the maximum waiting time for the websocket pong response before re-connecting, secs")("deleted,d","also output events deleted by cleansing");
 
 slice_options.add_options() (
-    "era,r", po::value(&era_),
-    "specifies the timestamp of the era to be sliced (mandatory)")(
+    "input,i", po::value(&era_),
+    "specifies the name of an era file to be read (mandatory)")(
     "max-duration,m", po::value<int>(&boundary_)->default_value(60),"specifies that a new era will be started every arg minutes since UNIX epoch");
 
 boost::optional<std::string> command;
@@ -188,43 +188,68 @@ if (exchange_ && product_ && !help_) {
 std::cerr << "Usage: oberon capture [options]\n" << od;
 return EXIT_FAILURE;
 !!!1453958.cpp!!!	slice(in od : options_description) : int
-if (exchange_ && product_ && era_) {
+if (era_) {
   std::istringstream ss{*era_};
   reconstructor::Message::Timestamp output;
-  ss >> date::parse("%FT%TZ", output);
-  if (!ss.fail()) {
-    auto orig = reconstructor::File::name(*exchange_, *product_, output);
-    if(!std::rename(orig.c_str(), (orig + ".sliced").c_str())) {
-      std::ifstream input {orig + ".sliced"};
+  std::string exchange;
+  std::getline(ss, exchange, '_');
+  std::string product;
+  std::getline(ss, product, '_');
+  ss >> date::parse("%FT%H-%M-%SZ", output);
+  if (!exchange.empty() && !product.empty() && !ss.fail()) {
+    using namespace date;
+    /* std::cout << exchange << "\n" << product << "\n" << output << "\n";
+    return EXIT_SUCCESS;
+    */
+    auto orig = reconstructor::File::name(exchange, product, output);
+    auto sliced = orig + ".sliced";
+    if(fileExists(sliced)) {
+      int seq = 1;
+      while (fileExists(sliced + "." + std::to_string(seq))) ++seq;
+      sliced += "." + std::to_string(seq);
+    }
+    if(!std::rename(orig.c_str(), sliced.c_str())) {
+      std::ifstream input {sliced};
       std::string header;
       std::getline(input, header);
       oberon::transmuter::CsvOrderEvent event {header};
       auto store = boost::make_shared<reconstructor::File>(
-          *exchange_, *product_, -std::floor(std::log10(quote_increment_)),
+          exchange, product, -std::floor(std::log10(quote_increment_)),
           -std::floor(std::log10(base_increment_)), deleted_ ? true : false);
-      reconstructor::independent::Reconstructor r {store, quote_increment_, base_increment_};
+      auto event_counter = boost::make_shared<reconstructor::EventCounter>(store);
+      auto slicer = boost::make_shared<transmuter::EraSlicer>(boundary_, event_counter);
+      reconstructor::independent::Reconstructor r {slicer, quote_increment_, base_increment_};
       boost::property_tree::ptree control_message;
       control_message.put("type", "era");
-      control_message.put("timestamp", *era_);
+      control_message.put("timestamp", format("%FT%TZ", output));
       control_message.put("mks", "0");
-      r.process(control_message);
-      while(input >> event) {
-        // boost::property_tree::write_json(std::cout, event, false);
-        r.process(event);
+      if(r.process(control_message)) {
+        while (input >> event) {
+          // boost::property_tree::write_json(std::cout, event, false);
+          if(!r.process(event))
+            return EXIT_FAILURE;
+        }
+        control_message.clear();
+        control_message.put("type", "reset");
+        control_message.put("timestamp", "");
+        if (r.process(control_message))
+          return EXIT_SUCCESS;
+        else
+          return EXIT_FAILURE;
       }
-      control_message.clear();
-      control_message.put("type", "reset");
-      control_message.put("timestamp", "");
-      r.process(control_message);
-      return EXIT_SUCCESS;
+      else
+        return EXIT_FAILURE;
     }
     else
-      std::cerr << "Couldn't rename " << orig << "\n";
+      std::cerr << "Couldn't find/rename " << orig << "\n";
   } else
     std::cerr << "Couldn't parse " << *era_ << "\n";
 }
-std::cerr << "Usage: oberon slice [options]\n" << od;
+std::cerr << "Usage: oberon slice [options]\nSlices an era file into several era files\n" << od;
 return EXIT_FAILURE;
 !!!1439878.cpp!!!	not_yet_implemented() : int
 std::cerr << "Not yet implemented.\n";
 return EXIT_FAILURE;
+!!!1475974.cpp!!!	fileExists(in name : string) : bool
+std::ifstream infile(name);
+return infile.good();
