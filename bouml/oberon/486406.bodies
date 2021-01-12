@@ -46,9 +46,19 @@ try {
     return std::move(output);
   } else if (type == "change") {
     auto output = boost::make_unique<Changed>();
-    updateCommonAttributes(*output, tree);
+    output->timestamp(toTimestamp(tree.get<std::string>("time")));
+    output->heard(toTimestamp(tree.get<std::string>("local_timestamp")));
+    output->side(tree.get<std::string>("side") == "buy" ? OrderEvent::BookSide::kBid : OrderEvent::BookSide::kAsk);
+    output->baseIncrement(base_increment_);
     output->maker(gen(tree.get<string>("order_id")));
-    output->state(OrderEvent::OrderState::kActive);
+
+    if(!tree.get<std::string>("price").empty()) {
+      output->price(stod(tree.get("price", "0.0")));
+      output->state(OrderEvent::OrderState::kActive);
+    }
+    else // it is a market order
+      output->deleted(true);
+
     output->change(0);
     try {
       output->remaining(stod(tree.get<string>("new_size")));
