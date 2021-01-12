@@ -20,7 +20,7 @@ next_era_ = reconstructor::OrderEvent::Timestamp{
             boundary_ * boundary_}};
 if (next_era_ <= received_->timestamp())
   next_era_ += minutes{boundary_};
-BOOST_LOG_TRIVIAL(info) << "Era " << format("%FT%TZ", received_->timestamp());
+// BOOST_LOG_TRIVIAL(info) << "Era " << format("%FT%TZ", received_->timestamp());
 output_.push_back(std::move(received_));
 return true;
 !!!1474950.cpp!!!	orderEvent() : bool
@@ -38,7 +38,7 @@ return true;
 using namespace date;
 using namespace std::chrono;
 if(received_->timestamp() > next_era_) {
-  BOOST_LOG_TRIVIAL(info) << "Slice " << format("%FT%TZ", next_era_); 
+  // BOOST_LOG_TRIVIAL(info) << "Slice " << format("%FT%TZ", next_era_); 
   output_.push_back(boost::make_unique<reconstructor::Reset>());
   output_.push_back(boost::make_unique<reconstructor::Era>(next_era_));
   for(auto &p : bids_) {

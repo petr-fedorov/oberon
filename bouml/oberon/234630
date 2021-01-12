@@ -1,6 +1,6 @@
 format 223
 "Transmuter" // Standalone application::Transmuter
-  revision 5
+  revision 6
   modified_by 6 "petr"
   // class settings
   
@@ -122,6 +122,156 @@ ${inlines}
     classdiagram 472966 "CsvOrderEvent"
       classdiagramsettings member_max_width 0 end
       size A4
+    end
+  end
+
+  classview 313606 "Reconstructor"
+    
+    classdiagramsettings member_max_width 0 end
+    
+    classcompositediagramsettings end
+    
+    collaborationdiagramsettings end
+    
+    objectdiagramsettings end
+    
+    objectcompositediagramsettings end
+    
+    sequencediagramsettings end
+    
+    statediagramsettings
+     end
+    
+    
+    activitydiagramsettings
+     end
+    classdiagram 466438 "Independent"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
+    class 1020550 "Reconstructor"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      operation 1460614 "Reconstructor"
+	public explicit_return_type ""
+	nparams 3
+	  param in name "handler" type class_ref 950918 // TokenHandler_SP
+	  param in name "quote_increment" type class_ref 305798 // Volume
+	  param in name "base_increment" type class_ref 305798 // Volume
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}${)}${throw} : oberon::reconstructor::Reconstructor {handler, quote_increment, base_increment} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 1168262 // <generalisation>
+	relation 1157894 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 1168262 // <generalisation>
+	  b parent class_ref 486278 // Reconstructor
+      end
+
+      operation 1453830 "extract"
+	cpp_virtual protected return_type class_ref 902918 // Token
+	multiplicity "1..*"
+	nparams 1
+	  param in name "tree" type class_ref 174214 // ptree
+	multiplicity "1"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      attribute 890630 "timestamp_"
+	private type class_ref 230278 // Timestamp
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      classrelation 1175174 // <dependency>
+	relation 1164806 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1175174 // <dependency>
+	  b parent class_ref 597126 // Created
+      end
+
+      classrelation 1175302 // <dependency>
+	relation 1164934 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1175302 // <dependency>
+	  b parent class_ref 570886 // Changed
+      end
+
+      classrelation 1175430 // <dependency>
+	relation 1165062 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1175430 // <dependency>
+	  b parent class_ref 328710 // Cancelled
+      end
+
+      classrelation 1175558 // <dependency>
+	relation 1165190 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1175558 // <dependency>
+	  b parent class_ref 246022 // Filled
+      end
+
+      classrelation 1175686 // <dependency>
+	relation 1165318 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1175686 // <dependency>
+	  b parent class_ref 448390 // OrderEvent
+      end
+
+      classrelation 1175814 // <dependency>
+	relation 1165446 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1175814 // <dependency>
+	  b parent class_ref 521478 // Era
+      end
+
+      classrelation 1175942 // <dependency>
+	relation 1165574 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1175942 // <dependency>
+	  b parent class_ref 966278 // Reset
+      end
     end
   end
 
@@ -334,6 +484,35 @@ ${inlines}
     //deployment diagram settings
     deploymentdiagramsettings
      end
+    artifact 347142 "Reconstructor"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+#include \"../date.h\"
+#include <iostream>
+#include <boost/smart_ptr/make_unique.hpp>
+#include <boost/uuid/string_generator.hpp>
+#include <boost/property_tree/json_parser.hpp>
+#include <boost/log/trivial.hpp>
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 1020550 // Reconstructor
+      end
+    end
+
     artifact 347270 "EraSlicer"
       stereotype "source"
       cpp_h "#ifndef ${NAMESPACE}_${NAME}_H

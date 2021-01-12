@@ -218,7 +218,7 @@ if (era_) {
           -std::floor(std::log10(base_increment_)), deleted_ ? true : false);
       auto event_counter = boost::make_shared<reconstructor::EventCounter>(store);
       auto slicer = boost::make_shared<transmuter::EraSlicer>(boundary_, event_counter);
-      reconstructor::independent::Reconstructor r {slicer, quote_increment_, base_increment_};
+      transmuter::Reconstructor r {slicer, quote_increment_, base_increment_};
       boost::property_tree::ptree control_message;
       control_message.put("type", "era");
       control_message.put("timestamp", format("%FT%TZ", output));

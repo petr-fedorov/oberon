@@ -127,10 +127,10 @@ if (event) {
 return true;
 !!!1092358.cpp!!!	era() : bool
 using namespace date;
-Era *era = dynamic_cast<Era *>(received_.get());
 if(f_.is_open())
   f_.close();
-auto base_name = name(exchange_, product_, era->timestamp());
+auto base_name = name(exchange_, product_, received_->timestamp());
+BOOST_LOG_TRIVIAL(info) << "Started new file: " << base_name;
 f_.open(base_name);
 f_ << "maker,ordinal,timestamp,mks,state,price,volume,change,trade,taker,heard,deleted\n";
 if(source_)
