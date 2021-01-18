@@ -2,7 +2,7 @@ class Main
 !!!1439494.cpp!!!	main(in argc : int, in argv : char **) : int
 namespace po = boost::program_options;
 
-po::options_description common_options("Options are"), slice_options, capture_options, command_option, help_options;
+po::options_description common_options("Options are"), input_options, slice_options, capture_options, command_option, help_options;
 
 help_options.add_options()("help,h","produce this help message");
 common_options.add_options()
@@ -16,10 +16,14 @@ capture_options.add_options()
     "pong-wait-time,w", po::value<int>(&pong_wait_time_)->default_value(1),
     "specifies the maximum waiting time for the websocket pong response before re-connecting, secs")("deleted,d","also output events deleted by cleansing");
 
-slice_options.add_options() (
-    "input,i", po::value(&era_),
-    "specifies the name of an era file to be read (mandatory)")(
-    "max-duration,m", po::value<int>(&boundary_)->default_value(60),"specifies that a new era will be started every arg minutes since UNIX epoch");
+input_options.add_options()(
+    "input,i", po::value<std::vector<std::string>>()->multitoken(),
+    "specifies the name(s) of an era file to be read (mandatory)");
+
+slice_options.add_options()("max-duration,m",
+                            po::value<int>(&boundary_)->default_value(60),
+                            "specifies that a new era will be started every "
+                            "arg minutes since UNIX epoch");
 
 boost::optional<std::string> command;
 command_option.add_options()("command",  po::value(&command), "");
@@ -27,7 +31,7 @@ po::positional_options_description p;
 p.add("command", 1);
 
 po::options_description all;
-all.add(common_options).add(capture_options).add(slice_options).add(help_options).add(command_option);
+all.add(common_options).add(capture_options).add(input_options).add(slice_options).add(help_options).add(command_option);
 
 po::variables_map vm;
 po::store(po::command_line_parser(argc, argv).options(all).positional(p).run(), vm);
@@ -35,6 +39,9 @@ po::notify(vm);
 
 if (vm.count("help"))
   help_ = true;
+
+if(vm.count("input"))
+  era_ = std::move(vm["input"].as<std::vector<std::string>>());
 
 // Check command line arguments.
 if (command) {
@@ -45,12 +52,16 @@ if (command) {
   else if( *command == "transmute") 
     return not_yet_implemented();
   else if( *command == "slice") {
-    common_options.add(slice_options).add(help_options);
+    common_options.add(input_options).add(slice_options).add(help_options);
     return slice(common_options);
+  }
+  else if (*command == "merge") {
+    common_options.add(input_options).add(help_options);
+    return merge(common_options);
   }
 }
 std::cerr << "Usage: oberon <command> [options]\n"
-          << "Commands are:\n capture\n transmute\n split\nRun oberon "
+          << "Commands are:\n capture\n transmute\n split\n merge\nRun oberon "
              "<command> --help for the list of options per command.\n";
 return EXIT_FAILURE;
 !!!1439622.cpp!!!	init(in exchange : string, in product : string) : void
@@ -188,68 +199,167 @@ if (exchange_ && product_ && !help_) {
 std::cerr << "Usage: oberon capture [options]\n" << od;
 return EXIT_FAILURE;
 !!!1453958.cpp!!!	slice(in od : options_description) : int
-if (era_) {
-  std::istringstream ss{*era_};
-  reconstructor::Message::Timestamp output;
+if (!help_ && !era_.empty()) {
+  for (auto &era : era_) {
+    std::istringstream ss{era};
+    reconstructor::Message::Timestamp output;
+    std::string exchange;
+    std::getline(ss, exchange, '_');
+    std::string product;
+    std::getline(ss, product, '_');
+    ss >> date::parse("%FT%H-%M-%SZ", output);
+    if (!exchange.empty() && !product.empty() && !ss.fail()) {
+      using namespace date;
+      /* std::cout << exchange << "\n" << product << "\n" << output << "\n";
+      return EXIT_SUCCESS;
+      */
+      auto orig = reconstructor::File::name(exchange, product, output);
+      auto sliced = orig + ".sliced";
+      if (fileExists(sliced)) {
+        int seq = 1;
+        while (fileExists(sliced + "." + std::to_string(seq)))
+          ++seq;
+        sliced += "." + std::to_string(seq);
+      }
+      if (!std::rename(orig.c_str(), sliced.c_str())) {
+        std::ifstream input{sliced};
+        std::string header;
+        std::getline(input, header);
+        oberon::transmuter::CsvOrderEvent event{header};
+        auto store = boost::make_shared<reconstructor::File>(
+            exchange, product, -std::floor(std::log10(quote_increment_)),
+            -std::floor(std::log10(base_increment_)), deleted_ ? true : false);
+        auto event_counter =
+            boost::make_shared<reconstructor::EventCounter>(store);
+        auto slicer =
+            boost::make_shared<transmuter::EraSlicer>(boundary_, event_counter);
+        transmuter::Reconstructor r{slicer, quote_increment_, base_increment_};
+        boost::property_tree::ptree control_message;
+        control_message.put("type", "era");
+        control_message.put("timestamp", format("%FT%TZ", output));
+        control_message.put("mks", "0");
+        if (r.process(control_message)) {
+          while (input >> event) {
+            // boost::property_tree::write_json(std::cout, event, false);
+            if (!r.process(event))
+              return EXIT_FAILURE;
+          }
+          control_message.clear();
+          control_message.put("type", "reset");
+          control_message.put("timestamp", "");
+          if (!r.process(control_message))
+            return EXIT_FAILURE;
+        } else
+          return EXIT_FAILURE;
+      } else
+        std::cerr << "Couldn't find/rename " << orig << "\n";
+    } else
+      std::cerr << "Couldn't parse " << era << "\n";
+  }
+}
+else {
+  std::cerr << "Usage: oberon slice [options]\n";
+  std::cerr << od;
+  return EXIT_FAILURE;
+}
+return EXIT_SUCCESS;
+!!!1504134.cpp!!!	merge(in od : options_description) : int
+auto iter = era_.begin();
+if(!help_ || iter != era_.end()) {
   std::string exchange;
-  std::getline(ss, exchange, '_');
   std::string product;
-  std::getline(ss, product, '_');
-  ss >> date::parse("%FT%H-%M-%SZ", output);
-  if (!exchange.empty() && !product.empty() && !ss.fail()) {
+  reconstructor::Message::Timestamp output;
+  if (parseFileName(*iter, exchange, product, output)) {
     using namespace date;
     /* std::cout << exchange << "\n" << product << "\n" << output << "\n";
     return EXIT_SUCCESS;
     */
-    auto orig = reconstructor::File::name(exchange, product, output);
-    auto sliced = orig + ".sliced";
-    if(fileExists(sliced)) {
-      int seq = 1;
-      while (fileExists(sliced + "." + std::to_string(seq))) ++seq;
-      sliced += "." + std::to_string(seq);
-    }
-    if(!std::rename(orig.c_str(), sliced.c_str())) {
-      std::ifstream input {sliced};
-      std::string header;
-      std::getline(input, header);
-      oberon::transmuter::CsvOrderEvent event {header};
-      auto store = boost::make_shared<reconstructor::File>(
-          exchange, product, -std::floor(std::log10(quote_increment_)),
-          -std::floor(std::log10(base_increment_)), deleted_ ? true : false);
-      auto event_counter = boost::make_shared<reconstructor::EventCounter>(store);
-      auto slicer = boost::make_shared<transmuter::EraSlicer>(boundary_, event_counter);
-      transmuter::Reconstructor r {slicer, quote_increment_, base_increment_};
-      boost::property_tree::ptree control_message;
-      control_message.put("type", "era");
-      control_message.put("timestamp", format("%FT%TZ", output));
-      control_message.put("mks", "0");
-      if(r.process(control_message)) {
-        while (input >> event) {
-          // boost::property_tree::write_json(std::cout, event, false);
-          if(!r.process(event))
-            return EXIT_FAILURE;
-        }
-        control_message.clear();
-        control_message.put("type", "reset");
-        control_message.put("timestamp", "");
-        if (r.process(control_message))
-          return EXIT_SUCCESS;
-        else
+    auto store = boost::make_shared<reconstructor::File>(
+        exchange, product, -std::floor(std::log10(quote_increment_)),
+        -std::floor(std::log10(base_increment_)), deleted_ ? true : false);
+    auto event_counter = boost::make_shared<reconstructor::EventCounter>(store);
+    auto merger =
+        boost::make_shared<transmuter::EraMerger>(event_counter);
+    merger->create();
+    transmuter::Reconstructor r{merger, quote_increment_, base_increment_};
+    do {
+      auto merged = uniqueFileName(*iter + ".merged");
+      if (!std::rename((*iter).c_str(), merged.c_str())) {
+        std::ifstream input{merged};
+        std::string header;
+        std::getline(input, header);
+        oberon::transmuter::CsvOrderEvent event{header};
+        boost::property_tree::ptree control_message;
+        control_message.put("type", "era");
+        control_message.put("timestamp", format("%FT%TZ", output));
+        control_message.put("mks", "0");
+        if (r.process(control_message)) {
+          while (input >> event) {
+            // boost::property_tree::write_json(std::cout, event, false);
+            if (!r.process(event))
+              return EXIT_FAILURE;
+          }
+        } else
           return EXIT_FAILURE;
-      }
-      else
+      } else {
+        BOOST_LOG_TRIVIAL(error) << "Couldn't find/rename " << *iter << "\n";
         return EXIT_FAILURE;
-    }
-    else
-      std::cerr << "Couldn't find/rename " << orig << "\n";
-  } else
-    std::cerr << "Couldn't parse " << *era_ << "\n";
+      }
+      ++iter;
+      if (iter != era_.end()) {
+        if (!parseFileName(*iter, exchange, product, output)) {
+          BOOST_LOG_TRIVIAL(error)
+              << "Couldn't parse " << *iter
+              << " to extract exchange, product and era timestamp\n";
+          return EXIT_FAILURE;
+        }
+        BOOST_LOG_TRIVIAL(info) << "Merging file " << *iter;
+      } else 
+        break;
+    } while(true);
+    boost::property_tree::ptree control_message;
+    control_message.put("type", "reset");
+    control_message.put("timestamp", "");
+    if (!r.process(control_message))
+      return EXIT_FAILURE;
+  } else {
+    BOOST_LOG_TRIVIAL(error)
+        << "Couldn't parse " << *iter
+        << " to extract exchange, product and era timestamp\n";
+    return EXIT_FAILURE;
+  }
 }
-std::cerr << "Usage: oberon slice [options]\nSlices an era file into several era files\n" << od;
-return EXIT_FAILURE;
+else {
+  std::cerr << "Usage: oberon merge [options]\n";
+  std::cout << od;
+  return EXIT_FAILURE;
+}
+return EXIT_SUCCESS;
 !!!1439878.cpp!!!	not_yet_implemented() : int
 std::cerr << "Not yet implemented.\n";
 return EXIT_FAILURE;
+!!!1504390.cpp!!!	parseFileName(in file_name : string, inout exchange : string, inout product : string, inout timestamp : Message::Timestamp) : bool
+const std::size_t last_slash_idx = file_name.find_last_of("\\/");
+if (std::string::npos != last_slash_idx)
+{
+    file_name.erase(0, last_slash_idx + 1);
+}
+std::istringstream ss{file_name};
+std::getline(ss, exchange, '_');
+std::getline(ss, product, '_');
+ss >> date::parse("%FT%H-%M-%SZ", timestamp);
+if (!exchange.empty() && !product.empty() && !ss.fail())
+  return true;
+else
+  return false;
+!!!1504262.cpp!!!	uniqueFileName(in file_name : string) : string
+if (fileExists(file_name)) {
+  int seq = 1;
+  while (fileExists(file_name + "." + std::to_string(seq)))
+    ++seq;
+  file_name += "." + std::to_string(seq);
+}
+return file_name;
 !!!1475974.cpp!!!	fileExists(in name : string) : bool
 std::ifstream infile(name);
 return infile.good();

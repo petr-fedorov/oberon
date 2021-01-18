@@ -13,7 +13,12 @@ if (event_no_ == kNaEventNo)
 else
   buf << event_no_;
 buf << " ";
-buf << (side_ == kBid ? 'B' : 'A');
+if (side_ == kBid)
+  buf << "B";
+else if (side_ == kAsk)
+  buf << "A";
+else
+  buf << "NA";
 buf << " ";
 if (std::isnan(price_))
   buf << "NA";
@@ -29,7 +34,16 @@ if (std::isnan(change_size_))
   buf << "NA";
 else
   buf << change_size_;
-buf << (deleted() ? " DELETED " : "");
+buf << " ";
+if (state_ == OrderState::kActive) {
+  buf << "a";
+} else if (state_ == OrderState::kFinished) {
+  buf << "f";
+} else {
+  buf << "na";
+}
+buf << " ";
+  buf << (deleted() ? " DELETED " : "");
 return buf.str();
 !!!1285510.cpp!!!	accept(in mh : TokenHandler [1]) : bool
 return mh->orderEvent();
@@ -83,3 +97,5 @@ state_ = state;
 base_increment_ = base_increment;
 !!!1351046.cpp!!!	source() : string
 return source_;
+!!!1496966.cpp!!!	isSameCommitment(in other : OrderEvent) : bool
+return price_ == other.price_ && std::abs(remaining_size_ - other.remaining_size_) < base_increment_;

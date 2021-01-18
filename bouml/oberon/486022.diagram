@@ -1,0 +1,154 @@
+format 224
+
+statecanvas 128006 state_ref 315398 // Wait era start
+  
+  xyzwh 193 249 3005 97 41
+end
+pseudostatecanvas 128134 pseudostate_ref 389510 // initial 
+   xyz 117 260 3011
+end
+statecanvas 128390 state_ref 315526 // Era started
+  
+  xyzwh 355 251 3011 135 41
+end
+statecanvas 130438 state_ref 315782 // Prepare merge
+  
+  xyzwh 377 430 3017 105 41
+end
+statecanvas 133510 state_ref 315910 // Engage
+  
+  xyzwh 94 132 2000 661 457
+end
+pseudostatecanvas 133638 pseudostate_ref 389766 // initial 
+   xyz 398 16 2000
+end
+pseudostatecanvas 133894 pseudostate_ref 389894 // final 
+   xyz 406 806 2000
+end
+transitioncanvas 128262 transition_ref 572678 // <transition>
+  
+  from ref 128134 z 3012 to ref 128006
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129030 transition_ref 572934 // era
+  decenter_begin 487
+  
+  from ref 128006 z 3012 label "era / pass" xyz 295 266 3012 to ref 128390
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 130566 transition_ref 573446 // era
+  
+  from ref 128390 z 3018 label "era / mark all order book events deleted" xyz 318 351 3018 to ref 130438
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 130694 transition_ref 573574 // endOfEpisode
+  
+  from ref 130438 z 3018 to point 158 395
+  line 130950 z 3018 label "endOfEpisode / pass deletions" xyz 186 335 3018 to ref 128390
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 131846 transition_ref 573958 // reset
+  
+  from ref 128390 z 3012 label "reset / clear order book, pass" xyz 276 215 3012 to point 315 197
+  line 134790 z 3012 to ref 128006
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 132742 transition_ref 574086 // cancelled
+  
+  from ref 128390 z 3012 to point 693 173
+  line 132870 z 3012 label "cancelled / update order book" xyz 528 163 3012 to point 518 168
+  line 132998 z 3012 to ref 128390
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 133766 transition_ref 574342 // <transition>
+  
+  from ref 133638 z 2001 to ref 133510
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 134918 transition_ref 574726 // <transition>
+  decenter_begin 847
+  decenter_end 547
+  
+  from ref 133510 z 2001 to point 651 78
+  line 135046 z 2001 label "endOfEpisode" xyz 515 70 2001 to point 452 77
+  line 135174 z 2001 to ref 133510
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 135302 transition_ref 574854 // filled
+  
+  from ref 128390 z 3012 to point 418 174
+  line 135430 z 3012 label "filled / update order book" xyz 323 168 3012 to point 357 176
+  line 135558 z 3012 to ref 128390
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 136198 transition_ref 575110 // created
+  
+  from ref 128390 z 3012 to point 659 210
+  line 136326 z 3012 label "created / update order book" xyz 588 233 3012 to point 661 270
+  line 136454 z 3012 to ref 128390
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 139526 transition_ref 575878 // changed
+  
+  from ref 128390 z 3012 to point 710 320
+  line 139654 z 3012 label "changed / update order book" xyz 577 325 3012 to point 594 345
+  line 139782 z 3012 to ref 128390
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 139910 transition_ref 576006 // create
+  decenter_begin 914
+  decenter_end 85
+  
+  from ref 130438 z 3018 to point 474 525
+  line 140038 z 3018 label "created / merge with order book" xyz 345 517 3018 to point 384 523
+  line 140166 z 3018 to ref 130438
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 141062 transition_ref 576518 // reset
+  
+  from ref 128006 z 3006 to point 219 165
+  line 141190 z 3006 label "reset / pass" xyz 163 171 3006 to point 166 191
+  line 141318 z 3006 to ref 128006
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 143110 transition_ref 577542 // created
+  decenter_begin 403
+  
+  from ref 133510 z 2001 label "created" xyz 342 636 2001 to point 362 710
+  line 143494 z 2001 to ref 133894
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 143238 transition_ref 577670 // changed
+  decenter_begin 114
+  
+  from ref 133510 z 2001 label "changed" xyz 148 684 2001 to point 170 806
+  line 143366 z 2001 to ref 133894
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 143622 transition_ref 577798 // filled
+  decenter_begin 228
+  
+  from ref 133510 z 2001 label "filled" xyz 235 653 2001 to point 247 743
+  line 143750 z 2001 to ref 133894
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 143878 transition_ref 577926 // cancelled
+  decenter_begin 313
+  
+  from ref 133510 z 2001 label "cancelled" xyz 278 641 2001 to point 302 718
+  line 144134 z 2001 to ref 133894
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 144006 transition_ref 578054 // era
+  
+  from ref 133510 z 2001 label "era" xyz 411 683 2001 to ref 133894
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 144390 transition_ref 578182 // reset
+  decenter_begin 597
+  
+  from ref 133510 z 2001 label "reset" xyz 474 646 2001 to point 485 729
+  line 144518 z 2001 to ref 133894
+  write_horizontally default show_definition default drawing_language default
+end
+end

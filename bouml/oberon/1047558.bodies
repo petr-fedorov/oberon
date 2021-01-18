@@ -1,0 +1,75 @@
+class Era_started_State
+!!!1486470.cpp!!!	era(inout stm : EraMerger) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition era";
+#endif
+stm.era_timestamp_ = stm.received_->timestamp();
+for(auto &p : stm.active_orders_)
+  p.second->deleted(true);
+    stm._set_currentState(stm._eramerger_state._engage_state._prepare_merge_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .EraMerger.Engage.Prepare merge";
+#endif
+  }
+!!!1486854.cpp!!!	reset(inout stm : EraMerger) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition reset";
+#endif
+stm.active_orders_.clear();
+stm.output_.push_back(std::move(stm.received_));
+    stm._set_currentState(stm._eramerger_state._engage_state._wait_era_start_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .EraMerger.Engage.Wait era start";
+#endif
+  }
+!!!1487238.cpp!!!	cancelled(inout stm : EraMerger) : void
+  {
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition cancelled";
+#endif
+using OrderEvent = reconstructor::OrderEvent;
+OrderEvent *event = static_cast<OrderEvent *>(stm.received_.get());
+stm.active_orders_.erase(event->maker());
+stm.output_.push_back(std::move(stm.received_));
+  }
+!!!1487622.cpp!!!	filled(inout stm : EraMerger) : void
+  {
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition filled";
+#endif
+using OrderEvent = reconstructor::OrderEvent;
+OrderEvent *event = static_cast<OrderEvent *>(stm.received_.get());
+if (event->state() == OrderEvent::OrderState::kActive) {
+  stm.active_orders_[event->maker()] = event->clone();
+} else {
+  stm.active_orders_.erase(event->maker());
+}
+stm.output_.push_back(std::move(stm.received_));
+  }
+!!!1487750.cpp!!!	created(inout stm : EraMerger) : void
+  {
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition created";
+#endif
+using OrderEvent=reconstructor::OrderEvent;
+OrderEvent *event = static_cast<OrderEvent*>(stm.received_.get());
+stm.active_orders_[event->maker()] = event->clone();
+stm.output_.push_back(std::move(stm.received_));
+  }
+!!!1488134.cpp!!!	changed(inout stm : EraMerger) : void
+  {
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition changed";
+#endif
+using OrderEvent=reconstructor::OrderEvent;
+OrderEvent *event = static_cast<OrderEvent*>(stm.received_.get());
+stm.active_orders_[event->maker()] = event->clone();
+stm.output_.push_back(std::move(stm.received_));
+
+  }
+!!!1488262.cpp!!!	_upper(inout stm : EraMerger) : EraMerger::AnyState
+  return &stm._eramerger_state._engage_state;

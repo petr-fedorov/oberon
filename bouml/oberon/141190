@@ -1,6 +1,6 @@
-format 223
+format 224
 "Reconstructor" // Standalone application::Reconstructor
-  revision 225
+  revision 229
   modified_by 6 "petr"
   // class settings
   
@@ -1337,6 +1337,21 @@ ${items}};
 	
 	
       end
+
+      operation 1496966 "isSameCommitment"
+	const public explicit_return_type "bool"
+	nparams 1
+	  param in name "other" type class_ref 448390 // OrderEvent
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
     end
 
     class 441478 "Elapsed"
@@ -1471,6 +1486,34 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
+      operation 1511046 "Created"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} = default;
+"
+	
+	
+	
+	
+      end
+
+      operation 1510918 "Created"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "event" type class_ref 448390 // OrderEvent
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} : OrderEvent{event} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
       operation 852102 "toString"
 	const cpp_override public explicit_return_type "string"
 	nparams 0
@@ -1588,6 +1631,34 @@ ${inlines}
 	
 	
       end
+
+      operation 1497094 "Changed"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} = default;
+"
+	
+	
+	
+	
+      end
+
+      operation 1497222 "Changed"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "event" type class_ref 448390 // OrderEvent
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} : OrderEvent{event} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
     end
 
     class 328710 "Cancelled"
@@ -1604,6 +1675,34 @@ ${inlines}
       mysql_decl ""
       
       comment "order_deleted on Bitstamp, done on Coinbase, price =0 on Bitfinex"
+      operation 1497478 "Cancelled"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "event" type class_ref 448390 // OrderEvent
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} : OrderEvent{event} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1497350 "Cancelled"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} = default;
+"
+	
+	
+	
+	
+      end
+
       operation 561158 "accept"
 	const cpp_override cpp_final public explicit_return_type "bool"
 	nparams 1
@@ -3393,7 +3492,7 @@ ${inlines}
 	    defaultvalue "false"
 	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} ${p0}${v0}, const ${t1} & ${p1}${v1}, ${t2} ${p2}${v2}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}, const ${t1} & ${p1}, ${t2} ${p2}${)}${volatile}${throw} : handler_name_{handler_name}, next_{next}, is_handles_deleted_{handle_deleted} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}, const ${t1} & ${p1}, ${t2} ${p2}${)}${volatile}${throw} : handler_name_{handler_name}, is_handles_deleted_{handle_deleted}, next_{next} {
   ${body}}
 "
 	
@@ -3433,7 +3532,7 @@ ${inlines}
 	
       end
 
-      operation 1357958 "after_handle"
+      operation 1357958 "endOfEpisode"
 	cpp_virtual public explicit_return_type "bool"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
@@ -3445,6 +3544,7 @@ ${inlines}
 	
 	
 	
+	comment "handle() triggers this event after each episode"
       end
 
       operation 1093254 "era"
@@ -4171,8 +4271,6 @@ The order price must be a multiple of this increment (i.e. if the increment is 0
 
   package_ref 215046 // Bitfinex
 
-  package_ref 228102 // Independent
-
   deploymentview 154246 "Source files"
     //deployment diagram settings
     deploymentdiagramsettings
@@ -4522,6 +4620,7 @@ ${namespace_end}
 #endif
 "
       cpp_src "${comment}
+#include <boost/log/trivial.hpp>
 ${includes}
 ${namespace_start}
 ${members}

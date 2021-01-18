@@ -1,0 +1,11 @@
+class EraMerger_State
+!!!1489798.cpp!!!	create(inout stm : EraMerger) : void
+  {
+    stm._set_currentState(stm._eramerger_state._engage_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .EraMerger.Engage";
+#endif
+    stm._eramerger_state._engage_state.create(stm);
+  }
+!!!1489926.cpp!!!	_upper(inout stm : EraMerger) : EraMerger::AnyState
+  return 0;

@@ -118,7 +118,17 @@ This command tells OBERON to slice an input era file into several smaller era fi
 
 ### **merge**
 
-TBD
+This command tells OBERON to merge several era files into a single file. The input era files are renamed (`.merged` or `merged.N` extension is added) and the new era file is named as the first input file.
+
+**merge** command recognizes the following options:
+
+    -q [ --quote-increment ] arg (=0.01) specifies the minimum increment for the
+                                         quote currency (i.e. USD in BTC-USD)
+    -b [ --base-increment ] arg (=0.01)  specifies the minimum increment for the
+                                         base currency (i.e. BTC in BTC-USD)
+
+    -i [ --input ] arg                   specifies the name(s) of an era file to
+                                         be read (mandatory)
 
 
 ### **transmute**

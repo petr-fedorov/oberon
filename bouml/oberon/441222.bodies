@@ -18,33 +18,39 @@ for (auto &msg : episode) {
       output_.push_back(std::move(msg));
   }
 }
-return after_handle();
-!!!1357958.cpp!!!	after_handle() : bool
-bool result = true;
-if (next_) {
-  if (!output_.empty()) {
-    auto start = output_.begin();
-    auto finish = output_.begin();
-    do {
-      for (; finish != output_.end() &&
-             (*start)->timestamp() == (*finish)->timestamp();
-           ++finish)
-        ;
-      if(start == output_.begin() && finish == output_.end()) {
-        if (!next_->handle(std::move(output_)))
-          return false;
-      } else {
-        Tokens episode;
-        std::move(start, finish, std::back_inserter(episode));
-        if (!next_->handle(std::move(episode)))
-          return false;
-      }
-      start = finish;
-    } while (start != output_.end());
+if (endOfEpisode()) {
+  bool result = true;
+  if (next_) {
+    if (!output_.empty()) {
+      auto start = output_.begin();
+      auto finish = output_.begin();
+      do {
+        for (; finish != output_.end() &&
+               (*start)->timestamp() == (*finish)->timestamp();
+             ++finish)
+          ;
+        if (start == output_.begin() && finish == output_.end()) {
+          if (!next_->handle(std::move(output_)))
+            return false;
+        } else {
+          Tokens episode;
+          std::move(start, finish, std::back_inserter(episode));
+          if (!next_->handle(std::move(episode)))
+            return false;
+        }
+        start = finish;
+      } while (start != output_.end());
+    }
   }
+  output_.clear();
+  return result;
 }
-output_.clear();
-return result;
+else {
+  BOOST_LOG_TRIVIAL(error) << handler_name_ << "  after_handle returned false";
+  return false;
+}
+!!!1357958.cpp!!!	endOfEpisode() : bool
+return true;
 !!!1093254.cpp!!!	era() : bool
 return message();
 !!!692230.cpp!!!	create() : bool

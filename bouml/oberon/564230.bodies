@@ -25,6 +25,7 @@ try {
   else
     eventNumbers_.erase(em->maker());
 } catch (const std::out_of_range &) {
+  BOOST_LOG_TRIVIAL(warning) << "Couldn't get ordinal for " << em->toString();
   em->deleted(true);
 }
 output_.push_back(std::move(received_));

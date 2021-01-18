@@ -3,13 +3,25 @@ class EraSlicer
 slice();
 using OrderEvent=reconstructor::OrderEvent;
 OrderEvent *event = static_cast<OrderEvent*>(received_.get());
-if(event->side() == OrderEvent::BookSide::kBid) 
-  bids_.erase(event->maker());
-else 
-  asks_.erase(event->maker());
+active_orders_.erase(event->maker());
 output_.push_back(std::move(received_));
 return true;
 
+!!!1511174.cpp!!!	filled() : bool
+slice();
+using OrderEvent = reconstructor::OrderEvent;
+using OrderState = reconstructor::OrderEvent::OrderState;
+OrderEvent *event = static_cast<OrderEvent *>(received_.get());
+if (event->state() == OrderState::kActive) {
+    active_orders_[event->maker()] = event->clone();
+} else if (event->state() == OrderState::kFinished) {
+    active_orders_.erase(event->maker());
+} else {
+  BOOST_LOG_TRIVIAL(error) << "Unknown state " << event->toString();
+  return false;
+}
+output_.push_back(std::move(received_));
+return true;
 !!!1474566.cpp!!!	era() : bool
 using namespace date;
 using namespace std::chrono;
@@ -25,30 +37,22 @@ output_.push_back(std::move(received_));
 return true;
 !!!1474950.cpp!!!	orderEvent() : bool
 slice();
-using OrderEvent=reconstructor::OrderEvent;
-OrderEvent *event = static_cast<OrderEvent*>(received_.get());
-if(event->side() == OrderEvent::BookSide::kBid) 
-  bids_[event->maker()] = event->clone();
-else 
-  asks_[event->maker()] = event->clone();
+using OrderEvent = reconstructor::OrderEvent;
+OrderEvent *event = static_cast<OrderEvent *>(received_.get());
+active_orders_[event->maker()] = event->clone();
 output_.push_back(std::move(received_));
 return true;
-
 !!!1475846.cpp!!!	slice() : void
 using namespace date;
 using namespace std::chrono;
+using Created=reconstructor::Created;
 if(received_->timestamp() > next_era_) {
-  // BOOST_LOG_TRIVIAL(info) << "Slice " << format("%FT%TZ", next_era_); 
   output_.push_back(boost::make_unique<reconstructor::Reset>());
   output_.push_back(boost::make_unique<reconstructor::Era>(next_era_));
-  for(auto &p : bids_) {
-    auto event = p.second->clone();
+  for(auto &p : active_orders_) {
+    auto event = boost::make_unique<Created>(*p.second);
     event->timestamp(next_era_);
-    output_.push_back(std::move(event));
-  }
-  for(auto &p : asks_) {
-    auto event = p.second->clone();
-    event->timestamp(next_era_);
+    event->heard(next_era_);
     output_.push_back(std::move(event));
   }
   next_era_ += minutes {boundary_};

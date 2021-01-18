@@ -79,7 +79,8 @@ if (tree.get<std::string>("type") == "event") {
   output->heard(output->timestamp() +
                 std::chrono::microseconds{tree.get<int>("heard")});
 
-//  std::cout << output->toString() << "\n";
+  output->baseIncrement(base_increment_);
+  // std::cout << output->toString() << "\n";
   return std::move(output);
 } else if (tree.get<std::string>("type") == "era")
   return boost::make_unique<Era>(

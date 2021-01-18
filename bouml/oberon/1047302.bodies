@@ -1,0 +1,67 @@
+class Engage_State
+!!!1485190.cpp!!!	create(inout stm : EraMerger) : void
+  {
+    stm._set_currentState(stm._eramerger_state._engage_state._wait_era_start_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .EraMerger.Engage.Wait era start";
+#endif
+  }
+!!!1488902.cpp!!!	created(inout stm : EraMerger) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._eramerger_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .EraMerger";
+#endif
+      stm._final();
+  }
+!!!1489030.cpp!!!	changed(inout stm : EraMerger) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._eramerger_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .EraMerger";
+#endif
+      stm._final();
+  }
+!!!1489158.cpp!!!	filled(inout stm : EraMerger) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._eramerger_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .EraMerger";
+#endif
+      stm._final();
+  }
+!!!1489286.cpp!!!	cancelled(inout stm : EraMerger) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._eramerger_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .EraMerger";
+#endif
+      stm._final();
+  }
+!!!1489414.cpp!!!	era(inout stm : EraMerger) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._eramerger_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .EraMerger";
+#endif
+      stm._final();
+  }
+!!!1489542.cpp!!!	reset(inout stm : EraMerger) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._eramerger_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .EraMerger";
+#endif
+      stm._final();
+  }
+!!!1489670.cpp!!!	_upper(inout stm : EraMerger) : EraMerger::AnyState
+  return &stm._eramerger_state;
+!!!1490438.cpp!!!	endOfEpisode(inout stm : EraMerger) : void
+  {
+  }
