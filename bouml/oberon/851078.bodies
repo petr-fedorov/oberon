@@ -65,9 +65,9 @@ stm.reportReceived();
 #endif
 stm.d_->ws_->async_read(
     stm.d_->buffer_,
-    boost::asio::bind_executor(
-        *stm.d_->strand_, [&stm](const boost::system::error_code &ec,
-                         std::size_t bytes_transferred) {
+    boost::asio::bind_executor(*stm.d_->strand_,
+                               [&stm](const boost::system::error_code &ec,
+                                      std::size_t bytes_transferred) {
           boost::ignore_unused(bytes_transferred);
           if (ec) {
             stm.d_->ec_ = ec;
@@ -83,12 +83,19 @@ stm.d_->ws_->async_read(
             std::stringstream m;
             m << boost::beast::buffers(stm.d_->buffer_.data());
             stm.d_->tree_ = boost::make_unique<boost::property_tree::ptree>();
-            boost::property_tree::read_json(m, *stm.d_->tree_);
-            stm.d_->tree_->put("local_timestamp", local_timestamp);
-            stm.d_->buffer_.consume(stm.d_->buffer_.size());
+            try {
+             boost::property_tree::read_json(m, *stm.d_->tree_);
+             stm.d_->tree_->put("local_timestamp", local_timestamp);
+             stm.d_->buffer_.consume(stm.d_->buffer_.size());
 #ifndef NDEBUG
-            BOOST_LOG_TRIVIAL(debug) << stm._machine_name << m.str(); 
+             BOOST_LOG_TRIVIAL(debug) << stm._machine_name << m.str(); 
 #endif
-            stm.success();
+             stm.success();
+            }
+            catch (const std::exception &e) {
+             BOOST_LOG_TRIVIAL(error) << "Couldn't parse JSON: " << m; 
+             BOOST_LOG_TRIVIAL(error) << e.what();
+             stm.failure();
+            }
           }
-        }));
+    }));
