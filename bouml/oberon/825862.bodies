@@ -53,6 +53,11 @@ Snapshot & stm =*this;
 d_->fh_ = f;
 d_->rh_ = r;
 
+!!!1517702.cpp!!!	postEvent(inout event : Snapshot::SnapshotEventFn) : void
+_post(std::bind(event, shared_from_this()));
+
+!!!1517958.cpp!!!	_post(inout handler : std::function<void()>) : void
+boost::asio::post(*d_->strand_,handler);
 !!!1255814.cpp!!!	stop() : bool
   if (_current_state != 0) {
  #ifdef VERBOSE_STATE_MACHINE

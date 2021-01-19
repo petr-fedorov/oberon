@@ -1,6 +1,6 @@
-format 223
+format 224
 "Receiver" // Standalone application::Receiver
-  revision 43
+  revision 44
   modified_by 6 "petr"
   // class settings
   
@@ -5099,6 +5099,50 @@ ${inlines}
 	
       end
 
+      class 1054214 "SnapshotEventFn"
+	visibility public stereotype "typedef" base_type class_ref 825862 // Snapshot
+	cpp_decl "${comment}typedef bool (${type}::*${name})();
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl "${comment}typedef ${type} ${name};
+"
+	explicit_switch_type ""
+	mysql_decl ""
+	
+      end
+
+      operation 1517702 "postEvent"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "event" type class_ref 1054214 // SnapshotEventFn
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1517958 "_post"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "handler" explicit_type "std::function<void()>"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} && ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} && ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
       classrelation 931206 // _current_state (<directional aggregation>)
 	relation 920966 o-->
 	  a role_name "_current_state" protected
@@ -5674,10 +5718,15 @@ BOOST_LOG_TRIVIAL(debug) << stm._machine_name << \" unprocessed message queue si
 	    state 261638 "Obtaining"
 		uml_on_entry "launch Snapshot"
 		uml_on_exit "stop Snapshot"
-		cpp_on_entry "if(!stm.d_->snapshot_->create()) throw 0;
-BOOST_LOG_TRIVIAL(info) << stm._machine_name << \"An order book snapshot requested\";
+		cpp_on_entry "if(!stm.d_->snapshot_->create()) {
+  stm.postEvent(&Receiver::failure);
+  BOOST_LOG_TRIVIAL(warning) << stm._machine_name << \"Failed to create Snapshot SM\";
+}
+else
+ BOOST_LOG_TRIVIAL(info) << stm._machine_name << \"An order book snapshot requested\";
 
 "
+		cpp_on_exit "stm.d_->snapshot_->postEvent(&Snapshot::stop);"
 	      transition 503046 "success"
 		on pseudostate_ref 335238 // choice 
 		  uml_trigger "success"
@@ -5706,11 +5755,11 @@ BOOST_LOG_TRIVIAL(info) << stm._machine_name << \"An order book snapshot request
 	      end
 	    end
 
-	    transition 550662 "failure"
-	      on pseudostate_ref 314502 // final 
+	    transition 584710 "failure"
+	      on state_ref 322438 // Failing
 		uml_trigger "failure"
 		cpp_trigger "failure"
-		cpp_expr "BOOST_LOG_TRIVIAL(error) << stm._machine_name << \"Couldn't make snapshot, exiting. \" << stm.d_->error_message_; 
+		cpp_expr "BOOST_LOG_TRIVIAL(warning) << stm._machine_name << \"Failed while making snapshot: \" << stm.d_->error_message_; 
 
 "
 	      external 
@@ -5731,6 +5780,38 @@ BOOST_LOG_TRIVIAL(info) << stm._machine_name << \"An order book snapshot request
 	      cpp_expr "BOOST_LOG_TRIVIAL(info) << stm._machine_name << \"Feeder is to be re-engaged ...\";
 "
 	    external 
+	  end
+
+	  state 322438 "Failing"
+	      uml_on_entry "stop Feeder"
+	      cpp_on_entry "stm.d_->feeder_->postEvent(&Feeder::stop);"
+	    transition 584838 "success"
+	      on pseudostate_ref 396422 // exit_point failure
+		uml_trigger "success"
+		cpp_trigger "success"
+	      external 
+	    end
+
+	    transition 584966 "failure"
+	      on pseudostate_ref 396422 // exit_point failure
+		uml_trigger "failure"
+		cpp_trigger "failure"
+	      external 
+	    end
+
+	    transition 585094 "message"
+	      on pseudostate_ref 396422 // exit_point failure
+		uml_trigger "message"
+		cpp_trigger "message"
+	      external 
+	    end
+	  end
+
+	  pseudostate 396422 exit_point "failure"
+	    transition 585222 "<transition>"
+	      on state_ref 219526 // Engaging Feeder
+	      external 
+	    end
 	  end
 	end
 
@@ -6155,6 +6236,24 @@ ${inlines}
 		  key "STM generated" value ""
 		  comment " returns the state containing the current"
 		end
+
+		operation 1517830 "_doexit"
+		  force_body_gen public explicit_return_type "void"
+		  nparams 1
+		    param inout name "stm" type class_ref 712966 // Receiver
+		  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		  
+		  
+		  
+		  
+		  ncouples 1
+		  key "STM generated" value ""
+		  comment " perform the 'exit behavior'"
+		end
 	      end
 
 	      class 128137 "Processing_snapshot_State"
@@ -6394,6 +6493,155 @@ ${inlines}
 		ncouples 1
 		key "STM generated" value ""
 		comment " memorize the instance of the state Processing snapshot, internal"
+	      end
+	    end
+
+	    class 1054342 "Failing_State"
+	      visibility public 
+	      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	      java_decl ""
+	      php_decl ""
+	      python_2_2 python_decl ""
+	      idl_decl ""
+	      explicit_switch_type ""
+	      mysql_decl ""
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " implement the state Failing"
+	      operation 1518086 "~Failing_State"
+		force_body_gen cpp_virtual public explicit_return_type ""
+		nparams 0
+		cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+		cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+	      end
+
+	      classrelation 1218054 // <generalisation>
+		relation 1207686 ---|>
+		  a public
+		    cpp default "${type}"
+		    classrelation_ref 1218054 // <generalisation>
+		  b parent class_ref 827526 // AnyState
+	      end
+
+	      operation 1518214 "success"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Receiver
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event success"
+	      end
+
+	      operation 1518342 "failure"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Receiver
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event failure"
+	      end
+
+	      operation 1518470 "message"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Receiver
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event message"
+	      end
+
+	      operation 1518598 "create"
+		force_body_gen cpp_virtual public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Receiver
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " to manage the event create"
+	      end
+
+	      operation 1518726 "_doentry"
+		force_body_gen public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Receiver
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " perform the 'entry behavior'"
+	      end
+
+	      operation 1518854 "_upper"
+		force_body_gen cpp_virtual public return_type class_ref 827526 // AnyState
+		nparams 1
+		  param inout name "stm" type class_ref 712966 // Receiver
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " returns the state containing the current"
 	      end
 	    end
 
@@ -6744,6 +6992,39 @@ ${inlines}
 	      ncouples 1
 	      key "STM generated" value ""
 	      comment " memorize the instance of the state Processing messages, internal"
+	    end
+
+	    attribute 925318 "_failing_state"
+	      public type class_ref 1054342 // Failing_State
+	      cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	      java_decl ""
+	      php_decl ""
+	      python_decl ""
+	      idl_decl ""
+	      mysql_decl ""
+	      MysqlColumn
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " memorize the instance of the state Failing, internal"
+	    end
+
+	    operation 1518982 "_exit1"
+	      force_body_gen public explicit_return_type "void"
+	      nparams 1
+	        param inout name "stm" type class_ref 712966 // Receiver
+	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " to manage the exit point 'failure', defined because probably shared"
 	    end
 	  end
 
@@ -7598,6 +7879,15 @@ ${inlines}
 	
 	
 	
+      end
+
+      classrelation 1218182 // <dependency>
+	relation 1207814 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1218182 // <dependency>
+	  b parent class_ref 1054342 // Failing_State
       end
     end
 

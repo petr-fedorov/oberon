@@ -40,3 +40,12 @@ stm.d_->messages_.clear();
 #endif
     stm._receiver_state._engage_state._feeder_engaged_state._making_snapshot_state.create(stm);
   }
+!!!1518982.cpp!!!	_exit1(inout stm : Receiver) : void
+  _doexit(stm);
+  {
+    stm._set_currentState(stm._receiver_state._engage_state._engaging_feeder_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver.Engage.Engaging Feeder";
+#endif
+    stm._receiver_state._engage_state._engaging_feeder_state.create(stm);
+  }

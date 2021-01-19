@@ -1,0 +1,37 @@
+class Failing_State
+!!!1518214.cpp!!!	success(inout stm : Receiver) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._receiver_state._engage_state._feeder_engaged_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver.Engage.Feeder Engaged";
+#endif
+    stm._receiver_state._engage_state._feeder_engaged_state._exit1(stm);
+  }
+!!!1518342.cpp!!!	failure(inout stm : Receiver) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._receiver_state._engage_state._feeder_engaged_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver.Engage.Feeder Engaged";
+#endif
+    stm._receiver_state._engage_state._feeder_engaged_state._exit1(stm);
+  }
+!!!1518470.cpp!!!	message(inout stm : Receiver) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._receiver_state._engage_state._feeder_engaged_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver.Engage.Feeder Engaged";
+#endif
+    stm._receiver_state._engage_state._feeder_engaged_state._exit1(stm);
+  }
+!!!1518598.cpp!!!	create(inout stm : Receiver) : void
+	_doentry(stm);
+!!!1518726.cpp!!!	_doentry(inout stm : Receiver) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Receiver.Engage.Feeder Engaged.Failing";
+#endif
+stm.d_->feeder_->postEvent(&Feeder::stop);
+!!!1518854.cpp!!!	_upper(inout stm : Receiver) : Receiver::AnyState
+  return &stm._receiver_state._engage_state._feeder_engaged_state;

@@ -2,6 +2,7 @@ class Obtaining_State
 !!!1238918.cpp!!!	success(inout stm : Receiver) : void
   {
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._receiver_state._engage_state._feeder_engaged_state._making_snapshot_state._obtaining_state._doexit(stm);
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition success";
 #endif
@@ -36,8 +37,17 @@ BOOST_LOG_TRIVIAL(info) << stm._machine_name << "The received snapshot is stale"
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Receiver.Engage.Feeder Engaged.Making Snapshot.Obtaining";
 #endif
-if(!stm.d_->snapshot_->create()) throw 0;
-BOOST_LOG_TRIVIAL(info) << stm._machine_name << "An order book snapshot requested";
+if(!stm.d_->snapshot_->create()) {
+  stm.postEvent(&Receiver::failure);
+  BOOST_LOG_TRIVIAL(warning) << stm._machine_name << "Failed to create Snapshot SM";
+}
+else
+ BOOST_LOG_TRIVIAL(info) << stm._machine_name << "An order book snapshot requested";
 
 !!!1239302.cpp!!!	_upper(inout stm : Receiver) : Receiver::AnyState
   return &stm._receiver_state._engage_state._feeder_engaged_state._making_snapshot_state;
+!!!1517830.cpp!!!	_doexit(inout stm : Receiver) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute exit behavior of .Receiver.Engage.Feeder Engaged.Making Snapshot.Obtaining";
+#endif
+stm.d_->snapshot_->postEvent(&Snapshot::stop);
