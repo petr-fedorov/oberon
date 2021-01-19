@@ -1,6 +1,6 @@
 format 224
 "Reconstructor" // Standalone application::Reconstructor
-  revision 229
+  revision 230
   modified_by 6 "petr"
   // class settings
   
@@ -1946,7 +1946,12 @@ catch (...) {};
 	      uml_guard "success"
 	      uml_expr "set size change"
 	      cpp_guard "!std::isnan(stm.previous_size_)"
-	      cpp_expr "stm.em_->change(stm.previous_size_ - stm.em_->remaining());
+	      cpp_expr "if (!std::isnan(stm.em_->remaining()))
+ stm.em_->change(stm.previous_size_ - stm.em_->remaining());
+else {
+ BOOST_LOG_TRIVIAL(warning) << stm._machine_name << \" Remaining size was NA: \" << stm.em_->toString();
+ stm.em_->change(stm.previous_size_ );
+}
 
 "
 	    external 

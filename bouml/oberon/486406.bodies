@@ -27,11 +27,24 @@ try {
     return std::move(output);
   } else if (type == "done") {
     auto output = boost::make_unique<Cancelled>();
-    updateCommonAttributes(*output, tree);
+    output->timestamp(toTimestamp(tree.get<std::string>("time")));
+    output->heard(toTimestamp(tree.get<std::string>("local_timestamp")));
+
+    output->side(tree.get<std::string>("side") == "buy"
+                     ? OrderEvent::BookSide::kBid
+                     : OrderEvent::BookSide::kAsk);
+    try {
+     output->price(stod(tree.get("price", "0.0")));
+    }
+    catch (...) {};
+    output->baseIncrement(base_increment_);
     output->maker(gen(tree.get<string>("order_id")));
     output->state(OrderEvent::OrderState::kFinished);
     if (tree.get<string>("reason") == "canceled") {
+     try{
       output->remaining(stod(tree.get<string>("remaining_size")));
+     }
+     catch (...) {};
       output->change(0);
     } else
       output->deleted(true);
