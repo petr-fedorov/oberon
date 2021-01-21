@@ -16,25 +16,26 @@ class Parsing_snapshot_State
 #endif
 auto self(stm.shared_from_this());
 boost::asio::post(*stm.d_->ioc_, [&stm]() {
-      // BOOST_LOG_TRIVIAL(debug) << stm.d_->res_.body();
-      auto local_timestamp = date::format(
-          "%FT%TZ", std::chrono::time_point_cast<std::chrono::microseconds>(
-                        std::chrono::system_clock::now()));
-      std::istringstream is{stm.d_->res_.body()};
-      stm.d_->res_.body().clear();
-      stm.d_->snapshot_tree_ = boost::make_unique<boost::property_tree::ptree>();
-      try {
-        read_json(is, *stm.d_->snapshot_tree_);
-        stm.d_->snapshot_tree_->put("local_timestamp", local_timestamp);
-        stm.d_->buffer_.consume(stm.d_->buffer_.size());
-        boost::asio::post(
-            boost::asio::bind_executor(*stm.d_->strand_, [&stm]() { stm.success(); }));
-      } catch (...) {
-        boost::asio::post(boost::asio::bind_executor(*stm.d_->strand_, [&stm]() {
-          stm.d_->error_message_ = "Failed to parse the order book snapshot";
-          stm.failure();
-        }));
-      }
-    });
+ // BOOST_LOG_TRIVIAL(debug) << stm.d_->res_.body();
+ auto local_timestamp = date::format(
+     "%FT%TZ", std::chrono::time_point_cast<std::chrono::microseconds>(
+                   std::chrono::system_clock::now()));
+ std::stringstream is{stm.d_->res_.body()};
+ stm.d_->res_.body().clear();
+ stm.d_->snapshot_tree_ = boost::make_unique<boost::property_tree::ptree>();
+ try {
+  read_json(is, *stm.d_->snapshot_tree_);
+  stm.d_->snapshot_tree_->put("local_timestamp", local_timestamp);
+  boost::asio::post(boost::asio::bind_executor(*stm.d_->strand_,
+                                               [&stm]() { stm.success(); }));
+ }
+ catch (...) {
+  BOOST_LOG_TRIVIAL(warning) << stm._machine_name << "Failed to parse the snapshot:" << is.str();
+  boost::asio::post(boost::asio::bind_executor(*stm.d_->strand_, [&stm]() {
+   stm.d_->error_message_ = "Failed to parse the order book snapshot";
+   stm.failure();
+  }));
+ }
+});
 !!!1234694.cpp!!!	_upper(inout stm : Snapshot) : Snapshot::AnyState
   return &stm._snapshot_state._obtaining_state;

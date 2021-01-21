@@ -1,5 +1,5 @@
 class Feeder
-!!!1213702.cpp!!!	Feeder(inout ioc : io_context, in product : string, in exhausted_after : int)
+!!!1213702.cpp!!!	Feeder(in ioc : io_context_SP, in product : string, in exhausted_after : int)
 d_->product_ = product;
 d_->ioc_ = ioc;
 _machine_name = "CoinbaseFeeder - ";
@@ -12,7 +12,6 @@ c.put("", "full");
 
 products.push_back(std::make_pair("", p));
 channels.push_back(std::make_pair("", c));
-
 
 using namespace boost::property_tree;
 ptree tree;
@@ -31,16 +30,15 @@ d_->ws_->async_write(
     boost::asio::bind_executor(*d_->strand_,
                                [this](const boost::system::error_code &ec,
                                       std::size_t bytes_transferred) {
-                                 boost::ignore_unused(bytes_transferred);
-                                 if (ec) {
-				   this->d_->ec_ = ec;
-				   this->d_->error_message_ = ec.message();
-                                   this->failure();
-				   }
-                                 else
-                                   this->success();
-                               }));
-
+     boost::ignore_unused(bytes_transferred);
+     if (ec) {
+      this->d_->ec_ = ec;
+      this->d_->error_message_ = ec.message();
+      BOOST_LOG_TRIVIAL(warning) << "Subscribe " << ec.message();
+      this->failure();
+     } else
+      this->success();
+    }));
 
 !!!1336198.cpp!!!	isControlMessage() : bool
 return (d_->tree_->get<std::string>("type") == "subscriptions");

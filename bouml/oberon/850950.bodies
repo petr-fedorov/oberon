@@ -22,12 +22,14 @@ stm.d_->resolver_->async_resolve(
         *stm.d_->strand_,
         [&stm](const boost::system::error_code &ec,
                boost::asio::ip::tcp::resolver::results_type results) {
-          if (ec) {
-            stm.d_->ec_ = ec;
-            stm.d_->error_message_ = ec.message();
-            stm.failure();
-          } else {
-            stm.d_->results_ = results;
-            stm.success();
-          }
+         if (ec) {
+          stm.d_->ec_ = ec;
+          stm.d_->error_message_ = ec.message();
+          BOOST_LOG_TRIVIAL(warning) << stm._machine_name << "Resolve "
+                                     << ec.message();
+          stm.failure();
+         } else {
+          stm.d_->results_ = results;
+          stm.success();
+         }
         }));

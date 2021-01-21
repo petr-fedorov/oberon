@@ -78,9 +78,21 @@ BOOST_LOG_TRIVIAL(warning) << stm._machine_name << "Exhausted";
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute exit behavior of .Feeder.Busy";
 #endif
 stm.d_->timer_->cancel();
-stm.d_->ws_->next_layer().next_layer().shutdown(boost::asio::ip::tcp::socket::shutdown_both);
-stm.d_->ws_->next_layer().next_layer().cancel();
-stm.d_->ws_->next_layer().next_layer().close();
+boost::system::error_code ec;
+
+stm.d_->ws_->next_layer().next_layer().shutdown(
+    boost::asio::ip::tcp::socket::shutdown_both, ec);
+if (ec) BOOST_LOG_TRIVIAL(warning) << ec.message();
+
+stm.d_->ws_->next_layer().next_layer().cancel(ec);
+if (ec) BOOST_LOG_TRIVIAL(warning) << ec.message();
+
+stm.d_->ws_->next_layer().next_layer().close(ec);
+if (ec) BOOST_LOG_TRIVIAL(warning) << ec.message();
+
+// Buffer could be partially filled already, need to re-set it
+stm.d_->buffer_.consume(stm.d_->buffer_.size());
+
 !!!1255174.cpp!!!	stop(inout stm : Feeder) : void
   {
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);

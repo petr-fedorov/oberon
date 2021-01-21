@@ -2,6 +2,18 @@ class Ping_State
 !!!1412614.cpp!!!	pong(inout stm : Feeder) : void
   {
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._feeder_state._busy_state._receive_state._ping_state._doexit(stm);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition pong";
+#endif
+if (stm.d_->timer_->expires_after(
+        std::chrono::seconds(stm.d_->exhausted_after)) > 0) {
+ // We managed to cancel the timer. Start new asynchronous wait.
+ stm.d_->timer_->async_wait(boost::asio::bind_executor(
+     *stm.d_->strand_, [&stm](const boost::system::error_code &ec) {
+      if (ec != boost::asio::error::operation_aborted) stm.check();
+     }));
+}
     stm._set_currentState(stm._feeder_state._busy_state._receive_state._connected_state);
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Feeder.Busy.Receive.Connected";
@@ -13,21 +25,27 @@ class Ping_State
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute entry behavior of .Feeder.Busy.Receive.Ping";
 #endif
-stm.d_->ws_->async_ping("",
-                        boost::asio::bind_executor(
-                            *stm.d_->strand_,
-                            [&stm](const boost::system::error_code &ec) {
-                              if (ec) {
-                                BOOST_LOG_TRIVIAL(warning)
-                                    << stm._machine_name
-                                    << "Couldn't send ping to check websocket ";
-                              }
-                            }));
+stm.d_->ws_->async_ping(
+    "",
+    boost::asio::bind_executor(*stm.d_->strand_,
+                               [&stm](const boost::system::error_code &ec) {
+     if (ec && ec!= boost::asio::error::operation_aborted) {
+      BOOST_LOG_TRIVIAL(warning) << stm._machine_name
+                                 << "Couldn't send ping to check websocket ";
+     }
+    }));
 stm.d_->timer_->expires_after(std::chrono::seconds(stm.d_->exhausted_after));
 stm.d_->timer_->async_wait(boost::asio::bind_executor(
     *stm.d_->strand_, [&stm](const boost::system::error_code &ec) {
-      if (ec != boost::asio::error::operation_aborted)
-        stm.exhausted();
+     if (ec != boost::asio::error::operation_aborted) stm.exhausted();
     }));
+BOOST_LOG_TRIVIAL(debug) << stm._machine_name << "Feeder may be exhausted at "
+                         << date::format("%FT%TZ", stm.d_->timer_->expiry());
 !!!1412998.cpp!!!	_upper(inout stm : Feeder) : Feeder::AnyState
   return &stm._feeder_state._busy_state._receive_state;
+!!!1525638.cpp!!!	_doexit(inout stm : Feeder) : void
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute exit behavior of .Feeder.Busy.Receive.Ping";
+#endif
+
+

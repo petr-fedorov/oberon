@@ -20,15 +20,16 @@ stm.d_->resolver_->async_resolve(
     boost::asio::bind_executor(
         *stm.d_->strand_,
         [&stm, self](const boost::system::error_code &ec,
-               boost::asio::ip::tcp::resolver::results_type results) {
-          if (ec) {
-            stm.d_->ec_ = ec;
-            stm.d_->error_message_ = ec.message();
-            stm.failure();
-          } else {
-            stm.d_->results_ = results;
-            stm.success();
-          }
+                     boost::asio::ip::tcp::resolver::results_type results) {
+         if (ec) {
+          stm.d_->ec_ = ec;
+          stm.d_->error_message_ = ec.message();
+          BOOST_LOG_TRIVIAL(warning) << stm._machine_name << ec.message(); 
+          stm.failure();
+         } else {
+          stm.d_->results_ = results;
+          stm.success();
+         }
         }));
 !!!1231878.cpp!!!	_upper(inout stm : Snapshot) : Snapshot::AnyState
   return &stm._snapshot_state._obtaining_state;

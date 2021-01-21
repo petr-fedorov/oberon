@@ -8,34 +8,22 @@ class Subscribe_State
 if (stm.d_->sh_)
   stm.d_->sh_();
 stm.d_->last_sequence_ = 0;
-stm.d_->timer_->expires_after(std::chrono::seconds(5));
-stm.d_->timer_->async_wait(boost::asio::bind_executor(
-    *stm.d_->strand_, [&stm](const boost::system::error_code &ec) {
-      if (ec != boost::asio::error::operation_aborted) {
-        stm.exhausted();
-      }
-    }));
-using frame_type = boost::beast::websocket::frame_type;
 
+using frame_type = boost::beast::websocket::frame_type;
 stm.d_->ws_->control_callback(boost::asio::bind_executor(
     *stm.d_->strand_,
     [&stm](frame_type kind, boost::beast::string_view payload) {
       std::string kind_str;
       if (kind == frame_type::pong) {
-#ifndef NDEBUG
-      BOOST_LOG_TRIVIAL(debug)
-          << stm._machine_name << "pong received";
-#endif
-        if (stm.d_->timer_->expires_after(
-                std::chrono::seconds(stm.d_->exhausted_after)) > 0) {
-          // We managed to cancel the timer. Start new asynchronous wait.
-          stm.d_->timer_->async_wait(boost::asio::bind_executor(
-              *stm.d_->strand_, [&stm](const boost::system::error_code &ec) {
-                if (ec != boost::asio::error::operation_aborted)
-                  stm.check();
-              }));
-        }
         stm.pong();
+      }
+    }));
+
+stm.d_->timer_->expires_after(std::chrono::seconds(stm.d_->exhausted_after));
+stm.d_->timer_->async_wait(boost::asio::bind_executor(
+    *stm.d_->strand_, [&stm](const boost::system::error_code &ec) {
+      if (ec != boost::asio::error::operation_aborted) {
+        stm.check();
       }
     }));
 

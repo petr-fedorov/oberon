@@ -1,6 +1,6 @@
 format 224
 "Receiver" // Standalone application::Receiver
-  revision 45
+  revision 48
   modified_by 6 "petr"
   // class settings
   
@@ -159,7 +159,7 @@ format 224
 
       state 259846 "Busy"
 	  uml_on_entry "create websocket"
-	  uml_on_exit "close websocket"
+	  uml_on_exit "cleanup"
 	  cpp_on_entry "stm.d_->ctx_ = boost::make_unique<boost::asio::ssl::context>(
     boost::asio::ssl::context::sslv23_client);
 stm.d_->resolver_ = boost::make_unique<boost::asio::ip::tcp::resolver>(*stm.d_->ioc_);
@@ -181,9 +181,21 @@ SSL_CTX_set_keylog_callback(stm.d_->ctx_->native_handle(),
 */
 "
 	  cpp_on_exit "stm.d_->timer_->cancel();
-stm.d_->ws_->next_layer().next_layer().shutdown(boost::asio::ip::tcp::socket::shutdown_both);
-stm.d_->ws_->next_layer().next_layer().cancel();
-stm.d_->ws_->next_layer().next_layer().close();
+boost::system::error_code ec;
+
+stm.d_->ws_->next_layer().next_layer().shutdown(
+    boost::asio::ip::tcp::socket::shutdown_both, ec);
+if (ec) BOOST_LOG_TRIVIAL(warning) << ec.message();
+
+stm.d_->ws_->next_layer().next_layer().cancel(ec);
+if (ec) BOOST_LOG_TRIVIAL(warning) << ec.message();
+
+stm.d_->ws_->next_layer().next_layer().close(ec);
+if (ec) BOOST_LOG_TRIVIAL(warning) << ec.message();
+
+// Buffer could be partially filled already, need to re-set it
+stm.d_->buffer_.consume(stm.d_->buffer_.size());
+
 "
 	state 268166 "Resolve"
 	    uml_on_entry "launch"
@@ -193,14 +205,16 @@ stm.d_->ws_->next_layer().next_layer().close();
         *stm.d_->strand_,
         [&stm](const boost::system::error_code &ec,
                boost::asio::ip::tcp::resolver::results_type results) {
-          if (ec) {
-            stm.d_->ec_ = ec;
-            stm.d_->error_message_ = ec.message();
-            stm.failure();
-          } else {
-            stm.d_->results_ = results;
-            stm.success();
-          }
+         if (ec) {
+          stm.d_->ec_ = ec;
+          stm.d_->error_message_ = ec.message();
+          BOOST_LOG_TRIVIAL(warning) << stm._machine_name << \"Resolve \"
+                                     << ec.message();
+          stm.failure();
+         } else {
+          stm.d_->results_ = results;
+          stm.success();
+         }
         }));
 "
 	  transition 524166 "success"
@@ -218,36 +232,37 @@ stm.d_->ws_->next_layer().next_layer().close();
     boost::asio::bind_executor(*stm.d_->strand_,
                                [&stm](const boost::system::error_code &ec,
                                       std::size_t bytes_transferred) {
-          boost::ignore_unused(bytes_transferred);
-          if (ec) {
-            stm.d_->ec_ = ec;
-            stm.d_->error_message_ = ec.message();
-            stm.failure();
-	    }
-          else {
-            using namespace boost::property_tree;
-            auto local_timestamp = date::format(
-                \"%FT%TZ\",
-                std::chrono::time_point_cast<std::chrono::microseconds>(
-                    std::chrono::system_clock::now()));
-            std::stringstream m;
-            m << boost::beast::buffers(stm.d_->buffer_.data());
-            stm.d_->tree_ = boost::make_unique<boost::property_tree::ptree>();
-            try {
-             boost::property_tree::read_json(m, *stm.d_->tree_);
-             stm.d_->tree_->put(\"local_timestamp\", local_timestamp);
-             stm.d_->buffer_.consume(stm.d_->buffer_.size());
+     boost::ignore_unused(bytes_transferred);
+     if (!ec) {
+      using namespace boost::property_tree;
+      auto local_timestamp = date::format(
+          \"%FT%TZ\", std::chrono::time_point_cast<std::chrono::microseconds>(
+                        std::chrono::system_clock::now()));
+      std::stringstream m;
+      m << boost::beast::buffers(stm.d_->buffer_.data());
+      stm.d_->buffer_.consume(stm.d_->buffer_.size());
+      stm.d_->tree_ = boost::make_unique<boost::property_tree::ptree>();
+      try {
+       boost::property_tree::read_json(m, *stm.d_->tree_);
+       stm.d_->tree_->put(\"local_timestamp\", local_timestamp);
 #ifndef NDEBUG
-             BOOST_LOG_TRIVIAL(debug) << stm._machine_name << m.str(); 
+       BOOST_LOG_TRIVIAL(debug) << stm._machine_name << m.str(); 
 #endif
-             stm.success();
-            }
-            catch (const std::exception &e) {
-             BOOST_LOG_TRIVIAL(error) << \"Couldn't parse JSON: \" << m; 
-             BOOST_LOG_TRIVIAL(error) << e.what();
-             stm.failure();
-            }
-          }
+       stm.success();
+      }
+      catch (const std::exception &e) {
+       BOOST_LOG_TRIVIAL(error) << stm._machine_name
+                                << \" Couldn't parse JSON: \" << m.str();
+       BOOST_LOG_TRIVIAL(error) << e.what();
+       stm.failure();
+      }
+     } else {
+      stm.d_->ec_ = ec;
+      stm.d_->error_message_ = ec.message();
+      BOOST_LOG_TRIVIAL(warning) << stm._machine_name
+                                 << \" Busy.Receive : \" << ec.message();
+      stm.failure();
+     }
     }));
 "
 	  transition 532742 "success"
@@ -255,13 +270,17 @@ stm.d_->ws_->next_layer().next_layer().close();
 	      uml_trigger "success"
 	      uml_expr "restart timer"
 	      cpp_trigger "success"
-	      cpp_expr "if (stm.d_->timer_->expires_after(std::chrono::seconds(stm.d_->exhausted_after)) > 0) {
-  // We managed to cancel the timer. Start new asynchronous wait.
-  stm.d_->timer_->async_wait(boost::asio::bind_executor(
-      *stm.d_->strand_, [&stm](const boost::system::error_code &ec) {
-        if (ec != boost::asio::error::operation_aborted)
-          stm.check();
-      }));
+	      cpp_expr "if (stm.d_->timer_->expires_after(
+        std::chrono::seconds(stm.d_->exhausted_after)) > 0) {
+ // We managed to cancel the timer. Start new asynchronous wait.
+ stm.d_->timer_->async_wait(boost::asio::bind_executor(
+     *stm.d_->strand_, [&stm](const boost::system::error_code &ec) {
+      if (ec != boost::asio::error::operation_aborted) stm.check();
+     }));
+ /*BOOST_LOG_TRIVIAL(debug) << stm._machine_name
+                          << \"timer will expire at \" << date::format(\"%FT%TZ\", stm.d_->timer_->expiry())
+                          << \"(\" << stm.d_->exhausted_after << \")\";
+                          */
 }
 "
 	    external 
@@ -283,28 +302,41 @@ stm.d_->ws_->next_layer().next_layer().close();
 	  end
 
 	  state 302342 "Ping"
-	      uml_on_entry "send ping, set timer"
-	      cpp_on_entry "stm.d_->ws_->async_ping(\"\",
-                        boost::asio::bind_executor(
-                            *stm.d_->strand_,
-                            [&stm](const boost::system::error_code &ec) {
-                              if (ec) {
-                                BOOST_LOG_TRIVIAL(warning)
-                                    << stm._machine_name
-                                    << \"Couldn't send ping to check websocket \";
-                              }
-                            }));
+	      uml_on_entry "send ping,
+set exhaust timer"
+	      cpp_on_entry "stm.d_->ws_->async_ping(
+    \"\",
+    boost::asio::bind_executor(*stm.d_->strand_,
+                               [&stm](const boost::system::error_code &ec) {
+     if (ec && ec!= boost::asio::error::operation_aborted) {
+      BOOST_LOG_TRIVIAL(warning) << stm._machine_name
+                                 << \"Couldn't send ping to check websocket \";
+     }
+    }));
 stm.d_->timer_->expires_after(std::chrono::seconds(stm.d_->exhausted_after));
 stm.d_->timer_->async_wait(boost::asio::bind_executor(
     *stm.d_->strand_, [&stm](const boost::system::error_code &ec) {
-      if (ec != boost::asio::error::operation_aborted)
-        stm.exhausted();
+     if (ec != boost::asio::error::operation_aborted) stm.exhausted();
     }));
+BOOST_LOG_TRIVIAL(debug) << stm._machine_name << \"Feeder may be exhausted at \"
+                         << date::format(\"%FT%TZ\", stm.d_->timer_->expiry());
+"
+	      cpp_on_exit "
+
 "
 	    transition 565894 "pong"
 	      on state_ref 302214 // Connected
 		uml_trigger "pong"
 		cpp_trigger "pong"
+		cpp_expr "if (stm.d_->timer_->expires_after(
+        std::chrono::seconds(stm.d_->exhausted_after)) > 0) {
+ // We managed to cancel the timer. Start new asynchronous wait.
+ stm.d_->timer_->async_wait(boost::asio::bind_executor(
+     *stm.d_->strand_, [&stm](const boost::system::error_code &ec) {
+      if (ec != boost::asio::error::operation_aborted) stm.check();
+     }));
+}
+"
 	      external 
 	    end
 	  end
@@ -333,15 +365,17 @@ boost::asio::async_connect(
     boost::asio::bind_executor(*stm.d_->strand_,
                                [&stm](const boost::system::error_code &ec,
                                       decltype(stm.d_->results_.begin()) iter) {
-                                 if (ec) {
-                                   stm.d_->ec_ = ec;
-				   stm.d_->error_message_ = ec.message();
-                                   stm.failure();
-                                 } else {
-                                   stm.d_->address_ = iter->endpoint().address();
-                                   stm.success();
-                                 }
-                               }));
+     if (ec) {
+      stm.d_->ec_ = ec;
+      stm.d_->error_message_ = ec.message();
+      BOOST_LOG_TRIVIAL(warning) << stm._machine_name << \"Connect \"
+                                 << ec.message();
+      stm.failure();
+     } else {
+      stm.d_->address_ = iter->endpoint().address();
+      stm.success();
+     }
+    }));
 "
 	  transition 524294 "success"
 	    on state_ref 275334 // Handshake SSL
@@ -357,14 +391,16 @@ boost::asio::async_connect(
     boost::asio::ssl::stream_base::client,
     boost::asio::bind_executor(*stm.d_->strand_,
                                [&stm](const boost::system::error_code &ec) {
-                                 if (ec) {
-                                   stm.d_->ec_ = ec;
-				   stm.d_->error_message_ = ec.message();
-                                   stm.failure();
-                                 } else {
-                                   stm.success();
-                                 }
-                               }));
+     if (ec) {
+      stm.d_->ec_ = ec;
+      stm.d_->error_message_ = ec.message();
+      BOOST_LOG_TRIVIAL(warning) << stm._machine_name << \"Handshake SSL\"
+                                 << ec.message();
+      stm.failure();
+     } else {
+      stm.success();
+     }
+    }));
 "
 	  transition 524422 "success"
 	    on state_ref 275462 // Handshake websocket
@@ -380,14 +416,16 @@ boost::asio::async_connect(
     stm.d_->host_, stm.d_->target_,
     boost::asio::bind_executor(*stm.d_->strand_,
                                [&stm](const boost::system::error_code &ec) {
-                                 if (ec) {
-                                   stm.d_->ec_ = ec;
-                                   stm.d_->error_message_ = ec.message();
-                                   stm.failure();
-                                 } else {
-                                   stm.success();
-                                 }
-                               }));
+     if (ec) {
+      stm.d_->ec_ = ec;
+      stm.d_->error_message_ = ec.message();
+      BOOST_LOG_TRIVIAL(warning) << stm._machine_name << \"Handshake websocket \"
+                                 << ec.message();
+      stm.failure();
+     } else {
+      stm.success();
+     }
+    }));
 "
 	  transition 524550 "success"
 	    on state_ref 275590 // Subscribe
@@ -404,39 +442,27 @@ boost::asio::async_connect(
 	  transition 524678 "success"
 	    on state_ref 275078 // Receive
 	      uml_trigger "success"
-	      uml_expr "report subscribed, start timer"
+	      uml_expr "report subscribed, start check timer"
 	      cpp_trigger "success"
 	      cpp_expr "if (stm.d_->sh_)
   stm.d_->sh_();
 stm.d_->last_sequence_ = 0;
-stm.d_->timer_->expires_after(std::chrono::seconds(5));
-stm.d_->timer_->async_wait(boost::asio::bind_executor(
-    *stm.d_->strand_, [&stm](const boost::system::error_code &ec) {
-      if (ec != boost::asio::error::operation_aborted) {
-        stm.exhausted();
-      }
-    }));
-using frame_type = boost::beast::websocket::frame_type;
 
+using frame_type = boost::beast::websocket::frame_type;
 stm.d_->ws_->control_callback(boost::asio::bind_executor(
     *stm.d_->strand_,
     [&stm](frame_type kind, boost::beast::string_view payload) {
       std::string kind_str;
       if (kind == frame_type::pong) {
-#ifndef NDEBUG
-      BOOST_LOG_TRIVIAL(debug)
-          << stm._machine_name << \"pong received\";
-#endif
-        if (stm.d_->timer_->expires_after(
-                std::chrono::seconds(stm.d_->exhausted_after)) > 0) {
-          // We managed to cancel the timer. Start new asynchronous wait.
-          stm.d_->timer_->async_wait(boost::asio::bind_executor(
-              *stm.d_->strand_, [&stm](const boost::system::error_code &ec) {
-                if (ec != boost::asio::error::operation_aborted)
-                  stm.check();
-              }));
-        }
         stm.pong();
+      }
+    }));
+
+stm.d_->timer_->expires_after(std::chrono::seconds(stm.d_->exhausted_after));
+stm.d_->timer_->async_wait(boost::asio::bind_executor(
+    *stm.d_->strand_, [&stm](const boost::system::error_code &ec) {
+      if (ec != boost::asio::error::operation_aborted) {
+        stm.check();
       }
     }));
 
@@ -1852,6 +1878,24 @@ ${inlines}
 		ncouples 1
 		key "STM generated" value ""
 		comment " returns the state containing the current"
+	      end
+
+	      operation 1525638 "_doexit"
+		force_body_gen public explicit_return_type "void"
+		nparams 1
+		  param inout name "stm" type class_ref 843526 // Feeder
+		cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+		cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+		
+		
+		
+		
+		ncouples 1
+		key "STM generated" value ""
+		comment " perform the 'exit behavior'"
 	      end
 	    end
 
@@ -3277,15 +3321,16 @@ stm.d_->resolver_->async_resolve(
     boost::asio::bind_executor(
         *stm.d_->strand_,
         [&stm, self](const boost::system::error_code &ec,
-               boost::asio::ip::tcp::resolver::results_type results) {
-          if (ec) {
-            stm.d_->ec_ = ec;
-            stm.d_->error_message_ = ec.message();
-            stm.failure();
-          } else {
-            stm.d_->results_ = results;
-            stm.success();
-          }
+                     boost::asio::ip::tcp::resolver::results_type results) {
+         if (ec) {
+          stm.d_->ec_ = ec;
+          stm.d_->error_message_ = ec.message();
+          BOOST_LOG_TRIVIAL(warning) << stm._machine_name << ec.message(); 
+          stm.failure();
+         } else {
+          stm.d_->results_ = results;
+          stm.success();
+         }
         }));
 "
 	  transition 500102 "success"
@@ -3324,6 +3369,7 @@ boost::asio::async_connect(
           if (ec) {
             stm.d_->ec_ = ec;
             stm.d_->error_message_ = ec.message();
+            BOOST_LOG_TRIVIAL(warning) << stm._machine_name << ec.message(); 
             stm.failure();
           } else {
 #ifndef NDEBUG
@@ -3348,16 +3394,17 @@ boost::asio::async_connect(
 	    cpp_on_entry "auto self(stm.shared_from_this());
 stm.d_->https_->async_handshake(
     boost::asio::ssl::stream_base::client,
-    boost::asio::bind_executor(*stm.d_->strand_,
-                               [&stm, self](const boost::system::error_code &ec) {
-                                 if (ec) {
-                                   stm.d_->ec_ = ec;
-                                   stm.d_->error_message_ = ec.message();
-                                   stm.failure();
-                                 } else {
-                                   stm.success();
-                                 }
-                               }));
+    boost::asio::bind_executor(
+        *stm.d_->strand_, [&stm, self](const boost::system::error_code &ec) {
+         if (ec) {
+          stm.d_->ec_ = ec;
+          stm.d_->error_message_ = ec.message();
+          BOOST_LOG_TRIVIAL(warning) << stm._machine_name << ec.message();
+          stm.failure();
+         } else {
+          stm.success();
+         }
+        }));
 "
 	  transition 500358 "success"
 	    on state_ref 260998 // Quering snapshot
@@ -3379,15 +3426,16 @@ http::async_write(
     boost::asio::bind_executor(*stm.d_->strand_,
                                [&stm, self](const boost::system::error_code &ec,
                                             std::size_t bytes_transferred) {
-                                 boost::ignore_unused(bytes_transferred);
-                                 if (ec) {
-                                   stm.d_->ec_ = ec;
-                                   stm.d_->error_message_ = ec.message();
-                                   stm.failure();
-                                 } else {
-                                   stm.success();
-                                 }
-                               }));
+     boost::ignore_unused(bytes_transferred);
+     if (ec) {
+      stm.d_->ec_ = ec;
+      stm.d_->error_message_ = ec.message();
+      BOOST_LOG_TRIVIAL(warning) << stm._machine_name << ec.message();
+      stm.failure();
+     } else {
+      stm.success();
+     }
+    }));
 "
 	  transition 500486 "success"
 	    on state_ref 261126 // Reading snapshot
@@ -3405,14 +3453,15 @@ boost::beast::http::async_read(
     boost::asio::bind_executor(*stm.d_->strand_,
                                [&stm](const boost::system::error_code &ec,
                                       std::size_t bytes_transferred) {
-                                 boost::ignore_unused(bytes_transferred);
-                                 if (ec) {
-                                   stm.d_->ec_ = ec;
-                                   stm.d_->error_message_ = ec.message();
-                                   stm.failure();
-                                 } else
-                                   stm.success();
-                               }));
+     boost::ignore_unused(bytes_transferred);
+     if (ec) {
+      stm.d_->ec_ = ec;
+      stm.d_->error_message_ = ec.message();
+      BOOST_LOG_TRIVIAL(warning) << stm._machine_name << ec.message();
+      stm.failure();
+     } else
+      stm.success();
+    }));
 "
 	  transition 501510 "success"
 	    on state_ref 261382 // Parsing snapshot
@@ -3429,26 +3478,27 @@ boost::beast::http::async_read(
 	    uml_on_entry "launch"
 	    cpp_on_entry "auto self(stm.shared_from_this());
 boost::asio::post(*stm.d_->ioc_, [&stm]() {
-      // BOOST_LOG_TRIVIAL(debug) << stm.d_->res_.body();
-      auto local_timestamp = date::format(
-          \"%FT%TZ\", std::chrono::time_point_cast<std::chrono::microseconds>(
-                        std::chrono::system_clock::now()));
-      std::istringstream is{stm.d_->res_.body()};
-      stm.d_->res_.body().clear();
-      stm.d_->snapshot_tree_ = boost::make_unique<boost::property_tree::ptree>();
-      try {
-        read_json(is, *stm.d_->snapshot_tree_);
-        stm.d_->snapshot_tree_->put(\"local_timestamp\", local_timestamp);
-        stm.d_->buffer_.consume(stm.d_->buffer_.size());
-        boost::asio::post(
-            boost::asio::bind_executor(*stm.d_->strand_, [&stm]() { stm.success(); }));
-      } catch (...) {
-        boost::asio::post(boost::asio::bind_executor(*stm.d_->strand_, [&stm]() {
-          stm.d_->error_message_ = \"Failed to parse the order book snapshot\";
-          stm.failure();
-        }));
-      }
-    });
+ // BOOST_LOG_TRIVIAL(debug) << stm.d_->res_.body();
+ auto local_timestamp = date::format(
+     \"%FT%TZ\", std::chrono::time_point_cast<std::chrono::microseconds>(
+                   std::chrono::system_clock::now()));
+ std::stringstream is{stm.d_->res_.body()};
+ stm.d_->res_.body().clear();
+ stm.d_->snapshot_tree_ = boost::make_unique<boost::property_tree::ptree>();
+ try {
+  read_json(is, *stm.d_->snapshot_tree_);
+  stm.d_->snapshot_tree_->put(\"local_timestamp\", local_timestamp);
+  boost::asio::post(boost::asio::bind_executor(*stm.d_->strand_,
+                                               [&stm]() { stm.success(); }));
+ }
+ catch (...) {
+  BOOST_LOG_TRIVIAL(warning) << stm._machine_name << \"Failed to parse the snapshot:\" << is.str();
+  boost::asio::post(boost::asio::bind_executor(*stm.d_->strand_, [&stm]() {
+   stm.d_->error_message_ = \"Failed to parse the order book snapshot\";
+   stm.failure();
+  }));
+ }
+});
 "
 	  transition 501638 "success"
 	    on pseudostate_ref 334982 // final 
@@ -3469,8 +3519,6 @@ boost::asio::post(*stm.d_->ioc_, [&stm]() {
 	  on pseudostate_ref 335110 // junction 
 	    uml_trigger "failure"
 	    cpp_trigger "failure"
-	    cpp_expr "BOOST_LOG_TRIVIAL(warning) << stm._machine_name << stm.d_->error_message_;
-"
 	  external 
 	end
       end
@@ -5766,7 +5814,7 @@ else
 	      on state_ref 322438 // Failing
 		uml_trigger "failure"
 		cpp_trigger "failure"
-		cpp_expr "BOOST_LOG_TRIVIAL(warning) << stm._machine_name << \"Failed while making snapshot: \" << stm.d_->error_message_; 
+		cpp_expr "BOOST_LOG_TRIVIAL(warning) << stm._machine_name << \"Failed while making snapshot\";
 
 "
 	      external 

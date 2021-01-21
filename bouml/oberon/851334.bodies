@@ -20,11 +20,13 @@ stm.d_->ws_->next_layer().async_handshake(
     boost::asio::ssl::stream_base::client,
     boost::asio::bind_executor(*stm.d_->strand_,
                                [&stm](const boost::system::error_code &ec) {
-                                 if (ec) {
-                                   stm.d_->ec_ = ec;
-				   stm.d_->error_message_ = ec.message();
-                                   stm.failure();
-                                 } else {
-                                   stm.success();
-                                 }
-                               }));
+     if (ec) {
+      stm.d_->ec_ = ec;
+      stm.d_->error_message_ = ec.message();
+      BOOST_LOG_TRIVIAL(warning) << stm._machine_name << "Handshake SSL"
+                                 << ec.message();
+      stm.failure();
+     } else {
+      stm.success();
+     }
+    }));

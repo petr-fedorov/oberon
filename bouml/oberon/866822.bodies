@@ -29,10 +29,6 @@ if(stm.d_->rh_) stm.d_->rh_(std::move(stm.d_->snapshot_tree_));
   {
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
     stm._snapshot_state._obtaining_state._doexit(stm);
-#ifdef VERBOSE_STATE_MACHINE
-   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition <transition>";
-#endif
-BOOST_LOG_TRIVIAL(warning) << stm._machine_name << stm.d_->error_message_;
     stm._set_currentState(stm._snapshot_state);
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Snapshot";

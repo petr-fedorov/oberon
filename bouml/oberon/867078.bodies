@@ -23,6 +23,7 @@ boost::asio::async_connect(
           if (ec) {
             stm.d_->ec_ = ec;
             stm.d_->error_message_ = ec.message();
+            BOOST_LOG_TRIVIAL(warning) << stm._machine_name << ec.message(); 
             stm.failure();
           } else {
 #ifndef NDEBUG

@@ -23,12 +23,14 @@ boost::asio::async_connect(
     boost::asio::bind_executor(*stm.d_->strand_,
                                [&stm](const boost::system::error_code &ec,
                                       decltype(stm.d_->results_.begin()) iter) {
-                                 if (ec) {
-                                   stm.d_->ec_ = ec;
-				   stm.d_->error_message_ = ec.message();
-                                   stm.failure();
-                                 } else {
-                                   stm.d_->address_ = iter->endpoint().address();
-                                   stm.success();
-                                 }
-                               }));
+     if (ec) {
+      stm.d_->ec_ = ec;
+      stm.d_->error_message_ = ec.message();
+      BOOST_LOG_TRIVIAL(warning) << stm._machine_name << "Connect "
+                                 << ec.message();
+      stm.failure();
+     } else {
+      stm.d_->address_ = iter->endpoint().address();
+      stm.success();
+     }
+    }));
