@@ -82,13 +82,13 @@ boost::system::error_code ec;
 
 stm.d_->ws_->next_layer().next_layer().shutdown(
     boost::asio::ip::tcp::socket::shutdown_both, ec);
-if (ec) BOOST_LOG_TRIVIAL(warning) << ec.message();
+if (ec) BOOST_LOG_TRIVIAL(warning) << stm._machine_name << ec.message();
 
 stm.d_->ws_->next_layer().next_layer().cancel(ec);
-if (ec) BOOST_LOG_TRIVIAL(warning) << ec.message();
+if (ec) BOOST_LOG_TRIVIAL(warning) << stm._machine_name << ec.message();
 
 stm.d_->ws_->next_layer().next_layer().close(ec);
-if (ec) BOOST_LOG_TRIVIAL(warning) << ec.message();
+if (ec) BOOST_LOG_TRIVIAL(warning) << stm._machine_name << ec.message();
 
 // Buffer could be partially filled already, need to re-set it
 stm.d_->buffer_.consume(stm.d_->buffer_.size());

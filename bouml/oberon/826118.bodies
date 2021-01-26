@@ -19,6 +19,7 @@ class Snapshot_State
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition <transition>";
 #endif
+BOOST_LOG_TRIVIAL(debug) << stm._machine_name << " failure";
 if(stm.d_->fh_) stm.d_->fh_();
 
       stm._final();

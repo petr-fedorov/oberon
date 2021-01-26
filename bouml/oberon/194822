@@ -1,6 +1,6 @@
 format 224
 "Receiver" // Standalone application::Receiver
-  revision 48
+  revision 50
   modified_by 6 "petr"
   // class settings
   
@@ -185,13 +185,13 @@ boost::system::error_code ec;
 
 stm.d_->ws_->next_layer().next_layer().shutdown(
     boost::asio::ip::tcp::socket::shutdown_both, ec);
-if (ec) BOOST_LOG_TRIVIAL(warning) << ec.message();
+if (ec) BOOST_LOG_TRIVIAL(warning) << stm._machine_name << ec.message();
 
 stm.d_->ws_->next_layer().next_layer().cancel(ec);
-if (ec) BOOST_LOG_TRIVIAL(warning) << ec.message();
+if (ec) BOOST_LOG_TRIVIAL(warning) << stm._machine_name << ec.message();
 
 stm.d_->ws_->next_layer().next_layer().close(ec);
-if (ec) BOOST_LOG_TRIVIAL(warning) << ec.message();
+if (ec) BOOST_LOG_TRIVIAL(warning) << stm._machine_name << ec.message();
 
 // Buffer could be partially filled already, need to re-set it
 stm.d_->buffer_.consume(stm.d_->buffer_.size());
@@ -573,7 +573,9 @@ stm.d_->timer_->async_wait(boost::asio::bind_executor(
 	transition 549894 "stopped"
 	  on pseudostate_ref 369670 // final 
 	    uml_expr "report success"
-	    cpp_expr "if(stm.d_->sh_) stm.d_->sh_();
+	    cpp_expr "BOOST_LOG_TRIVIAL(debug) << stm._machine_name << \" success\";
+if(stm.d_->sh_) stm.d_->sh_();
+
 "
 	  external 
 	end
@@ -583,7 +585,8 @@ stm.d_->timer_->async_wait(boost::asio::bind_executor(
 	transition 550022 "failed"
 	  on pseudostate_ref 369670 // final 
 	    uml_expr "report failure"
-	    cpp_expr "if(stm.d_->fh_) stm.d_->fh_();
+	    cpp_expr "BOOST_LOG_TRIVIAL(debug) << stm._machine_name << \" failure\";
+if(stm.d_->fh_) stm.d_->fh_();
 "
 	  external 
 	end
@@ -3351,7 +3354,9 @@ stm.d_->resolver_->async_resolve(
 	transition 499974 "completion"
 	  on pseudostate_ref 334598 // final 
 	    uml_expr "report success"
-	    cpp_expr "if(stm.d_->rh_) stm.d_->rh_(std::move(stm.d_->snapshot_tree_));
+	    cpp_expr "BOOST_LOG_TRIVIAL(debug) << stm._machine_name << \" success\";
+if(stm.d_->rh_) stm.d_->rh_(std::move(stm.d_->snapshot_tree_));
+
 
 
 "
@@ -3512,6 +3517,8 @@ boost::asio::post(*stm.d_->ioc_, [&stm]() {
 	  on state_ref 261510 // Stopping
 	    uml_trigger "stop"
 	    cpp_trigger "stop"
+	    cpp_expr "BOOST_LOG_TRIVIAL(debug) << stm._machine_name << \" stop\";
+"
 	  external 
 	end
 
@@ -3519,6 +3526,9 @@ boost::asio::post(*stm.d_->ioc_, [&stm]() {
 	  on pseudostate_ref 335110 // junction 
 	    uml_trigger "failure"
 	    cpp_trigger "failure"
+	    cpp_expr "BOOST_LOG_TRIVIAL(debug) << stm._machine_name << \" failure\";
+
+"
 	  external 
 	end
       end
@@ -3546,7 +3556,8 @@ boost::asio::post(*stm.d_->ioc_, [&stm]() {
 	transition 502150 "<transition>"
 	  on pseudostate_ref 334598 // final 
 	    uml_expr "report failure"
-	    cpp_expr "if(stm.d_->fh_) stm.d_->fh_();
+	    cpp_expr "BOOST_LOG_TRIVIAL(debug) << stm._machine_name << \" failure\";
+if(stm.d_->fh_) stm.d_->fh_();
 
 "
 	  external 
@@ -3569,6 +3580,9 @@ boost::asio::post(*stm.d_->ioc_, [&stm]() {
 	    cpp_guard "stm.d_"
 	  external 
 	end
+      end
+
+      pseudostate 402950 junction ""
       end
     end
 
@@ -3661,42 +3675,6 @@ ${inlines}
 	  comment " perform the 'do activity'"
 	end
 
-	operation 1141894 "_doentry"
-	  force_body_gen cpp_virtual public explicit_return_type "void"
-	  nparams 1
-	    param inout name "stm" type class_ref 825862 // Snapshot
-	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} &${)}${const}${volatile}${throw}${abstract};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} &${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	  ncouples 1
-	  key "STM generated" value ""
-	  comment " performs the 'entry activity'"
-	end
-
-	operation 1142022 "_doexit"
-	  force_body_gen cpp_virtual public explicit_return_type "void"
-	  nparams 1
-	    param inout name "stm" type class_ref 825862 // Snapshot
-	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} &${)}${const}${volatile}${throw}${abstract};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} &${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	  ncouples 1
-	  key "STM generated" value ""
-	  comment " performs the 'exit activity'"
-	end
-
 	operation 1143686 "create"
 	  force_body_gen cpp_virtual public explicit_return_type "void"
 	  nparams 1
@@ -3766,6 +3744,42 @@ ${inlines}
 	  ncouples 1
 	  key "STM generated" value ""
 	  comment " the current state doesn't manage the event stop, give it to the upper state"
+	end
+
+	operation 1532166 "_doentry"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 825862 // Snapshot
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} &${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} &${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " performs the 'entry activity'"
+	end
+
+	operation 1532294 "_doexit"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 825862 // Snapshot
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} &${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} &${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " performs the 'exit activity'"
 	end
       end
 
@@ -4921,6 +4935,24 @@ ${inlines}
 	  key "STM generated" value ""
 	  comment " memorize the instance of the state Stopping, internal"
 	end
+
+	operation 1532422 "_junction2"
+	  force_body_gen public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 825862 // Snapshot
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " implement a junction, through an operation because shared, internal"
+	end
       end
 
       class 999942 "Snapshot_SP"
@@ -4944,21 +4976,6 @@ ${inlines}
 	      classrelation_ref 1144326 // <realization>
 	    b parent class_ref 852614 // shared_ptr
 	end
-      end
-
-      attribute 743814 "_machine_name"
-	public explicit_type "string"
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-	ncouples 1
-	key "STM generated" value ""
-	comment " a (unique) name of the machine "
       end
 
       attribute 743942 "_snapshot_state"
@@ -5313,6 +5330,21 @@ ${inlines}
 	    cpp default "${type}"
 	    classrelation_ref 1006982 // <dependency>
 	  b parent class_ref 882822 // Stopping_State
+      end
+
+      attribute 931846 "_machine_name"
+	public explicit_type "string"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	ncouples 1
+	key "STM generated" value ""
+	comment " a (unique) name of the machine "
       end
     end
 
