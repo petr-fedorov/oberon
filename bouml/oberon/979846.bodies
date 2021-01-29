@@ -20,7 +20,19 @@ stm.era_messages_.push_back(std::move(stm.received_));
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition era ended";
 #endif
+std::map<OrderEvent::OrderId, std::vector<std::size_t>> active_chains;
+
+for(std::size_t i = 0; i < stm.before_messages_.size(); i++) {
+ auto event = static_cast<OrderEvent*>(stm.before_messages_[i].get());
+ if(event->state() != OrderEvent::OrderState::kFinished) 
+  active_chains[event->maker()].push_back(i);
+ else   // Filled have state kNA at this stage. But the duplicate order_deleted message
+  // should be in before_messages_ too
+  active_chains.erase(event->maker());
+}
+
 for(auto &msg: stm.era_messages_) {
+  active_chains.erase(static_cast<OrderEvent*>(msg.get())->maker());
   auto iter = std::find_if(stm.before_messages_.begin(), stm.before_messages_.end(),
                       [order_id = static_cast<OrderEvent *>(msg.get())->maker()](const Token &b) {
                         auto e = static_cast<OrderEvent*>(b.get());
@@ -30,6 +42,15 @@ for(auto &msg: stm.era_messages_) {
   if(iter != stm.before_messages_.end())
     msg->deleted(true);
 }
+
+// Add created not deleted and missing from the era_messages_ due to Bitstamp malfunction 
+for(auto &pair : active_chains)
+ for(auto &i : pair.second) {
+   BOOST_LOG_TRIVIAL(info) << stm._machine_name << "added to era " << stm.before_messages_[i]->toString();
+   stm.before_messages_[i]->deleted(false);
+   stm.before_messages_[i]->timestamp(stm.era_->timestamp());
+ }
+
     stm._set_currentState(stm._synchronizer_state._synchronized_state);
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Synchronizer.Synchronized";

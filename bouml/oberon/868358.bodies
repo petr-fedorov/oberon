@@ -20,6 +20,7 @@ BOOST_LOG_TRIVIAL(info) << stm._machine_name << "Feeder engaged successfully.";
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition failure";
 #endif
 BOOST_LOG_TRIVIAL(error) << stm._machine_name << "Couldn't engage Feeder, exiting. " << stm.d_->error_message_; 
+stm.exit_code_ = EXIT_FAILURE;
     stm._set_currentState(stm._receiver_state);
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver";
@@ -42,10 +43,7 @@ boost::asio::post(
           return;
       } catch (...) {
       }
-      stm._post([&stm]() {
-        stm.d_->error_message_ = "Couldn't reset";
-        stm.stop();
-      });
+      stm.postEvent(&Receiver::failure);
     }));
 stm.d_->feeder_->create();
 !!!1237638.cpp!!!	_upper(inout stm : Receiver) : Receiver::AnyState

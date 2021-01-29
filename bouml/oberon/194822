@@ -1,6 +1,6 @@
 format 224
 "Receiver" // Standalone application::Receiver
-  revision 50
+  revision 51
   modified_by 6 "petr"
   // class settings
   
@@ -5683,10 +5683,7 @@ stm.d_->feeder_->postEvent(&Feeder::stop);"
           return;
       } catch (...) {
       }
-      stm._post([&stm]() {
-        stm.d_->error_message_ = \"Couldn't reset\";
-        stm.stop();
-      });
+      stm.postEvent(&Receiver::failure);
     }));
 stm.d_->feeder_->create();
 "
@@ -5704,6 +5701,7 @@ stm.d_->feeder_->create();
 	      uml_trigger "failure"
 	      cpp_trigger "failure"
 	      cpp_expr "BOOST_LOG_TRIVIAL(error) << stm._machine_name << \"Couldn't engage Feeder, exiting. \" << stm.d_->error_message_; 
+stm.exit_code_ = EXIT_FAILURE;
 "
 	    external 
 	  end
@@ -5717,18 +5715,18 @@ stm.d_->feeder_->create();
 "
 	  state 219782 "Processing messages"
 	      uml_on_entry "pass to reconstructor"
-	      cpp_on_entry "boost::asio::post(boost::asio::bind_executor(*stm.d_->processing_strand_, [messages = std::move(stm.d_->messages_), &stm]() {
-  for (auto &message : messages)
-    if (!stm.d_->process(*message)) {
-      stm._post([&stm]() {
-        stm.d_->error_message_ = \"Couldn't process message\";
-        stm.stop(); // We can't process received messages, so we stop the
-                    // machine
-      });
-      return;
-    };
-    stm.postEvent(&Receiver::success);
-}));
+	      cpp_on_entry "boost::asio::post(boost::asio::bind_executor(
+    *stm.d_->processing_strand_, [
+                                  messages = std::move(stm.d_->messages_),
+                                  &stm
+                                 ]() {
+     for (auto& message : messages)
+      if (!stm.d_->process(*message)) {
+       stm.postEvent(&Receiver::failure);
+       return;
+      };
+     stm.postEvent(&Receiver::success);
+    }));
 "
 	    transition 492294 "success"
 	      on pseudostate_ref 327558 // choice 
@@ -5913,9 +5911,7 @@ else
 	  on pseudostate_ref 314502 // final 
 	    uml_trigger "stop"
 	    cpp_trigger "stop"
-	    cpp_expr "if(!stm.d_->error_message_.empty())
-  BOOST_LOG_TRIVIAL(error) << stm.d_->error_message_;
-"
+	    cpp_expr "stm.exit_code_ = EXIT_SUCCESS;"
 	  external 
 	end
       end
@@ -7516,6 +7512,19 @@ ${inlines}
 	
 	ncouples 1
 	key "STM generated" value ""
+      end
+
+      attribute 938374 "exit_code_"
+	public explicit_type "int"
+	init_value "EXIT_SUCCESS"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
       end
 
       operation 917382 "Receiver"

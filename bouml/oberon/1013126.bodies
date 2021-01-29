@@ -1,5 +1,8 @@
 class Main
 !!!1439494.cpp!!!	main(in argc : int, in argv : char **) : int
+boost::log::register_simple_formatter_factory< boost::log::trivial::severity_level, char >("Severity");
+boost::log::add_common_attributes();
+boost::log::add_console_log(std::cout, boost::log::keywords::auto_flush=true, boost::log::keywords::format="%TimeStamp% [%Severity%] %Message%");
 namespace po = boost::program_options;
 
 po::options_description common_options("Options are"), input_options, slice_options, capture_options, command_option, help_options;
@@ -14,7 +17,8 @@ capture_options.add_options()
   ("exchange,e", po::value(&exchange_), "specifies the name of the exchange (mandatory)")
   ("product,p", po::value(&product_), "specifies the exchange-specific code of the product (mandatory)")(
     "pong-wait-time,w", po::value<int>(&pong_wait_time_)->default_value(1),
-    "specifies the maximum waiting time for the websocket pong response before re-connecting, secs")("deleted,d","also output events deleted by cleansing");
+    "specifies the maximum waiting time for the websocket pong response before re-connecting, secs")
+  ("deleted,d","also output events deleted by cleansing");
 
 input_options.add_options()(
     "input,i", po::value<std::vector<std::string>>()->multitoken(),
@@ -40,6 +44,9 @@ po::notify(vm);
 if (vm.count("help"))
   help_ = true;
 
+if (vm.count("deleted"))
+  deleted_ = true;
+
 if(vm.count("input"))
   era_ = std::move(vm["input"].as<std::vector<std::string>>());
 
@@ -64,37 +71,18 @@ std::cerr << "Usage: oberon <command> [options]\n"
           << "Commands are:\n capture\n transmute\n split\n merge\nRun oberon "
              "<command> --help for the list of options per command.\n";
 return EXIT_FAILURE;
-!!!1439622.cpp!!!	init(in exchange : string, in product : string) : void
-namespace logging = boost::log;
-namespace src = boost::log::sources;
-namespace sinks = boost::log::sinks;
-namespace keywords = boost::log::keywords;
-
-logging::add_file_log(
-    keywords::file_name = exchange + "_" + product + "_%N.log",
-    keywords::rotation_size = 100 * 1024 * 1024,
-    keywords::auto_flush = true,
-    keywords::time_based_rotation = sinks::file::rotation_at_time_point(0, 0,
-                                                                        0),
-    keywords::format = "[%TimeStamp%]: %Message%");
-
-logging::core::get()->set_filter(logging::trivial::severity >=
-                                 logging::trivial::debug);
-logging::add_common_attributes();
-
 !!!1439750.cpp!!!	capture(in od : options_description) : int
 if (exchange_ && product_ && !help_) {
   using Snapshot = oberon::receiver::Snapshot;
   using EventCounter = oberon::reconstructor::EventCounter;
   using SizeDeducer = oberon::reconstructor::SizeDeducer;
-  init(*exchange_, *product_);
 
   // The io_context is required for all I/O
   boost::shared_ptr<boost::asio::io_context> ioc =
       boost::make_shared<boost::asio::io_context>();
   auto store = boost::make_shared<reconstructor::File>(
       *exchange_, *product_, -std::floor(std::log10(quote_increment_)),
-      -std::floor(std::log10(base_increment_)), deleted_ ? true : false);
+      -std::floor(std::log10(base_increment_)), deleted_);
 
   if (*exchange_ == "Bitstamp") {
     using Receiver = oberon::receiver::bitstamp::Receiver;
@@ -149,6 +137,7 @@ if (exchange_ && product_ && !help_) {
     t1.join();
     t2.join();
     t3.join();
+    return receiver->exit_code_;
   } else if (*exchange_ == "Coinbase") {
 
     using Receiver = oberon::receiver::coinbase::Receiver;
@@ -193,8 +182,8 @@ if (exchange_ && product_ && !help_) {
     t1.join();
     t2.join();
     t3.join();
+    return coinbase->exit_code_;
   }
-  return EXIT_SUCCESS;
 }
 std::cerr << "Usage: oberon capture [options]\n" << od;
 return EXIT_FAILURE;

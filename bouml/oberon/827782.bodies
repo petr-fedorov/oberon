@@ -15,9 +15,7 @@ class Engage_State
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition stop";
 #endif
-if(!stm.d_->error_message_.empty())
-  BOOST_LOG_TRIVIAL(error) << stm.d_->error_message_;
-    stm._set_currentState(stm._receiver_state);
+stm.exit_code_ = EXIT_SUCCESS;    stm._set_currentState(stm._receiver_state);
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .Receiver";
 #endif
