@@ -1,6 +1,6 @@
 format 224
 "Bitstamp" // Standalone application::Reconstructor::Bitstamp
-  revision 24
+  revision 25
   modified_by 6 "petr"
   // class settings
   
@@ -136,7 +136,6 @@ ${inlines}
 	    classrelation_ref 1161222 // <dependency>
 	  b parent class_ref 521478 // Era
       end
-
     end
   end
 
@@ -554,7 +553,7 @@ for(auto &msg: stm.era_messages_) {
 // Add created not deleted and missing from the era_messages_ due to Bitstamp malfunction 
 for(auto &pair : active_chains)
  for(auto &i : pair.second) {
-   BOOST_LOG_TRIVIAL(info) << stm._machine_name << \"added to era \" << stm.before_messages_[i]->toString();
+   BOOST_LOG_TRIVIAL(debug) << stm._machine_name << \"added to era \" << stm.before_messages_[i]->toString();
    stm.before_messages_[i]->deleted(false);
    stm.before_messages_[i]->timestamp(stm.era_->timestamp());
  }

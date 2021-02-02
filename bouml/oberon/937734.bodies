@@ -1,7 +1,11 @@
 class Receiver
-!!!1344134.cpp!!!	Receiver(inout ioc : io_context, inout feeder : Feeder, inout snapshot : Snapshot, inout processor : ConsumerFn)
+!!!1344134.cpp!!!	Receiver(in ioc : io_context_SP, in feeder : Feeder::Feeder_SP, in snapshot : Snapshot::Snapshot_SP, inout processor : ConsumerFn)
 _machine_name = "BitstampReceiver - ";
 !!!1344262.cpp!!!	isStale() : bool
+using namespace std::chrono;
+BOOST_LOG_TRIVIAL(info) <<   "Snapshot timestamp: " << date::format("%FT%TZ", time_point<system_clock, microseconds>{microseconds{d_->snapshot_tree_->get<long long>("microtimestamp")}});
+if(!d_->messages_.empty())
+  BOOST_LOG_TRIVIAL(info) << "Feeder timestamp  : " << date::format( "%FT%TZ", time_point<system_clock, microseconds>{microseconds{ d_->messages_.front()->get<long long>("data.microtimestamp")}});
 return !d_->messages_.size() ||
        d_->messages_.front()->get<long long>("data.microtimestamp") >=
            d_->snapshot_tree_->get<long long>("microtimestamp");

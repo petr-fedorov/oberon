@@ -1,7 +1,10 @@
 class Receiver
-!!!1343494.cpp!!!	Receiver(inout ioc : io_context, inout feeder : Feeder, inout snapshot : Snapshot, inout processor : ConsumerFn)
+!!!1343494.cpp!!!	Receiver(in ioc : io_context_SP, in feeder : Feeder::Feeder_SP, in snapshot : Snapshot::Snapshot_SP, inout processor : ConsumerFn)
 _machine_name = "CoinbaseReceiver - ";
 !!!1343750.cpp!!!	isStale() : bool
+BOOST_LOG_TRIVIAL(info) <<   "Snapshot sequence: " << d_->snapshot_tree_->get<std::string>("sequence");
+if(d_->messages_.size()) 
+  BOOST_LOG_TRIVIAL(info) << "Feeder sequence  : " << d_->messages_.front()->get<std::string>("sequence");
 return !d_->messages_.size() ||
        d_->messages_.front()->get<long long>("sequence") >=
            d_->snapshot_tree_->get<long long>("sequence");

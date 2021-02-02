@@ -24,10 +24,11 @@ std::map<OrderEvent::OrderId, std::vector<std::size_t>> active_chains;
 
 for(std::size_t i = 0; i < stm.before_messages_.size(); i++) {
  auto event = static_cast<OrderEvent*>(stm.before_messages_[i].get());
- if(event->state() != OrderEvent::OrderState::kFinished) 
+ if(event->state() == OrderEvent::OrderState::kActive) 
   active_chains[event->maker()].push_back(i);
- else   // Filled have state kNA at this stage. But the duplicate order_deleted message
-  // should be in before_messages_ too
+ else  
+  // Filled have state kNA at this stage and have to be deleted since remaining() is unknown
+  // Thus, this code will not add all missing chains, but at least some of them ... 
   active_chains.erase(event->maker());
 }
 
@@ -46,7 +47,7 @@ for(auto &msg: stm.era_messages_) {
 // Add created not deleted and missing from the era_messages_ due to Bitstamp malfunction 
 for(auto &pair : active_chains)
  for(auto &i : pair.second) {
-   BOOST_LOG_TRIVIAL(info) << stm._machine_name << "added to era " << stm.before_messages_[i]->toString();
+   BOOST_LOG_TRIVIAL(debug) << stm._machine_name << "added to era " << stm.before_messages_[i]->toString();
    stm.before_messages_[i]->deleted(false);
    stm.before_messages_[i]->timestamp(stm.era_->timestamp());
  }

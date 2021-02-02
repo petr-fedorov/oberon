@@ -3,6 +3,10 @@ class Main
 boost::log::register_simple_formatter_factory< boost::log::trivial::severity_level, char >("Severity");
 boost::log::add_common_attributes();
 boost::log::add_console_log(std::cout, boost::log::keywords::auto_flush=true, boost::log::keywords::format="%TimeStamp% [%Severity%] %Message%");
+boost::log::core::get()->set_filter
+    (
+        boost::log::trivial::severity >= boost::log::trivial::info
+    );
 namespace po = boost::program_options;
 
 po::options_description common_options("Options are"), input_options, slice_options, capture_options, command_option, help_options;
