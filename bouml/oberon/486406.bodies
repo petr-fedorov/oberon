@@ -9,24 +9,27 @@ try {
   if (type == "elapsed")
     return boost::make_unique<Elapsed>(toTimestamp(tree.get<string>("time")));
   else if (type == "received") {
-    auto output = boost::make_unique<Created>();
+    auto output = boost::make_unique<OrderEvent>();
     updateCommonAttributes(*output, tree);
     output->maker(gen(tree.get<string>("order_id")));
     output->change(0);
+    output->ordinal(1);
     if (tree.get<string>("order_type") == "limit")
       output->remaining(stod(tree.get("size", "0.0")));
+    assert(output->isOrderCreated());
     return std::move(output);
   } else if (type == "open") {
-    auto output = boost::make_unique<Created>();
+    auto output = boost::make_unique<OrderEvent>();
     updateCommonAttributes(*output, tree);
     output->maker(gen(tree.get<string>("order_id")));
     output->remaining(stod(tree.get<string>("remaining_size")));
     output->change(0);
     output->ordinal(1);
     output->state(OrderEvent::OrderState::kActive);
+    assert(output->isOrderCreated());
     return std::move(output);
   } else if (type == "done") {
-    auto output = boost::make_unique<Cancelled>();
+    auto output = boost::make_unique<OrderEvent>();
     output->timestamp(toTimestamp(tree.get<std::string>("time")));
     output->heard(toTimestamp(tree.get<std::string>("local_timestamp")));
 
@@ -48,17 +51,19 @@ try {
       output->change(0);
     } else
       output->deleted(true);
+    assert(output->isOrderCancelled());
     return std::move(output);
   } else if (type == "match") {
-    auto output = boost::make_unique<Filled>();
+    auto output = boost::make_unique<OrderEvent>();
     updateCommonAttributes(*output, tree);
     output->change(stod(tree.get<string>("size")));
     output->trade(stol(tree.get<string>("trade_id")));
     output->maker(gen(tree.get<string>("maker_order_id")));
     output->taker(gen(tree.get<string>("taker_order_id")));
+    assert(output->isOrderFilled());
     return std::move(output);
   } else if (type == "change") {
-    auto output = boost::make_unique<Changed>();
+    auto output = boost::make_unique<OrderEvent>();
     output->timestamp(toTimestamp(tree.get<std::string>("time")));
     output->heard(toTimestamp(tree.get<std::string>("local_timestamp")));
     output->side(tree.get<std::string>("side") == "buy" ? OrderEvent::BookSide::kBid : OrderEvent::BookSide::kAsk);
@@ -77,6 +82,7 @@ try {
       output->remaining(stod(tree.get<string>("new_size")));
     } catch (...) {
     };
+    assert(output->isOrderChanged());
     return std::move(output);
   } else if (type == "era") {
     return boost::make_unique<Era>(toTimestamp(tree.get<string>("time")));

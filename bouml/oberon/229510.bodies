@@ -26,10 +26,10 @@ if (event) {
     buffer << "NA,";
 
   // ordinal
-  if (event->ordinal() != OrderEvent::kNaEventNo)
+  if (event->ordinal())
     buffer << event->ordinal() << ",";
   else
-    buffer << "NA,";
+    buffer << ",";
 
   // timestamp, seconds
   auto s = toSeconds(event->timestamp().time_since_epoch());
@@ -89,14 +89,10 @@ if (event) {
     buffer << "NA,";
 
   // trade_id
-  if (event->trade() != OrderEvent::kNaTradeId) {
-    if(event->trade())
-      buffer << event->trade() << ",";
-    else
-      buffer << ",";
-  }
+  if (event->trade())
+    buffer << event->trade() << ",";
   else
-    buffer << "NA,";
+    buffer << ",";
 
   // taker
   if (event->taker() != OrderEvent::kNaOrderId)

@@ -7,10 +7,11 @@ class Prepare_merge_State
 #endif
 for(auto iter = stm.active_orders_.begin(); iter != stm.active_orders_.end(); ++iter)
 if(iter->second->deleted()) {
-  auto c = boost::make_unique<reconstructor::Cancelled>(*iter->second);
+  auto c = boost::make_unique<reconstructor::OrderEvent>(*iter->second);
   c->deleted(false);
   c->state(reconstructor::OrderEvent::OrderState::kFinished);
   c->timestamp(stm.era_timestamp_);
+  assert(c->isOrderCancelled());
   stm.active_orders_.erase(iter);
   stm.output_.push_back(std::move(c));
 }
@@ -26,7 +27,6 @@ if(iter->second->deleted()) {
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition create";
 #endif
 using OrderEvent=oberon::reconstructor::OrderEvent;
-using Changed=oberon::reconstructor::Changed;
 OrderEvent *event = static_cast<OrderEvent*>(stm.received_.get());
 auto iter = stm.active_orders_.find(event->maker());
 if (iter != stm.active_orders_.end()) {
@@ -34,15 +34,16 @@ if (iter != stm.active_orders_.end()) {
   event->deleted(true);
   if (old->isSameCommitment(*event)) { // keep old event
     old->deleted(false);
+    stm.received_.release();
   } else { // generate Changed event instead of Created
-    stm.output_.push_back(std::move(stm.received_));
-    stm.received_ = boost::make_unique<Changed>(*event);
+    stm.received_ = boost::make_unique<OrderEvent>(*event); // the original stm.received_ (Created) is deleted here!
     stm.received_->deleted(false);
     stm.received_->timestamp(stm.era_timestamp_);
+    assert(static_cast<OrderEvent*>(stm.received_.get())->isOrderChanged());
     iter->second = static_cast<OrderEvent *>(stm.received_.get())->clone();
+    stm.output_.push_back(std::move(stm.received_));
   }
 }
-stm.output_.push_back(std::move(stm.received_));
   }
 !!!1486086.cpp!!!	_upper(inout stm : EraMerger) : EraMerger::AnyState
   return &stm._eramerger_state._engage_state;

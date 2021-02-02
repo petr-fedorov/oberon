@@ -1,4 +1,7 @@
 class OrderEvent
+!!!1475078.cpp!!!	clone() : OrderEvent::OrderEvent_UP
+return boost::make_unique<OrderEvent>(*this);
+
 !!!650374.cpp!!!	toString() : string
 std::stringstream buf;
 buf << Message::toString();
@@ -8,10 +11,10 @@ if (order_id_ == kNaOrderId)
 else
   buf << order_id_;
 buf << " ";
-if (event_no_ == kNaEventNo)
+if (!ordinal_)
   buf << "NA";
 else
-  buf << event_no_;
+  buf << ordinal_;
 buf << " ";
 if (side_ == kBid)
   buf << "B";
@@ -46,6 +49,14 @@ buf << " ";
   buf << (deleted() ? " DELETED " : "");
 return buf.str();
 !!!1285510.cpp!!!	accept(in mh : TokenHandler [1]) : bool
+if(isOrderCreated())
+  return mh->created();
+if(isOrderCancelled())
+  return mh->cancelled();
+if(isOrderChanged())
+  return mh->changed();
+if(isOrderFilled())
+  return mh->filled();
 return mh->orderEvent();
 !!!1263238.cpp!!!	maker() : OrderEvent::OrderId
 return order_id_;
@@ -54,10 +65,18 @@ order_id_ = order_id;
 !!!1263494.cpp!!!	remaining() : OrderEvent::Volume
 return remaining_size_;
 !!!1263622.cpp!!!	remaining(in remaining_size : OrderEvent::Volume) : void
-if(remaining_size < base_increment_)
+if(remaining_size < base_increment_ && (base_increment_-remaining_size)/base_increment_ > 0.01) {
+  // only if remaining_size is significantly less than base_increment_ we assume that it is
+  // due to rounding errors. Otherwise we save the provided value of remaining_size
   remaining_size_ = 0.0;
-else
+  if(isOrderFilled())
+    state_ = kFinished;
+}
+else {
   remaining_size_ = remaining_size;
+  if(isOrderFilled())
+    state_ = kActive;
+}
 !!!1263750.cpp!!!	change() : OrderEvent::Volume
 return change_size_;
 !!!1263878.cpp!!!	change(in change_size : OrderEvent::Volume) : void
@@ -65,10 +84,10 @@ if (std::abs(change_size) < base_increment_)
   change_size_ = 0.0;
 else
   change_size_ = change_size;
-!!!1264006.cpp!!!	ordinal() : OrderEvent::EventNo
-return event_no_;
-!!!1264134.cpp!!!	ordinal(in event_no : OrderEvent::EventNo) : void
-event_no_ = event_no;
+!!!1264006.cpp!!!	ordinal() : OrderEvent::Ordinal
+return ordinal_;
+!!!1264134.cpp!!!	ordinal(in ordinal : OrderEvent::Ordinal) : void
+ordinal_ = ordinal;
 !!!1264262.cpp!!!	price() : OrderEvent::Price
 return price_;
 !!!1447046.cpp!!!	price(in price : OrderEvent::Price) : void
@@ -99,3 +118,11 @@ base_increment_ = base_increment;
 return source_;
 !!!1496966.cpp!!!	isSameCommitment(in other : OrderEvent) : bool
 return price_ == other.price_ && std::abs(remaining_size_ - other.remaining_size_) < base_increment_;
+!!!1538950.cpp!!!	isOrderCreated() : bool
+return ordinal() == 1 && state() != kFinished && !trade();
+!!!1539078.cpp!!!	isOrderChanged() : bool
+return ordinal() != 1 && state() != kFinished && !trade();
+!!!1539206.cpp!!!	isOrderCancelled() : bool
+return state() == kFinished && !trade();
+!!!1539334.cpp!!!	isOrderFilled() : bool
+return trade();

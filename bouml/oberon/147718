@@ -1,6 +1,6 @@
 format 224
 "Standalone application" // Standalone application
-  revision 121
+  revision 125
   modified_by 6 "petr"
   // class settings
   
@@ -9381,10 +9381,6 @@ int main(int argc, char **argv) {
 	artifact_ref 273542 // Snapshot
 	artifact_ref 286598 // SnapshotData
 	artifact_ref 286726 // ReceiverData
-	artifact_ref 299782 // Created
-	artifact_ref 299910 // Changed
-	artifact_ref 300038 // Filled
-	artifact_ref 300166 // Cancelled
 	artifact_ref 300294 // TokenHandler
 	artifact_ref 306822 // Message
 	artifact_ref 306950 // Era
@@ -9412,22 +9408,22 @@ int main(int argc, char **argv) {
       key "genpro target" value "/tmp/oberon/build/oberon"
       key "genpro tmplt" value "app"
       key "genpro config" value "debug  qt"
-      key "genpro defines" value "BOOST_LOG_DYN_LINK NO_VERBOSE_STATE_MACHINE NDEBUG"
+      key "genpro defines" value "BOOST_LOG_DYN_LINK NO_VERBOSE_STATE_MACHINE"
       key "genpro includepath" value ""
       key "genpro dependpath" value ""
       key "genpro objectsdir" value ""
-      key "genpro footer" value "#QMAKE_CC=clang
-#QMAKE_CXX=clang++
-#QMAKE_LINK=clang++
+      key "genpro footer" value "QMAKE_CC=clang
+QMAKE_CXX=clang++
+QMAKE_LINK=clang++
 CONFIG += console 
 CONFIG -= app_bundle
 CONFIG += thread
 CONFIG += object_parallel_to_source
 CONFIG -= qt
 QMAKE_CXXFLAGS += -std=c++11 -Wfatal-errors
-INCLUDEPATH += /usr/include/boost169
+#INCLUDEPATH += /usr/include/boost169
 LIBS +=-lssl -lcrypto  
-LIBS += -L/usr/lib64/boost169
+#LIBS += -L/usr/lib64/boost169
 LIBS += -lboost_log  -lboost_log_setup -lboost_thread -lboost_program_options -lpthread -lboost_system "
     end
   end

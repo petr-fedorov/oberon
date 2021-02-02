@@ -12,13 +12,12 @@ common_options.add_options()
     ("quote-increment,q", po::value<double>(&quote_increment_)->default_value(0.01), "specifies the minimum increment for the quote currency " "(i.e. USD in BTC-USD)")(
     "base-increment,b", po::value<double>(&base_increment_)->default_value(0.01),
     "specifies the minimum increment for the base currency (i.e. BTC in "
-    "BTC-USD)");
+    "BTC-USD)")("deleted,d","output deleted events");
 capture_options.add_options() 
   ("exchange,e", po::value(&exchange_), "specifies the name of the exchange (mandatory)")
   ("product,p", po::value(&product_), "specifies the exchange-specific code of the product (mandatory)")(
     "pong-wait-time,w", po::value<int>(&pong_wait_time_)->default_value(1),
-    "specifies the maximum waiting time for the websocket pong response before re-connecting, secs")
-  ("deleted,d","also output events deleted by cleansing");
+    "specifies the maximum waiting time for the websocket pong response before re-connecting, secs");
 
 input_options.add_options()(
     "input,i", po::value<std::vector<std::string>>()->multitoken(),
@@ -228,10 +227,21 @@ if (!help_ && !era_.empty()) {
         control_message.put("timestamp", format("%FT%TZ", output));
         control_message.put("mks", "0");
         if (r.process(control_message)) {
-          while (input >> event) {
-            // boost::property_tree::write_json(std::cout, event, false);
-            if (!r.process(event))
-              return EXIT_FAILURE;
+          try {
+            while (input >> event) {
+              if (!r.process(event)) {
+                std::stringstream ss{};
+                boost::property_tree::write_json(ss, event, false);
+                BOOST_LOG_TRIVIAL(error) << ss.str();
+                return EXIT_FAILURE;
+              }
+            }
+          } catch (const std::exception &e) {
+            std::stringstream ss{};
+            boost::property_tree::write_json(ss, event, false);
+            BOOST_LOG_TRIVIAL(error) << e.what();
+            BOOST_LOG_TRIVIAL(error) << ss.str();
+            return EXIT_FAILURE;
           }
           control_message.clear();
           control_message.put("type", "reset");
@@ -245,8 +255,7 @@ if (!help_ && !era_.empty()) {
     } else
       std::cerr << "Couldn't parse " << era << "\n";
   }
-}
-else {
+} else {
   std::cerr << "Usage: oberon slice [options]\n";
   std::cerr << od;
   return EXIT_FAILURE;
@@ -254,7 +263,7 @@ else {
 return EXIT_SUCCESS;
 !!!1504134.cpp!!!	merge(in od : options_description) : int
 auto iter = era_.begin();
-if(!help_ || iter != era_.end()) {
+if(!help_ && iter != era_.end()) {
   std::string exchange;
   std::string product;
   reconstructor::Message::Timestamp output;

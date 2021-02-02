@@ -1,13 +1,13 @@
 class Reconstructor
 !!!1453830.cpp!!!	extract(in tree : ptree [1]) : Token [1..*]
-//std::ostringstream ss;
-//boost::property_tree::write_json(ss, tree, false);
+// std::ostringstream ss;
+// boost::property_tree::write_json(ss, tree, false);
 using namespace oberon::reconstructor;
 std::string field;
 if (!(field = tree.get<std::string>("timestamp")).empty()) {
   std::istringstream ss{field};
   ss >> date::parse("%FT%TZ", timestamp_);
-  if(ss.fail()) {
+  if (ss.fail()) {
     BOOST_LOG_TRIVIAL(error) << "Couldn't parse timestamp: " << field;
     return Token{};
   }
@@ -15,46 +15,44 @@ if (!(field = tree.get<std::string>("timestamp")).empty()) {
 // std::cout << date::format("%FT%TZ", timestamp_ +
 // std::chrono::microseconds{tree.get<int>("mks")}) << "\n";
 if (tree.get<std::string>("type") == "event") {
-  std::unique_ptr<OrderEvent> output;
+  std::unique_ptr<OrderEvent> output = boost::make_unique<OrderEvent>();
   boost::uuids::string_generator gen;
   std::string value;
   if (!(field = tree.get<std::string>("trade")).empty()) {
-    output = boost::make_unique<Filled>();
     output->trade(std::stol(field));
     if (!(field = tree.get<std::string>("taker")).empty())
       output->taker(gen(field));
-  } else if (tree.get<std::string>("state").empty()) {
-    output = boost::make_unique<Cancelled>();
-  } else if (tree.get<OrderEvent::EventNo>("ordinal") == 1) {
-    output = boost::make_unique<Created>();
-  } else {
-    output = boost::make_unique<Changed>();
   }
   output->maker(gen(tree.get<std::string>("maker")));
   output->timestamp(timestamp_ +
                     std::chrono::microseconds{tree.get<int>("mks")});
-  output->ordinal(tree.get<OrderEvent::EventNo>("ordinal"));
+  if (!((field = tree.get<std::string>("ordinal")).empty() || field == "NA"))
+    output->ordinal(tree.get<OrderEvent::Ordinal>("ordinal"));
+  else
+    output->ordinal(0);
   output->price(tree.get<double>("price"));
-  if (!tree.get<std::string>("volume").empty()) {
-    auto rem = tree.get<OrderEvent::Volume>("volume");
-    if (rem > 0) {
-      output->remaining(rem);
-      output->side(OrderEvent::BookSide::kBid);
-      if (!(field = tree.get<std::string>("change")).empty()) {
-        if (field != "NA")
-          output->change(-tree.get<OrderEvent::Volume>("change"));
-      } else
-        output->change(0);
-    } else {
-      output->remaining(-rem);
-      output->side(OrderEvent::BookSide::kAsk);
-      if (!(field = tree.get<std::string>("change")).empty()) {
-        if (field != "NA")
-          output->change(tree.get<OrderEvent::Volume>("change"));
+  if (!(field = tree.get<std::string>("volume")).empty()) {
+    if (field != "NA") {
+      auto rem = tree.get<OrderEvent::Volume>("volume");
+      if (rem > 0) {
+        output->remaining(rem);
+        output->side(OrderEvent::BookSide::kBid);
+        if (!(field = tree.get<std::string>("change")).empty()) {
+          if (field != "NA")
+            output->change(-tree.get<OrderEvent::Volume>("change"));
+        } else
+          output->change(0);
+      } else {
+        output->remaining(-rem);
+        output->side(OrderEvent::BookSide::kAsk);
+        if (!(field = tree.get<std::string>("change")).empty()) {
+          if (field != "NA")
+            output->change(tree.get<OrderEvent::Volume>("change"));
+        } else
+          output->change(0);
       }
-      else
-        output->change(0);
-    }
+    } else
+      output->remaining(OrderEvent::kNaVolume);
   } else {
     output->remaining(0.0);
     if (!(field = tree.get<std::string>("change")).empty()) {
@@ -68,8 +66,7 @@ if (tree.get<std::string>("type") == "event") {
           output->side(OrderEvent::BookSide::kBid);
         }
       }
-    }
-    else
+    } else
       output->change(0.0); // Note, that we couldn't determine side!
   }
   output->state(tree.get<std::string>("state").empty()
@@ -80,7 +77,9 @@ if (tree.get<std::string>("type") == "event") {
                 std::chrono::microseconds{tree.get<int>("heard")});
 
   output->baseIncrement(base_increment_);
-  // std::cout << output->toString() << "\n";
+  assert(("An order event type is defined",
+          output->isOrderCreated() || output->isOrderCancelled() ||
+              output->isOrderChanged() || output->isOrderFilled()));
   return std::move(output);
 } else if (tree.get<std::string>("type") == "era")
   return boost::make_unique<Era>(

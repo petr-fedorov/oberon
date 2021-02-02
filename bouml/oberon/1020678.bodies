@@ -45,14 +45,18 @@ return true;
 !!!1475846.cpp!!!	slice() : void
 using namespace date;
 using namespace std::chrono;
-using Created=reconstructor::Created;
+using OrderEvent=reconstructor::OrderEvent;
 if(received_->timestamp() > next_era_) {
   output_.push_back(boost::make_unique<reconstructor::Reset>());
   output_.push_back(boost::make_unique<reconstructor::Era>(next_era_));
   for(auto &p : active_orders_) {
-    auto event = boost::make_unique<Created>(*p.second);
+    auto event = boost::make_unique<OrderEvent>(*p.second);
     event->timestamp(next_era_);
+    event->ordinal(1);
+    event->trade(0);
+    event->change(0);
     event->heard(next_era_);
+    assert(event->isOrderCreated());
     output_.push_back(std::move(event));
   }
   next_era_ += minutes {boundary_};

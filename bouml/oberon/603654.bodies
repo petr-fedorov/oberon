@@ -8,7 +8,7 @@ Token output;
 if (type == "elapsed") {
   return boost::make_unique<Elapsed>(toTimestamp(tree.get<string>("timestamp")));
 } else if (type == "order_created") {
-  auto output=boost::make_unique<Created>();
+  auto output=boost::make_unique<OrderEvent>();
   output->maker(toUuid(tree.get<std::string>("data.id_str")));
   output->timestamp(Timestamp{std::chrono::microseconds{
       std::stoll(tree.get<std::string>("data.microtimestamp"))}});
@@ -24,10 +24,11 @@ if (type == "elapsed") {
   else
     output->side(OrderEvent::BookSide::kAsk);
 
+  assert(output->isOrderCreated());
   return std::move(output);
 }
 else if (type == "order_changed") {
-  auto output=boost::make_unique<Changed>();
+  auto output=boost::make_unique<OrderEvent>();
   output->maker(toUuid(tree.get<std::string>("data.id_str")));
   output->timestamp(Timestamp{std::chrono::microseconds{
       std::stoll(tree.get<std::string>("data.microtimestamp"))}});
@@ -42,10 +43,11 @@ else if (type == "order_changed") {
     output->side(OrderEvent::BookSide::kAsk);
 
   output->state(OrderEvent::OrderState::kActive);
+  assert(output->isOrderChanged());
   return std::move(output);
 }
 else if (type == "order_deleted") {
-    auto output=boost::make_unique<Cancelled>();
+    auto output=boost::make_unique<OrderEvent>();
     output->maker(toUuid(tree.get<std::string>("data.id_str")));
     output->timestamp(Timestamp{std::chrono::microseconds{
         std::stoll(tree.get<std::string>("data.microtimestamp"))}});
@@ -61,9 +63,10 @@ else if (type == "order_deleted") {
       output->side(OrderEvent::BookSide::kAsk);
 
     output->state(OrderEvent::OrderState::kFinished);
+    assert(output->isOrderCancelled());
     return std::move(output);
 } else if (type == "trade") {
-  auto output = boost::make_unique<Filled>();
+  auto output = boost::make_unique<OrderEvent>();
   if (tree.get<std::string>("data.type") == "0") {
     output->maker(toUuid(tree.get<std::string>("data.sell_order_id")));
     output->taker(toUuid(tree.get<std::string>("data.buy_order_id")));
@@ -82,6 +85,7 @@ else if (type == "order_deleted") {
       std::strtod(tree.get<std::string>("data.amount").c_str(), nullptr));
   output->baseIncrement(base_increment_);
   output->trade(std::stoll(tree.get<std::string>("data.id")));
+  assert(output->isOrderFilled());
   return std::move(output);
 } else if (type == "era") {
   return boost::make_unique<Era>(Timestamp{std::chrono::microseconds{std::stoll(tree.get<std::string>("microtimestamp"))}});

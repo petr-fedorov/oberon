@@ -1,6 +1,6 @@
 format 224
 "Reconstructor" // Standalone application::Reconstructor
-  revision 230
+  revision 233
   modified_by 6 "petr"
   // class settings
   
@@ -357,7 +357,7 @@ ${inlines}
     end
 
     class 448390 "OrderEvent"
-      abstract visibility protected 
+      visibility protected 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -597,7 +597,7 @@ ${members}};
 	
       end
 
-      class 507142 "EventNo"
+      class 507142 "Ordinal"
 	visibility public stereotype "typedef" explicit_base_type "long"
 	cpp_decl "${comment}typedef ${type} ${name};
 "
@@ -761,19 +761,6 @@ ${items}};
 	MysqlColumn
       end
 
-      attribute 465158 "kNaTradeId"
-	class_attribute const_attribute public type class_ref 551174 // TradeId
-	init_value "std::numeric_limits<TradeId>::min()"
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-      end
-
       attribute 465286 "kNaPrice"
 	class_attribute const_attribute public type class_ref 305798 // Volume
 	init_value "std::nan(\"1954\")"
@@ -790,19 +777,6 @@ ${items}};
       attribute 465414 "kNaOrderId"
 	class_attribute const_attribute public type class_ref 306822 // OrderId
 	init_value "boost::uuids::random_generator()()"
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-      end
-
-      attribute 465542 "kNaEventNo"
-	class_attribute const_attribute public type class_ref 507142 // EventNo
-	init_value "std::numeric_limits<EventNo>::min()"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -887,9 +861,9 @@ ${items}};
 	comment "previous remaining_size_ - current remaining _size_, i.e. positive, if the remaining size decreased."
       end
 
-      attribute 414470 "event_no_"
-	private type class_ref 507142 // EventNo
-	init_value "kNaEventNo"
+      attribute 414470 "ordinal_"
+	private type class_ref 507142 // Ordinal
+	init_value "0"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -977,9 +951,12 @@ ${items}};
       end
 
       operation 1475078 "clone"
-	abstract cpp_virtual public return_type class_ref 1040262 // OrderEvent_UP
+	cpp_virtual public return_type class_ref 1040262 // OrderEvent_UP
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
 "
 	
 	
@@ -1105,7 +1082,7 @@ ${items}};
       end
 
       operation 1264006 "ordinal"
-	const cpp_inline public return_type class_ref 507142 // EventNo
+	const cpp_inline public return_type class_ref 507142 // Ordinal
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -1121,7 +1098,7 @@ ${items}};
       operation 1264134 "ordinal"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param in name "event_no" type class_ref 507142 // EventNo
+	  param in name "ordinal" type class_ref 507142 // Ordinal
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -1352,6 +1329,62 @@ ${items}};
 	
 	
       end
+
+      operation 1538950 "isOrderCreated"
+	const cpp_inline public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1539078 "isOrderChanged"
+	const cpp_inline public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1539206 "isOrderCancelled"
+	const cpp_inline public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1539334 "isOrderFilled"
+	const cpp_inline public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
     end
 
     class 441478 "Elapsed"
@@ -1460,371 +1493,6 @@ ${inlines}
 
       operation 1384966 "toString"
 	const cpp_override public explicit_return_type "string"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-    end
-
-    class 597126 "Created"
-      visibility public 
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      mysql_decl ""
-      
-      operation 1511046 "Created"
-	public explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${)}${volatile}${throw};
-"
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} = default;
-"
-	
-	
-	
-	
-      end
-
-      operation 1510918 "Created"
-	public explicit_return_type ""
-	nparams 1
-	  param in name "event" type class_ref 448390 // OrderEvent
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw};
-"
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} : OrderEvent{event} {
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 852102 "toString"
-	const cpp_override public explicit_return_type "string"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      classrelation 650374 // <generalisation>
-	relation 640262 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 650374 // <generalisation>
-	  b parent class_ref 448390 // OrderEvent
-      end
-
-      operation 760198 "accept"
-	const cpp_override public explicit_return_type "bool"
-	nparams 1
-	  param in name "mh" type class_ref 441222 // TokenHandler
-	multiplicity "1"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0}* ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0}* ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 1475334 "clone"
-	cpp_override public return_type class_ref 1040262 // OrderEvent_UP
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-    end
-
-    class 570886 "Changed"
-      visibility public 
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      mysql_decl ""
-      
-      operation 852230 "toString"
-	const cpp_override public explicit_return_type "string"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      classrelation 622470 // <generalisation>
-	relation 612358 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 622470 // <generalisation>
-	  b parent class_ref 448390 // OrderEvent
-      end
-
-      operation 760326 "accept"
-	const cpp_override public explicit_return_type "bool"
-	nparams 1
-	  param in name "mh" type class_ref 441222 // TokenHandler
-	multiplicity "1"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0}* ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0}* ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 1475206 "clone"
-	cpp_override public return_type class_ref 1040262 // OrderEvent_UP
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 1497094 "Changed"
-	public explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${)}${volatile}${throw};
-"
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} = default;
-"
-	
-	
-	
-	
-      end
-
-      operation 1497222 "Changed"
-	public explicit_return_type ""
-	nparams 1
-	  param in name "event" type class_ref 448390 // OrderEvent
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw};
-"
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} : OrderEvent{event} {
-  ${body}}
-"
-	
-	
-	
-	
-      end
-    end
-
-    class 328710 "Cancelled"
-      visibility public 
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      mysql_decl ""
-      
-      comment "order_deleted on Bitstamp, done on Coinbase, price =0 on Bitfinex"
-      operation 1497478 "Cancelled"
-	public explicit_return_type ""
-	nparams 1
-	  param in name "event" type class_ref 448390 // OrderEvent
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw};
-"
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} : OrderEvent{event} {
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 1497350 "Cancelled"
-	public explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${)}${volatile}${throw};
-"
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} = default;
-"
-	
-	
-	
-	
-      end
-
-      operation 561158 "accept"
-	const cpp_override cpp_final public explicit_return_type "bool"
-	nparams 1
-	  param in name "mh" type class_ref 441222 // TokenHandler
-	multiplicity "1"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} * ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 649990 "toString"
-	const cpp_override public explicit_return_type "string"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      classrelation 650502 // <generalisation>
-	relation 640390 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 650502 // <generalisation>
-	  b parent class_ref 448390 // OrderEvent
-      end
-
-      operation 1475462 "clone"
-	cpp_override public return_type class_ref 1040262 // OrderEvent_UP
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-    end
-
-    class 246022 "Filled"
-      visibility public 
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      mysql_decl ""
-      
-      comment "match or trade with or without order_ids"
-      classrelation 459782 // <generalisation>
-	relation 449798 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 459782 // <generalisation>
-	  b parent class_ref 448390 // OrderEvent
-      end
-
-      operation 625286 "accept"
-	const cpp_override public explicit_return_type "bool"
-	nparams 1
-	  param in name "mh" type class_ref 441222 // TokenHandler
-	multiplicity "1"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0}* ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0}* ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 649734 "toString"
-	const cpp_override public explicit_return_type "string"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 1292550 "remaining"
-	cpp_override public explicit_return_type "void"
-	nparams 1
-	  param in name "remaining_size" type class_ref 305798 // Volume
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 1475590 "clone"
-	cpp_override public return_type class_ref 1040262 // OrderEvent_UP
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3715,7 +3383,7 @@ ${inlines}
       end
 
       attribute 458374 "eventNumbers_"
-	private type class_ref 507142 // EventNo
+	private type class_ref 507142 // Ordinal
 	multiplicity "*"
 	stereotype "map"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<OrderEvent::OrderId, ${type}> ${name}${value};
@@ -4386,106 +4054,6 @@ ${namespace_end}"
       end
     end
 
-    artifact 299782 "Created"
-      stereotype "source"
-      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
-#define ${NAMESPACE}_${NAME}_H
-
-${comment}
-${includes}
-${declarations}
-${namespace_start}
-${definition}
-${namespace_end}
-#endif
-"
-      cpp_src "${comment}
-#include <sstream>
-#include <boost/smart_ptr/make_unique.hpp>
-${includes}
-${namespace_start}
-${members}
-${namespace_end}"
-      associated_elems
-	class_ref 597126 // Created
-      end
-    end
-
-    artifact 299910 "Changed"
-      stereotype "source"
-      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
-#define ${NAMESPACE}_${NAME}_H
-
-${comment}
-${includes}
-${declarations}
-${namespace_start}
-${definition}
-${namespace_end}
-#endif
-"
-      cpp_src "${comment}
-#include <sstream>
-#include <boost/smart_ptr/make_unique.hpp>
-${includes}
-${namespace_start}
-${members}
-${namespace_end}"
-      associated_elems
-	class_ref 570886 // Changed
-      end
-    end
-
-    artifact 300038 "Filled"
-      stereotype "source"
-      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
-#define ${NAMESPACE}_${NAME}_H
-
-${comment}
-${includes}
-${declarations}
-${namespace_start}
-${definition}
-${namespace_end}
-#endif
-"
-      cpp_src "${comment}
-#include <sstream>
-#include <boost/smart_ptr/make_unique.hpp>
-${includes}
-${namespace_start}
-${members}
-${namespace_end}"
-      associated_elems
-	class_ref 246022 // Filled
-      end
-    end
-
-    artifact 300166 "Cancelled"
-      stereotype "source"
-      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
-#define ${NAMESPACE}_${NAME}_H
-
-${comment}
-${includes}
-${declarations}
-${namespace_start}
-${definition}
-${namespace_end}
-#endif
-"
-      cpp_src "${comment}
-#include <sstream>
-#include <boost/smart_ptr/make_unique.hpp>
-${includes}
-${namespace_start}
-${members}
-${namespace_end}"
-      associated_elems
-	class_ref 328710 // Cancelled
-      end
-    end
-
     artifact 300294 "TokenHandler"
       stereotype "source"
       cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
@@ -4578,6 +4146,7 @@ ${namespace_end}
 #include <boost/uuid/random_generator.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <sstream>
+#include <boost/smart_ptr/make_unique.hpp>
 ${includes}
 ${namespace_start}
 ${members}

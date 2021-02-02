@@ -1,0 +1,84 @@
+format 224
+"Tests" // Tests
+  revision 2
+  modified_by 6 "petr"
+  // class settings
+  
+  classdiagramsettings member_max_width 0 end
+  
+  classcompositediagramsettings end
+  
+  usecasediagramsettings end
+  
+  sequencediagramsettings end
+  
+  collaborationdiagramsettings end
+  
+  objectdiagramsettings end
+  
+  objectcompositediagramsettings end
+  
+  componentdiagramsettings
+   end
+  
+  deploymentdiagramsettings
+   end
+  
+  statediagramsettings
+   end
+  
+  activitydiagramsettings
+   end
+  
+  cpp_h_dir "cpp"
+  cpp_src_dir "cpp"
+  cpp_namespace "oberon"
+  package_ref 241286 // Reconstructor
+
+  deploymentview 213382 "Source files"
+    //deployment diagram settings
+    deploymentdiagramsettings
+     end
+    artifact 360582 "test_oberon"
+      stereotype "executable"
+      associated_artifacts
+	artifact_ref 306822 // Message
+	artifact_ref 307078 // OrderEvent
+	artifact_ref 360710 // test_Main
+	artifact_ref 360838 // test_OrderEvent
+      end
+      ncouples 10
+      key "genpro pro" value "/tmp/oberon/cpp/test_oberon.pro"
+      key "genpro path" value "/tmp/oberon/build"
+      key "genpro target" value "/tmp/oberon/test/test_oberon"
+      key "genpro tmplt" value ""
+      key "genpro config" value "debug  qt"
+      key "genpro defines" value "BOOST_LOG_DYN_LINK BOOST_TEST_DYN_LINK"
+      key "genpro includepath" value ""
+      key "genpro dependpath" value ""
+      key "genpro objectsdir" value ""
+      key "genpro footer" value "QMAKE_CC=clang
+QMAKE_CXX=clang++
+QMAKE_LINK=clang++
+CONFIG += console 
+CONFIG -= app_bundle
+CONFIG += thread
+CONFIG += object_parallel_to_source
+CONFIG -= qt
+QMAKE_CXXFLAGS += -std=c++11 -Wfatal-errors
+#INCLUDEPATH += /usr/include/boost169
+LIBS +=-lssl -lcrypto  
+#LIBS += -L/usr/lib64/boost169
+LIBS += -lboost_log  -lboost_log_setup -lboost_thread -lboost_program_options -lpthread -lboost_system -lboost_unit_test_framework"
+    end
+
+    artifact 360710 "test_Main"
+      stereotype "source"
+      cpp_src "#define BOOST_TEST_MODULE Oberon
+#include <boost/test/unit_test.hpp>
+"
+      associated_elems
+      end
+    end
+  end
+end

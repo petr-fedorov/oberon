@@ -8,7 +8,7 @@ A stand-alone application for collection of data that allows re-construction of 
 The columns contain the following data:
 
    * `maker` - UUID of the open order on the order book,
-   * `ordinal` - a sequential number of the event (by `maker`). When an order opens on the order book, the related event has `ordinal` equals to 1; next event for `maker` will have 'ordinal' equals to 2 etc.,
+   * `ordinal` - a sequential number of the event (by `maker`). When an order opens on the order book, the related event has `ordinal` equals to 1; next event for `maker` will have 'ordinal' equals to 2 etc.; empty if it couldn't be determined,
    * `timestamp` - time the event occured on an exchange, up to a second; empty, if it is not changed since the previously received event,
    * `mks` - microseconds part of the time the event occured on an exchange
    * `state` - 1, if the order is open on the order book after the event, otherwise empty,
@@ -58,26 +58,31 @@ The application is designed in BOUML -  a free UML 2 tool box including a modele
   * **merge** several era files into one
   * **transmute** era files into the files of different formats that are more suitable for visualization and analysis
 
-Options available depend on the command. They are described below.
+Common for all commands options are:
+
+    -q [ --quote-increment ] arg (=0.01) specifies the minimum increment for the
+                                         quote currency (i.e. USD in BTC-USD)
+    -b [ --base-increment ] arg (=0.01)  specifies the minimum increment for the
+                                         base currency (i.e. BTC in BTC-USD)
+    -d [ --deleted ]                     output deleted events
+    -h [ --help ]                        produce help message
+
+
+Options that depend on the command are described below.
 
 ### **capture**
 
 This command tells OBERON to capture live order events for a product on an exchange and save the events into one or more *era files* in an exchange-independent format described above. *Era file* always starts from a snapshot of an order book. The snapshot is followed by order events updating the snapshot so the state of the order book can be reconstructed at any moment.
 
-**capture** command recognizes the following options:
+**capture** command recognizes the following additional options:
 
     -e [ --exchange ] arg                specifies the exchange to capture data
                                          from (mandatory)
     -p [ --product ] arg                 specifies the exchange-specific code of
                                          the product to be captured (mandatory)
-    -q [ --quote-increment ] arg (=0.01) specifies the minimum increment for the
-                                         quote currency (i.e. USD in BTC-USD)
-    -b [ --base-increment ] arg (=0.01)  specifies the minimum increment for the
-                                         base currency (i.e. BTC in BTC-USD)
     -w [ --pong-wait-time ] arg (=1)     specifies the maximum waiting time for
                                          the webosocket pong response before
                                          re-connecting, secs
-    -d [ --deleted ]                     output deleted events too
 
 
 Supported values for `--exchange` and `--product` options are shown in the table below:
@@ -103,12 +108,7 @@ There might be several files produced, with different `timestamp`s. That happens
 
 This command tells OBERON to slice an input era file into several smaller era files. The input era file is renamed (`.sliced` or `sliced.N` extension is added), the first sliced era file replaces the original file and the following sliced era files are named  as usual from exchange, product and their respective era timestamps.
 
-**slice** command recognizes the following options:
-
-    -q [ --quote-increment ] arg (=0.01) specifies the minimum increment for the
-                                         quote currency (i.e. USD in BTC-USD)
-    -b [ --base-increment ] arg (=0.01)  specifies the minimum increment for the
-                                         base currency (i.e. BTC in BTC-USD)
+**slice** command recognizes the following additional options:
 
     -i [ --input ] arg                   specifies the name of an era file to be
                                          read (mandatory)
@@ -116,16 +116,12 @@ This command tells OBERON to slice an input era file into several smaller era fi
                                          every arg minutes since UNIX epoch
 
 
+
 ### **merge**
 
 This command tells OBERON to merge several era files into a single file. The input era files are renamed (`.merged` or `merged.N` extension is added) and the new era file is named as the first input file.
 
-**merge** command recognizes the following options:
-
-    -q [ --quote-increment ] arg (=0.01) specifies the minimum increment for the
-                                         quote currency (i.e. USD in BTC-USD)
-    -b [ --base-increment ] arg (=0.01)  specifies the minimum increment for the
-                                         base currency (i.e. BTC in BTC-USD)
+**merge** command recognizes the following additional options:
 
     -i [ --input ] arg                   specifies the name(s) of an era file to
                                          be read (mandatory)

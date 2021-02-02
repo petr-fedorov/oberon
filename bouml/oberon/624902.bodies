@@ -9,7 +9,7 @@ if (type == "elapsed") {
   return boost::make_unique<Elapsed>(
       toTimestamp(tree.get<string>("timestamp")));
 } else if (type == "order_changed") {
-  auto output = boost::make_unique<Changed>();
+  auto output = boost::make_unique<OrderEvent>();
   output->timestamp(toTimestamp(tree.get<std::string>("exchange_timestamp")));
   output->heard(toTimestamp(tree.get<std::string>("local_timestamp")));
   output->maker(toUuid(tree.get<std::string>("order_id")));
@@ -23,10 +23,11 @@ if (type == "elapsed") {
     output->remaining(r);
     output->side(OrderEvent::BookSide::kBid);
   }
+  assert(output->isOrderChanged());
   return std::move(output);
 
 } else if (type == "order_deleted") {
-  auto output = boost::make_unique<Cancelled>();
+  auto output = boost::make_unique<OrderEvent>();
   output->timestamp(toTimestamp(tree.get<std::string>("exchange_timestamp")));
   output->heard(toTimestamp(tree.get<std::string>("local_timestamp")));
   output->maker(toUuid(tree.get<std::string>("order_id")));
@@ -35,9 +36,10 @@ if (type == "elapsed") {
     output->side(OrderEvent::BookSide::kAsk);
   } else
     output->side(OrderEvent::BookSide::kBid);
+  assert(output->isOrderCancelled());
   return std::move(output);
 } else if (type == "match") {
-  auto output = boost::make_unique<Filled>();
+  auto output = boost::make_unique<OrderEvent>();
   output->timestamp(toTimestamp(tree.get<std::string>("mts")));
   output->heard(toTimestamp(tree.get<std::string>("local_timestamp")));
   output->price(std::stod(tree.get<std::string>("price")));
@@ -51,6 +53,7 @@ if (type == "elapsed") {
     output->side(OrderEvent::BookSide::kAsk);
   }
   output->trade(std::stol(tree.get<std::string>("id")));
+  assert(output->isOrderFilled());
   return std::move(output);
 }
 return Token{};

@@ -1,6 +1,6 @@
 format 224
 "Transmuter" // Standalone application::Transmuter
-  revision 13
+  revision 17
   modified_by 6 "petr"
   // class settings
   
@@ -217,38 +217,6 @@ ${inlines}
 	MysqlColumn
       end
 
-      classrelation 1175174 // <dependency>
-	relation 1164806 -_->
-	  a public
-	    cpp default "#include in source"
-	    classrelation_ref 1175174 // <dependency>
-	  b parent class_ref 597126 // Created
-      end
-
-      classrelation 1175302 // <dependency>
-	relation 1164934 -_->
-	  a public
-	    cpp default "#include in source"
-	    classrelation_ref 1175302 // <dependency>
-	  b parent class_ref 570886 // Changed
-      end
-
-      classrelation 1175430 // <dependency>
-	relation 1165062 -_->
-	  a public
-	    cpp default "#include in source"
-	    classrelation_ref 1175430 // <dependency>
-	  b parent class_ref 328710 // Cancelled
-      end
-
-      classrelation 1175558 // <dependency>
-	relation 1165190 -_->
-	  a public
-	    cpp default "#include in source"
-	    classrelation_ref 1175558 // <dependency>
-	  b parent class_ref 246022 // Filled
-      end
-
       classrelation 1175686 // <dependency>
 	relation 1165318 -_->
 	  a public
@@ -415,14 +383,6 @@ ${inlines}
 	  b parent class_ref 448390 // OrderEvent
       end
 
-      classrelation 1182854 // <dependency>
-	relation 1172486 -_->
-	  a public
-	    cpp default "#include in source"
-	    classrelation_ref 1182854 // <dependency>
-	  b parent class_ref 328710 // Cancelled
-      end
-
       classrelation 1182982 // <dependency>
 	relation 1172614 -_->
 	  a public
@@ -477,14 +437,6 @@ ${inlines}
 	    classrelation_ref 1183238 // <dependency>
 	  b parent class_ref 966278 // Reset
       end
-
-      classrelation 1211526 // <dependency>
-	relation 1201158 -_->
-	  a public
-	    cpp default "#include in source"
-	    classrelation_ref 1211526 // <dependency>
-	  b parent class_ref 597126 // Created
-      end
     end
 
     state 308870 "EraMerger"
@@ -511,10 +463,11 @@ ${inlines}
 	      cpp_trigger "endOfEpisode"
 	      cpp_expr "for(auto iter = stm.active_orders_.begin(); iter != stm.active_orders_.end(); ++iter)
 if(iter->second->deleted()) {
-  auto c = boost::make_unique<reconstructor::Cancelled>(*iter->second);
+  auto c = boost::make_unique<reconstructor::OrderEvent>(*iter->second);
   c->deleted(false);
   c->state(reconstructor::OrderEvent::OrderState::kFinished);
   c->timestamp(stm.era_timestamp_);
+  assert(c->isOrderCancelled());
   stm.active_orders_.erase(iter);
   stm.output_.push_back(std::move(c));
 }
@@ -529,7 +482,6 @@ if(iter->second->deleted()) {
 	      uml_expr "merge with order book"
 	      cpp_trigger "created"
 	      cpp_expr "using OrderEvent=oberon::reconstructor::OrderEvent;
-using Changed=oberon::reconstructor::Changed;
 OrderEvent *event = static_cast<OrderEvent*>(stm.received_.get());
 auto iter = stm.active_orders_.find(event->maker());
 if (iter != stm.active_orders_.end()) {
@@ -537,15 +489,16 @@ if (iter != stm.active_orders_.end()) {
   event->deleted(true);
   if (old->isSameCommitment(*event)) { // keep old event
     old->deleted(false);
+    stm.received_.release();
   } else { // generate Changed event instead of Created
-    stm.output_.push_back(std::move(stm.received_));
-    stm.received_ = boost::make_unique<Changed>(*event);
+    stm.received_ = boost::make_unique<OrderEvent>(*event); // the original stm.received_ (Created) is deleted here!
     stm.received_->deleted(false);
     stm.received_->timestamp(stm.era_timestamp_);
+    assert(static_cast<OrderEvent*>(stm.received_.get())->isOrderChanged());
     iter->second = static_cast<OrderEvent *>(stm.received_.get())->clone();
+    stm.output_.push_back(std::move(stm.received_));
   }
 }
-stm.output_.push_back(std::move(stm.received_));
 "
 	  end
 	end
@@ -2022,22 +1975,6 @@ ${inlines}
 	    cpp default "${type}"
 	    classrelation_ref 1191814 // <generalisation>
 	  b parent class_ref 441222 // TokenHandler
-      end
-
-      classrelation 1198342 // <dependency>
-	relation 1187974 -_->
-	  a public
-	    cpp default "#include in source"
-	    classrelation_ref 1198342 // <dependency>
-	  b parent class_ref 570886 // Changed
-      end
-
-      classrelation 1198470 // <dependency>
-	relation 1188102 -_->
-	  a public
-	    cpp default "#include in source"
-	    classrelation_ref 1198470 // <dependency>
-	  b parent class_ref 328710 // Cancelled
       end
     end
   end
