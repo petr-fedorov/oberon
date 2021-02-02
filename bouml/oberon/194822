@@ -1,6 +1,6 @@
 format 224
 "Receiver" // Standalone application::Receiver
-  revision 51
+  revision 52
   modified_by 6 "petr"
   // class settings
   
@@ -245,9 +245,7 @@ stm.d_->buffer_.consume(stm.d_->buffer_.size());
       try {
        boost::property_tree::read_json(m, *stm.d_->tree_);
        stm.d_->tree_->put(\"local_timestamp\", local_timestamp);
-#ifndef NDEBUG
-       BOOST_LOG_TRIVIAL(debug) << stm._machine_name << m.str(); 
-#endif
+       stm.d_->tree_->put(\"source\", std::move(m.str()));
        stm.success();
       }
       catch (const std::exception &e) {

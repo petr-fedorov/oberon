@@ -21,7 +21,7 @@ capture_options.add_options()
   ("exchange,e", po::value(&exchange_), "specifies the name of the exchange (mandatory)")
   ("product,p", po::value(&product_), "specifies the exchange-specific code of the product (mandatory)")(
     "pong-wait-time,w", po::value<int>(&pong_wait_time_)->default_value(1),
-    "specifies the maximum waiting time for the websocket pong response before re-connecting, secs");
+    "specifies the maximum waiting time for the websocket pong response before re-connecting, secs")("source,s", "output source of captured events");
 
 input_options.add_options()(
     "input,i", po::value<std::vector<std::string>>()->multitoken(),
@@ -49,6 +49,9 @@ if (vm.count("help"))
 
 if (vm.count("deleted"))
   deleted_ = true;
+
+if (vm.count("source"))
+  source_ = true;
 
 if(vm.count("input"))
   era_ = std::move(vm["input"].as<std::vector<std::string>>());
@@ -85,7 +88,7 @@ if (exchange_ && product_ && !help_) {
       boost::make_shared<boost::asio::io_context>();
   auto store = boost::make_shared<reconstructor::File>(
       *exchange_, *product_, -std::floor(std::log10(quote_increment_)),
-      -std::floor(std::log10(base_increment_)), deleted_);
+      -std::floor(std::log10(base_increment_)), deleted_, source_);
 
   if (*exchange_ == "Bitstamp") {
     using Receiver = oberon::receiver::bitstamp::Receiver;

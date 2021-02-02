@@ -1,6 +1,6 @@
 format 224
 "Reconstructor" // Standalone application::Reconstructor
-  revision 233
+  revision 234
   modified_by 6 "petr"
   // class settings
   
@@ -1315,6 +1315,21 @@ ${items}};
 	
       end
 
+      operation 1552646 "source"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "src" explicit_type "string"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
       operation 1496966 "isSameCommitment"
 	const public explicit_return_type "bool"
 	nparams 1
@@ -1385,6 +1400,7 @@ ${items}};
 	
 	
       end
+
     end
 
     class 441478 "Elapsed"

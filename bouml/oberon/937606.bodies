@@ -48,6 +48,12 @@ boost::asio::post(boost::asio::bind_executor(
           order_tree.put<std::string>("type", "open");
           order_tree.put<std::string>("side", "buy");
 
+          std::stringstream ss {};
+          boost::property_tree::write_json(ss, iter->second, false);
+          std::string source = "B " + ss.str();
+          source.pop_back();
+          order_tree.put<std::string>("source",source);
+
           auto iter2 = iter->second.begin();
           order_tree.put<std::string>("price", iter2++->second.get_value<std::string>());
           order_tree.put<std::string>("remaining_size",
@@ -67,6 +73,12 @@ boost::asio::post(boost::asio::bind_executor(
           order_tree.put<std::string>("product_id", product_id);
           order_tree.put<std::string>("type", "open");
           order_tree.put<std::string>("side", "sell");
+
+          std::stringstream ss {};
+          boost::property_tree::write_json(ss, iter->second, false);
+          std::string source = "A " + ss.str();
+          source.pop_back();
+          order_tree.put<std::string>("source",source);
 
           auto iter2 = iter->second.begin();
           order_tree.put<std::string>("price", iter2++->second.get_value<std::string>());

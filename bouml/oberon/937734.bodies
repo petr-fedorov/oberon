@@ -39,6 +39,12 @@ boost::asio::post(boost::asio::bind_executor(
           order_tree.put<std::string>("event", "order_created");
           order_tree.put<std::string>("data.order_type", "0");
 
+          std::stringstream ss {};
+          boost::property_tree::write_json(ss, iter->second, false);
+          std::string source = "B " + ss.str();
+          source.pop_back();
+          order_tree.put<std::string>("source",source);
+
           auto iter2 = iter->second.begin();
           order_tree.put<std::string>("data.price_str",
                                       iter2++->second.get_value<std::string>());
@@ -58,6 +64,12 @@ boost::asio::post(boost::asio::bind_executor(
           order_tree.put<std::string>("data.microtimestamp", era_time);
           order_tree.put<std::string>("event", "order_created");
           order_tree.put<std::string>("data.order_type", "1");
+
+          std::stringstream ss {};
+          boost::property_tree::write_json(ss, iter->second, false);
+          std::string source = "A " + ss.str();
+          source.pop_back();
+          order_tree.put<std::string>("source",source);
 
           auto iter2 = iter->second.begin();
           order_tree.put<std::string>("data.price_str",

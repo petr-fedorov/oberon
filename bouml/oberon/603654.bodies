@@ -24,6 +24,7 @@ if (type == "elapsed") {
   else
     output->side(OrderEvent::BookSide::kAsk);
 
+  output->source(tree.get<std::string>("source"));
   assert(output->isOrderCreated());
   return std::move(output);
 }
@@ -43,6 +44,7 @@ else if (type == "order_changed") {
     output->side(OrderEvent::BookSide::kAsk);
 
   output->state(OrderEvent::OrderState::kActive);
+  output->source(tree.get<std::string>("source"));
   assert(output->isOrderChanged());
   return std::move(output);
 }
@@ -63,6 +65,7 @@ else if (type == "order_deleted") {
       output->side(OrderEvent::BookSide::kAsk);
 
     output->state(OrderEvent::OrderState::kFinished);
+    output->source(tree.get<std::string>("source"));
     assert(output->isOrderCancelled());
     return std::move(output);
 } else if (type == "trade") {
@@ -85,6 +88,7 @@ else if (type == "order_deleted") {
       std::strtod(tree.get<std::string>("data.amount").c_str(), nullptr));
   output->baseIncrement(base_increment_);
   output->trade(std::stoll(tree.get<std::string>("data.id")));
+  output->source(tree.get<std::string>("source"));
   assert(output->isOrderFilled());
   return std::move(output);
 } else if (type == "era") {

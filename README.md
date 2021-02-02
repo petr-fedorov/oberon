@@ -83,6 +83,8 @@ This command tells OBERON to capture live order events for a product on an excha
     -w [ --pong-wait-time ] arg (=1)     specifies the maximum waiting time for
                                          the webosocket pong response before
                                          re-connecting, secs
+    -s [ --source ]                      output source of captured events
+
 
 
 Supported values for `--exchange` and `--product` options are shown in the table below:

@@ -127,12 +127,17 @@ using namespace date;
 if(f_.is_open())
   f_.close();
 auto base_name = name(exchange_, product_, received_->timestamp());
-BOOST_LOG_TRIVIAL(info) << "Started new file: " << base_name << " quote_precision=" << quote_precision_
+BOOST_LOG_TRIVIAL(info) <<   "Era file:    " << base_name << " quote_precision=" << quote_precision_
 << " base_precision=" << base_precision_;
 f_.open(base_name);
 f_ << "maker,ordinal,timestamp,mks,state,price,volume,change,trade,taker,heard,deleted\n";
-if(source_)
+if(source_) {
+  if (s_.is_open())
+    s_.close();
   s_.open(base_name + ".source");
+  s_ << "\n"; // To ensure that line numbers in era and source files are the same for the same event
+  BOOST_LOG_TRIVIAL(info) << "Source file: " << base_name + ".source";
+}
 return f_.is_open();
 !!!1385606.cpp!!!	reset() : bool
 if(f_.is_open()) f_.close();
