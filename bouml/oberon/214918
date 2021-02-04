@@ -1,6 +1,6 @@
 format 224
 "Bitstamp" // Standalone application::Reconstructor::Bitstamp
-  revision 27
+  revision 28
   modified_by 6 "petr"
   // class settings
   
@@ -410,12 +410,13 @@ ${inlines}
 
       operation 1384070 "TimeOrderEnforcer"
 	public explicit_return_type ""
-	nparams 2
+	nparams 3
 	  param in name "next" type class_ref 950918 // TokenHandler_SP
 	  param in name "delay" explicit_type "int"
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, ${t1} ${p1}${v1}${)}${volatile}${throw};
+	  param in name "handle_deleted" explicit_type "bool"
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} ${p2}${v2}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}${)}${volatile}${throw} : TokenHandler{next, \"TimeOrderEnforcer\"}, delay_{delay*1000000} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${volatile}${throw} : TokenHandler{next, \"TimeOrderEnforcer\", handle_deleted}, delay_{delay*1000000} {
   ${body}}
 "
 	

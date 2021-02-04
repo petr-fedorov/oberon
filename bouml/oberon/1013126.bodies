@@ -108,7 +108,7 @@ if (exchange_ && product_ && !help_) {
     size_deducer->create();
     auto deduplicator = boost::make_shared<Deduplicator>(size_deducer);
     auto time_order_enforcer =
-        boost::make_shared<TimeOrderEnforcer>(deduplicator, 1);
+        boost::make_shared<TimeOrderEnforcer>(deduplicator, 1, deleted_);
     auto cleaner = boost::make_shared<Synchronizer>(time_order_enforcer);
     cleaner->create();
     auto reconstructor =

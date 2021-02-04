@@ -36,7 +36,7 @@ if (event) {
 
   // timestamp, seconds
   auto s = toSeconds(event->timestamp().time_since_epoch());
-  if(s > latest_seconds_) {
+  if(s != latest_seconds_) {
     using namespace std::chrono;
     latest_seconds_ = s;
     date::to_stream(buffer, "%FT%TZ,", time_point<system_clock,seconds>{s});
