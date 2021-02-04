@@ -1,0 +1,260 @@
+format 224
+"Transmuter" // Tests::Transmuter
+  revision 2
+  modified_by 6 "petr"
+  // class settings
+  
+  classdiagramsettings member_max_width 0 end
+  
+  classcompositediagramsettings end
+  
+  usecasediagramsettings end
+  
+  sequencediagramsettings end
+  
+  collaborationdiagramsettings end
+  
+  objectdiagramsettings end
+  
+  objectcompositediagramsettings end
+  
+  componentdiagramsettings
+   end
+  
+  deploymentdiagramsettings
+   end
+  
+  statediagramsettings
+   end
+  
+  activitydiagramsettings
+   end
+  
+  cpp_h_dir "cpp/transmuter"
+  cpp_src_dir "cpp/transmuter"
+  cpp_namespace "oberon::transmuter"
+  classview 333318 "Fixtures"
+    
+    classdiagramsettings member_max_width 0 end
+    
+    classcompositediagramsettings end
+    
+    collaborationdiagramsettings end
+    
+    objectdiagramsettings end
+    
+    objectcompositediagramsettings end
+    
+    sequencediagramsettings end
+    
+    statediagramsettings
+     end
+    
+    
+    activitydiagramsettings
+     end
+    classdiagram 505606 "Fixtures"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
+    class 1067654 "ReconstructorFixture"
+      visibility package stereotype "struct"
+      cpp_decl "${comment}${template}struct ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl "${comment}struct ${name} {
+${members}};
+"
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      operation 1559430 "ReconstructorFixture"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 1239046 // rec (<directional aggregation>)
+	relation 1228678 o-->
+	  stereotype "unique_ptr"
+	  a role_name "rec" public
+	    cpp default "    ${comment}${static}${thread_local}${stereotype}<${mutable}${volatile}${const}${type}>  ${name}${value};
+"
+	    classrelation_ref 1239046 // rec (<directional aggregation>)
+	  b parent class_ref 1020550 // Reconstructor
+      end
+
+      attribute 951814 "sec"
+	public type class_ref 1067526 // Security_SP
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 958598 "event"
+	public type class_ref 1040262 // OrderEvent_UP
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+    end
+  end
+
+  deploymentview 220038 "Source files"
+    //deployment diagram settings
+    deploymentdiagramsettings
+     end
+    artifact 367366 "test_Reconstructor"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+#include <boost/test/unit_test.hpp>
+#include <boost/smart_ptr/make_unique.hpp>
+#include <boost/smart_ptr/make_shared.hpp>
+${includes}
+${namespace_start}
+${members}
+${namespace_end}
+
+
+using namespace oberon::transmuter;
+using OrderEvent=oberon::reconstructor::OrderEvent;
+using OrderState=OrderEvent::OrderState;
+using BookSide=OrderEvent::BookSide;
+
+BOOST_AUTO_TEST_CASE( translate_NA_state )
+{
+  
+  ReconstructorFixture fixture;
+  BOOST_TEST( fixture.rec->convertState(\"NA\") == OrderState::kNA);
+}
+
+BOOST_AUTO_TEST_CASE( translate_empty_state )
+{
+  
+  ReconstructorFixture fixture;
+  BOOST_TEST( fixture.rec->convertState(\"\") == OrderState::kFinished);
+}
+
+BOOST_AUTO_TEST_CASE( translate_1_state )
+{
+  
+  ReconstructorFixture fixture;
+  BOOST_TEST( fixture.rec->convertState(\"1\") == OrderState::kActive);
+}
+
+
+BOOST_AUTO_TEST_CASE( translate_positive_volume )
+{
+  
+  ReconstructorFixture fixture;
+  BOOST_TEST( fixture.rec->convertVolume(\"1\") == 1.0);
+}
+
+
+BOOST_AUTO_TEST_CASE( determine_book_side_01 )
+{
+  
+  ReconstructorFixture fixture;
+  fixture.rec->setRemainingChangeSide(fixture.event, 0.0, 1.0);
+  BOOST_TEST( fixture.event->side() == BookSide::kAsk);
+  BOOST_TEST( fixture.event->change() == 1.0);
+}
+
+BOOST_AUTO_TEST_CASE( determine_book_side_02 )
+{
+  
+  ReconstructorFixture fixture;
+  fixture.rec->setRemainingChangeSide(fixture.event, 0.0, -1.0);
+  BOOST_TEST( fixture.event->side() == BookSide::kBid);
+  BOOST_TEST( fixture.event->change() == 1.0);
+}
+
+BOOST_AUTO_TEST_CASE( determine_book_side_03 )
+{
+  
+  ReconstructorFixture fixture;
+  fixture.rec->setRemainingChangeSide(fixture.event, 0.0, 0.0);
+  BOOST_TEST( fixture.event->side() == BookSide::kBookSideNA);
+}
+
+BOOST_AUTO_TEST_CASE( determine_book_side_04 )
+{
+  
+  ReconstructorFixture fixture;
+  fixture.rec->setRemainingChangeSide(fixture.event, OrderEvent::kNaVolume, 1.0);
+  BOOST_TEST( fixture.event->side() == BookSide::kBookSideNA);
+}
+
+BOOST_AUTO_TEST_CASE( determine_book_side_05 )
+{
+  
+  ReconstructorFixture fixture;
+  fixture.rec->setRemainingChangeSide(fixture.event, OrderEvent::kNaVolume, -1.0);
+  BOOST_TEST( fixture.event->side() == BookSide::kBookSideNA);
+}
+
+BOOST_AUTO_TEST_CASE( determine_book_side_06 )
+{
+  
+  ReconstructorFixture fixture;
+  fixture.rec->setRemainingChangeSide(fixture.event, OrderEvent::kNaVolume, 0.0);
+  BOOST_TEST( fixture.event->side() == BookSide::kBookSideNA);
+}
+
+BOOST_AUTO_TEST_CASE( determine_book_side_07 )
+{
+  
+  ReconstructorFixture fixture;
+  fixture.rec->setRemainingChangeSide(fixture.event, -1.0, 0.0);
+  BOOST_TEST( fixture.event->side() == BookSide::kAsk);
+}
+
+BOOST_AUTO_TEST_CASE( determine_book_side_08 )
+{
+  
+  ReconstructorFixture fixture;
+  fixture.rec->setRemainingChangeSide(fixture.event, 1.0, 0.0);
+  BOOST_TEST( fixture.event->side() == BookSide::kBid);
+}
+
+"
+      associated_elems
+	class_ref 1067654 // ReconstructorFixture
+      end
+    end
+  end
+end

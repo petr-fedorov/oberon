@@ -1,3 +1,5 @@
 class OrderEventFixture
 !!!1545862.cpp!!!	OrderEventFixture()
-event1 = boost::make_unique<OrderEvent>();
+using Security=OrderEvent::Security;
+sec = boost::make_shared<Security>(Security{"EXCHANGE", "PRODUCT", 0.01, 0.00000001});
+event = boost::make_unique<OrderEvent>(sec);

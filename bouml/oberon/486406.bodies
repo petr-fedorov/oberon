@@ -4,12 +4,12 @@ using namespace date;
 using namespace std;
 Token empty;
 boost::uuids::string_generator gen;
+auto output = boost::make_unique<OrderEvent>(security_);
 try {
   string type = tree.get<string>("type");
   if (type == "elapsed")
     return boost::make_unique<Elapsed>(toTimestamp(tree.get<string>("time")));
   else if (type == "received") {
-    auto output = boost::make_unique<OrderEvent>();
     updateCommonAttributes(*output, tree);
     output->maker(gen(tree.get<string>("order_id")));
     output->change(0);
@@ -20,7 +20,6 @@ try {
     assert(output->isOrderCreated());
     return std::move(output);
   } else if (type == "open") {
-    auto output = boost::make_unique<OrderEvent>();
     updateCommonAttributes(*output, tree);
     output->maker(gen(tree.get<string>("order_id")));
     output->remaining(stod(tree.get<string>("remaining_size")));
@@ -31,7 +30,6 @@ try {
     assert(output->isOrderCreated());
     return std::move(output);
   } else if (type == "done") {
-    auto output = boost::make_unique<OrderEvent>();
     output->timestamp(toTimestamp(tree.get<std::string>("time")));
     output->heard(toTimestamp(tree.get<std::string>("local_timestamp")));
 
@@ -42,7 +40,6 @@ try {
      output->price(stod(tree.get("price", "0.0")));
     }
     catch (...) {};
-    output->baseIncrement(base_increment_);
     output->maker(gen(tree.get<string>("order_id")));
     output->state(OrderEvent::OrderState::kFinished);
     if (tree.get<string>("reason") == "canceled") {
@@ -57,7 +54,6 @@ try {
     assert(output->isOrderCancelled());
     return std::move(output);
   } else if (type == "match") {
-    auto output = boost::make_unique<OrderEvent>();
     updateCommonAttributes(*output, tree);
     output->change(stod(tree.get<string>("size")));
     output->trade(stol(tree.get<string>("trade_id")));
@@ -67,11 +63,9 @@ try {
     assert(output->isOrderFilled());
     return std::move(output);
   } else if (type == "change") {
-    auto output = boost::make_unique<OrderEvent>();
     output->timestamp(toTimestamp(tree.get<std::string>("time")));
     output->heard(toTimestamp(tree.get<std::string>("local_timestamp")));
     output->side(tree.get<std::string>("side") == "buy" ? OrderEvent::BookSide::kBid : OrderEvent::BookSide::kAsk);
-    output->baseIncrement(base_increment_);
     output->maker(gen(tree.get<string>("order_id")));
 
     if(!tree.get<std::string>("price").empty()) {
@@ -112,5 +106,4 @@ event.heard(toTimestamp(tree.get<std::string>("local_timestamp")));
 
 event.side(tree.get<std::string>("side") == "buy" ? OrderEvent::BookSide::kBid : OrderEvent::BookSide::kAsk);
 event.price(stod(tree.get("price", "0.0")));
-event.baseIncrement(base_increment_);
 

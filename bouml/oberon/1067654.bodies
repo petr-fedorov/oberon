@@ -1,0 +1,12 @@
+class ReconstructorFixture
+!!!1559430.cpp!!!	ReconstructorFixture()
+using Reconstructor=oberon::transmuter::Reconstructor;
+using OrderEvent=oberon::reconstructor::OrderEvent;
+using Security=OrderEvent::Security;
+
+sec = boost::make_shared<Security>(Security{"EXCHANGE", "PRODUCT", 0.01, 0.00000001});
+
+oberon::reconstructor::TokenHandler::TokenHandler_SP dummy;
+rec = boost::make_unique<Reconstructor>(sec, dummy);
+event = boost::make_unique<OrderEvent>(sec);
+

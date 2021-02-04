@@ -1,20 +1,19 @@
 class Reconstructor
-!!!793222.cpp!!!	Reconstructor(inout handler : Store, in quote_increment : OrderEvent::Volume, in base_increment : OrderEvent::Volume)
+!!!793222.cpp!!!	Reconstructor(in security : OrderEvent::Security_SP, inout handler : Store)
 
 !!!792582.cpp!!!	extract(in tree : ptree [1]) : Token [1..*]
 using namespace date;
 using namespace std;
 string type = tree.get<string>("event");
+auto output = boost::make_unique<OrderEvent>(security_);
 if (type == "elapsed") {
   return boost::make_unique<Elapsed>(
       toTimestamp(tree.get<string>("timestamp")));
 } else if (type == "order_changed") {
-  auto output = boost::make_unique<OrderEvent>();
   output->timestamp(toTimestamp(tree.get<std::string>("exchange_timestamp")));
   output->heard(toTimestamp(tree.get<std::string>("local_timestamp")));
   output->maker(toUuid(tree.get<std::string>("order_id")));
   output->price(std::stod(tree.get<std::string>("price")));
-  output->baseIncrement(base_increment_);
   auto r = std::stod(tree.get<std::string>("amount"));
   if (r < 0) {
     output->remaining(-r);
@@ -27,11 +26,9 @@ if (type == "elapsed") {
   return std::move(output);
 
 } else if (type == "order_deleted") {
-  auto output = boost::make_unique<OrderEvent>();
   output->timestamp(toTimestamp(tree.get<std::string>("exchange_timestamp")));
   output->heard(toTimestamp(tree.get<std::string>("local_timestamp")));
   output->maker(toUuid(tree.get<std::string>("order_id")));
-  output->baseIncrement(base_increment_);
   if (std::stod(tree.get<std::string>("amount")) < 0) {
     output->side(OrderEvent::BookSide::kAsk);
   } else
@@ -39,11 +36,9 @@ if (type == "elapsed") {
   assert(output->isOrderCancelled());
   return std::move(output);
 } else if (type == "match") {
-  auto output = boost::make_unique<OrderEvent>();
   output->timestamp(toTimestamp(tree.get<std::string>("mts")));
   output->heard(toTimestamp(tree.get<std::string>("local_timestamp")));
   output->price(std::stod(tree.get<std::string>("price")));
-  output->baseIncrement(base_increment_);
   auto change_size = std::stod(tree.get<std::string>("amount"));
   if (change_size < 0) {
     output->change(-change_size);

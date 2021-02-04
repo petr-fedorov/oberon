@@ -15,7 +15,7 @@ if (!(field = tree.get<std::string>("timestamp")).empty()) {
 // std::cout << date::format("%FT%TZ", timestamp_ +
 // std::chrono::microseconds{tree.get<int>("mks")}) << "\n";
 if (tree.get<std::string>("type") == "event") {
-  std::unique_ptr<OrderEvent> output = boost::make_unique<OrderEvent>();
+  std::unique_ptr<OrderEvent> output = boost::make_unique<OrderEvent>(security_);
   boost::uuids::string_generator gen;
   std::string value;
   if (!(field = tree.get<std::string>("trade")).empty()) {
@@ -31,52 +31,13 @@ if (tree.get<std::string>("type") == "event") {
   else
     output->ordinal(0);
   output->price(tree.get<double>("price"));
-  if (!(field = tree.get<std::string>("volume")).empty()) {
-    if (field != "NA") {
-      auto rem = tree.get<OrderEvent::Volume>("volume");
-      if (rem > 0) {
-        output->remaining(rem);
-        output->side(OrderEvent::BookSide::kBid);
-        if (!(field = tree.get<std::string>("change")).empty()) {
-          if (field != "NA")
-            output->change(-tree.get<OrderEvent::Volume>("change"));
-        } else
-          output->change(0);
-      } else {
-        output->remaining(-rem);
-        output->side(OrderEvent::BookSide::kAsk);
-        if (!(field = tree.get<std::string>("change")).empty()) {
-          if (field != "NA")
-            output->change(tree.get<OrderEvent::Volume>("change"));
-        } else
-          output->change(0);
-      }
-    } else
-      output->remaining(OrderEvent::kNaVolume);
-  } else {
-    output->remaining(0.0);
-    if (!(field = tree.get<std::string>("change")).empty()) {
-      if (field != "NA") {
-        auto ch = tree.get<OrderEvent::Volume>("change");
-        if (ch > 0) {
-          output->change(ch);
-          output->side(OrderEvent::BookSide::kAsk);
-        } else {
-          output->change(-ch);
-          output->side(OrderEvent::BookSide::kBid);
-        }
-      }
-    } else
-      output->change(0.0); // Note, that we couldn't determine side!
-  }
-  output->state(tree.get<std::string>("state").empty()
-                    ? OrderEvent::OrderState::kFinished
-                    : OrderEvent::OrderState::kActive);
+  setRemainingChangeSide(output, convertVolume(tree.get<std::string>("volume")),
+                         convertVolume(tree.get<std::string>("change")));
+  output->state(convertState(tree.get<std::string>("state")));
   output->deleted(tree.get<std::string>("deleted").empty() ? false : true);
   output->heard(output->timestamp() +
                 std::chrono::microseconds{tree.get<int>("heard")});
 
-  output->baseIncrement(base_increment_);
   assert(("An order event type is defined",
           output->isOrderCreated() || output->isOrderCancelled() ||
               output->isOrderChanged() || output->isOrderFilled()));
@@ -87,3 +48,105 @@ if (tree.get<std::string>("type") == "event") {
 else if (tree.get<std::string>("type") == "reset")
   return boost::make_unique<Reset>();
 return Token{};
+!!!1559302.cpp!!!	convertState(in state : string) : OrderEvent::OrderState
+using OrderState=reconstructor::OrderEvent::OrderState;
+if (!state.empty()) {
+  if (state == "NA")
+    return OrderState::kNA;
+  else
+    return OrderState::kActive;
+} else
+  return OrderState::kFinished;
+!!!1565958.cpp!!!	convertVolume(in field : string) : OrderEvent::Volume
+if (!field.empty()) {
+  if (field != "NA") {
+    try {
+      return std::stod(field);
+    } catch (...) {
+    };
+  }
+  return reconstructor::OrderEvent::kNaVolume;
+} else
+  return 0.0;
+!!!1566086.cpp!!!	setRemainingChangeSide(inout output : OrderEvent::OrderEvent_UP, in remaining : OrderEvent::Volume, in change : OrderEvent::Volume) : void
+using OrderEvent = reconstructor::OrderEvent;
+using BookSide = OrderEvent::BookSide;
+
+if (std::isnan(remaining)) {
+  output->remaining(remaining);
+  output->change(change);
+  output->side(BookSide::kBookSideNA);
+  return;
+} else if (remaining == 0) {
+  if (change > 0) {
+    output->remaining(remaining);
+    output->change(change);
+    output->side(BookSide::kAsk);
+    return;
+  } else {
+    if (change < 0) {
+      output->remaining(remaining);
+      output->change(-change);
+      output->side(BookSide::kBid);
+      return;
+    } else {
+      output->remaining(remaining);
+      output->change(change);
+      output->side(BookSide::kBookSideNA);
+      return;
+    }
+  }
+} else { // remaining != 0
+  if (remaining > 0) {
+    output->remaining(remaining);
+    output->change(-change);
+    output->side(BookSide::kBid);
+    return;
+  } else { // remaining < 0
+    output->remaining(-remaining);
+    output->change(change);
+    output->side(BookSide::kAsk);
+    return;
+  }
+}
+/*
+if (!(field = tree.get<std::string>("volume")).empty()) {
+  if (field != "NA") {
+    auto rem = tree.get<OrderEvent::Volume>("volume");
+    if (rem > 0) {
+      output->remaining(rem);
+      output->side(OrderEvent::BookSide::kBid);
+      if (!(field = tree.get<std::string>("change")).empty()) {
+        if (field != "NA")
+          output->change(-tree.get<OrderEvent::Volume>("change"));
+      } else
+        output->change(0);
+    } else {
+      output->remaining(-rem);
+      output->side(OrderEvent::BookSide::kAsk);
+      if (!(field = tree.get<std::string>("change")).empty()) {
+        if (field != "NA")
+          output->change(tree.get<OrderEvent::Volume>("change"));
+      } else
+        output->change(0);
+    }
+  } else
+    output->remaining(OrderEvent::kNaVolume);
+} else {
+  output->remaining(0.0);
+  if (!(field = tree.get<std::string>("change")).empty()) {
+    if (field != "NA") {
+      auto ch = tree.get<OrderEvent::Volume>("change");
+      if (ch > 0) {
+        output->change(ch);
+        output->side(OrderEvent::BookSide::kAsk);
+      } else {
+        output->change(-ch);
+        output->side(OrderEvent::BookSide::kBid);
+      }
+    }
+  } else
+    output->change(0.0); // Note, that we couldn't determine side!
+}
+return true;
+*/

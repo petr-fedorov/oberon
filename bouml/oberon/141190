@@ -1,6 +1,6 @@
 format 224
 "Reconstructor" // Standalone application::Reconstructor
-  revision 234
+  revision 236
   modified_by 6 "petr"
   // class settings
   
@@ -748,6 +748,94 @@ ${items}};
 	end
       end
 
+      class 1067398 "Security"
+	visibility public stereotype "struct"
+	cpp_decl "${comment}${template}struct ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl "${comment}struct ${name} {
+${members}};
+"
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	attribute 951558 "exchange"
+	  public explicit_type "string"
+	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	end
+
+	attribute 951686 "product"
+	  public explicit_type "string"
+	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	end
+
+	attribute 951430 "quote_increment"
+	  public type class_ref 305798 // Volume
+	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	end
+
+	attribute 820102 "base_increment"
+	  public type class_ref 305798 // Volume
+	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	end
+      end
+
+      class 1067526 "Security_SP"
+	visibility public stereotype "template_typedef"
+	nactuals 1
+	actual class class_ref 852614 // shared_ptr
+	  rank 0 value class_ref 1067398 // Security
+	cpp_decl "${comment}${template}using ${name} = ${inherit};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 1238278 // <realization>
+	  relation 1227910 -_-|>
+	    stereotype "bind"
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 1238278 // <realization>
+	    b parent class_ref 852614 // shared_ptr
+	end
+      end
+
       attribute 465030 "kNaVolume"
 	class_attribute const_attribute public type class_ref 305798 // Volume
 	init_value "std::nan(\"1954\")"
@@ -925,19 +1013,6 @@ ${items}};
 	MysqlColumn
       end
 
-      attribute 820102 "base_increment_"
-	private type class_ref 305798 // Volume
-	init_value "0.0"
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-      end
-
       attribute 826630 "source_"
 	private explicit_type "string"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
@@ -948,6 +1023,21 @@ ${items}};
 	idl_decl ""
 	mysql_decl ""
 	MysqlColumn
+      end
+
+      operation 1559174 "OrderEvent"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "security" type class_ref 1067526 // Security_SP
+	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} : security_{security} {
+  ${body}}
+"
+	
+	
+	
+	
       end
 
       operation 1475078 "clone"
@@ -1286,21 +1376,6 @@ ${items}};
 	
       end
 
-      operation 1307910 "baseIncrement"
-	public explicit_return_type "void"
-	nparams 1
-	  param in name "base_increment" type class_ref 305798 // Volume
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
       operation 1351046 "source"
 	const constvalue public explicit_return_type "string"
 	nparams 0
@@ -1401,6 +1476,15 @@ ${items}};
 	
       end
 
+      classrelation 1238150 // security_ (<directional composition>)
+	relation 1227782 *-->
+	  stereotype "shared_ptr"
+	  a role_name "security_" multiplicity "1" const_relation private
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${stereotype}<${const}${type}> ${name}${value};
+"
+	    classrelation_ref 1238150 // security_ (<directional composition>)
+	  b parent class_ref 1067398 // Security
+      end
     end
 
     class 441478 "Elapsed"
@@ -3535,18 +3619,15 @@ ${inlines}
 
       operation 1072262 "File"
 	public explicit_return_type ""
-	nparams 6
-	  param in name "exchange" explicit_type "string"
-	  param in name "product" explicit_type "string"
-	  param in name "quote_precision" explicit_type "int"
-	  param in name "base_precision" explicit_type "int"
+	nparams 3
+	  param in name "security" type class_ref 1067526 // Security_SP
 	  param in name "handle_deleted" explicit_type "bool"
 	    defaultvalue "false"
 	  param in name "source" explicit_type "bool"
 	    defaultvalue "false"
-	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, ${t2} ${p2}${v2}, ${t3} ${p3}${v3}, ${t4} ${p4}${v4}, ${t5} ${p5}${v5}${)}${volatile}${throw};
+	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(}const ${t0} & ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} ${p2}${v2}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}${)}${volatile}${throw}: TokenHandler{\"File\", handle_deleted}, exchange_{exchange}, product_{product}, base_precision_{base_precision}, quote_precision_{quote_precision}, source_{source} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${volatile}${throw}: TokenHandler{\"File\", handle_deleted}, security_{security}, source_{source} {
   ${body}}
 "
 	
@@ -3567,30 +3648,6 @@ ${inlines}
 	
 	
 	
-      end
-
-      attribute 724742 "exchange_"
-	const_attribute private explicit_type "string"
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-      end
-
-      attribute 724870 "product_"
-	const_attribute private explicit_type "string"
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
       end
 
       attribute 800134 "base_precision_"
@@ -3761,6 +3818,16 @@ ${inlines}
 	
 	
       end
+
+      classrelation 1238918 // security_ (<directional composition>)
+	relation 1228550 *-->
+	  stereotype "shared_ptr"
+	  a role_name "security_" multiplicity "1" const_relation private
+	    cpp default "    ${comment}${static}${thread_local}${stereotype}<${mutable}${volatile}${const}${type}> ${name}${value};
+"
+	    classrelation_ref 1238918 // security_ (<directional composition>)
+	  b multiplicity "1..*" parent class_ref 1067398 // Security
+      end
     end
 
     class 903430 "Store"
@@ -3869,32 +3936,6 @@ ${inlines}
 	MysqlColumn
       end
 
-      attribute 451206 "quote_increment_"
-	const_attribute protected type class_ref 305798 // Volume
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-	comment "The base_min_size and base_max_size fields define the min and max order size. The quote_increment field specifies the min order price as well as the price increment.
-The order price must be a multiple of this increment (i.e. if the increment is 0.01, order prices of 0.001 or 0.021 would be rejected)."
-      end
-
-      attribute 458502 "base_increment_"
-	const_attribute protected type class_ref 305798 // Volume
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-      end
-
       operation 575878 "process"
 	cpp_virtual cpp_final public explicit_return_type "bool"
 	nparams 1
@@ -3927,13 +3968,12 @@ The order price must be a multiple of this increment (i.e. if the increment is 0
 
       operation 827910 "Reconstructor"
 	public explicit_return_type ""
-	nparams 3
+	nparams 2
+	  param in name "security" type class_ref 1067526 // Security_SP
 	  param in name "handler" type class_ref 950918 // TokenHandler_SP
-	  param in name "quote_increment" type class_ref 305798 // Volume
-	  param in name "base_increment" type class_ref 305798 // Volume
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}${)}${volatile}${throw};
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, ${t1} ${p1}${v1}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}${)}${throw} : quote_increment_{quote_increment}, base_increment_{base_increment}, handler_{handler} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}${)}${throw} : handler_{handler},security_{security} {
   ${body}}
 "
 	
@@ -3950,6 +3990,16 @@ The order price must be a multiple of this increment (i.e. if the increment is 0
 "
 	    classrelation_ref 1085190 // handler_ (<directional aggregation>)
 	  b parent class_ref 441222 // TokenHandler
+      end
+
+      classrelation 1238662 // security_ (<directional composition>)
+	relation 1228294 *-->
+	  stereotype "shared_ptr"
+	  a role_name "security_" multiplicity "1" protected
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${stereotype}<${volatile}${const}${type}> ${name}${value};
+"
+	    classrelation_ref 1238662 // security_ (<directional composition>)
+	  b multiplicity "1..*" parent class_ref 1067398 // Security
       end
     end
   end

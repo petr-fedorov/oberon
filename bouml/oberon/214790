@@ -1,6 +1,6 @@
 format 224
 "Coinbase" // Standalone application::Reconstructor::Coinbase
-  revision 16
+  revision 17
   modified_by 6 "petr"
   // class settings
   
@@ -103,13 +103,12 @@ ${inlines}
 
       operation 582918 "Reconstructor"
 	public explicit_return_type ""
-	nparams 3
+	nparams 2
+	  param in name "security" type class_ref 1067526 // Security_SP
 	  param in name "handler" type class_ref 950918 // TokenHandler_SP
-	  param in name "quote_increment" type class_ref 305798 // Volume
-	  param in name "base_increment" type class_ref 305798 // Volume
-	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(}${t0} ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}${)}${volatile}${throw};
+	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(}const ${t0} & ${p0}${v0}, ${t1} ${p1}${v1}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}${)}${throw} : oberon::reconstructor::Reconstructor{handler, quote_increment, base_increment} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}${)}${throw} : oberon::reconstructor::Reconstructor{security, handler} {
   ${body}}
 "
 	

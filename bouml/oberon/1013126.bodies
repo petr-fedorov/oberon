@@ -82,13 +82,13 @@ if (exchange_ && product_ && !help_) {
   using Snapshot = oberon::receiver::Snapshot;
   using EventCounter = oberon::reconstructor::EventCounter;
   using SizeDeducer = oberon::reconstructor::SizeDeducer;
-
+  using Security=oberon::reconstructor::OrderEvent::Security;
+  auto security = boost::make_shared<Security>(Security{
+      *exchange_, *product_, quote_increment_, base_increment_});
   // The io_context is required for all I/O
   boost::shared_ptr<boost::asio::io_context> ioc =
       boost::make_shared<boost::asio::io_context>();
-  auto store = boost::make_shared<reconstructor::File>(
-      *exchange_, *product_, -std::floor(std::log10(quote_increment_)),
-      -std::floor(std::log10(base_increment_)), deleted_, source_);
+  auto store = boost::make_shared<reconstructor::File>(security, deleted_, source_);
 
   if (*exchange_ == "Bitstamp") {
     using Receiver = oberon::receiver::bitstamp::Receiver;
@@ -112,7 +112,7 @@ if (exchange_ && product_ && !help_) {
     auto cleaner = boost::make_shared<Synchronizer>(time_order_enforcer);
     cleaner->create();
     auto reconstructor =
-        Reconstructor{cleaner, quote_increment_, base_increment_};
+        Reconstructor{security, cleaner};
 
     auto receiver = boost::make_shared<Receiver>(
         ioc, boost::static_pointer_cast<Feeder>(feeder), snapshot,
@@ -160,7 +160,7 @@ if (exchange_ && product_ && !help_) {
     size_deducer->create();
     auto cleaner = boost::make_shared<Synchronizer>(size_deducer);
     auto reconstructor =
-        Reconstructor{cleaner, quote_increment_, base_increment_};
+        Reconstructor{security, cleaner };
     auto coinbase = boost::make_shared<Receiver>(
         ioc, boost::static_pointer_cast<Feeder>(feeder), snapshot,
         std::bind(&Reconstructor::process, &reconstructor,
@@ -194,6 +194,7 @@ if (exchange_ && product_ && !help_) {
 std::cerr << "Usage: oberon capture [options]\n" << od;
 return EXIT_FAILURE;
 !!!1453958.cpp!!!	slice(in od : options_description) : int
+using Security = oberon::reconstructor::OrderEvent::Security;
 if (!help_ && !era_.empty()) {
   for (auto &era : era_) {
     std::istringstream ss{era};
@@ -208,6 +209,8 @@ if (!help_ && !era_.empty()) {
       /* std::cout << exchange << "\n" << product << "\n" << output << "\n";
       return EXIT_SUCCESS;
       */
+      auto security = boost::make_shared<Security>(Security{
+          exchange, product, quote_increment_, base_increment_});
       auto orig = reconstructor::File::name(exchange, product, output);
       auto sliced = orig + ".sliced";
       if (fileExists(sliced)) {
@@ -221,14 +224,12 @@ if (!help_ && !era_.empty()) {
         std::string header;
         std::getline(input, header);
         oberon::transmuter::CsvOrderEvent event{header};
-        auto store = boost::make_shared<reconstructor::File>(
-            exchange, product, -std::floor(std::log10(quote_increment_)),
-            -std::floor(std::log10(base_increment_)), deleted_ ? true : false);
+        auto store = boost::make_shared<reconstructor::File>(security, deleted_ ? true : false);
         auto event_counter =
             boost::make_shared<reconstructor::EventCounter>(store);
         auto slicer =
             boost::make_shared<transmuter::EraSlicer>(boundary_, event_counter);
-        transmuter::Reconstructor r{slicer, quote_increment_, base_increment_};
+        transmuter::Reconstructor r{security, slicer };
         boost::property_tree::ptree control_message;
         control_message.put("type", "era");
         control_message.put("timestamp", format("%FT%TZ", output));
@@ -279,14 +280,15 @@ if(!help_ && iter != era_.end()) {
     /* std::cout << exchange << "\n" << product << "\n" << output << "\n";
     return EXIT_SUCCESS;
     */
-    auto store = boost::make_shared<reconstructor::File>(
-        exchange, product, -std::floor(std::log10(quote_increment_)),
-        -std::floor(std::log10(base_increment_)), deleted_ ? true : false);
+    using Security = oberon::reconstructor::OrderEvent::Security;
+    auto security = boost::make_shared<Security>(Security{
+        exchange, product, quote_increment_, base_increment_});
+    auto store = boost::make_shared<reconstructor::File>(security, deleted_ ? true : false);
     auto event_counter = boost::make_shared<reconstructor::EventCounter>(store);
     auto merger =
         boost::make_shared<transmuter::EraMerger>(event_counter);
     merger->create();
-    transmuter::Reconstructor r{merger, quote_increment_, base_increment_};
+    transmuter::Reconstructor r{ security, merger };
     do {
       auto merged = uniqueFileName(*iter + ".merged");
       if (!std::rename((*iter).c_str(), merged.c_str())) {

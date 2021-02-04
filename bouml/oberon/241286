@@ -1,6 +1,6 @@
 format 224
 "Reconstructor" // Tests::Reconstructor
-  revision 3
+  revision 4
   modified_by 6 "petr"
   // class settings
   
@@ -73,16 +73,6 @@ ${members}};
       explicit_switch_type ""
       mysql_decl ""
       
-      classrelation 1231622 // event1 (<directional composition>)
-	relation 1221254 *-->
-	  stereotype "unique_ptr"
-	  a role_name "event1" multiplicity "0..1" public
-	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
-"
-	    classrelation_ref 1231622 // event1 (<directional composition>)
-	  b parent class_ref 448390 // OrderEvent
-      end
-
       operation 1545862 "OrderEventFixture"
 	public explicit_return_type ""
 	nparams 0
@@ -110,6 +100,30 @@ ${members}};
 	
 	
       end
+
+      attribute 951942 "sec"
+	public type class_ref 1067526 // Security_SP
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 952070 "event"
+	public type class_ref 1040262 // OrderEvent_UP
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
     end
   end
 
@@ -133,6 +147,7 @@ ${namespace_end}
       cpp_src "${comment}
 #include <boost/test/unit_test.hpp>
 #include <boost/smart_ptr/make_unique.hpp>
+#include <boost/smart_ptr/make_shared.hpp>
 ${includes}
 ${namespace_start}
 ${members}
@@ -143,248 +158,246 @@ using OrderState=OrderEvent::OrderState;
 
 BOOST_AUTO_TEST_CASE( remaining_may_be_equal_to_base_increment )
 {
-  OrderEvent f;
-  OrderEvent::Volume base_increment = 0.00000001;
+  OrderEventFixture f;
 
-  f.baseIncrement(base_increment);
   double r1 = 1234.00391902;
   double r2 = 1234.00391901;
-  f.remaining(r1-r2);
-  BOOST_TEST( f.remaining() == base_increment, boost::test_tools::tolerance(0.0001));
+  f.event->remaining(r1-r2);
+  BOOST_TEST( f.event->remaining() == f.sec->base_increment, boost::test_tools::tolerance(0.0001));
 }
 
 BOOST_AUTO_TEST_CASE(order_event_type_111)
 {
-  OrderEvent f;
-  f.ordinal(0); 
-  f.state(OrderState::kActive);
-  f.trade(0);
+  OrderEventFixture f;
+  f.event->ordinal(0); 
+  f.event->state(OrderState::kActive);
+  f.event->trade(0);
 
-  BOOST_TEST(!f.isOrderCreated());
-  BOOST_TEST(f.isOrderChanged());
-  BOOST_TEST(!f.isOrderCancelled());
-  BOOST_TEST(!f.isOrderFilled());
+  BOOST_TEST(!f.event->isOrderCreated());
+  BOOST_TEST(f.event->isOrderChanged());
+  BOOST_TEST(!f.event->isOrderCancelled());
+  BOOST_TEST(!f.event->isOrderFilled());
 }
 
 BOOST_AUTO_TEST_CASE(order_event_type_112)
 {
-  OrderEvent f;
-  f.ordinal(0); 
-  f.state(OrderState::kActive);
-  f.trade(1);
+  OrderEventFixture f;
+  f.event->ordinal(0); 
+  f.event->state(OrderState::kActive);
+  f.event->trade(1);
 
-  BOOST_TEST(!f.isOrderCreated());
-  BOOST_TEST(!f.isOrderChanged());
-  BOOST_TEST(!f.isOrderCancelled());
-  BOOST_TEST(f.isOrderFilled());
+  BOOST_TEST(!f.event->isOrderCreated());
+  BOOST_TEST(!f.event->isOrderChanged());
+  BOOST_TEST(!f.event->isOrderCancelled());
+  BOOST_TEST(f.event->isOrderFilled());
 }
 
 BOOST_AUTO_TEST_CASE(order_event_type_121)
 {
-  OrderEvent f;
-  f.ordinal(0); 
-  f.state(OrderState::kFinished);
-  f.trade(0);
+  OrderEventFixture f;
+  f.event->ordinal(0); 
+  f.event->state(OrderState::kFinished);
+  f.event->trade(0);
 
-  BOOST_TEST(!f.isOrderCreated());
-  BOOST_TEST(!f.isOrderChanged());
-  BOOST_TEST(f.isOrderCancelled());
-  BOOST_TEST(!f.isOrderFilled());
+  BOOST_TEST(!f.event->isOrderCreated());
+  BOOST_TEST(!f.event->isOrderChanged());
+  BOOST_TEST(f.event->isOrderCancelled());
+  BOOST_TEST(!f.event->isOrderFilled());
 }
 
 BOOST_AUTO_TEST_CASE(order_event_type_122)
 {
-  OrderEvent f;
-  f.ordinal(0); 
-  f.state(OrderState::kFinished);
-  f.trade(1);
+  OrderEventFixture f;
+  f.event->ordinal(0); 
+  f.event->state(OrderState::kFinished);
+  f.event->trade(1);
 
-  BOOST_TEST(!f.isOrderCreated());
-  BOOST_TEST(!f.isOrderChanged());
-  BOOST_TEST(!f.isOrderCancelled());
-  BOOST_TEST(f.isOrderFilled());
+  BOOST_TEST(!f.event->isOrderCreated());
+  BOOST_TEST(!f.event->isOrderChanged());
+  BOOST_TEST(!f.event->isOrderCancelled());
+  BOOST_TEST(f.event->isOrderFilled());
 }
 
 BOOST_AUTO_TEST_CASE(order_event_type_131)
 {
-  OrderEvent f;
-  f.ordinal(0); 
-  f.state(OrderState::kNA);
-  f.trade(0);
+  OrderEventFixture f;
+  f.event->ordinal(0); 
+  f.event->state(OrderState::kNA);
+  f.event->trade(0);
 
-  BOOST_TEST(!f.isOrderCreated());
-  BOOST_TEST(f.isOrderChanged());
-  BOOST_TEST(!f.isOrderCancelled());
-  BOOST_TEST(!f.isOrderFilled());
+  BOOST_TEST(!f.event->isOrderCreated());
+  BOOST_TEST(f.event->isOrderChanged());
+  BOOST_TEST(!f.event->isOrderCancelled());
+  BOOST_TEST(!f.event->isOrderFilled());
 }
 
 BOOST_AUTO_TEST_CASE(order_event_type_132)
 {
-  OrderEvent f;
-  f.ordinal(0); 
-  f.state(OrderState::kNA);
-  f.trade(1);
+  OrderEventFixture f;
+  f.event->ordinal(0); 
+  f.event->state(OrderState::kNA);
+  f.event->trade(1);
 
-  BOOST_TEST(!f.isOrderCreated());
-  BOOST_TEST(!f.isOrderChanged());
-  BOOST_TEST(!f.isOrderCancelled());
-  BOOST_TEST(f.isOrderFilled());
+  BOOST_TEST(!f.event->isOrderCreated());
+  BOOST_TEST(!f.event->isOrderChanged());
+  BOOST_TEST(!f.event->isOrderCancelled());
+  BOOST_TEST(f.event->isOrderFilled());
 }
 
 BOOST_AUTO_TEST_CASE(order_event_type_211)
 {
-  OrderEvent f;
-  f.ordinal(1); 
-  f.state(OrderState::kActive);
-  f.trade(0);
+  OrderEventFixture f;
+  f.event->ordinal(1); 
+  f.event->state(OrderState::kActive);
+  f.event->trade(0);
 
-  BOOST_TEST(f.isOrderCreated());
-  BOOST_TEST(!f.isOrderChanged());
-  BOOST_TEST(!f.isOrderCancelled());
-  BOOST_TEST(!f.isOrderFilled());
+  BOOST_TEST(f.event->isOrderCreated());
+  BOOST_TEST(!f.event->isOrderChanged());
+  BOOST_TEST(!f.event->isOrderCancelled());
+  BOOST_TEST(!f.event->isOrderFilled());
 }
 
 BOOST_AUTO_TEST_CASE(order_event_type_212)
 {
-  OrderEvent f;
-  f.ordinal(1); 
-  f.state(OrderState::kActive);
-  f.trade(1);
+  OrderEventFixture f;
+  f.event->ordinal(1); 
+  f.event->state(OrderState::kActive);
+  f.event->trade(1);
 
-  BOOST_TEST(!f.isOrderCreated());
-  BOOST_TEST(!f.isOrderChanged());
-  BOOST_TEST(!f.isOrderCancelled());
-  BOOST_TEST(f.isOrderFilled());
+  BOOST_TEST(!f.event->isOrderCreated());
+  BOOST_TEST(!f.event->isOrderChanged());
+  BOOST_TEST(!f.event->isOrderCancelled());
+  BOOST_TEST(f.event->isOrderFilled());
 }
 
 BOOST_AUTO_TEST_CASE(order_event_type_221)
 {
-  OrderEvent f;
-  f.ordinal(1); 
-  f.state(OrderState::kFinished);
-  f.trade(0);
+  OrderEventFixture f;
+  f.event->ordinal(1); 
+  f.event->state(OrderState::kFinished);
+  f.event->trade(0);
 
-  BOOST_TEST(!f.isOrderCreated());
-  BOOST_TEST(!f.isOrderChanged());
-  BOOST_TEST(f.isOrderCancelled());
-  BOOST_TEST(!f.isOrderFilled());
+  BOOST_TEST(!f.event->isOrderCreated());
+  BOOST_TEST(!f.event->isOrderChanged());
+  BOOST_TEST(f.event->isOrderCancelled());
+  BOOST_TEST(!f.event->isOrderFilled());
 }
 
 BOOST_AUTO_TEST_CASE(order_event_type_222)
 {
-  OrderEvent f;
-  f.ordinal(1); 
-  f.state(OrderState::kFinished);
-  f.trade(1);
+  OrderEventFixture f;
+  f.event->ordinal(1); 
+  f.event->state(OrderState::kFinished);
+  f.event->trade(1);
 
-  BOOST_TEST(!f.isOrderCreated());
-  BOOST_TEST(!f.isOrderChanged());
-  BOOST_TEST(!f.isOrderCancelled());
-  BOOST_TEST(f.isOrderFilled());
+  BOOST_TEST(!f.event->isOrderCreated());
+  BOOST_TEST(!f.event->isOrderChanged());
+  BOOST_TEST(!f.event->isOrderCancelled());
+  BOOST_TEST(f.event->isOrderFilled());
 }
 
 BOOST_AUTO_TEST_CASE(order_event_type_231)
 {
-  OrderEvent f;
-  f.ordinal(1); 
-  f.state(OrderState::kNA);
-  f.trade(0);
+  OrderEventFixture f;
+  f.event->ordinal(1); 
+  f.event->state(OrderState::kNA);
+  f.event->trade(0);
 
-  BOOST_TEST(f.isOrderCreated());
-  BOOST_TEST(!f.isOrderChanged());
-  BOOST_TEST(!f.isOrderCancelled());
-  BOOST_TEST(!f.isOrderFilled());
+  BOOST_TEST(f.event->isOrderCreated());
+  BOOST_TEST(!f.event->isOrderChanged());
+  BOOST_TEST(!f.event->isOrderCancelled());
+  BOOST_TEST(!f.event->isOrderFilled());
 }
 
 BOOST_AUTO_TEST_CASE(order_event_type_232)
 {
-  OrderEvent f;
-  f.ordinal(1); 
-  f.state(OrderState::kNA);
-  f.trade(1);
+  OrderEventFixture f;
+  f.event->ordinal(1); 
+  f.event->state(OrderState::kNA);
+  f.event->trade(1);
 
-  BOOST_TEST(!f.isOrderCreated());
-  BOOST_TEST(!f.isOrderChanged());
-  BOOST_TEST(!f.isOrderCancelled());
-  BOOST_TEST(f.isOrderFilled());
+  BOOST_TEST(!f.event->isOrderCreated());
+  BOOST_TEST(!f.event->isOrderChanged());
+  BOOST_TEST(!f.event->isOrderCancelled());
+  BOOST_TEST(f.event->isOrderFilled());
 }
 
 BOOST_AUTO_TEST_CASE(order_event_type_311)
 {
-  OrderEvent f;
-  f.ordinal(2); 
-  f.state(OrderState::kActive);
-  f.trade(0);
+  OrderEventFixture f;
+  f.event->ordinal(2); 
+  f.event->state(OrderState::kActive);
+  f.event->trade(0);
 
-  BOOST_TEST(!f.isOrderCreated());
-  BOOST_TEST(f.isOrderChanged());
-  BOOST_TEST(!f.isOrderCancelled());
-  BOOST_TEST(!f.isOrderFilled());
+  BOOST_TEST(!f.event->isOrderCreated());
+  BOOST_TEST(f.event->isOrderChanged());
+  BOOST_TEST(!f.event->isOrderCancelled());
+  BOOST_TEST(!f.event->isOrderFilled());
 }
 
 BOOST_AUTO_TEST_CASE(order_event_type_312)
 {
-  OrderEvent f;
-  f.ordinal(2); 
-  f.state(OrderState::kActive);
-  f.trade(1);
+  OrderEventFixture f;
+  f.event->ordinal(2); 
+  f.event->state(OrderState::kActive);
+  f.event->trade(1);
 
-  BOOST_TEST(!f.isOrderCreated());
-  BOOST_TEST(!f.isOrderChanged());
-  BOOST_TEST(!f.isOrderCancelled());
-  BOOST_TEST(f.isOrderFilled());
+  BOOST_TEST(!f.event->isOrderCreated());
+  BOOST_TEST(!f.event->isOrderChanged());
+  BOOST_TEST(!f.event->isOrderCancelled());
+  BOOST_TEST(f.event->isOrderFilled());
 }
 
 BOOST_AUTO_TEST_CASE(order_event_type_321)
 {
-  OrderEvent f;
-  f.ordinal(2); 
-  f.state(OrderState::kFinished);
-  f.trade(0);
+  OrderEventFixture f;
+  f.event->ordinal(2); 
+  f.event->state(OrderState::kFinished);
+  f.event->trade(0);
 
-  BOOST_TEST(!f.isOrderCreated());
-  BOOST_TEST(!f.isOrderChanged());
-  BOOST_TEST(f.isOrderCancelled());
-  BOOST_TEST(!f.isOrderFilled());
+  BOOST_TEST(!f.event->isOrderCreated());
+  BOOST_TEST(!f.event->isOrderChanged());
+  BOOST_TEST(f.event->isOrderCancelled());
+  BOOST_TEST(!f.event->isOrderFilled());
 }
 
 BOOST_AUTO_TEST_CASE(order_event_type_322)
 {
-  OrderEvent f;
-  f.ordinal(2); 
-  f.state(OrderState::kFinished);
-  f.trade(1);
+  OrderEventFixture f;
+  f.event->ordinal(2); 
+  f.event->state(OrderState::kFinished);
+  f.event->trade(1);
 
-  BOOST_TEST(!f.isOrderCreated());
-  BOOST_TEST(!f.isOrderChanged());
-  BOOST_TEST(!f.isOrderCancelled());
-  BOOST_TEST(f.isOrderFilled());
+  BOOST_TEST(!f.event->isOrderCreated());
+  BOOST_TEST(!f.event->isOrderChanged());
+  BOOST_TEST(!f.event->isOrderCancelled());
+  BOOST_TEST(f.event->isOrderFilled());
 }
 
 BOOST_AUTO_TEST_CASE(order_event_type_331)
 {
-  OrderEvent f;
-  f.ordinal(2); 
-  f.state(OrderState::kNA);
-  f.trade(0);
+  OrderEventFixture f;
+  f.event->ordinal(2); 
+  f.event->state(OrderState::kNA);
+  f.event->trade(0);
 
-  BOOST_TEST(!f.isOrderCreated());
-  BOOST_TEST(f.isOrderChanged());
-  BOOST_TEST(!f.isOrderCancelled());
-  BOOST_TEST(!f.isOrderFilled());
+  BOOST_TEST(!f.event->isOrderCreated());
+  BOOST_TEST(f.event->isOrderChanged());
+  BOOST_TEST(!f.event->isOrderCancelled());
+  BOOST_TEST(!f.event->isOrderFilled());
 }
 
 BOOST_AUTO_TEST_CASE(order_event_type_332)
 {
-  OrderEvent f;
-  f.ordinal(2); 
-  f.state(OrderState::kNA);
-  f.trade(1);
+  OrderEventFixture f;
+  f.event->ordinal(2); 
+  f.event->state(OrderState::kNA);
+  f.event->trade(1);
 
-  BOOST_TEST(!f.isOrderCreated());
-  BOOST_TEST(!f.isOrderChanged());
-  BOOST_TEST(!f.isOrderCancelled());
-  BOOST_TEST(f.isOrderFilled());
+  BOOST_TEST(!f.event->isOrderCreated());
+  BOOST_TEST(!f.event->isOrderChanged());
+  BOOST_TEST(!f.event->isOrderCancelled());
+  BOOST_TEST(f.event->isOrderFilled());
 }
 "
       associated_elems

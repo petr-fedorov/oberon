@@ -1,6 +1,6 @@
 format 224
 "Transmuter" // Standalone application::Transmuter
-  revision 17
+  revision 19
   modified_by 6 "petr"
   // class settings
   
@@ -165,13 +165,12 @@ ${inlines}
       
       operation 1460614 "Reconstructor"
 	public explicit_return_type ""
-	nparams 3
+	nparams 2
+	  param in name "security" type class_ref 1067526 // Security_SP
 	  param in name "handler" type class_ref 950918 // TokenHandler_SP
-	  param in name "quote_increment" type class_ref 305798 // Volume
-	  param in name "base_increment" type class_ref 305798 // Volume
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}${)}${volatile}${throw};
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, ${t1} ${p1}${v1}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}${)}${throw} : oberon::reconstructor::Reconstructor {handler, quote_increment, base_increment} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}${)}${throw} : oberon::reconstructor::Reconstructor {security, handler} {
   ${body}}
 "
 	
@@ -239,6 +238,53 @@ ${inlines}
 	    cpp default "#include in source"
 	    classrelation_ref 1175942 // <dependency>
 	  b parent class_ref 966278 // Reset
+      end
+
+      operation 1559302 "convertState"
+	const public return_type class_ref 299014 // OrderState
+	nparams 1
+	  param in name "state" explicit_type "string"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1565958 "convertVolume"
+	const public return_type class_ref 305798 // Volume
+	nparams 1
+	  param in name "field" explicit_type "string"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1566086 "setRemainingChangeSide"
+	public explicit_return_type "void"
+	nparams 3
+	  param inout name "output" type class_ref 1040262 // OrderEvent_UP
+	  param in name "remaining" type class_ref 305798 // Volume
+	  param in name "change" type class_ref 305798 // Volume
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
       end
     end
   end

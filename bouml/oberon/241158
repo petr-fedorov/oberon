@@ -1,6 +1,6 @@
 format 224
 "Tests" // Tests
-  revision 2
+  revision 4
   modified_by 6 "petr"
   // class settings
   
@@ -35,6 +35,8 @@ format 224
   cpp_namespace "oberon"
   package_ref 241286 // Reconstructor
 
+  package_ref 247814 // Transmuter
+
   deploymentview 213382 "Source files"
     //deployment diagram settings
     deploymentdiagramsettings
@@ -42,10 +44,16 @@ format 224
     artifact 360582 "test_oberon"
       stereotype "executable"
       associated_artifacts
+	artifact_ref 180998 // Reconstructor
+	artifact_ref 300294 // TokenHandler
 	artifact_ref 306822 // Message
+	artifact_ref 306950 // Era
 	artifact_ref 307078 // OrderEvent
+	artifact_ref 340614 // Reset
+	artifact_ref 347142 // Reconstructor
 	artifact_ref 360710 // test_Main
 	artifact_ref 360838 // test_OrderEvent
+	artifact_ref 367366 // test_Reconstructor
       end
       ncouples 10
       key "genpro pro" value "/tmp/oberon/cpp/test_oberon.pro"
