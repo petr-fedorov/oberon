@@ -1,11 +1,11 @@
 class Reconstructor
-!!!793222.cpp!!!	Reconstructor(in security : OrderEvent::Security_SP, inout handler : Store)
+!!!793222.cpp!!!	Reconstructor(in security : Security::Security_SP, inout handler : Store)
 
 !!!792582.cpp!!!	extract(in tree : ptree [1]) : Token [1..*]
 using namespace date;
 using namespace std;
 string type = tree.get<string>("event");
-auto output = boost::make_unique<OrderEvent>(security_);
+auto output = boost::make_unique<OrderEvent>();
 if (type == "elapsed") {
   return boost::make_unique<Elapsed>(
       toTimestamp(tree.get<string>("timestamp")));

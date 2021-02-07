@@ -1,0 +1,72 @@
+class Reader
+!!!1504390.cpp!!!	parseFileName(in file_name : string, inout exchange : string, inout product : string, inout timestamp : Message::Timestamp) : bool
+const std::size_t last_slash_idx = file_name.find_last_of("\\/");
+if (std::string::npos != last_slash_idx)
+{
+    file_name.erase(0, last_slash_idx + 1);
+}
+std::istringstream ss{file_name};
+std::getline(ss, exchange, '_');
+std::getline(ss, product, '_');
+ss >> date::parse("%FT%H-%M-%SZ", timestamp);
+if (!exchange.empty() && !product.empty() && !ss.fail())
+  return true;
+else
+  return false;
+!!!1504262.cpp!!!	uniqueFileName(in file_name : string) : string
+if (fileExists(file_name)) {
+  int seq = 1;
+  while (fileExists(file_name + "." + std::to_string(seq)))
+    ++seq;
+  file_name += "." + std::to_string(seq);
+}
+return file_name;
+!!!1475974.cpp!!!	fileExists(in name : string) : bool
+std::ifstream infile(name);
+return infile.good();
+!!!1572614.cpp!!!	readAndProcess(in files : Reader::Files [*], inout process : Reader::Reconstructor, in extension : string, in quote_increment : string, in base_increment : string) : int
+std::string exchange;
+std::string product;
+reconstructor::Message::Timestamp output;
+using namespace date;
+for (auto file = files.begin(); file != files.end(); ++file) {
+  if (!parseFileName(*file, exchange, product, output)) {
+    BOOST_LOG_TRIVIAL(error)
+        << "Couldn't parse " << *file
+        << " to extract exchange, product or era timestamp\n";
+    return EXIT_FAILURE;
+  }
+  auto source = uniqueFileName(*file + extension);
+  if (!std::rename((*file).c_str(), source.c_str())) {
+    BOOST_LOG_TRIVIAL(info) << *file << " renamed to " << source;
+    std::ifstream input{source};
+    std::string header;
+    std::getline(input, header);
+    CsvOrderEvent event{header};
+    boost::property_tree::ptree control_message;
+    control_message.put("type", "era");
+    control_message.put("timestamp", format("%FT%TZ", output));
+    control_message.put("mks", "0");
+    control_message.put("exchange", exchange);
+    control_message.put("product", product);
+    control_message.put("quote_increment", quote_increment);
+    control_message.put("base_increment", base_increment);
+   if (process(control_message)) {
+      while (input >> event) {
+        // boost::property_tree::write_json(std::cout, event, false);
+        if (!process(event))
+          return EXIT_FAILURE;
+      }
+    } else
+      return EXIT_FAILURE;
+  } else {
+    BOOST_LOG_TRIVIAL(error) << *file << " couldn't be found or renamed to " << source << "\n";
+    return EXIT_FAILURE;
+  }
+  boost::property_tree::ptree control_message;
+  control_message.put("type", "reset");
+  control_message.put("timestamp", "");
+  if (!process(control_message))
+    return EXIT_FAILURE;
+}
+return EXIT_SUCCESS;

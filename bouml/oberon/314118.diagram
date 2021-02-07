@@ -2,7 +2,7 @@ format 224
 
 statecanvas 128006 state_ref 198022 // Wait
   
-  xyzwh 367 98 2000 271 77
+  xyzwh 365 98 2000 271 77
 end
 statecanvas 128134 state_ref 198150 // Deduce
   
@@ -31,22 +31,22 @@ note 137478 "This happens only when \"opened\" message has not been seen, i.e. i
 transitioncanvas 128774 transition_ref 357254 // created
   decenter_end 173
   
-  from ref 128006 z 2001 label "created [state == kActive]" xyz 151 121 2001 to point 70 126
+  from ref 128006 z 2001 label "created [state == kActive]" xyz 148 121 2001 to point 70 126
   line 128902 z 2001 to ref 128262
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 129030 transition_ref 357382 // output saved
   decenter_end 55
   
-  from ref 128262 z 2001 label "/ output message" xyz 244 210 2001 to ref 128006
+  from ref 128262 z 2001 label "/ output message" xyz 241 210 2001 to ref 128006
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 131590 transition_ref 358534 // elapsed
   decenter_begin 734
   decenter_end 188
   
-  from ref 128006 z 2001 to point 565 37
-  line 131718 z 2001 label "elapsed / output message" xyz 423 31 2001 to point 415 38
+  from ref 128006 z 2001 to point 563 37
+  line 131718 z 2001 label "elapsed / output message" xyz 421 31 2001 to point 413 38
   line 131846 z 2001 to ref 128006
   write_horizontally default show_definition default drawing_language default
 end
@@ -54,9 +54,9 @@ transitioncanvas 132102 transition_ref 358662 // era
   decenter_begin 73
   decenter_end 918
   
-  from ref 128006 z 2011 to point 379 90
-  line 137094 z 2011 to point 379 7
-  line 132230 z 2011 label "reset / reset order sizes" xyz 435 1 2011 to point 613 9
+  from ref 128006 z 2011 to point 377 90
+  line 137094 z 2011 to point 377 7
+  line 132230 z 2011 label "reset / reset order sizes" xyz 433 1 2011 to point 611 9
   line 132358 z 2011 to ref 128006
   write_horizontally default show_definition default drawing_language default
 end
@@ -64,7 +64,7 @@ transitioncanvas 134534 transition_ref 365574 // filled
   decenter_begin 786
   decenter_end 935
   
-  from ref 128006 z 2006 label "filled" xyz 646 148 2006 to point 678 154
+  from ref 128006 z 2006 label "filled" xyz 643 148 2006 to point 678 154
   line 137350 z 2006 to ref 133894
   write_horizontally default show_definition default drawing_language default
 end
@@ -72,7 +72,7 @@ transitioncanvas 134662 transition_ref 365702 // orderEvent
   decenter_begin 258
   decenter_end 769
   
-  from ref 128006 z 2006 label "orderEvent" xyz 407 287 2006 to ref 134406
+  from ref 128006 z 2006 label "orderEvent" xyz 404 287 2006 to ref 134406
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 134918 transition_ref 365830 // success
@@ -104,7 +104,7 @@ transitioncanvas 136582 transition_ref 379654 // output message
   decenter_begin 473
   decenter_end 881
   
-  from ref 136198 z 3006 label "/ output message" xyz 561 233 3006 to ref 128006
+  from ref 136198 z 3006 label "/ output message" xyz 558 233 3006 to ref 128006
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 136966 transition_ref 379782 // <transition>
@@ -117,9 +117,18 @@ transitioncanvas 137734 transition_ref 386310 // created
   decenter_begin 671
   decenter_end 306
   
-  from ref 128006 z 2001 to point 546 57
-  line 137862 z 2001 label "created [state == kNA] / drop message" xyz 395 50 2001 to point 446 57
+  from ref 128006 z 2001 to point 544 57
+  line 137862 z 2001 label "created [state == kNA] / drop message" xyz 393 50 2001 to point 444 57
   line 137990 z 2001 to ref 128006
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 138118 transition_ref 591750 // era
+  decenter_begin 33
+  decenter_end 363
+  
+  from ref 128006 z 2001 label "era / save security" xyz 282 63 3000 to point 288 45
+  line 138246 z 2001 to point 265 74
+  line 138374 z 2001 to ref 128006
   write_horizontally default show_definition default drawing_language default
 end
 line 137606 -_-_

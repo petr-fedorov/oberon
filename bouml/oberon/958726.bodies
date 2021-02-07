@@ -50,6 +50,7 @@ stm.em_ = std::unique_ptr<OrderEvent>(
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition era";
 #endif
 stm.previous_sizes_.clear();
+stm.security_.reset();
 stm.output_.push_back(std::move(stm.received_));
   }
 !!!1386502.cpp!!!	orderEvent(inout stm : SizeDeducer) : void
@@ -62,4 +63,12 @@ stm.output_.push_back(std::move(stm.received_));
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .SizeDeducer.Deduce.Size change";
 #endif
     stm._sizededucer_state._deduce_state._size_change_state.create(stm);
+  }
+!!!1580166.cpp!!!	era(inout stm : SizeDeducer) : void
+  {
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition era";
+#endif
+stm.security_ = static_cast<Era *>(stm.received_.get())->security();
+stm.output_.push_back(std::move(stm.received_));
   }

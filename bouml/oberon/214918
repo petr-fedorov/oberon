@@ -1,6 +1,6 @@
 format 224
-"Bitstamp" // Standalone application::Reconstructor::Bitstamp
-  revision 28
+"Bitstamp" // Application::Reconstructor::Bitstamp
+  revision 31
   modified_by 6 "petr"
   // class settings
   
@@ -73,12 +73,11 @@ ${inlines}
       
       operation 759686 "Reconstructor"
 	public explicit_return_type ""
-	nparams 2
-	  param in name "security" type class_ref 1067526 // Security_SP
+	nparams 1
 	  param in name "handler" type class_ref 950918 // TokenHandler_SP
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, ${t1} ${p1}${v1}${)}${volatile}${throw};
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} ${p0}${v0}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}${)}${throw} : oberon::reconstructor::Reconstructor {security, handler} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${throw} : oberon::reconstructor::Reconstructor {handler} {
   ${body}}
 "
 	
@@ -1688,6 +1687,7 @@ ${namespace_end}
 "
       cpp_src "${comment}
 #include <boost/smart_ptr/make_unique.hpp>
+#include <boost/smart_ptr/make_shared.hpp>
 ${includes}
 #include <iostream>
 #include <cmath>

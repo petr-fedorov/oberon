@@ -1,26 +1,28 @@
-format 223
+format 224
 
 classcanvas 128006 class_ref 1046918 // EraMerger
   classdiagramsettings member_max_width 0 end
-  xyz 206 145 2000
+  xyz 241 101 2000
 end
 classcanvas 128134 class_ref 441222 // TokenHandler
   classdiagramsettings member_max_width 0 end
   xyz 460 102 3005
 end
-classcanvas 128774 class_ref 570886 // Changed
+classcanvas 129286 class_ref 1067398 // Security
   classdiagramsettings member_max_width 0 end
-  xyz 156 582 2000
+  xyz 246 244 2000
 end
-classcanvas 129030 class_ref 328710 // Cancelled
+classcanvas 129542 class_ref 521478 // Era
   classdiagramsettings member_max_width 0 end
-  xyz 279 581 2000
+  xyz 436 250 2006
 end
 relationcanvas 128262 relation_ref 1068038 // <directional aggregation>
-  from ref 128134 z 3006 stereotype "<<shared_ptr>>" xyz 403 136 3006 to point 430 102
-  line 128390 z 3006 to point 430 132
+  decenter_begin 901
+  decenter_end 98
+  from ref 128134 z 3006 to point 569 34
+  line 128390 z 3006 stereotype "<<shared_ptr>>" xyz 475 36 3006 to point 461 35
   line 128518 z 3006 to ref 128134
-  role_a_pos 465 164 3000 no_role_b
+  role_a_pos 478 77 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 128646 relation_ref 1181446 // <generalisation>
@@ -28,13 +30,18 @@ relationcanvas 128646 relation_ref 1181446 // <generalisation>
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
-relationcanvas 128902 relation_ref 1187974 // <dependency>
-  from ref 128006 z 2001 to ref 128774
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
+relationcanvas 129414 relation_ref 1242246 // <directional aggregation>
+  from ref 128006 z 2001 stereotype "<<shared_ptr>>" xyz 233 193 3000 to ref 129286
+  role_a_pos 285 219 3000 no_role_b
+  multiplicity_a_pos 245 219 3000 no_multiplicity_b
 end
-relationcanvas 129158 relation_ref 1188102 // <dependency>
-  from ref 128006 z 2001 to ref 129030
+relationcanvas 129670 relation_ref 1241734 // <directional aggregation>
+  from ref 129542 z 2007 stereotype "<<shared_ptr>>" xyz 327.5 267 2007 to ref 129286
+  role_a_pos 314 241 3000 no_role_b
+  multiplicity_a_pos 314 274 3000 no_multiplicity_b
+end
+relationcanvas 129798 relation_ref 1248774 // <dependency>
+  from ref 128006 z 2007 to ref 129542
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end

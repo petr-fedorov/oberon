@@ -2,7 +2,7 @@ class Era
 !!!642182.cpp!!!	accept(in mh : TokenHandler [1]) : bool
 return mh->era();
 
-!!!642310.cpp!!!	Era(in era : Message::Timestamp)
+!!!642310.cpp!!!	Era(in era : Message::Timestamp, in security : Security::Security_SP)
 timestamp(era);
 !!!642438.cpp!!!	~Era()
 // BOOST_LOG_TRIVIAL(debug) << toString() << "~Era";
@@ -11,3 +11,5 @@ std::stringstream buf;
 buf << Message::toString() << " Era";
 return buf.str();
 
+!!!1579782.cpp!!!	security() : Security::Security_SP
+return security_;

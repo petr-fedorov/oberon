@@ -2,9 +2,6 @@ class File
 !!!1460486.cpp!!!	name(in exchange : string, in product : string, in era : Message::Timestamp) : string
 return exchange + "_" + product + "_" + date::format("%FT%H-%M-%SZ", era);
 
-!!!1072262.cpp!!!	File(in security : OrderEvent::Security_SP, in handle_deleted : bool = false, in source : bool = false)
-quote_precision_ = -std::floor(std::log10(security_->quote_increment));
-base_precision_ = -std::floor(std::log10(security_->base_increment));
 !!!1072134.cpp!!!	~File()
 f_.close();
 s_.close();
@@ -127,9 +124,13 @@ else
 return true;
 !!!1092358.cpp!!!	era() : bool
 using namespace date;
+security_ = static_cast<Era*>(received_.get())->security();
+quote_precision_ = -std::floor(std::log10(security_->quote()));
+base_precision_ = -std::floor(std::log10(security_->base()));
+
 if(f_.is_open())
   f_.close();
-auto base_name = name(security_->exchange, security_->product, received_->timestamp());
+auto base_name = name(security_->exchange(), security_->product(), received_->timestamp());
 BOOST_LOG_TRIVIAL(info) <<   "Era file:    " << base_name << " quote_precision=" << quote_precision_
 << " base_precision=" << base_precision_;
 f_.open(base_name);
@@ -146,6 +147,7 @@ return f_.is_open();
 if(f_.is_open()) f_.close();
 if(s_.is_open()) s_.close();
 latest_seconds_ = std::chrono::seconds{};
+security_.reset();
 return true;
 !!!1432838.cpp!!!	toSeconds(in d : microseconds) : seconds
 using namespace std::chrono;

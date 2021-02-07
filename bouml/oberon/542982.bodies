@@ -74,3 +74,14 @@ SizeDeducer & stm =*this;
 _current_state->orderEvent(*this);
   }
   return (_current_state != 0);
+!!!1579910.cpp!!!	era() : bool
+  if (_current_state != 0) {
+ #ifdef VERBOSE_STATE_MACHINE
+SizeDeducer & stm =*this;
+ #endif
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger era";
+#endif
+_current_state->era(*this);
+  }
+  return (_current_state != 0);

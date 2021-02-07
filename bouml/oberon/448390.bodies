@@ -65,34 +65,11 @@ order_id_ = order_id;
 !!!1263494.cpp!!!	remaining() : OrderEvent::Volume
 return remaining_size_;
 !!!1263622.cpp!!!	remaining(in remaining_size : OrderEvent::Volume) : void
-if (remaining_size < security_->base_increment &&
-    (security_->base_increment - remaining_size) / security_->base_increment >
-        0.01) {
-  // only if remaining_size is significantly less than base_increment_ we assume
-  // that it is due to rounding errors. Otherwise we save the provided value of
-  // remaining_size
-  remaining_size_ = 0.0;
-  if (isOrderFilled())
-    state_ = kFinished;
-} else {
-  remaining_size_ = remaining_size;
-  if (isOrderFilled())
-    state_ = kActive;
-}
+remaining_size_ = remaining_size;
 !!!1263750.cpp!!!	change() : OrderEvent::Volume
 return change_size_;
 !!!1263878.cpp!!!	change(in change_size : OrderEvent::Volume) : void
-if (std::abs(change_size) < security_->base_increment &&
-    (security_->base_increment - std::abs(change_size)) /
-            security_->base_increment >
-        0.01) {
-  // only if change_size is significantly less than base_increment_ we assume
-  // that it is due to rounding errors. Otherwise we save the provided value of
-  // change_size
-  change_size_ = 0.0;
-} else {
-  change_size_ = change_size;
-}
+change_size_ = change_size;
 !!!1264006.cpp!!!	ordinal() : OrderEvent::Ordinal
 return ordinal_;
 !!!1264134.cpp!!!	ordinal(in ordinal : OrderEvent::Ordinal) : void
@@ -125,8 +102,6 @@ state_ = state;
 return source_;
 !!!1552646.cpp!!!	source(in src : string) : void
 source_ = src;
-!!!1496966.cpp!!!	isSameCommitment(in other : OrderEvent) : bool
-return price_ == other.price_ && std::abs(remaining_size_ - other.remaining_size_) < security_->base_increment;
 !!!1538950.cpp!!!	isOrderCreated() : bool
 return ordinal() == 1 && state() != kFinished && !trade();
 !!!1539078.cpp!!!	isOrderChanged() : bool

@@ -1,6 +1,6 @@
 format 224
-"Receiver" // Standalone application::Receiver
-  revision 52
+"Acquirer" // Application::Acquirer
+  revision 55
   modified_by 6 "petr"
   // class settings
   
@@ -30,10 +30,10 @@ format 224
   activitydiagramsettings
    end
   
-  cpp_h_dir "cpp/receiver"
-  cpp_src_dir "cpp/receiver"
-  cpp_namespace "oberon::receiver"
-  classview 253958 "Shared"
+  cpp_h_dir "cpp/acquirer"
+  cpp_src_dir "cpp/acquirer"
+  cpp_namespace "oberon::acquirer"
+  classview 339974 "Feeder"
     
     classdiagramsettings member_max_width 0 end
     
@@ -53,102 +53,6 @@ format 224
     
     activitydiagramsettings
      end
-    class 867718 "Received"
-      visibility package stereotype "template_typedef"
-      nactuals 1
-      actual class class_ref 852614 // shared_ptr
-        rank 0 value class_ref 174214 // ptree
-      cpp_decl "${comment}${template}using ${name} = ${inherit};
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      mysql_decl ""
-      
-      classrelation 987142 // <realization>
-	relation 976774 -_-|>
-	  stereotype "bind"
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 987142 // <realization>
-	  b parent class_ref 852614 // shared_ptr
-      end
-    end
-
-    class 868102 "SuccessHandler"
-      visibility package stereotype "template_typedef"
-      nactuals 1
-      actual class class_ref 851974 // function
-        rank 0 explicit_value "void()"
-      cpp_decl "${comment}${template}using ${name} = ${inherit};
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      mysql_decl ""
-      
-      classrelation 987526 // <realization>
-	relation 977158 -_-|>
-	  stereotype "bind"
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 987526 // <realization>
-	  b parent class_ref 851974 // function
-      end
-    end
-
-    class 867974 "FailureHandler"
-      visibility package stereotype "template_typedef"
-      nactuals 1
-      actual class class_ref 851974 // function
-        rank 0 explicit_value "void()"
-      cpp_decl "${comment}${template}using ${name} = ${inherit};
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      mysql_decl ""
-      
-      classrelation 987398 // <realization>
-	relation 977030 -_-|>
-	  stereotype "bind"
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 987398 // <realization>
-	  b parent class_ref 851974 // function
-      end
-    end
-
-    class 867846 "ReceivedHandler"
-      visibility package stereotype "template_typedef"
-      nactuals 1
-      actual class class_ref 851974 // function
-        rank 0 explicit_value "void(Received)"
-      cpp_decl "${comment}${template}using ${name} = ${inherit};
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      mysql_decl ""
-      
-      classrelation 987270 // <realization>
-	relation 976902 -_-|>
-	  stereotype "bind"
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 987270 // <realization>
-	  b parent class_ref 851974 // function
-      end
-    end
-
     state 259718 "Feeder"
       stereotype "machine"
       statediagram 406150 "Feeder state machine diagram"
@@ -3268,6 +3172,32 @@ ${members}};
 	  b parent class_ref 972806 // system_timer
       end
     end
+  end
+
+  classview 340102 "Snapshot"
+    
+    classdiagramsettings member_max_width 0 end
+    
+    classcompositediagramsettings end
+    
+    collaborationdiagramsettings end
+    
+    objectdiagramsettings end
+    
+    objectcompositediagramsettings end
+    
+    sequencediagramsettings end
+    
+    statediagramsettings
+     end
+    
+    
+    activitydiagramsettings
+     end
+    classdiagram 406662 "Snapshot class diagram"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
 
     state 259974 "Snapshot"
       stereotype "machine"
@@ -3582,11 +3512,6 @@ if(stm.d_->fh_) stm.d_->fh_();
 
       pseudostate 402950 junction ""
       end
-    end
-
-    classdiagram 406662 "Snapshot class diagram"
-      classdiagramsettings member_max_width 0 end
-      size A4
     end
 
     class 825862 "Snapshot"
@@ -5639,6 +5564,123 @@ ${members}};
 	  b parent class_ref 875910 // SslStream
       end
     end
+  end
+
+  classview 253958 "Receiver"
+    
+    classdiagramsettings member_max_width 0 end
+    
+    classcompositediagramsettings end
+    
+    collaborationdiagramsettings end
+    
+    objectdiagramsettings end
+    
+    objectcompositediagramsettings end
+    
+    sequencediagramsettings end
+    
+    statediagramsettings
+     end
+    
+    
+    activitydiagramsettings
+     end
+    class 867718 "Received"
+      visibility package stereotype "template_typedef"
+      nactuals 1
+      actual class class_ref 852614 // shared_ptr
+        rank 0 value class_ref 174214 // ptree
+      cpp_decl "${comment}${template}using ${name} = ${inherit};
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 987142 // <realization>
+	relation 976774 -_-|>
+	  stereotype "bind"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 987142 // <realization>
+	  b parent class_ref 852614 // shared_ptr
+      end
+    end
+
+    class 868102 "SuccessHandler"
+      visibility package stereotype "template_typedef"
+      nactuals 1
+      actual class class_ref 851974 // function
+        rank 0 explicit_value "void()"
+      cpp_decl "${comment}${template}using ${name} = ${inherit};
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 987526 // <realization>
+	relation 977158 -_-|>
+	  stereotype "bind"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 987526 // <realization>
+	  b parent class_ref 851974 // function
+      end
+    end
+
+    class 867974 "FailureHandler"
+      visibility package stereotype "template_typedef"
+      nactuals 1
+      actual class class_ref 851974 // function
+        rank 0 explicit_value "void()"
+      cpp_decl "${comment}${template}using ${name} = ${inherit};
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 987398 // <realization>
+	relation 977030 -_-|>
+	  stereotype "bind"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 987398 // <realization>
+	  b parent class_ref 851974 // function
+      end
+    end
+
+    class 867846 "ReceivedHandler"
+      visibility package stereotype "template_typedef"
+      nactuals 1
+      actual class class_ref 851974 // function
+        rank 0 explicit_value "void(Received)"
+      cpp_decl "${comment}${template}using ${name} = ${inherit};
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 987270 // <realization>
+	relation 976902 -_-|>
+	  stereotype "bind"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 987270 // <realization>
+	  b parent class_ref 851974 // function
+      end
+    end
 
     state 218374 "Receiver"
       stereotype "machine"
@@ -7527,14 +7569,18 @@ ${inlines}
 
       operation 917382 "Receiver"
 	public explicit_return_type ""
-	nparams 4
+	nparams 8
 	  param in name "ioc" type class_ref 999686 // io_context_SP
 	  param in name "feeder" type class_ref 999814 // Feeder_SP
 	  param in name "snapshot" type class_ref 999942 // Snapshot_SP
 	  param inout name "processor" type class_ref 909958 // ConsumerFn
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, ${t3} ${p3}${v3}${)}${volatile}${throw};
+	  param in name "exchange" explicit_type "string"
+	  param in name "product" explicit_type "string"
+	  param in name "quote_increment" explicit_type "string"
+	  param in name "base_increment" explicit_type "string"
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, ${t3} ${p3}${v3}, const ${t4} & ${p4}${v4}, const ${t5} & ${p5}${v5}, const ${t6} & ${p6}${v6}, const ${t7} & ${p7}${v7}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, ${t3} ${p3}${)}${throw} : _current_state{0}, d_{boost::make_unique<ReceiverData>()} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, ${t3} ${p3}, const ${t4} & ${p4}, const ${t5} & ${p5}, const ${t6} & ${p6}, const ${t7} & ${p7}${)}${throw} : _current_state{0}, d_{boost::make_unique<ReceiverData>()} {
   ${body}}
 "
 	
@@ -8129,6 +8175,54 @@ ${members}};
 	    classrelation_ref 1144582 // messages_ (<directional composition>)
 	  b parent class_ref 1000070 // ptree_SP
       end
+
+      attribute 965126 "exchange"
+	public explicit_type "string"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 965254 "product"
+	public explicit_type "string"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 965382 "quote_increment"
+	public explicit_type "string"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 965510 "base_increment"
+	public explicit_type "string"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
     end
 
     class 999686 "io_context_SP"
@@ -8155,31 +8249,11 @@ ${members}};
     end
   end
 
-  classview 220550 "Coinbase Receiver"
-    
-    classdiagramsettings member_max_width 0 end
-    
-    classcompositediagramsettings end
-    
-    collaborationdiagramsettings end
-    
-    objectdiagramsettings end
-    
-    objectcompositediagramsettings end
-    
-    sequencediagramsettings end
-    
-    statediagramsettings
-     end
-    
-    
-    activitydiagramsettings
-     end
-  end
-
   package_ref 208134 // Coinbase
 
   package_ref 208262 // Bitstamp
+
+  package_ref 254342 // File
 
   deploymentview 187014 "Source files"
     //deployment diagram settings

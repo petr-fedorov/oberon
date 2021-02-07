@@ -1,6 +1,6 @@
 format 224
-"Reconstructor" // Standalone application::Reconstructor
-  revision 237
+"Reconstructor" // Application::Reconstructor
+  revision 241
   modified_by 6 "petr"
   // class settings
   
@@ -61,6 +61,168 @@ format 224
     classdiagram 161030 "Message Hierarchy Detailed"
       classdiagramsettings member_max_width 0 end
       size B
+    end
+
+    class 1067398 "Security"
+      visibility public 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl "${comment}${abstract}${custom}valuetype ${name}${inherit} {
+${members}};
+"
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      class 1067526 "Security_SP"
+	visibility public stereotype "template_typedef"
+	nactuals 1
+	actual class class_ref 852614 // shared_ptr
+	  rank 0 value class_ref 1067398 // Security
+	cpp_decl "${comment}${template}using ${name} = ${inherit};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 1238278 // <realization>
+	  relation 1227910 -_-|>
+	    stereotype "bind"
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 1238278 // <realization>
+	    b parent class_ref 852614 // shared_ptr
+	end
+      end
+
+      attribute 951558 "exchange_"
+	const_attribute private explicit_type "string"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 951686 "product_"
+	const_attribute private explicit_type "string"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 951430 "quote_increment_"
+	const_attribute private type class_ref 305542 // Price
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 820102 "base_increment_"
+	const_attribute private type class_ref 305798 // Volume
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      operation 1579142 "Security"
+	public explicit_return_type ""
+	nparams 4
+	  param in name "exchange" explicit_type "string"
+	  param in name "product" explicit_type "string"
+	  param in name "quote_increment" type class_ref 305542 // Price
+	  param in name "base_increment" type class_ref 305798 // Volume
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}${)}${volatile}${throw} : exchange_{exchange}, product_{product}, quote_increment_{quote_increment}, base_increment_{base_increment} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1579270 "exchange"
+	const cpp_inline public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1579398 "product"
+	const cpp_inline public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1579526 "quote"
+	const cpp_inline public return_type class_ref 305542 // Price
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1579654 "base"
+	const cpp_inline public return_type class_ref 305798 // Volume
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
     end
 
     class 245766 "Message"
@@ -314,11 +476,12 @@ ${inlines}
 
       operation 642310 "Era"
 	public explicit_return_type ""
-	nparams 1
+	nparams 2
 	  param in name "era" type class_ref 230278 // Timestamp
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw};
+	  param in name "security" type class_ref 1067526 // Security_SP
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw}: security_{security} {
   ${body}}
 "
 	
@@ -343,6 +506,30 @@ ${inlines}
 
       operation 650246 "toString"
 	const cpp_override public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 1252102 // security_ (<directional aggregation>)
+	relation 1241734 o-->
+	  stereotype "shared_ptr"
+	  a role_name "security_" multiplicity "1" private
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	    classrelation_ref 1252102 // security_ (<directional aggregation>)
+	  b parent class_ref 1067398 // Security
+      end
+
+      operation 1579782 "security"
+	const cpp_inline public return_type class_ref 1067526 // Security_SP
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -748,94 +935,6 @@ ${items}};
 	end
       end
 
-      class 1067398 "Security"
-	visibility public stereotype "struct"
-	cpp_decl "${comment}${template}struct ${name}${inherit} {
-${members}};
-${inlines}
-"
-	java_decl ""
-	php_decl ""
-	python_2_2 python_decl ""
-	idl_decl "${comment}struct ${name} {
-${members}};
-"
-	explicit_switch_type ""
-	mysql_decl ""
-	
-	attribute 951558 "exchange"
-	  public explicit_type "string"
-	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	  java_decl ""
-	  php_decl ""
-	  python_decl ""
-	  idl_decl ""
-	  mysql_decl ""
-	  MysqlColumn
-	end
-
-	attribute 951686 "product"
-	  public explicit_type "string"
-	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	  java_decl ""
-	  php_decl ""
-	  python_decl ""
-	  idl_decl ""
-	  mysql_decl ""
-	  MysqlColumn
-	end
-
-	attribute 951430 "quote_increment"
-	  public type class_ref 305798 // Volume
-	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	  java_decl ""
-	  php_decl ""
-	  python_decl ""
-	  idl_decl ""
-	  mysql_decl ""
-	  MysqlColumn
-	end
-
-	attribute 820102 "base_increment"
-	  public type class_ref 305798 // Volume
-	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	  java_decl ""
-	  php_decl ""
-	  python_decl ""
-	  idl_decl ""
-	  mysql_decl ""
-	  MysqlColumn
-	end
-      end
-
-      class 1067526 "Security_SP"
-	visibility public stereotype "template_typedef"
-	nactuals 1
-	actual class class_ref 852614 // shared_ptr
-	  rank 0 value class_ref 1067398 // Security
-	cpp_decl "${comment}${template}using ${name} = ${inherit};
-"
-	java_decl ""
-	php_decl ""
-	python_2_2 python_decl ""
-	idl_decl ""
-	explicit_switch_type ""
-	mysql_decl ""
-	
-	classrelation 1238278 // <realization>
-	  relation 1227910 -_-|>
-	    stereotype "bind"
-	    a public
-	      cpp default "${type}"
-	      classrelation_ref 1238278 // <realization>
-	    b parent class_ref 852614 // shared_ptr
-	end
-      end
-
       attribute 465030 "kNaVolume"
 	class_attribute const_attribute public type class_ref 305798 // Volume
 	init_value "std::nan(\"1954\")"
@@ -1023,21 +1122,6 @@ ${members}};
 	idl_decl ""
 	mysql_decl ""
 	MysqlColumn
-      end
-
-      operation 1559174 "OrderEvent"
-	public explicit_return_type ""
-	nparams 1
-	  param in name "security" type class_ref 1067526 // Security_SP
-	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw};
-"
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} : security_{security} {
-  ${body}}
-"
-	
-	
-	
-	
       end
 
       operation 1475078 "clone"
@@ -1405,21 +1489,6 @@ ${members}};
 	
       end
 
-      operation 1496966 "isSameCommitment"
-	const public explicit_return_type "bool"
-	nparams 1
-	  param in name "other" type class_ref 448390 // OrderEvent
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
       operation 1538950 "isOrderCreated"
 	const cpp_inline public explicit_return_type "bool"
 	nparams 0
@@ -1474,16 +1543,6 @@ ${members}};
 	
 	
 	
-      end
-
-      classrelation 1238150 // security_ (<directional composition>)
-	relation 1227782 *-->
-	  stereotype "shared_ptr"
-	  a role_name "security_" multiplicity "1" const_relation private
-	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${stereotype}<${const}${type}> ${name}${value};
-"
-	    classrelation_ref 1238150 // security_ (<directional composition>)
-	  b parent class_ref 1067398 // Security
       end
     end
 
@@ -1627,6 +1686,1764 @@ ${inlines}
     
     activitydiagramsettings
      end
+    classdiagram 492550 "EraMerger"
+      classdiagramsettings hide_attributes yes hide_operations yes member_max_width 0 end
+      size A4
+    end
+
+    state 308870 "EraMerger"
+      stereotype "machine"
+      statediagram 486022 "EraMerger"
+	statediagramsettings show_trans_definition yes draw_all_relations yes
+	 end
+	size A4
+      end
+
+      state 315910 "Engage"
+	pseudostate 389510 initial ""
+	  transition 572678 "<transition>"
+	    on state_ref 315398 // Wait era start
+	    external 
+	  end
+	end
+
+	state 315782 "Prepare merge"
+	  transition 573574 "endOfEpisode"
+	    on state_ref 315526 // Era started
+	      uml_trigger "endOfEpisode"
+	      uml_expr "pass deletions"
+	      cpp_trigger "endOfEpisode"
+	      cpp_expr "for(auto iter = stm.active_orders_.begin(); iter != stm.active_orders_.end(); ++iter)
+if(iter->second->deleted()) {
+  auto c = boost::make_unique<reconstructor::OrderEvent>(*iter->second);
+  c->deleted(false);
+  c->state(reconstructor::OrderEvent::OrderState::kFinished);
+  c->timestamp(stm.era_timestamp_);
+  assert(c->isOrderCancelled());
+  stm.active_orders_.erase(iter);
+  stm.output_.push_back(std::move(c));
+}
+
+"
+	    external 
+	  end
+
+	  transition 576006 "create"
+	    on state_ref 315782 // Prepare merge
+	      uml_trigger "created"
+	      uml_expr "merge with order book"
+	      cpp_trigger "created"
+	      cpp_expr "using OrderEvent=oberon::reconstructor::OrderEvent;
+OrderEvent *event = static_cast<OrderEvent*>(stm.received_.get());
+auto iter = stm.active_orders_.find(event->maker());
+if (iter != stm.active_orders_.end()) {
+  OrderEvent *old = static_cast<OrderEvent *>(iter->second.get());
+  event->deleted(true);
+
+  if (old->price() == event->price() &&
+      ( std::abs(old->remaining() - event->remaining())/stm.security_->base()) < 0.99 ) { // the same commitment, so keep old event
+    old->deleted(false);
+    stm.received_.release();
+  } else { // generate Changed event instead of Created
+    stm.received_ = boost::make_unique<OrderEvent>(*event); // the original stm.received_ (Created) is deleted here!
+    stm.received_->deleted(false);
+    stm.received_->timestamp(stm.era_timestamp_);
+    assert(static_cast<OrderEvent*>(stm.received_.get())->isOrderChanged());
+    iter->second = static_cast<OrderEvent *>(stm.received_.get())->clone();
+    stm.output_.push_back(std::move(stm.received_));
+  }
+}
+"
+	  end
+	end
+
+	state 315526 "Era started"
+	  transition 573446 "era"
+	    on state_ref 315782 // Prepare merge
+	      uml_trigger "era"
+	      uml_expr "mark all order book events deleted"
+	      cpp_trigger "era"
+	      cpp_expr "stm.era_timestamp_ = stm.received_->timestamp();
+for(auto &p : stm.active_orders_)
+  p.second->deleted(true);
+"
+	    external 
+	  end
+
+	  transition 574086 "cancelled"
+	    on state_ref 315526 // Era started
+	      uml_trigger "cancelled"
+	      uml_expr "update order book"
+	      cpp_trigger "cancelled"
+	      cpp_expr "using OrderEvent = reconstructor::OrderEvent;
+OrderEvent *event = static_cast<OrderEvent *>(stm.received_.get());
+stm.active_orders_.erase(event->maker());
+stm.output_.push_back(std::move(stm.received_));
+"
+	  end
+
+	  transition 574854 "filled"
+	    on state_ref 315526 // Era started
+	      uml_trigger "filled"
+	      uml_expr "update order book"
+	      cpp_trigger "filled"
+	      cpp_expr "using OrderEvent = reconstructor::OrderEvent;
+OrderEvent *event = static_cast<OrderEvent *>(stm.received_.get());
+if (event->state() == OrderEvent::OrderState::kActive) {
+  stm.active_orders_[event->maker()] = event->clone();
+} else {
+  stm.active_orders_.erase(event->maker());
+}
+stm.output_.push_back(std::move(stm.received_));
+"
+	  end
+
+	  transition 575110 "created"
+	    on state_ref 315526 // Era started
+	      uml_trigger "created"
+	      uml_expr "update order book"
+	      cpp_trigger "created"
+	      cpp_expr "using OrderEvent=reconstructor::OrderEvent;
+OrderEvent *event = static_cast<OrderEvent*>(stm.received_.get());
+stm.active_orders_[event->maker()] = event->clone();
+stm.output_.push_back(std::move(stm.received_));
+"
+	  end
+
+	  transition 575878 "changed"
+	    on state_ref 315526 // Era started
+	      uml_trigger "changed"
+	      uml_expr "update order book"
+	      cpp_trigger "changed"
+	      cpp_expr "using OrderEvent=reconstructor::OrderEvent;
+OrderEvent *event = static_cast<OrderEvent*>(stm.received_.get());
+stm.active_orders_[event->maker()] = event->clone();
+stm.output_.push_back(std::move(stm.received_));
+
+"
+	  end
+
+	  transition 598278 "reset"
+	    on state_ref 315526 // Era started
+	      uml_trigger "reset"
+	      uml_expr "drop"
+	      cpp_trigger "reset"
+	      cpp_expr "stm.received_.reset();"
+	  end
+	end
+
+	state 315398 "Wait era start"
+	  transition 572934 "era"
+	    on state_ref 315526 // Era started
+	      uml_trigger "era"
+	      uml_expr "pass"
+	      cpp_trigger "era"
+	      cpp_expr "stm.security_ = static_cast<Era*>(stm.received_.get())->security();
+stm.output_.push_back(std::move(stm.received_));
+"
+	    external 
+	  end
+
+	  transition 576518 "reset"
+	    on state_ref 315398 // Wait era start
+	      uml_trigger "reset"
+	      uml_expr "pass"
+	      cpp_trigger "reset"
+	      cpp_expr "stm.output_.push_back(std::move(stm.received_));"
+	  end
+	end
+
+	transition 574726 "<transition>"
+	  on state_ref 315910 // Engage
+	    uml_trigger "endOfEpisode"
+	    cpp_trigger "endOfEpisode"
+	end
+
+	transition 577542 "created"
+	  on pseudostate_ref 389894 // final 
+	    uml_trigger "created"
+	    cpp_trigger "created"
+	  external 
+	end
+
+	transition 577670 "changed"
+	  on pseudostate_ref 389894 // final 
+	    uml_trigger "changed"
+	    cpp_trigger "changed"
+	  external 
+	end
+
+	transition 577798 "filled"
+	  on pseudostate_ref 389894 // final 
+	    uml_trigger "filled"
+	    cpp_trigger "filled"
+	  external 
+	end
+
+	transition 577926 "cancelled"
+	  on pseudostate_ref 389894 // final 
+	    uml_trigger "cancelled"
+	    cpp_trigger "cancelled"
+	  external 
+	end
+
+	transition 578054 "era"
+	  on pseudostate_ref 389894 // final 
+	    uml_trigger "era"
+	    cpp_trigger "era"
+	  external 
+	end
+
+	transition 578182 "reset"
+	  on pseudostate_ref 389894 // final 
+	    uml_trigger "reset"
+	    cpp_trigger "reset"
+	  external 
+	end
+      end
+
+      pseudostate 389766 initial ""
+	transition 574342 "<transition>"
+	  on state_ref 315910 // Engage
+	  external 
+	end
+      end
+
+      pseudostate 389894 final ""
+      end
+    end
+
+    class 1046918 "EraMerger"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      ncouples 1
+      key "STM generated" value ""
+      comment " implement the state machine EraMerger"
+      class 1047046 "AnyState"
+	abstract visibility protected 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " Mother class of all the classes representing states"
+	operation 1483398 "~AnyState"
+	  force_body_gen cpp_virtual public explicit_return_type ""
+	  nparams 0
+	  cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	end
+
+	operation 1483526 "_upper"
+	  abstract force_body_gen cpp_virtual public return_type class_ref 1047046 // AnyState
+	  nparams 1
+	    param inout name "stm" type class_ref 1046918 // EraMerger
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} &${)}${const}${volatile}${throw}${abstract};
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " return the upper state"
+	end
+
+	operation 1483654 "_do"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 1046918 // EraMerger
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} &${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} &${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " perform the 'do activity'"
+	end
+
+	operation 1483782 "_doentry"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 1046918 // EraMerger
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} &${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} &${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " performs the 'entry activity'"
+	end
+
+	operation 1483910 "_doexit"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 1046918 // EraMerger
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} &${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} &${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " performs the 'exit activity'"
+	end
+
+	operation 1485062 "create"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 1046918 // EraMerger
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} &${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} &${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	end
+
+	operation 1485446 "endOfEpisode"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 1046918 // EraMerger
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " the current state doesn't manage the event endOfEpisode, give it to the upper state"
+	end
+
+	operation 1485830 "created"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 1046918 // EraMerger
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " the current state doesn't manage the event created, give it to the upper state"
+	end
+
+	operation 1486342 "era"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 1046918 // EraMerger
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " the current state doesn't manage the event era, give it to the upper state"
+	end
+
+	operation 1486726 "reset"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 1046918 // EraMerger
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " the current state doesn't manage the event reset, give it to the upper state"
+	end
+
+	operation 1487110 "cancelled"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 1046918 // EraMerger
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " the current state doesn't manage the event cancelled, give it to the upper state"
+	end
+
+	operation 1487494 "filled"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 1046918 // EraMerger
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " the current state doesn't manage the event filled, give it to the upper state"
+	end
+
+	operation 1488006 "changed"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 1046918 // EraMerger
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " the current state doesn't manage the event changed, give it to the upper state"
+	end
+      end
+
+      class 1047174 "EraMerger_State"
+	visibility protected 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " implement the state EraMerger"
+	class 1047302 "Engage_State"
+	  visibility public 
+	  cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	  java_decl ""
+	  php_decl ""
+	  python_2_2 python_decl ""
+	  idl_decl ""
+	  explicit_switch_type ""
+	  mysql_decl ""
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " implement the state Engage"
+	  class 1047430 "Prepare_merge_State"
+	    visibility public 
+	    cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	    java_decl ""
+	    php_decl ""
+	    python_2_2 python_decl ""
+	    idl_decl ""
+	    explicit_switch_type ""
+	    mysql_decl ""
+	    
+	    ncouples 1
+	    key "STM generated" value ""
+	    comment " implement the state Prepare merge"
+	    operation 1484294 "~Prepare_merge_State"
+	      force_body_gen cpp_virtual public explicit_return_type ""
+	      nparams 0
+	      cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	    end
+
+	    classrelation 1190662 // <generalisation>
+	      relation 1180294 ---|>
+		a public
+		  cpp default "${type}"
+		  classrelation_ref 1190662 // <generalisation>
+		b parent class_ref 1047046 // AnyState
+	    end
+
+	    operation 1485574 "endOfEpisode"
+	      force_body_gen cpp_virtual public explicit_return_type "void"
+	      nparams 1
+	        param inout name "stm" type class_ref 1046918 // EraMerger
+	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " to manage the event endOfEpisode"
+	    end
+
+	    operation 1485958 "created"
+	      force_body_gen cpp_virtual public explicit_return_type "void"
+	      nparams 1
+	        param inout name "stm" type class_ref 1046918 // EraMerger
+	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " to manage the event created"
+	    end
+
+	    operation 1486086 "_upper"
+	      force_body_gen cpp_virtual public return_type class_ref 1047046 // AnyState
+	      nparams 1
+	        param inout name "stm" type class_ref 1046918 // EraMerger
+	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " returns the state containing the current"
+	    end
+	  end
+
+	  class 1047686 "Wait_era_start_State"
+	    visibility public 
+	    cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	    java_decl ""
+	    php_decl ""
+	    python_2_2 python_decl ""
+	    idl_decl ""
+	    explicit_switch_type ""
+	    mysql_decl ""
+	    
+	    ncouples 1
+	    key "STM generated" value ""
+	    comment " implement the state Wait era start"
+	    operation 1484550 "~Wait_era_start_State"
+	      force_body_gen cpp_virtual public explicit_return_type ""
+	      nparams 0
+	      cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	    end
+
+	    classrelation 1191174 // <generalisation>
+	      relation 1180806 ---|>
+		a public
+		  cpp default "${type}"
+		  classrelation_ref 1191174 // <generalisation>
+		b parent class_ref 1047046 // AnyState
+	    end
+
+	    operation 1488390 "era"
+	      force_body_gen cpp_virtual public explicit_return_type "void"
+	      nparams 1
+	        param inout name "stm" type class_ref 1046918 // EraMerger
+	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " to manage the event era"
+	    end
+
+	    operation 1488518 "reset"
+	      force_body_gen cpp_virtual public explicit_return_type "void"
+	      nparams 1
+	        param inout name "stm" type class_ref 1046918 // EraMerger
+	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " to manage the event reset"
+	    end
+
+	    operation 1488646 "_upper"
+	      force_body_gen cpp_virtual public return_type class_ref 1047046 // AnyState
+	      nparams 1
+	        param inout name "stm" type class_ref 1046918 // EraMerger
+	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " returns the state containing the current"
+	    end
+	  end
+
+	  class 1047558 "Era_started_State"
+	    visibility public 
+	    cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	    java_decl ""
+	    php_decl ""
+	    python_2_2 python_decl ""
+	    idl_decl ""
+	    explicit_switch_type ""
+	    mysql_decl ""
+	    
+	    ncouples 1
+	    key "STM generated" value ""
+	    comment " implement the state Era started"
+	    operation 1484422 "~Era_started_State"
+	      force_body_gen cpp_virtual public explicit_return_type ""
+	      nparams 0
+	      cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	    end
+
+	    classrelation 1190918 // <generalisation>
+	      relation 1180550 ---|>
+		a public
+		  cpp default "${type}"
+		  classrelation_ref 1190918 // <generalisation>
+		b parent class_ref 1047046 // AnyState
+	    end
+
+	    operation 1486470 "era"
+	      force_body_gen cpp_virtual public explicit_return_type "void"
+	      nparams 1
+	        param inout name "stm" type class_ref 1046918 // EraMerger
+	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " to manage the event era"
+	    end
+
+	    operation 1486854 "reset"
+	      force_body_gen cpp_virtual public explicit_return_type "void"
+	      nparams 1
+	        param inout name "stm" type class_ref 1046918 // EraMerger
+	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " to manage the event reset"
+	    end
+
+	    operation 1487238 "cancelled"
+	      force_body_gen cpp_virtual public explicit_return_type "void"
+	      nparams 1
+	        param inout name "stm" type class_ref 1046918 // EraMerger
+	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " to manage the event cancelled"
+	    end
+
+	    operation 1487622 "filled"
+	      force_body_gen cpp_virtual public explicit_return_type "void"
+	      nparams 1
+	        param inout name "stm" type class_ref 1046918 // EraMerger
+	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " to manage the event filled"
+	    end
+
+	    operation 1487750 "created"
+	      force_body_gen cpp_virtual public explicit_return_type "void"
+	      nparams 1
+	        param inout name "stm" type class_ref 1046918 // EraMerger
+	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " to manage the event created"
+	    end
+
+	    operation 1488134 "changed"
+	      force_body_gen cpp_virtual public explicit_return_type "void"
+	      nparams 1
+	        param inout name "stm" type class_ref 1046918 // EraMerger
+	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " to manage the event changed"
+	    end
+
+	    operation 1488262 "_upper"
+	      force_body_gen cpp_virtual public return_type class_ref 1047046 // AnyState
+	      nparams 1
+	        param inout name "stm" type class_ref 1046918 // EraMerger
+	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " returns the state containing the current"
+	    end
+	  end
+
+	  operation 1484166 "~Engage_State"
+	    force_body_gen cpp_virtual public explicit_return_type ""
+	    nparams 0
+	    cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	    cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	    
+	    
+	    
+	    
+	    ncouples 1
+	    key "STM generated" value ""
+	  end
+
+	  attribute 905094 "_prepare_merge_state"
+	    public type class_ref 1047430 // Prepare_merge_State
+	    cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    java_decl ""
+	    php_decl ""
+	    python_decl ""
+	    idl_decl ""
+	    mysql_decl ""
+	    MysqlColumn
+	    ncouples 1
+	    key "STM generated" value ""
+	    comment " memorize the instance of the state Prepare merge, internal"
+	  end
+
+	  attribute 905222 "_era_started_state"
+	    public type class_ref 1047558 // Era_started_State
+	    cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    java_decl ""
+	    php_decl ""
+	    python_decl ""
+	    idl_decl ""
+	    mysql_decl ""
+	    MysqlColumn
+	    ncouples 1
+	    key "STM generated" value ""
+	    comment " memorize the instance of the state Era started, internal"
+	  end
+
+	  attribute 905350 "_wait_era_start_state"
+	    public type class_ref 1047686 // Wait_era_start_State
+	    cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    java_decl ""
+	    php_decl ""
+	    python_decl ""
+	    idl_decl ""
+	    mysql_decl ""
+	    MysqlColumn
+	    ncouples 1
+	    key "STM generated" value ""
+	    comment " memorize the instance of the state Wait era start, internal"
+	  end
+
+	  classrelation 1190534 // <generalisation>
+	    relation 1180166 ---|>
+	      a public
+		cpp default "${type}"
+		classrelation_ref 1190534 // <generalisation>
+	      b parent class_ref 1047046 // AnyState
+	  end
+
+	  operation 1485190 "create"
+	    force_body_gen cpp_virtual public explicit_return_type "void"
+	    nparams 1
+	      param inout name "stm" type class_ref 1046918 // EraMerger
+	    cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	    cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	    
+	    
+	    
+	    
+	    ncouples 1
+	    key "STM generated" value ""
+	    comment " to manage the event create"
+	  end
+
+	  operation 1488902 "created"
+	    force_body_gen cpp_virtual public explicit_return_type "void"
+	    nparams 1
+	      param inout name "stm" type class_ref 1046918 // EraMerger
+	    cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	    cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	    
+	    
+	    
+	    
+	    ncouples 1
+	    key "STM generated" value ""
+	    comment " to manage the event created"
+	  end
+
+	  operation 1489030 "changed"
+	    force_body_gen cpp_virtual public explicit_return_type "void"
+	    nparams 1
+	      param inout name "stm" type class_ref 1046918 // EraMerger
+	    cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	    cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	    
+	    
+	    
+	    
+	    ncouples 1
+	    key "STM generated" value ""
+	    comment " to manage the event changed"
+	  end
+
+	  operation 1489158 "filled"
+	    force_body_gen cpp_virtual public explicit_return_type "void"
+	    nparams 1
+	      param inout name "stm" type class_ref 1046918 // EraMerger
+	    cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	    cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	    
+	    
+	    
+	    
+	    ncouples 1
+	    key "STM generated" value ""
+	    comment " to manage the event filled"
+	  end
+
+	  operation 1489286 "cancelled"
+	    force_body_gen cpp_virtual public explicit_return_type "void"
+	    nparams 1
+	      param inout name "stm" type class_ref 1046918 // EraMerger
+	    cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	    cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	    
+	    
+	    
+	    
+	    ncouples 1
+	    key "STM generated" value ""
+	    comment " to manage the event cancelled"
+	  end
+
+	  operation 1489414 "era"
+	    force_body_gen cpp_virtual public explicit_return_type "void"
+	    nparams 1
+	      param inout name "stm" type class_ref 1046918 // EraMerger
+	    cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	    cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	    
+	    
+	    
+	    
+	    ncouples 1
+	    key "STM generated" value ""
+	    comment " to manage the event era"
+	  end
+
+	  operation 1489542 "reset"
+	    force_body_gen cpp_virtual public explicit_return_type "void"
+	    nparams 1
+	      param inout name "stm" type class_ref 1046918 // EraMerger
+	    cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	    cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	    
+	    
+	    
+	    
+	    ncouples 1
+	    key "STM generated" value ""
+	    comment " to manage the event reset"
+	  end
+
+	  operation 1489670 "_upper"
+	    force_body_gen cpp_virtual public return_type class_ref 1047046 // AnyState
+	    nparams 1
+	      param inout name "stm" type class_ref 1046918 // EraMerger
+	    cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	    cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	    
+	    
+	    
+	    
+	    ncouples 1
+	    key "STM generated" value ""
+	    comment " returns the state containing the current"
+	  end
+
+	  operation 1490438 "endOfEpisode"
+	    force_body_gen cpp_virtual public explicit_return_type "void"
+	    nparams 1
+	      param inout name "stm" type class_ref 1046918 // EraMerger
+	    cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	    cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	    
+	    
+	    
+	    
+	    ncouples 1
+	    key "STM generated" value ""
+	    comment " to manage the event endOfEpisode"
+	  end
+	end
+
+	operation 1484038 "~EraMerger_State"
+	  force_body_gen cpp_virtual public explicit_return_type ""
+	  nparams 0
+	  cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	end
+
+	attribute 904966 "_engage_state"
+	  public type class_ref 1047302 // Engage_State
+	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " memorize the instance of the state Engage, internal"
+	end
+
+	classrelation 1190406 // <generalisation>
+	  relation 1180038 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 1190406 // <generalisation>
+	    b parent class_ref 1047046 // AnyState
+	end
+
+	operation 1489798 "create"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 1046918 // EraMerger
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " to manage the event create"
+	end
+
+	operation 1489926 "_upper"
+	  force_body_gen cpp_virtual public return_type class_ref 1047046 // AnyState
+	  nparams 1
+	    param inout name "stm" type class_ref 1046918 // EraMerger
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} &${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} * ${class}::${name}${(}${t0} &${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " returns the state containing the current"
+	end
+      end
+
+      attribute 904710 "_machine_name"
+	public explicit_type "string"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	ncouples 1
+	key "STM generated" value ""
+	comment " a (unique) name of the machine "
+      end
+
+      attribute 918790 "active_orders_"
+	private type class_ref 1040262 // OrderEvent_UP
+	multiplicity "*"
+	stereotype "map"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<reconstructor::OrderEvent::OrderId, ${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 912134 "era_timestamp_"
+	private type class_ref 230278 // Timestamp
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 904838 "_eramerger_state"
+	protected type class_ref 1047174 // EraMerger_State
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	ncouples 1
+	key "STM generated" value ""
+	comment " memorize the instance of the state EraMerger, internal"
+      end
+
+      operation 1484678 "EraMerger"
+	force_body_gen public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+      end
+
+      operation 1497606 "EraMerger"
+	force_body_gen public explicit_return_type ""
+	nparams 1
+	  param in name "next" type class_ref 950918 // TokenHandler_SP
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw}: _current_state{0}, TokenHandler{next, \"EraMerger\"} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1484806 "~EraMerger"
+	force_body_gen cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+      end
+
+      operation 1484934 "create"
+	force_body_gen public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " the operation you call to signal the event create"
+      end
+
+      operation 1485318 "endOfEpisode"
+	force_body_gen public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " the operation you call to signal the event endOfEpisode"
+      end
+
+      operation 1485702 "created"
+	force_body_gen public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " the operation you call to signal the event created"
+      end
+
+      classrelation 1190790 // <dependency>
+	relation 1180422 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 1190790 // <dependency>
+	  b parent class_ref 1047430 // Prepare_merge_State
+      end
+
+      operation 1486214 "era"
+	force_body_gen public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " the operation you call to signal the event era"
+      end
+
+      operation 1486598 "reset"
+	force_body_gen public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " the operation you call to signal the event reset"
+      end
+
+      operation 1486982 "cancelled"
+	force_body_gen public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " the operation you call to signal the event cancelled"
+      end
+
+      operation 1487366 "filled"
+	force_body_gen public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " the operation you call to signal the event filled"
+      end
+
+      operation 1487878 "changed"
+	force_body_gen public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " the operation you call to signal the event changed"
+      end
+
+      classrelation 1191046 // <dependency>
+	relation 1180678 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 1191046 // <dependency>
+	  b parent class_ref 1047558 // Era_started_State
+      end
+
+      classrelation 1191302 // <dependency>
+	relation 1180934 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 1191302 // <dependency>
+	  b parent class_ref 1047686 // Wait_era_start_State
+      end
+
+      classrelation 1191430 // <dependency>
+	relation 1181062 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 1191430 // <dependency>
+	  b parent class_ref 1047302 // Engage_State
+      end
+
+      classrelation 1191558 // <dependency>
+	relation 1181190 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 1191558 // <dependency>
+	  b parent class_ref 1047174 // EraMerger_State
+      end
+
+      operation 1490054 "doActivity"
+	force_body_gen public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " to execute the current state 'do activity'"
+      end
+
+      operation 1490182 "_set_currentState"
+	force_body_gen cpp_inline protected explicit_return_type "void"
+	nparams 1
+	  param inout name "st" type class_ref 1047046 // AnyState
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " change the current state, internal"
+      end
+
+      operation 1490310 "_final"
+	force_body_gen protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " execution done, internal"
+      end
+
+      classrelation 1191686 // _current_state (<directional aggregation>)
+	relation 1181318 o-->
+	  a role_name "_current_state" protected
+	    comment " contains the current state, internal"
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 1191686 // _current_state (<directional aggregation>)
+	  b parent class_ref 1047046 // AnyState
+      end
+
+      classrelation 1191814 // <generalisation>
+	relation 1181446 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 1191814 // <generalisation>
+	  b parent class_ref 441222 // TokenHandler
+      end
+
+      classrelation 1252614 // security_ (<directional aggregation>)
+	relation 1242246 o-->
+	  stereotype "shared_ptr"
+	  a role_name "security_" multiplicity "0..1" private
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	    classrelation_ref 1252614 // security_ (<directional aggregation>)
+	  b parent class_ref 1067398 // Security
+      end
+
+      classrelation 1259142 // <dependency>
+	relation 1248774 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1259142 // <dependency>
+	  b parent class_ref 521478 // Era
+      end
+    end
+
+    classdiagram 479494 "EraSlicer"
+      classdiagramsettings hide_attributes yes hide_operations yes member_max_width 0 end
+      size A4
+    end
+
+    class 1020678 "EraSlicer"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      operation 1475718 "EraSlicer"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "boundary" explicit_type "int"
+	  param in name "next" type class_ref 950918 // TokenHandler_SP
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throw} :TokenHandler{next, \"Era Slicer\"}, boundary_{boundary} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 1182470 // <generalisation>
+	relation 1172102 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 1182470 // <generalisation>
+	  b parent class_ref 441222 // TokenHandler
+      end
+
+      attribute 918662 "active_orders_"
+	private type class_ref 1040262 // OrderEvent_UP
+	multiplicity "*"
+	stereotype "map"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<reconstructor::OrderEvent::OrderId, ${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      operation 1474182 "cancelled"
+	cpp_override public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1511174 "filled"
+	cpp_override public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1474566 "era"
+	cpp_override public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1474950 "orderEvent"
+	cpp_override public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 1182726 // <dependency>
+	relation 1172358 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1182726 // <dependency>
+	  b parent class_ref 448390 // OrderEvent
+      end
+
+      classrelation 1182982 // <dependency>
+	relation 1172614 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1182982 // <dependency>
+	  b parent class_ref 521478 // Era
+      end
+
+      attribute 897414 "boundary_"
+	private explicit_type "int"
+	init_value "5"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 897542 "next_era_"
+	private type class_ref 230278 // Timestamp
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      operation 1475846 "slice"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 1183238 // <dependency>
+	relation 1172870 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1183238 // <dependency>
+	  b parent class_ref 966278 // Reset
+      end
+
+      classrelation 1252486 // security_ (<directional aggregation>)
+	relation 1242118 o-->
+	  stereotype "shared_ptr"
+	  a role_name "security_" multiplicity "0..1" private
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	    classrelation_ref 1252486 // security_ (<directional aggregation>)
+	  b parent class_ref 1067398 // Security
+      end
+
+      operation 1580294 "reset"
+	cpp_override public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+    end
+
     state 197894 "SizeDeducer"
       stereotype "machine"
       statediagram 314118 "Size Deducer"
@@ -1665,6 +3482,7 @@ ${inlines}
 	    uml_expr "reset order sizes"
 	    cpp_trigger "reset"
 	    cpp_expr "stm.previous_sizes_.clear();
+stm.security_.reset();
 stm.output_.push_back(std::move(stm.received_));
 "
 	end
@@ -1695,6 +3513,16 @@ stm.output_.push_back(std::move(stm.received_));
 stm.output_.push_back(std::move(stm.received_));
 "
 	end
+
+	transition 591750 "era"
+	  on state_ref 198022 // Wait
+	    uml_trigger "era"
+	    uml_expr "save security"
+	    cpp_trigger "era"
+	    cpp_expr "stm.security_ = static_cast<Era *>(stm.received_.get())->security();
+stm.output_.push_back(std::move(stm.received_));
+"
+	end
       end
 
       state 198150 "Deduce"
@@ -1714,13 +3542,22 @@ catch (...) {};
 	      uml_guard "success"
 	      uml_expr "set size change"
 	      cpp_guard "!std::isnan(stm.previous_size_)"
-	      cpp_expr "if (!std::isnan(stm.em_->remaining()))
- stm.em_->change(stm.previous_size_ - stm.em_->remaining());
-else {
- BOOST_LOG_TRIVIAL(warning) << stm._machine_name << \" Remaining size was NA: \" << stm.em_->toString();
- stm.em_->change(stm.previous_size_ );
+	      cpp_expr "if (!std::isnan(stm.em_->remaining())) {
+  auto change_size = stm.previous_size_ - stm.em_->remaining();
+  if (std::abs(change_size) < stm.security_->base() &&
+      (stm.security_->base() - std::abs(change_size)) / stm.security_->base() > 0.01) {
+    // only if change_size is significantly less than base_increment_ we assume
+    // that it is due to rounding errors. Otherwise we save the provided value
+    // of change_size
+    stm.em_->change(0.0);
+  } else {
+    stm.em_->change(change_size);
+  }
+} else {
+  BOOST_LOG_TRIVIAL(warning)
+      << stm._machine_name << \" Remaining size was NA: \" << stm.em_->toString();
+  stm.em_->change(stm.previous_size_);
 }
-
 "
 	    external 
 	  end
@@ -1741,7 +3578,23 @@ else {
 	      uml_guard "success"
 	      uml_expr "set remaining size"
 	      cpp_guard "!std::isnan(stm.previous_size_)"
-	      cpp_expr "stm.em_->remaining(stm.previous_size_ - stm.em_->change());
+	      cpp_expr "auto remaining_size = stm.previous_size_ - stm.em_->change();
+
+if (remaining_size < stm.security_->base() &&
+    (stm.security_->base() - remaining_size) / stm.security_->base() >
+        0.01) {
+  // only if remaining_size is significantly less than base_increment_ we assume
+  // that it is due to rounding errors. Otherwise we save the provided value of
+  // remaining_size
+  stm.em_->remaining(0.0);
+  if (stm.em_->isOrderFilled())
+    stm.em_->state(OrderEvent::OrderState::kFinished);
+} else {
+  stm.em_->remaining(remaining_size);
+  if (stm.em_->isOrderFilled())
+    stm.em_->state(OrderEvent::OrderState::kActive);
+}
+
 "
 	    external 
 	  end
@@ -1789,7 +3642,7 @@ else
     end
 
     classdiagram 439942 "SizeDeducer"
-      classdiagramsettings member_max_width 0 end
+      classdiagramsettings hide_attributes yes hide_operations yes member_max_width 0 end
       size A4
     end
 
@@ -2016,6 +3869,24 @@ ${inlines}
 	  key "STM generated" value ""
 	  comment " the current state doesn't manage the event orderEvent, give it to the upper state"
 	end
+
+	operation 1580038 "era"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 542982 // SizeDeducer
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " the current state doesn't manage the event era, give it to the upper state"
+	end
       end
 
       class 958598 "SizeDeducer_State"
@@ -2198,6 +4069,24 @@ ${inlines}
 	    ncouples 1
 	    key "STM generated" value ""
 	    comment " to manage the event orderEvent"
+	  end
+
+	  operation 1580166 "era"
+	    force_body_gen cpp_virtual public explicit_return_type "void"
+	    nparams 1
+	      param inout name "stm" type class_ref 542982 // SizeDeducer
+	    cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	    cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	    
+	    
+	    
+	    
+	    ncouples 1
+	    key "STM generated" value ""
+	    comment " to manage the event era"
 	  end
 	end
 
@@ -3134,6 +5023,41 @@ ${inlines}
 	key "STM generated" value ""
 	comment " the operation you call to signal the event orderEvent"
       end
+
+      classrelation 1252230 // security_ (<directional aggregation>)
+	relation 1241862 o-->
+	  stereotype "shared_ptr"
+	  a role_name "security_" multiplicity "0..1" private
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	    classrelation_ref 1252230 // security_ (<directional aggregation>)
+	  b parent class_ref 1067398 // Security
+      end
+
+      operation 1579910 "era"
+	force_body_gen cpp_override public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " the operation you call to signal the event era"
+      end
+
+      classrelation 1252358 // <dependency>
+	relation 1241990 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1252358 // <dependency>
+	  b parent class_ref 521478 // Era
+      end
     end
 
     classdiagram 433414 "Token Handler"
@@ -3583,7 +5507,7 @@ ${inlines}
     end
 
     classdiagram 208774 "File"
-      classdiagramsettings member_max_width 0 end
+      classdiagramsettings hide_attributes yes hide_operations yes member_max_width 0 end
       size A4
     end
 
@@ -3619,15 +5543,14 @@ ${inlines}
 
       operation 1072262 "File"
 	public explicit_return_type ""
-	nparams 3
-	  param in name "security" type class_ref 1067526 // Security_SP
+	nparams 2
 	  param in name "handle_deleted" explicit_type "bool"
 	    defaultvalue "false"
 	  param in name "source" explicit_type "bool"
 	    defaultvalue "false"
-	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(}const ${t0} & ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} ${p2}${v2}${)}${volatile}${throw};
+	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${volatile}${throw}: TokenHandler{\"File\", handle_deleted}, security_{security}, source_{source} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${volatile}${throw}: TokenHandler{\"File\", handle_deleted}, source_{source} {
   ${body}}
 "
 	
@@ -3819,13 +5742,13 @@ ${inlines}
 	
       end
 
-      classrelation 1238918 // security_ (<directional composition>)
-	relation 1228550 *-->
+      classrelation 1238918 // security_ (<directional aggregation>)
+	relation 1228550 o-->
 	  stereotype "shared_ptr"
-	  a role_name "security_" multiplicity "1" const_relation private
-	    cpp default "    ${comment}${static}${thread_local}${stereotype}<${mutable}${volatile}${const}${type}> ${name}${value};
+	  a role_name "security_" multiplicity "1" private
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
 "
-	    classrelation_ref 1238918 // security_ (<directional composition>)
+	    classrelation_ref 1238918 // security_ (<directional aggregation>)
 	  b multiplicity "1..*" parent class_ref 1067398 // Security
       end
     end
@@ -3968,12 +5891,11 @@ ${inlines}
 
       operation 827910 "Reconstructor"
 	public explicit_return_type ""
-	nparams 2
-	  param in name "security" type class_ref 1067526 // Security_SP
+	nparams 1
 	  param in name "handler" type class_ref 950918 // TokenHandler_SP
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, ${t1} ${p1}${v1}${)}${volatile}${throw};
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} ${p0}${v0}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}${)}${throw} : handler_{handler},security_{security} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${throw} : handler_{handler} {
   ${body}}
 "
 	
@@ -3992,15 +5914,6 @@ ${inlines}
 	  b parent class_ref 441222 // TokenHandler
       end
 
-      classrelation 1238662 // security_ (<directional composition>)
-	relation 1228294 *-->
-	  stereotype "shared_ptr"
-	  a role_name "security_" multiplicity "1" protected
-	    cpp default "    ${comment}${static}${thread_local}${mutable}${stereotype}<${volatile}${const}${type}> ${name}${value};
-"
-	    classrelation_ref 1238662 // security_ (<directional composition>)
-	  b multiplicity "1..*" parent class_ref 1067398 // Security
-      end
     end
   end
 
@@ -4010,10 +5923,64 @@ ${inlines}
 
   package_ref 215046 // Bitfinex
 
+  package_ref 254470 // File
+
   deploymentview 154246 "Source files"
     //deployment diagram settings
     deploymentdiagramsettings
      end
+    artifact 353926 "EraMerger"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+#include <boost/smart_ptr/make_unique.hpp>
+#include <boost/log/trivial.hpp>
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 1046918 // EraMerger
+      end
+    end
+
+    artifact 347270 "EraSlicer"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+#include \"../date.h\"
+#include <iostream>
+#include <boost/smart_ptr/make_unique.hpp>
+#include <boost/log/trivial.hpp>
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 1020678 // EraSlicer
+      end
+    end
+
     artifact 333446 "SizeDeducer"
       stereotype "source"
       cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
@@ -4290,6 +6257,39 @@ ${members}
 ${namespace_end}"
       associated_elems
 	class_ref 966278 // Reset
+      end
+    end
+
+    artifact 374022 "Security"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      idl_src "#ifndef ${MODULE}_${NAME}_H
+#define ${MODULE}_${NAME}_H
+
+${comment}
+${includes}
+${module_start}
+${definition}
+${module_end}
+#endif
+"
+      associated_elems
+	class_ref 1067398 // Security
       end
     end
   end

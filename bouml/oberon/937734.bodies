@@ -1,5 +1,5 @@
 class Receiver
-!!!1344134.cpp!!!	Receiver(in ioc : io_context_SP, in feeder : Feeder::Feeder_SP, in snapshot : Snapshot::Snapshot_SP, inout processor : ConsumerFn)
+!!!1344134.cpp!!!	Receiver(in ioc : io_context_SP, in feeder : Feeder::Feeder_SP, in snapshot : Snapshot::Snapshot_SP, inout processor : ConsumerFn, in exchange : string, in product : string, in quote_increment : string, in base_increment : string)
 _machine_name = "BitstampReceiver - ";
 !!!1344262.cpp!!!	isStale() : bool
 using namespace std::chrono;
@@ -25,6 +25,10 @@ boost::asio::post(boost::asio::bind_executor(
         era.put<std::string>("event", "era");
         era.put<std::string>("microtimestamp", era_time);
         era.put<std::string>("local_timestamp", local_timestamp);
+        era.put<std::string>("exchange", d_->exchange);
+        era.put<std::string>("product", d_->product);
+        era.put<std::string>("quote_increment", d_->quote_increment);
+        era.put<std::string>("base_increment",d_->base_increment );
         if (!this->d_->process(era))
           throw std::logic_error("Couldn't process era message");
 

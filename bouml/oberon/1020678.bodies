@@ -25,6 +25,7 @@ return true;
 !!!1474566.cpp!!!	era() : bool
 using namespace date;
 using namespace std::chrono;
+security_ = static_cast<Era*>(received_.get())->security();
 next_era_ = reconstructor::OrderEvent::Timestamp{
     minutes{time_point_cast<minutes>(received_->timestamp())
                 .time_since_epoch()
@@ -48,7 +49,7 @@ using namespace std::chrono;
 using OrderEvent=reconstructor::OrderEvent;
 if(received_->timestamp() > next_era_) {
   output_.push_back(boost::make_unique<reconstructor::Reset>());
-  output_.push_back(boost::make_unique<reconstructor::Era>(next_era_));
+  output_.push_back(boost::make_unique<reconstructor::Era>(next_era_, security_));
   for(auto &p : active_orders_) {
     auto event = boost::make_unique<OrderEvent>(*p.second);
     event->timestamp(next_era_);
@@ -62,3 +63,7 @@ if(received_->timestamp() > next_era_) {
   next_era_ += minutes {boundary_};
   
 }
+!!!1580294.cpp!!!	reset() : bool
+security_.reset();
+next_era_ = Message::Timestamp{};
+return true;

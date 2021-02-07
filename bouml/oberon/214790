@@ -1,6 +1,6 @@
 format 224
-"Coinbase" // Standalone application::Reconstructor::Coinbase
-  revision 17
+"Coinbase" // Application::Reconstructor::Coinbase
+  revision 19
   modified_by 6 "petr"
   // class settings
   
@@ -103,12 +103,11 @@ ${inlines}
 
       operation 582918 "Reconstructor"
 	public explicit_return_type ""
-	nparams 2
-	  param in name "security" type class_ref 1067526 // Security_SP
+	nparams 1
 	  param in name "handler" type class_ref 950918 // TokenHandler_SP
-	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(}const ${t0} & ${p0}${v0}, ${t1} ${p1}${v1}${)}${volatile}${throw};
+	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(}${t0} ${p0}${v0}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}${)}${throw} : oberon::reconstructor::Reconstructor{security, handler} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${throw} : oberon::reconstructor::Reconstructor{handler} {
   ${body}}
 "
 	
@@ -325,6 +324,7 @@ ${namespace_end}
 #include <boost/log/trivial.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/smart_ptr/make_unique.hpp>
+#include <boost/smart_ptr/make_shared.hpp>
 #include <boost/property_tree/exceptions.hpp>
 ${includes}
 #include <iostream>

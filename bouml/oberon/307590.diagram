@@ -24,11 +24,11 @@ classcanvas 162054 class_ref 966278 // Reset
 end
 classcanvas 163078 class_ref 1067398 // Security
   classdiagramsettings member_max_width 0 end
-  xyz 479 349 2018
+  xyz 76 339 2018
 end
 classcanvas 163590 class_ref 852614 // shared_ptr
   classdiagramsettings member_max_width 0 end
-  xyz 152 332 2005
+  xyzwh 194 352 2005 77 61
 end
 classcanvas 163718 class_ref 1067526 // Security_SP
   classdiagramsettings member_max_width 0 end
@@ -63,19 +63,16 @@ relationcanvas 162182 relation_ref 1085702 // <generalisation>
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
-line 163206 ---+
-  from ref 163078 z 2019 to point 351 329
-  line 163462 z 2019 to ref 154246
-relationcanvas 163334 relation_ref 1227782 // <directional composition>
-  from ref 154246 z 2019 stereotype "<<shared_ptr>>" xyz 429 278 3000 to ref 163078
-  role_a_pos 506 324 3000 no_role_b
-  multiplicity_a_pos 479 324 3000 no_multiplicity_b
-end
-line 163846 ---+
-  from ref 163718 z 2019 to ref 154246
 relationcanvas 163974 relation_ref 1227910 // <realization>
-  from ref 163718 z 2019 label "<T->Security>" max_width 255 xyz 173 430 2019 stereotype "<<bind>>" xyz 185 448 3000 to ref 163590
+  from ref 163718 z 2019 label "<T->Security>" max_width 255 xyz 195 440 2019 stereotype "<<bind>>" xyz 207 458 3000 to ref 163590
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
+end
+line 164102 ---+
+  from ref 163718 z 2019 to ref 163078
+relationcanvas 164230 relation_ref 1241734 // <directional aggregation>
+  from ref 157190 z 2019 stereotype "<<shared_ptr>>" xyz 61.5 273.5 3000 to ref 163078
+  role_a_pos 114 314 3000 no_role_b
+  multiplicity_a_pos 87 314 3000 no_multiplicity_b
 end
 end

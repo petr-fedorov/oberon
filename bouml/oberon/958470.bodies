@@ -54,3 +54,14 @@ class AnyState
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "transition orderEvent not expected";
 #endif
 #endif
+!!!1580038.cpp!!!	era(inout stm : SizeDeducer) : void
+  AnyState * st = _upper(stm);
+
+  if (st != 0)
+    st->era(stm);
+#ifdef VERBOSE_STATE_MACHINE
+  else
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "transition era not expected";
+#endif
+#endif

@@ -6,7 +6,23 @@ class Remaining_size_State
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition success";
 #endif
-stm.em_->remaining(stm.previous_size_ - stm.em_->change());
+auto remaining_size = stm.previous_size_ - stm.em_->change();
+
+if (remaining_size < stm.security_->base() &&
+    (stm.security_->base() - remaining_size) / stm.security_->base() >
+        0.01) {
+  // only if remaining_size is significantly less than base_increment_ we assume
+  // that it is due to rounding errors. Otherwise we save the provided value of
+  // remaining_size
+  stm.em_->remaining(0.0);
+  if (stm.em_->isOrderFilled())
+    stm.em_->state(OrderEvent::OrderState::kFinished);
+} else {
+  stm.em_->remaining(remaining_size);
+  if (stm.em_->isOrderFilled())
+    stm.em_->state(OrderEvent::OrderState::kActive);
+}
+
     stm._set_currentState(stm._sizededucer_state._save_state);
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .SizeDeducer.Save";

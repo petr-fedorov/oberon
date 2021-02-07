@@ -1,6 +1,6 @@
 format 224
-"Standalone application" // Standalone application
-  revision 130
+"Application" // Application
+  revision 134
   modified_by 6 "petr"
   // class settings
   
@@ -848,11 +848,9 @@ format 224
     end
   end
 
-  package_ref 194822 // Receiver
+  package_ref 194822 // Acquirer
 
   package_ref 141190 // Reconstructor
-
-  package_ref 234630 // Transmuter
 
   classview 306950 "Application"
     
@@ -1034,54 +1032,6 @@ ${inlines}
 	
       end
 
-      operation 1504390 "parseFileName"
-	private explicit_return_type "bool"
-	nparams 4
-	  param in name "file_name" explicit_type "string"
-	  param inout name "exchange" explicit_type "string"
-	  param inout name "product" explicit_type "string"
-	  param inout name "timestamp" type class_ref 230278 // Timestamp
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} & ${p1}${v1}, ${t2} & ${p2}${v2}, ${t3} & ${p3}${v3}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} & ${p1}, ${t2} & ${p2}, ${t3} & ${p3}${)}${const}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 1504262 "uniqueFileName"
-	private explicit_return_type "string"
-	nparams 1
-	  param in name "file_name" explicit_type "string"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 1475974 "fileExists"
-	private explicit_return_type "bool"
-	nparams 1
-	  param in name "name" explicit_type "string"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
       classrelation 1151110 // <dependency>
 	relation 1140742 -_->
 	  a public
@@ -1203,7 +1153,7 @@ ${inlines}
       end
 
       attribute 876550 "quote_increment_"
-	private type class_ref 305798 // Volume
+	private explicit_type "string"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -1215,7 +1165,7 @@ ${inlines}
       end
 
       attribute 876678 "base_increment_"
-	private type class_ref 305798 // Volume
+	private explicit_type "string"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -9412,8 +9362,9 @@ int main(int argc, char **argv) {
 	artifact_ref 340614 // Reset
 	artifact_ref 347142 // Reconstructor
 	artifact_ref 347270 // EraSlicer
-	artifact_ref 347398 // CsvOrderEvent
 	artifact_ref 353926 // EraMerger
+	artifact_ref 373894 // Reader
+	artifact_ref 374022 // Security
       end
       ncouples 10
       key "genpro pro" value "/tmp/oberon/cpp/oberon.pro"

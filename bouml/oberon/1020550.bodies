@@ -15,7 +15,7 @@ if (!(field = tree.get<std::string>("timestamp")).empty()) {
 // std::cout << date::format("%FT%TZ", timestamp_ +
 // std::chrono::microseconds{tree.get<int>("mks")}) << "\n";
 if (tree.get<std::string>("type") == "event") {
-  std::unique_ptr<OrderEvent> output = boost::make_unique<OrderEvent>(security_);
+  std::unique_ptr<OrderEvent> output = boost::make_unique<OrderEvent>();
   boost::uuids::string_generator gen;
   std::string value;
   if (!(field = tree.get<std::string>("trade")).empty()) {
@@ -44,7 +44,11 @@ if (tree.get<std::string>("type") == "event") {
   return std::move(output);
 } else if (tree.get<std::string>("type") == "era")
   return boost::make_unique<Era>(
-      timestamp_ + std::chrono::microseconds{tree.get<int>("mks")});
+      timestamp_ + std::chrono::microseconds{tree.get<int>("mks")},
+      boost::make_shared<Security>(tree.get<std::string>("exchange"),
+                                   tree.get<std::string>("product"),
+                                   tree.get<double>("quote_increment"),
+                                   tree.get<double>("base_increment")));
 else if (tree.get<std::string>("type") == "reset")
   return boost::make_unique<Reset>();
 return Token{};

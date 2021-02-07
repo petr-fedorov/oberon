@@ -1,0 +1,285 @@
+format 224
+"File" // Application::Acquirer::File
+  revision 2
+  modified_by 6 "petr"
+  // class settings
+  
+  classdiagramsettings member_max_width 0 end
+  
+  classcompositediagramsettings end
+  
+  usecasediagramsettings end
+  
+  sequencediagramsettings end
+  
+  collaborationdiagramsettings end
+  
+  objectdiagramsettings end
+  
+  objectcompositediagramsettings end
+  
+  componentdiagramsettings
+   end
+  
+  deploymentdiagramsettings
+   end
+  
+  statediagramsettings
+   end
+  
+  activitydiagramsettings
+   end
+  
+  cpp_h_dir "cpp/acquirer/file"
+  cpp_src_dir "cpp/acquirer/file"
+  cpp_namespace "oberon::acquirer::file"
+  classview 340230 "Reader"
+    
+    classdiagramsettings member_max_width 0 end
+    
+    classcompositediagramsettings end
+    
+    collaborationdiagramsettings end
+    
+    objectdiagramsettings end
+    
+    objectcompositediagramsettings end
+    
+    sequencediagramsettings end
+    
+    statediagramsettings
+     end
+    
+    
+    activitydiagramsettings
+     end
+    classdiagram 512134 "Reader"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
+    class 1074182 "Reader"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      class 1027206 "CsvOrderEvent"
+	visibility public 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 1174790 // <generalisation>
+	  relation 1164422 ---|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 1174790 // <generalisation>
+	    b parent class_ref 174214 // ptree
+	end
+
+	operation 1467142 "parse"
+	  public explicit_return_type "void"
+	  nparams 1
+	    param inout name "str" type class_ref 1033734 // istream
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 1467270 "CsvOrderEvent"
+	  public explicit_return_type ""
+	  nparams 1
+	    param in name "fields" explicit_type "string"
+	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} {
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	attribute 890502 "fields_"
+	  private explicit_type "string"
+	  multiplicity "*"
+	  stereotype "vector"
+	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	end
+      end
+
+      operation 1504390 "parseFileName"
+	class_operation private explicit_return_type "bool"
+	nparams 4
+	  param in name "file_name" explicit_type "string"
+	  param inout name "exchange" explicit_type "string"
+	  param inout name "product" explicit_type "string"
+	  param inout name "timestamp" type class_ref 230278 // Timestamp
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} & ${p1}${v1}, ${t2} & ${p2}${v2}, ${t3} & ${p3}${v3}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} & ${p1}, ${t2} & ${p2}, ${t3} & ${p3}${)}${const}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1504262 "uniqueFileName"
+	class_operation private explicit_return_type "string"
+	nparams 1
+	  param in name "file_name" explicit_type "string"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1475974 "fileExists"
+	class_operation private explicit_return_type "bool"
+	nparams 1
+	  param in name "name" explicit_type "string"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      class 1074310 "Files"
+	visibility public stereotype "template_typedef"
+	nactuals 1
+	actual class class_ref 889734 // vector
+	  rank 0 explicit_value "string"
+	cpp_decl "${comment}${template}using ${name} = ${inherit};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 1245574 // <realization>
+	  relation 1235206 -_-|>
+	    stereotype "bind"
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 1245574 // <realization>
+	    b parent class_ref 889734 // vector
+	end
+      end
+
+      class 1074438 "Reconstructor"
+	visibility public stereotype "typedef" base_type class_ref 174214 // ptree
+	cpp_decl "${comment}typedef std::function<bool(const ${type} &)> ${name};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl "${comment}typedef ${type} ${name};
+"
+	explicit_switch_type ""
+	mysql_decl ""
+	
+      end
+
+      operation 1572614 "readAndProcess"
+	public explicit_return_type "int"
+	nparams 5
+	  param in name "files" type class_ref 1074310 // Files
+	multiplicity "*"
+	  param inout name "process" type class_ref 1074438 // Reconstructor
+	  param in name "extension" explicit_type "string"
+	  param in name "quote_increment" explicit_type "string"
+	  param in name "base_increment" explicit_type "string"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}, ${t1} ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}, const ${t4} & ${p4}${v4}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, const ${t4} & ${p4}${)}${const}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+    end
+  end
+
+  deploymentview 226566 "Source files"
+    //deployment diagram settings
+    deploymentdiagramsettings
+     end
+    artifact 373894 "Reader"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+#include \"../../date.h\"
+#include <fstream>
+#include <boost/log/trivial.hpp>
+${includes}
+${namespace_start}
+
+std::istream& operator>>(std::istream& str, Reader::CsvOrderEvent& data)
+{
+    data.parse(str);
+    return str;
+}   
+
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 1074182 // Reader
+      end
+    end
+  end
+end

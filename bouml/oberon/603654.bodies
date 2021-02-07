@@ -4,7 +4,7 @@ using namespace date;
 using namespace std;
 using Timestamp=oberon::reconstructor::Message::Timestamp;
 string type = tree.get<string>("event");
-auto output = boost::make_unique<OrderEvent>(security_);
+auto output = boost::make_unique<OrderEvent>();
 if (type == "elapsed") {
   return boost::make_unique<Elapsed>(toTimestamp(tree.get<string>("timestamp")));
 } else if (type == "order_created") {
@@ -84,7 +84,12 @@ else if (type == "order_deleted") {
   assert(output->isOrderFilled());
   return std::move(output);
 } else if (type == "era") {
-  return boost::make_unique<Era>(Timestamp{std::chrono::microseconds{std::stoll(tree.get<std::string>("microtimestamp"))}});
+  return boost::make_unique<Era>(Timestamp{std::chrono::microseconds{std::stoll(tree.get<std::string>("microtimestamp"))}},
+        boost::make_shared<Security>(tree.get<string>("exchange"),
+          tree.get<string>("product"),
+          tree.get<double>("quote_increment"),
+          tree.get<double>("base_increment")));
+
 } else if (type == "reset") {
   return boost::make_unique<Reset>();
 }

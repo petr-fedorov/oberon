@@ -1,6 +1,6 @@
 format 224
 "Reconstructor" // Tests::Reconstructor
-  revision 4
+  revision 5
   modified_by 6 "petr"
   // class settings
   
@@ -127,6 +127,8 @@ ${members}};
     end
   end
 
+  package_ref 247814 // File
+
   deploymentview 213510 "Source files"
     //deployment diagram settings
     deploymentdiagramsettings
@@ -156,15 +158,6 @@ ${namespace_end}
 using namespace oberon::reconstructor;
 using OrderState=OrderEvent::OrderState;
 
-BOOST_AUTO_TEST_CASE( remaining_may_be_equal_to_base_increment )
-{
-  OrderEventFixture f;
-
-  double r1 = 1234.00391902;
-  double r2 = 1234.00391901;
-  f.event->remaining(r1-r2);
-  BOOST_TEST( f.event->remaining() == f.sec->base_increment, boost::test_tools::tolerance(0.0001));
-}
 
 BOOST_AUTO_TEST_CASE(order_event_type_111)
 {

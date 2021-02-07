@@ -5,7 +5,9 @@ class Wait_era_start_State
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition era";
 #endif
-stm.output_.push_back(std::move(stm.received_));    stm._set_currentState(stm._eramerger_state._engage_state._era_started_state);
+stm.security_ = static_cast<Era*>(stm.received_.get())->security();
+stm.output_.push_back(std::move(stm.received_));
+    stm._set_currentState(stm._eramerger_state._engage_state._era_started_state);
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .EraMerger.Engage.Era started";
 #endif

@@ -13,8 +13,8 @@ po::options_description common_options("Options are"), input_options, slice_opti
 
 help_options.add_options()("help,h","produce this help message");
 common_options.add_options()
-    ("quote-increment,q", po::value<double>(&quote_increment_)->default_value(0.01), "specifies the minimum increment for the quote currency " "(i.e. USD in BTC-USD)")(
-    "base-increment,b", po::value<double>(&base_increment_)->default_value(0.01),
+    ("quote-increment,q", po::value<std::string>(&quote_increment_)->default_value("0.01"), "specifies the minimum increment for the quote currency " "(i.e. USD in BTC-USD)")(
+    "base-increment,b", po::value<std::string>(&base_increment_)->default_value("0.00000001"),
     "specifies the minimum increment for the base currency (i.e. BTC in "
     "BTC-USD)")("deleted,d","output deleted events");
 capture_options.add_options() 
@@ -79,20 +79,17 @@ std::cerr << "Usage: oberon <command> [options]\n"
 return EXIT_FAILURE;
 !!!1439750.cpp!!!	capture(in od : options_description) : int
 if (exchange_ && product_ && !help_) {
-  using Snapshot = oberon::receiver::Snapshot;
+  using Snapshot = oberon::acquirer::Snapshot;
   using EventCounter = oberon::reconstructor::EventCounter;
   using SizeDeducer = oberon::reconstructor::SizeDeducer;
-  using Security=oberon::reconstructor::OrderEvent::Security;
-  auto security = boost::make_shared<Security>(Security{
-      *exchange_, *product_, quote_increment_, base_increment_});
   // The io_context is required for all I/O
   boost::shared_ptr<boost::asio::io_context> ioc =
       boost::make_shared<boost::asio::io_context>();
-  auto store = boost::make_shared<reconstructor::File>(security, deleted_, source_);
+  auto store = boost::make_shared<reconstructor::File>(deleted_, source_);
 
   if (*exchange_ == "Bitstamp") {
-    using Receiver = oberon::receiver::bitstamp::Receiver;
-    using Feeder = oberon::receiver::bitstamp::Feeder;
+    using Receiver = oberon::acquirer::bitstamp::Receiver;
+    using Feeder = oberon::acquirer::bitstamp::Feeder;
     using Deduplicator = oberon::reconstructor::bitstamp::Deduplicator;
     using Reconstructor = oberon::reconstructor::bitstamp::Reconstructor;
     using TimeOrderEnforcer =
@@ -112,12 +109,12 @@ if (exchange_ && product_ && !help_) {
     auto cleaner = boost::make_shared<Synchronizer>(time_order_enforcer);
     cleaner->create();
     auto reconstructor =
-        Reconstructor{security, cleaner};
+        Reconstructor{cleaner};
 
     auto receiver = boost::make_shared<Receiver>(
         ioc, boost::static_pointer_cast<Feeder>(feeder), snapshot,
         std::bind(&Reconstructor::process, &reconstructor,
-                  std::placeholders::_1));
+                  std::placeholders::_1), *exchange_, *product_, quote_increment_, base_increment_);
     feeder->registerHandlers(
         std::bind(&Receiver::postEvent, receiver, &Receiver::success),
         std::bind(&Receiver::postEvent, receiver, &Receiver::failure),
@@ -146,8 +143,8 @@ if (exchange_ && product_ && !help_) {
     return receiver->exit_code_;
   } else if (*exchange_ == "Coinbase") {
 
-    using Receiver = oberon::receiver::coinbase::Receiver;
-    using Feeder = oberon::receiver::coinbase::Feeder;
+    using Receiver = oberon::acquirer::coinbase::Receiver;
+    using Feeder = oberon::acquirer::coinbase::Feeder;
     using Synchronizer = oberon::reconstructor::coinbase::Synchronizer;
     using Reconstructor = oberon::reconstructor::coinbase::Reconstructor;
 
@@ -160,11 +157,11 @@ if (exchange_ && product_ && !help_) {
     size_deducer->create();
     auto cleaner = boost::make_shared<Synchronizer>(size_deducer);
     auto reconstructor =
-        Reconstructor{security, cleaner };
+        Reconstructor{cleaner };
     auto coinbase = boost::make_shared<Receiver>(
         ioc, boost::static_pointer_cast<Feeder>(feeder), snapshot,
         std::bind(&Reconstructor::process, &reconstructor,
-                  std::placeholders::_1));
+                  std::placeholders::_1), *exchange_, *product_, quote_increment_, base_increment_);
     feeder->registerHandlers(
         std::bind(&Receiver::postEvent, coinbase, &Receiver::success),
         std::bind(&Receiver::postEvent, coinbase, &Receiver::failure),
@@ -194,75 +191,15 @@ if (exchange_ && product_ && !help_) {
 std::cerr << "Usage: oberon capture [options]\n" << od;
 return EXIT_FAILURE;
 !!!1453958.cpp!!!	slice(in od : options_description) : int
-using Security = oberon::reconstructor::OrderEvent::Security;
 if (!help_ && !era_.empty()) {
-  for (auto &era : era_) {
-    std::istringstream ss{era};
-    reconstructor::Message::Timestamp output;
-    std::string exchange;
-    std::getline(ss, exchange, '_');
-    std::string product;
-    std::getline(ss, product, '_');
-    ss >> date::parse("%FT%H-%M-%SZ", output);
-    if (!exchange.empty() && !product.empty() && !ss.fail()) {
-      using namespace date;
-      /* std::cout << exchange << "\n" << product << "\n" << output << "\n";
-      return EXIT_SUCCESS;
-      */
-      auto security = boost::make_shared<Security>(Security{
-          exchange, product, quote_increment_, base_increment_});
-      auto orig = reconstructor::File::name(exchange, product, output);
-      auto sliced = orig + ".sliced";
-      if (fileExists(sliced)) {
-        int seq = 1;
-        while (fileExists(sliced + "." + std::to_string(seq)))
-          ++seq;
-        sliced += "." + std::to_string(seq);
-      }
-      if (!std::rename(orig.c_str(), sliced.c_str())) {
-        std::ifstream input{sliced};
-        std::string header;
-        std::getline(input, header);
-        oberon::transmuter::CsvOrderEvent event{header};
-        auto store = boost::make_shared<reconstructor::File>(security, deleted_ ? true : false);
-        auto event_counter =
-            boost::make_shared<reconstructor::EventCounter>(store);
-        auto slicer =
-            boost::make_shared<transmuter::EraSlicer>(boundary_, event_counter);
-        transmuter::Reconstructor r{security, slicer };
-        boost::property_tree::ptree control_message;
-        control_message.put("type", "era");
-        control_message.put("timestamp", format("%FT%TZ", output));
-        control_message.put("mks", "0");
-        if (r.process(control_message)) {
-          try {
-            while (input >> event) {
-              if (!r.process(event)) {
-                std::stringstream ss{};
-                boost::property_tree::write_json(ss, event, false);
-                BOOST_LOG_TRIVIAL(error) << ss.str();
-                return EXIT_FAILURE;
-              }
-            }
-          } catch (const std::exception &e) {
-            std::stringstream ss{};
-            boost::property_tree::write_json(ss, event, false);
-            BOOST_LOG_TRIVIAL(error) << e.what();
-            BOOST_LOG_TRIVIAL(error) << ss.str();
-            return EXIT_FAILURE;
-          }
-          control_message.clear();
-          control_message.put("type", "reset");
-          control_message.put("timestamp", "");
-          if (!r.process(control_message))
-            return EXIT_FAILURE;
-        } else
-          return EXIT_FAILURE;
-      } else
-        std::cerr << "Couldn't find/rename " << orig << "\n";
-    } else
-      std::cerr << "Couldn't parse " << era << "\n";
-  }
+  auto store = boost::make_shared<reconstructor::File>(deleted_ ? true : false);
+  auto event_counter = boost::make_shared<reconstructor::EventCounter>(store);
+  auto slicer =
+      boost::make_shared<reconstructor::EraSlicer>(boundary_, event_counter);
+  reconstructor::file::Reconstructor r{slicer};
+  acquirer::file::Reader reader;
+  return reader.readAndProcess(era_, std::bind(&reconstructor::file::Reconstructor::process, &r, std::placeholders::_1), ".sliced", quote_increment_, base_increment_);
+
 } else {
   std::cerr << "Usage: oberon slice [options]\n";
   std::cerr << od;
@@ -270,103 +207,19 @@ if (!help_ && !era_.empty()) {
 }
 return EXIT_SUCCESS;
 !!!1504134.cpp!!!	merge(in od : options_description) : int
-auto iter = era_.begin();
-if(!help_ && iter != era_.end()) {
-  std::string exchange;
-  std::string product;
-  reconstructor::Message::Timestamp output;
-  if (parseFileName(*iter, exchange, product, output)) {
-    using namespace date;
-    /* std::cout << exchange << "\n" << product << "\n" << output << "\n";
-    return EXIT_SUCCESS;
-    */
-    using Security = oberon::reconstructor::OrderEvent::Security;
-    auto security = boost::make_shared<Security>(Security{
-        exchange, product, quote_increment_, base_increment_});
-    auto store = boost::make_shared<reconstructor::File>(security, deleted_ ? true : false);
-    auto event_counter = boost::make_shared<reconstructor::EventCounter>(store);
-    auto merger =
-        boost::make_shared<transmuter::EraMerger>(event_counter);
-    merger->create();
-    transmuter::Reconstructor r{ security, merger };
-    do {
-      auto merged = uniqueFileName(*iter + ".merged");
-      if (!std::rename((*iter).c_str(), merged.c_str())) {
-        std::ifstream input{merged};
-        std::string header;
-        std::getline(input, header);
-        oberon::transmuter::CsvOrderEvent event{header};
-        boost::property_tree::ptree control_message;
-        control_message.put("type", "era");
-        control_message.put("timestamp", format("%FT%TZ", output));
-        control_message.put("mks", "0");
-        if (r.process(control_message)) {
-          while (input >> event) {
-            // boost::property_tree::write_json(std::cout, event, false);
-            if (!r.process(event))
-              return EXIT_FAILURE;
-          }
-        } else
-          return EXIT_FAILURE;
-      } else {
-        BOOST_LOG_TRIVIAL(error) << "Couldn't find/rename " << *iter << "\n";
-        return EXIT_FAILURE;
-      }
-      ++iter;
-      if (iter != era_.end()) {
-        if (!parseFileName(*iter, exchange, product, output)) {
-          BOOST_LOG_TRIVIAL(error)
-              << "Couldn't parse " << *iter
-              << " to extract exchange, product and era timestamp\n";
-          return EXIT_FAILURE;
-        }
-        BOOST_LOG_TRIVIAL(info) << "Merging file " << *iter;
-      } else 
-        break;
-    } while(true);
-    boost::property_tree::ptree control_message;
-    control_message.put("type", "reset");
-    control_message.put("timestamp", "");
-    if (!r.process(control_message))
-      return EXIT_FAILURE;
-  } else {
-    BOOST_LOG_TRIVIAL(error)
-        << "Couldn't parse " << *iter
-        << " to extract exchange, product and era timestamp\n";
-    return EXIT_FAILURE;
-  }
-}
-else {
+if (!help_ && !era_.empty()) {
+  auto store = boost::make_shared<reconstructor::File>( deleted_ ? true : false);
+  auto event_counter = boost::make_shared<reconstructor::EventCounter>(store);
+  auto merger = boost::make_shared<reconstructor::EraMerger>(event_counter);
+  merger->create();
+  reconstructor::file::Reconstructor r{merger};
+  acquirer::file::Reader reader;
+  return reader.readAndProcess(era_, std::bind(&reconstructor::file::Reconstructor::process, &r, std::placeholders::_1), ".merged", quote_increment_, base_increment_);
+} else {
   std::cerr << "Usage: oberon merge [options]\n";
   std::cout << od;
   return EXIT_FAILURE;
 }
-return EXIT_SUCCESS;
 !!!1439878.cpp!!!	not_yet_implemented() : int
 std::cerr << "Not yet implemented.\n";
 return EXIT_FAILURE;
-!!!1504390.cpp!!!	parseFileName(in file_name : string, inout exchange : string, inout product : string, inout timestamp : Message::Timestamp) : bool
-const std::size_t last_slash_idx = file_name.find_last_of("\\/");
-if (std::string::npos != last_slash_idx)
-{
-    file_name.erase(0, last_slash_idx + 1);
-}
-std::istringstream ss{file_name};
-std::getline(ss, exchange, '_');
-std::getline(ss, product, '_');
-ss >> date::parse("%FT%H-%M-%SZ", timestamp);
-if (!exchange.empty() && !product.empty() && !ss.fail())
-  return true;
-else
-  return false;
-!!!1504262.cpp!!!	uniqueFileName(in file_name : string) : string
-if (fileExists(file_name)) {
-  int seq = 1;
-  while (fileExists(file_name + "." + std::to_string(seq)))
-    ++seq;
-  file_name += "." + std::to_string(seq);
-}
-return file_name;
-!!!1475974.cpp!!!	fileExists(in name : string) : bool
-std::ifstream infile(name);
-return infile.good();

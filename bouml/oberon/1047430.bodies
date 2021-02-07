@@ -32,7 +32,9 @@ auto iter = stm.active_orders_.find(event->maker());
 if (iter != stm.active_orders_.end()) {
   OrderEvent *old = static_cast<OrderEvent *>(iter->second.get());
   event->deleted(true);
-  if (old->isSameCommitment(*event)) { // keep old event
+
+  if (old->price() == event->price() &&
+      ( std::abs(old->remaining() - event->remaining())/stm.security_->base()) < 0.99 ) { // the same commitment, so keep old event
     old->deleted(false);
     stm.received_.release();
   } else { // generate Changed event instead of Created

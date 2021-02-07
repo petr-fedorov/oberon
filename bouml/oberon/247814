@@ -1,6 +1,6 @@
 format 224
-"Transmuter" // Tests::Transmuter
-  revision 2
+"File" // Tests::Reconstructor::File
+  revision 3
   modified_by 6 "petr"
   // class settings
   
@@ -30,9 +30,9 @@ format 224
   activitydiagramsettings
    end
   
-  cpp_h_dir "cpp/transmuter"
-  cpp_src_dir "cpp/transmuter"
-  cpp_namespace "oberon::transmuter"
+  cpp_h_dir "cpp/reconstructor/file"
+  cpp_src_dir "cpp/reconstructor/file"
+  cpp_namespace "oberon::reconstructor::file"
   classview 333318 "Fixtures"
     
     classdiagramsettings member_max_width 0 end
@@ -53,11 +53,6 @@ format 224
     
     activitydiagramsettings
      end
-    classdiagram 505606 "Fixtures"
-      classdiagramsettings member_max_width 0 end
-      size A4
-    end
-
     class 1067654 "ReconstructorFixture"
       visibility package stereotype "struct"
       cpp_decl "${comment}${template}struct ${name}${inherit} {
@@ -97,18 +92,6 @@ ${members}};
 	  b parent class_ref 1020550 // Reconstructor
       end
 
-      attribute 951814 "sec"
-	public type class_ref 1067526 // Security_SP
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-      end
-
       attribute 958598 "event"
 	public type class_ref 1040262 // OrderEvent_UP
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
@@ -120,6 +103,11 @@ ${members}};
 	mysql_decl ""
 	MysqlColumn
       end
+    end
+
+    classdiagram 505606 "Fixtures"
+      classdiagramsettings member_max_width 0 end
+      size A4
     end
   end
 
@@ -150,10 +138,11 @@ ${members}
 ${namespace_end}
 
 
-using namespace oberon::transmuter;
+using namespace oberon::reconstructor;
 using OrderEvent=oberon::reconstructor::OrderEvent;
 using OrderState=OrderEvent::OrderState;
 using BookSide=OrderEvent::BookSide;
+using ReconstructorFixture=oberon::reconstructor::file::ReconstructorFixture;
 
 BOOST_AUTO_TEST_CASE( translate_NA_state )
 {

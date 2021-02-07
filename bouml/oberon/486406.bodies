@@ -4,7 +4,7 @@ using namespace date;
 using namespace std;
 Token empty;
 boost::uuids::string_generator gen;
-auto output = boost::make_unique<OrderEvent>(security_);
+auto output = boost::make_unique<OrderEvent>();
 try {
   string type = tree.get<string>("type");
   if (type == "elapsed")
@@ -84,7 +84,11 @@ try {
     assert(output->isOrderChanged());
     return std::move(output);
   } else if (type == "era") {
-    return boost::make_unique<Era>(toTimestamp(tree.get<string>("time")));
+    return boost::make_unique<Era>(toTimestamp(tree.get<string>("time")),
+        boost::make_shared<Security>(tree.get<string>("exchange"),
+          tree.get<string>("product"),
+          tree.get<double>("quote_increment"),
+          tree.get<double>("base_increment")));
   } else if (type == "reset") {
     return boost::make_unique<Reset>();
   }
