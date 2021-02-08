@@ -84,6 +84,8 @@ This command tells OBERON to capture live order events for a product on an excha
                                          the webosocket pong response before
                                          re-connecting, secs
     -s [ --source ]                      output source of captured events
+    -o [ --output-delay ] arg (=0)       a delay of output to enforce correct
+                                         time order of events, seconds    
 
 
 
@@ -112,8 +114,8 @@ This command tells OBERON to slice an input era file into several smaller era fi
 
 **slice** command recognizes the following additional options:
 
-    -i [ --input ] arg                   specifies the name of an era file to be
-                                         read (mandatory)
+    -i [ --input ] arg                   specifies the name(s) of an era file to
+                                         be read (mandatory)
     -m [ --max-duration ] arg (=60)      specifies that a new era will be started
                                          every arg minutes since UNIX epoch
 

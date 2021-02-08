@@ -3,7 +3,7 @@ class TimeOrderEnforcer
 episode_.push_back(std::move(received_));
 return true;
 
-!!!1383814.cpp!!!	after_handle() : bool
+!!!1383814.cpp!!!	endOfEpisode() : bool
 if (!episode_.empty()) {
   if (episode_.back()->timestamp() > latest_) {
     latest_ = episode_.back()->timestamp();
@@ -27,6 +27,8 @@ return true;
 !!!1383942.cpp!!!	era() : bool
 output_.push_back(std::move(received_));
 return true;
+!!!1384070.cpp!!!	TimeOrderEnforcer(in next : TokenHandler::TokenHandler_SP, in delay : int, in handle_deleted : bool)
+BOOST_LOG_TRIVIAL(info) << "Output will be delayed for " << delay << " seconds";
 !!!1385350.cpp!!!	reset() : bool
 std::move(buffer_.begin(), buffer_.end(), std::back_inserter(output_));
 std::move(episode_.begin(), episode_.end(), std::back_inserter(output_));

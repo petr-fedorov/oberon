@@ -17,11 +17,15 @@ common_options.add_options()
     "base-increment,b", po::value<std::string>(&base_increment_)->default_value("0.00000001"),
     "specifies the minimum increment for the base currency (i.e. BTC in "
     "BTC-USD)")("deleted,d","output deleted events");
-capture_options.add_options() 
-  ("exchange,e", po::value(&exchange_), "specifies the name of the exchange (mandatory)")
-  ("product,p", po::value(&product_), "specifies the exchange-specific code of the product (mandatory)")(
+capture_options.add_options()("exchange,e", po::value(&exchange_),
+                              "specifies the name of the exchange (mandatory)")(
+    "product,p", po::value(&product_),
+    "specifies the exchange-specific code of the product (mandatory)")(
     "pong-wait-time,w", po::value<int>(&pong_wait_time_)->default_value(1),
-    "specifies the maximum waiting time for the websocket pong response before re-connecting, secs")("source,s", "output source of captured events");
+    "specifies the maximum waiting time for the websocket pong response before "
+    "re-connecting, secs")("source,s", "output source of captured events")(
+    "output-delay,o", po::value<int>(&output_delay_)->default_value(0),
+    "a delay of output to enforce correct time order of events, seconds");
 
 input_options.add_options()(
     "input,i", po::value<std::vector<std::string>>()->multitoken(),
@@ -103,10 +107,8 @@ if (exchange_ && product_ && !help_) {
     auto event_counter = boost::make_shared<EventCounter>(store);
     auto size_deducer = boost::make_shared<SizeDeducer>(event_counter);
     size_deducer->create();
-    auto deduplicator = boost::make_shared<Deduplicator>(size_deducer);
-    auto time_order_enforcer =
-        boost::make_shared<TimeOrderEnforcer>(deduplicator, 1, deleted_);
-    auto cleaner = boost::make_shared<Synchronizer>(time_order_enforcer);
+    boost::shared_ptr<reconstructor::TokenHandler> deduplicator = boost::make_shared<Deduplicator>(size_deducer);
+    auto cleaner = boost::make_shared<Synchronizer>(output_delay_ > 0 ? boost::make_shared<TimeOrderEnforcer>(deduplicator, output_delay_, deleted_) : deduplicator);
     cleaner->create();
     auto reconstructor =
         Reconstructor{cleaner};
@@ -147,6 +149,9 @@ if (exchange_ && product_ && !help_) {
     using Feeder = oberon::acquirer::coinbase::Feeder;
     using Synchronizer = oberon::reconstructor::coinbase::Synchronizer;
     using Reconstructor = oberon::reconstructor::coinbase::Reconstructor;
+
+    if(output_delay_) 
+      BOOST_LOG_TRIVIAL(warning) << "--output-delay is ignored for Coinbase";
 
     auto feeder = boost::make_shared<Feeder>(ioc, *product_, pong_wait_time_);
     auto snapshot = boost::make_shared<Snapshot>(
