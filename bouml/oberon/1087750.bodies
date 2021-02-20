@@ -1,0 +1,76 @@
+class PriceLevel
+!!!1587206.cpp!!!	take(inout event : OrderEvent::OrderEvent_UP, out stripes : Tokens) : bool
+
+Price level_price;
+
+if (events_.size())
+  level_price = events_.front()->price();
+else
+  level_price = event->price();
+
+if (event->ordinal() != 1) {
+  // Remove the previous event, if any ...
+  auto pe = std::find_if(events_.begin(), events_.end(),
+                         [&event](const OrderEvent::OrderEvent_UP &e) {
+                           return e->maker() == event->maker();
+                         });
+  if (pe != events_.end()) {
+    BOOST_LOG_TRIVIAL(debug) << "Removed " << (*pe)->toString();
+    if (event->timestamp() != start_) { // Produce a stripe, if it has not been produced yet
+        stripes.push_back(boost::make_unique<Stripe>(start_, (*pe)->price(), volume(),  (*pe)->side(), event->timestamp() - start_, is_best_));
+    }
+    events_.erase(pe);
+    if (!events_.size())
+      start_ = Message::Timestamp{};
+    else
+      start_ = event->timestamp();
+  }
+}
+if (event->price() == level_price) {
+  if (event->state() == OrderEvent::OrderState::kActive) {
+    BOOST_LOG_TRIVIAL(debug) << "Taken " << event->toString();
+    if (!events_.empty() &&
+        event->timestamp() != start_) { // Produce a stripe, if it has not been produced yet
+        stripes.push_back(boost::make_unique<Stripe>(start_, event->price(), volume(),  event->side(), event->timestamp() - start_, is_best_));
+    }
+    start_ = event->timestamp();
+    events_.push_back(std::move(event));
+    return true;
+  } else {
+    BOOST_LOG_TRIVIAL(debug) << "Taken " << event->toString();
+    return true;
+  }
+} else
+  return false;
+!!!1589254.cpp!!!	advance(in timestamp : Message::Timestamp, out stripes : Tokens) : void
+if (!empty() && start_ < timestamp) 
+        stripes.push_back(boost::make_unique<Stripe>(start_, events_.front()->price(), volume(),  events_.front()->side(), timestamp - start_, is_best_));
+start_ = timestamp;
+!!!1587718.cpp!!!	empty() : bool
+return events_.empty();
+!!!1587846.cpp!!!	bestSince(in timestamp : Message::Timestamp, out stripes : Tokens) : void
+if (!empty() && start_ < timestamp) {
+  stripes.push_back(boost::make_unique<Stripe>(start_, events_[0]->price(), volume(),  events_[0]->side(), timestamp - start_, is_best_));
+}
+
+start_ = timestamp;
+is_best_ = true;
+
+!!!1587974.cpp!!!	bestUntil(in timestamp : Message::Timestamp, out stripes : Tokens) : void
+if (!empty() && start_ < timestamp) {
+  stripes.push_back(boost::make_unique<Stripe>(start_, events_[0]->price(), volume(),  events_[0]->side(), timestamp - start_, is_best_));
+}
+
+start_ = timestamp;
+is_best_ = false;
+
+
+!!!1588230.cpp!!!	volume() : Volume
+Volume result = 0;
+for(auto & e: events_) result += e->remaining();
+return result;
+
+!!!1605254.cpp!!!	start() : Message::Timestamp
+return start_;
+!!!1605382.cpp!!!	isBest() : bool
+return is_best_;

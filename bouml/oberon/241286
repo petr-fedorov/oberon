@@ -1,6 +1,6 @@
 format 224
 "Reconstructor" // Tests::Reconstructor
-  revision 5
+  revision 9
   modified_by 6 "petr"
   // class settings
   
@@ -125,6 +125,284 @@ ${members}};
 	MysqlColumn
       end
     end
+
+    class 1094918 "PriceLevelFixture"
+      visibility package stereotype "struct"
+      cpp_decl "${comment}${template}struct ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl "${comment}struct ${name} {
+${members}};
+"
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      operation 1598342 "PriceLevelFixture"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      attribute 987142 "input"
+	public type class_ref 1040262 // OrderEvent_UP
+	multiplicity "*"
+	stereotype "vector"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      classrelation 1288070 // <dependency>
+	relation 1277702 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1288070 // <dependency>
+	  b parent class_ref 448390 // OrderEvent
+      end
+
+      classrelation 1288198 // <dependency>
+	relation 1277830 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1288198 // <dependency>
+	  b parent class_ref 1087622 // Transmuter
+      end
+
+      attribute 993670 "sut"
+	public type class_ref 1087750 // PriceLevel
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 993798 "output"
+	public type class_ref 902918 // Token
+	multiplicity "*"
+	stereotype "vector"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      classrelation 1294854 // <dependency>
+	relation 1284486 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1294854 // <dependency>
+	  b parent class_ref 1080966 // Stripe
+      end
+    end
+
+    class 1101830 "TransmuterFixture"
+      visibility package stereotype "struct"
+      cpp_decl "${comment}${template}struct ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl "${comment}struct ${name} {
+${members}};
+"
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      attribute 994182 "gatherer"
+	public type class_ref 1101958 // Gatherer_SP
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 994310 "sut"
+	public type class_ref 1087622 // Transmuter
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      operation 1605766 "TransmuterFixture"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} : gatherer{boost::make_shared<Gatherer>()}, sut{gatherer} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 1295366 // <dependency>
+	relation 1284998 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1295366 // <dependency>
+	  b parent class_ref 1101702 // Gatherer
+      end
+
+      attribute 994438 "episode"
+	public type class_ref 902918 // Token
+	multiplicity "*"
+	stereotype "vector"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      classrelation 1295622 // <dependency>
+	relation 1285254 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1295622 // <dependency>
+	  b parent class_ref 1080966 // Stripe
+      end
+    end
+  end
+
+  classview 353286 "Handlers"
+    
+    classdiagramsettings member_max_width 0 end
+    
+    classcompositediagramsettings end
+    
+    collaborationdiagramsettings end
+    
+    objectdiagramsettings end
+    
+    objectcompositediagramsettings end
+    
+    sequencediagramsettings end
+    
+    statediagramsettings
+     end
+    
+    
+    activitydiagramsettings
+     end
+    classdiagram 531718 "Gatherer"
+      classdiagramsettings hide_attributes yes hide_operations yes member_max_width 0 end
+      size A4
+    end
+
+    class 1101702 "Gatherer"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      class 1101958 "Gatherer_SP"
+	visibility public stereotype "template_typedef"
+	nactuals 1
+	actual class class_ref 852614 // shared_ptr
+	  rank 0 value class_ref 1101702 // Gatherer
+	cpp_decl "${comment}${template}using ${name} = ${inherit};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 1295494 // <realization>
+	  relation 1285126 -_-|>
+	    stereotype "bind"
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 1295494 // <realization>
+	    b parent class_ref 852614 // shared_ptr
+	end
+      end
+
+      attribute 994054 "gathered"
+	public type class_ref 902918 // Token
+	multiplicity "*"
+	stereotype "vector"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      classrelation 1295238 // <generalisation>
+	relation 1284870 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 1295238 // <generalisation>
+	  b parent class_ref 441222 // TokenHandler
+      end
+
+      operation 1605510 "message"
+	cpp_virtual public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+    end
   end
 
   package_ref 247814 // File
@@ -133,6 +411,29 @@ ${members}};
     //deployment diagram settings
     deploymentdiagramsettings
      end
+    artifact 407942 "Gatherer"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 1101702 // Gatherer
+      end
+    end
+
     artifact 360838 "test_OrderEvent"
       stereotype "source"
       cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
@@ -150,6 +451,8 @@ ${namespace_end}
 #include <boost/test/unit_test.hpp>
 #include <boost/smart_ptr/make_unique.hpp>
 #include <boost/smart_ptr/make_shared.hpp>
+#include <boost/uuid/string_generator.hpp>
+#include \"../date.h\"
 ${includes}
 ${namespace_start}
 ${members}
@@ -157,6 +460,13 @@ ${namespace_end}
 
 using namespace oberon::reconstructor;
 using OrderState=OrderEvent::OrderState;
+
+namespace std {
+std::ostream& operator<<(std::ostream& os, oberon::reconstructor::Message::Timestamp const& ts);
+} 
+
+oberon::reconstructor::Message::Timestamp operator \"\"_ts(const char *line, size_t);
+
 
 
 BOOST_AUTO_TEST_CASE(order_event_type_111)
@@ -380,21 +690,173 @@ BOOST_AUTO_TEST_CASE(order_event_type_331)
   BOOST_TEST(!f.event->isOrderFilled());
 }
 
-BOOST_AUTO_TEST_CASE(order_event_type_332)
+BOOST_FIXTURE_TEST_CASE(order_event_type_332, OrderEventFixture)
 {
-  OrderEventFixture f;
-  f.event->ordinal(2); 
-  f.event->state(OrderState::kNA);
-  f.event->trade(1);
+  event->ordinal(2); 
+  event->state(OrderState::kNA);
+  event->trade(1);
 
-  BOOST_TEST(!f.event->isOrderCreated());
-  BOOST_TEST(!f.event->isOrderChanged());
-  BOOST_TEST(!f.event->isOrderCancelled());
-  BOOST_TEST(f.event->isOrderFilled());
+  BOOST_TEST(!event->isOrderCreated());
+  BOOST_TEST(!event->isOrderChanged());
+  BOOST_TEST(!event->isOrderCancelled());
+  BOOST_TEST(event->isOrderFilled());
 }
+
+BOOST_AUTO_TEST_CASE(order_created_from_literal) 
+{
+  using namespace date;
+  auto event =\"9208e32d-06dc-46e9-898e-51208e0f58dd,1,2021-02-08T06:54:51Z,52781,1,39029.57,0.09013171,,,,70125,\"_oe;
+  boost::uuids::string_generator gen;
+
+  BOOST_TEST(event->maker() == gen(\"9208e32d-06dc-46e9-898e-51208e0f58dd\"));
+  BOOST_TEST(event->timestamp() == \"2021-02-08T06:54:51.052781Z\"_ts);
+  BOOST_TEST(event->isOrderCreated()); 
+  BOOST_TEST(event->side() == BookSide::kBid);
+  BOOST_TEST(static_cast<double>(event->price()) == 39029.57); 
+  BOOST_TEST(static_cast<double>(event->remaining()) == 0.09013171); 
+  BOOST_TEST(!event->deleted());
+}
+
+BOOST_AUTO_TEST_CASE(filled_from_literal) 
+{
+  using namespace date;
+  auto event =\"f94caea8-2cb6-4c54-85d2-c7e612001abb,2,2021-02-07T15:59:59Z,217281,1,37974.48,0.00835565,-0.00264435,130181221,19e17cff-7870-4e6f-90b8-1799a30594eb,87299,\"_oe;
+  boost::uuids::string_generator gen;
+
+  BOOST_TEST(event->maker() == gen(\"f94caea8-2cb6-4c54-85d2-c7e612001abb\"));
+  BOOST_TEST(event->timestamp() == \"2021-02-07T15:59:59.217281Z\"_ts);
+  BOOST_TEST(event->isOrderFilled()); 
+  BOOST_TEST(event->side() == BookSide::kBid);
+  BOOST_TEST(static_cast<double>(event->price()) == 37974.48); 
+  BOOST_TEST(static_cast<double>(event->remaining()) == 0.00835565); 
+  BOOST_TEST(static_cast<double>(event->change()) == 0.00264435); 
+  BOOST_TEST(event->trade() == 130181221);
+  BOOST_TEST(!event->deleted());
+}
+
+
 "
       associated_elems
 	class_ref 1060870 // OrderEventFixture
+      end
+    end
+
+    artifact 401414 "test_PriceLevel"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+#include <boost/test/unit_test.hpp>
+#include <boost/pointer_cast.hpp>
+#include \"../date.h\"
+${includes}
+${namespace_start}
+${members}
+${namespace_end}
+
+using namespace oberon::reconstructor;
+using OrderState=OrderEvent::OrderState;
+using Timestamp=Message::Timestamp;
+
+namespace std {
+std::ostream& operator<<(std::ostream& os, oberon::reconstructor::Message::Timestamp const& ts);
+} 
+
+Timestamp operator \"\"_ts(const char *line, size_t);
+
+
+
+BOOST_FIXTURE_TEST_CASE(take_order_created, PriceLevelFixture)
+{
+  BOOST_TEST(sut.take(\"9208e32d-06dc-46e9-898e-51208e0f58dd,1,2021-02-08T06:54:51Z,52781,1,39029.57,0.09013171,,,,70125,\"_oe, output));
+  BOOST_TEST(output.empty());
+  BOOST_TEST(sut.start() ==\"2021-02-08T06:54:51.052781Z\"_ts);
+}
+
+BOOST_FIXTURE_TEST_CASE(single_stripe, PriceLevelFixture)
+{
+  BOOST_TEST(sut.take(\"9208e32d-06dc-46e9-898e-51208e0f58dd,1,2021-02-08T06:54:51Z,52781,1,39029.57,0.09013171,,,,70125,\"_oe, output));
+  BOOST_TEST(sut.take(\"9208e32d-06dc-46e9-898e-51208e0f58dd,2,2021-02-08T06:54:53Z,170016,,39029.57,,-0.09013171,130344065,9df46d09-0e13-483d-b40b-f82f79e918f5,71290,\"_oe, output));
+  BOOST_TEST(output.size()==1);
+  auto stripe = boost::static_pointer_cast<Stripe>(std::move(output.front()));
+  BOOST_TEST(stripe->duration().count() == 2.117235);
+  BOOST_TEST(static_cast<double>(stripe->price()) == 39029.57);
+  BOOST_TEST(stripe->remaining() == 0.09013171);
+  BOOST_TEST(stripe->side() == BookSide::kBid);
+}
+"
+      associated_elems
+	class_ref 1094918 // PriceLevelFixture
+      end
+    end
+
+    artifact 408070 "test_Transmuter"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+#include <boost/smart_ptr/make_shared.hpp>
+#include <boost/test/unit_test.hpp>
+#include <boost/pointer_cast.hpp>
+#include \"../date.h\"
+${includes}
+${namespace_start}
+${members}
+${namespace_end}
+
+using namespace oberon::reconstructor;
+using OrderState=OrderEvent::OrderState;
+using Timestamp=Message::Timestamp;
+
+namespace std {
+std::ostream& operator<<(std::ostream& os, oberon::reconstructor::Message::Timestamp const& ts);
+} 
+
+Timestamp operator \"\"_ts(const char *line, size_t);
+
+
+
+BOOST_FIXTURE_TEST_CASE(returns_spread_stripes, TransmuterFixture)
+{
+  episode.push_back(\"9208e32d-06dc-46e9-898e-51208e0f58dd,1,2021-02-08T06:54:51Z,52781,1,39029.57,0.09013171,,,,70125,\"_oe);
+  episode.push_back(\"00000000-0000-0000-0000-000000000001,1,2021-02-08T06:54:51Z,52781,1,39030.00,-0.08,,,,70126,\"_oe);
+  BOOST_TEST(sut.handle(std::move(episode)));
+  BOOST_TEST(gatherer->gathered.empty());
+  episode.clear();
+  episode.push_back(\"9208e32d-06dc-46e9-898e-51208e0f58dd,2,2021-02-08T06:54:53Z,170016,,39029.57,,-0.09013171,130344065,9df46d09-0e13-483d-b40b-f82f79e918f5,71290,\"_oe);
+  episode.push_back(\"00000000-0000-0000-0000-000000000001,2,2021-02-08T06:54:53Z,170016,,39030.00,,0.08,,,71291,\"_oe);
+  BOOST_TEST(sut.handle(std::move(episode)));
+  BOOST_TEST(gatherer->gathered.size()==2);
+  if(!gatherer->gathered.empty()) {
+    auto s0 = boost::static_pointer_cast<Stripe>(std::move(gatherer->gathered.front()));
+    auto s1 = boost::static_pointer_cast<Stripe>(std::move(gatherer->gathered.back()));
+    BOOST_TEST(s0->isBest());
+    BOOST_TEST(s1->isBest());
+    BOOST_TEST(s0->side() == BookSide::kBid);
+    BOOST_TEST(s1->side() == BookSide::kAsk);
+  }
+}
+"
+      associated_elems
+	class_ref 1101830 // TransmuterFixture
       end
     end
   end

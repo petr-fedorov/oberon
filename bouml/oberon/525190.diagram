@@ -1,0 +1,116 @@
+format 224
+
+classcanvas 128006 class_ref 1087622 // Transmuter
+  classdiagramsettings member_max_width 0 end
+  xyz 40 107 2000
+end
+classcanvas 128134 class_ref 441222 // TokenHandler
+  classdiagramsettings hide_attributes yes hide_operations yes member_max_width 0 end
+  xyz 41 40 3005
+end
+classcanvas 129414 class_ref 1087878 // PriceLevel_SP
+  classdiagramsettings member_max_width 0 end
+  xyz 323 141 2000
+end
+classcanvas 129542 class_ref 852614 // shared_ptr
+  classdiagramsettings member_max_width 0 end
+  xyz 358 29 2005
+end
+classcanvas 131718 class_ref 1087750 // PriceLevel
+  classdiagramsettings member_max_width 0 end
+  xyz 418 412 2000
+end
+classcanvas 132102 class_ref 1040262 // OrderEvent_UP
+  classdiagramsettings member_max_width 0 end
+  xyz 638 473 2000
+end
+classcanvas 133254 class_ref 1080966 // Stripe
+  classdiagramsettings member_max_width 0 end
+  xyz 422 681 2000
+end
+classcanvas 133510 class_ref 1094406 // Dot
+  classdiagramsettings member_max_width 0 end
+  xyz 657 638 2000
+end
+relationcanvas 128262 relation_ref 1068038 // <directional aggregation>
+  from ref 128134 z 3006 stereotype "<<shared_ptr>>" xyz -16 45 3006 to point 11 40
+  line 128390 z 3006 to point 11 70
+  line 128518 z 3006 to ref 128134
+  role_a_pos 1 40 3000 no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 128646 relation_ref 1262854 // <generalisation>
+  from ref 128006 z 3006 to ref 128134
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 129670 relation_ref 1263110 // <realization>
+  from ref 129414 z 2006 label "<T->PriceLevel>" max_width 255 xyz 347 95 2006 stereotype "<<bind>>" xyz 365 113 3000 to ref 129542
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 129798 relation_ref 1263238 // <directional composition>
+  decenter_begin 209
+  decenter_end 209
+  from ref 128006 z 2001 to point 162 147
+  line 130566 z 2001 to point 162 122
+  line 130694 z 2001 stereotype "<<map>>" xyz 199 124 3000 to point 282 122
+  line 130822 z 2001 to point 282 147
+  line 130950 z 2001 to ref 129414
+  role_a_pos 260 131 3000 no_role_b
+  multiplicity_a_pos 307 164 3000 no_multiplicity_b
+end
+relationcanvas 129926 relation_ref 1263366 // <directional composition>
+  decenter_begin 883
+  decenter_end 790
+  from ref 128006 z 2001 to point 126 306
+  line 131078 z 2001 stereotype "<<map>>" xyz 254 307 3000 to point 429 305
+  line 131206 z 2001 to ref 129414
+  role_a_pos 438 214 3000 no_role_b
+  multiplicity_a_pos 413 214 3000 no_multiplicity_b
+end
+relationcanvas 130438 relation_ref 1263494 // <directional composition>
+  decenter_begin 558
+  decenter_end 94
+  from ref 128006 z 2001 to point 92 243
+  line 131462 z 2001 stereotype "<<map>>" xyz 189 245 3000 to point 332 245
+  line 131334 z 2001 to ref 129414
+  role_a_pos 345 214 3000 no_role_b
+  multiplicity_a_pos 320 214 3000 no_multiplicity_b
+end
+line 131846 ---+ decenter_begin 47
+  from ref 131718 z 2001 to ref 128006
+line 131974 ---+ decenter_end 123
+  from ref 129414 z 2001 to ref 131718
+relationcanvas 132230 relation_ref 1270022 // <directional aggregation>
+  from ref 131718 z 2001 stereotype "<<vector>>" xyz 533 515 3000 to ref 132102
+  role_a_pos 585 485 3000 no_role_b
+  multiplicity_a_pos 622 518 3000 no_multiplicity_b
+end
+relationcanvas 132614 relation_ref 1270278 // <directional aggregation>
+  decenter_begin 90
+  decenter_end 842
+  from ref 128006 z 2001 stereotype "<<shared_ptr>>" xyz 13 423 3000 to point 60 569
+  line 132742 z 2001 to ref 131718
+  role_a_pos 355 582 3000 no_role_b
+  multiplicity_a_pos 387 615 3000 no_multiplicity_b
+end
+relationcanvas 132870 relation_ref 1270406 // <directional aggregation>
+  decenter_begin 353
+  decenter_end 429
+  from ref 128006 z 2001 stereotype "<<shared_ptr>>" xyz 86 384 3000 to point 181 489
+  line 133126 z 2001 to ref 131718
+  role_a_pos 352 487 3000 no_role_b
+  multiplicity_a_pos 387 520 3000 no_multiplicity_b
+end
+relationcanvas 133382 relation_ref 1270534 // <dependency>
+  from ref 131718 z 2001 to ref 133254
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 133638 relation_ref 1298310 // <dependency>
+  from ref 131718 z 2001 to ref 133510
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+end

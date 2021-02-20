@@ -36,34 +36,45 @@ for (auto file = files.begin(); file != files.end(); ++file) {
         << " to extract exchange, product or era timestamp\n";
     return EXIT_FAILURE;
   }
-  auto source = uniqueFileName(*file + extension);
-  if (!std::rename((*file).c_str(), source.c_str())) {
-    BOOST_LOG_TRIVIAL(info) << *file << " renamed to " << source;
-    std::ifstream input{source};
-    std::string header;
-    std::getline(input, header);
-    CsvOrderEvent event{header};
-    boost::property_tree::ptree control_message;
-    control_message.put("type", "era");
-    control_message.put("timestamp", format("%FT%TZ", output));
-    control_message.put("mks", "0");
-    control_message.put("exchange", exchange);
-    control_message.put("product", product);
-    control_message.put("quote_increment", quote_increment);
-    control_message.put("base_increment", base_increment);
-   if (process(control_message)) {
-      while (input >> event) {
-        // boost::property_tree::write_json(std::cout, event, false);
-        if (!process(event))
-          return EXIT_FAILURE;
-      }
-    } else
+  std::string source{};
+  if (!extension.empty()) {
+    source = uniqueFileName(*file + extension);
+    if (!std::rename((*file).c_str(), source.c_str()))
+      BOOST_LOG_TRIVIAL(info) << *file << " renamed to " << source;
+    else {
+      BOOST_LOG_TRIVIAL(error)
+          << *file << " couldn't be found or renamed to " << source << "\n";
       return EXIT_FAILURE;
-  } else {
-    BOOST_LOG_TRIVIAL(error) << *file << " couldn't be found or renamed to " << source << "\n";
-    return EXIT_FAILURE;
+    }
   }
+  else
+    source = *file;
+
+  std::ifstream input{source};
+  std::string header;
+  std::getline(input, header);
+  // CsvOrderEvent event{header};
   boost::property_tree::ptree control_message;
+  control_message.put("type", "era");
+  control_message.put("timestamp", format("%FT%TZ", output));
+  control_message.put("mks", "0");
+  control_message.put("exchange", exchange);
+  control_message.put("product", product);
+  control_message.put("quote_increment", quote_increment);
+  control_message.put("base_increment", base_increment);
+  if (process(control_message)) {
+    for(std::string line; std::getline(input, line);) {
+      boost::property_tree::ptree event;
+      event.put("type", "event");
+      event.put("timestamp", "");
+      event.put("data", line);
+      // boost::property_tree::write_json(std::cout, event, false);
+      if (!process(event))
+        return EXIT_FAILURE;
+    }
+  } else
+    return EXIT_FAILURE;
+  control_message.clear();
   control_message.put("type", "reset");
   control_message.put("timestamp", "");
   if (!process(control_message))

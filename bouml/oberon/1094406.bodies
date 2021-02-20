@@ -1,0 +1,27 @@
+class Dot
+!!!1619334.cpp!!!	toString() : string
+std::stringstream buf;
+buf << date::format("%FT%TZ ", timestamp());
+if (side() == kBid)
+  buf << "B";
+else if (side() == kAsk)
+  buf << "A";
+else
+  buf << "NA";
+buf << " ";
+if (std::isnan(price()))
+  buf << "NA";
+else
+  buf << price();
+buf << " ";
+if (std::isnan(remaining()))
+  buf << "NA";
+else
+  buf << remaining();
+buf << " ";
+buf << (deleted() ? " DELETED " : "");
+return buf.str();
+
+!!!1595782.cpp!!!	accept(in mh : TokenHandler [1]) : bool
+return mh->dot();
+

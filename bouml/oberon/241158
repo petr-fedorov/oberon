@@ -1,6 +1,6 @@
 format 224
 "Tests" // Tests
-  revision 5
+  revision 10
   modified_by 6 "petr"
   // class settings
   
@@ -53,6 +53,15 @@ format 224
 	artifact_ref 360838 // test_OrderEvent
 	artifact_ref 367366 // test_Reconstructor
 	artifact_ref 374022 // Security
+	artifact_ref 380550 // Price
+	artifact_ref 380678 // Volume
+	artifact_ref 388102 // PriceLevelAttached
+	artifact_ref 394630 // Transmuter
+	artifact_ref 394758 // Stripe
+	artifact_ref 401286 // Dot
+	artifact_ref 401414 // test_PriceLevel
+	artifact_ref 407942 // Gatherer
+	artifact_ref 408070 // test_Transmuter
       end
       ncouples 10
       key "genpro pro" value "/tmp/oberon/cpp/test_oberon.pro"
@@ -83,6 +92,49 @@ LIBS += -lboost_log  -lboost_log_setup -lboost_thread -lboost_program_options -l
       stereotype "source"
       cpp_src "#define BOOST_TEST_MODULE Oberon
 #include <boost/test/unit_test.hpp>
+#include <boost/log/core.hpp>
+#include <boost/log/expressions.hpp>
+#include <boost/log/trivial.hpp>
+#include <boost/log/utility/setup/console.hpp>
+#include <boost/log/utility/setup/common_attributes.hpp>
+#include \"reconstructor/Message.h\"
+#include \"date.h\"
+
+
+struct MyGlobalFixture {
+  MyGlobalFixture() {
+    boost::log::register_simple_formatter_factory<
+        boost::log::trivial::severity_level, char>(\"Severity\");
+    boost::log::add_common_attributes();
+    boost::log::add_console_log(
+        std::cout, boost::log::keywords::auto_flush = true,
+        boost::log::keywords::format = \"%TimeStamp% [%Severity%] %Message%\");
+    boost::log::core::get()->set_filter(boost::log::trivial::severity >=
+                                        boost::log::trivial::debug);
+  }
+};
+
+
+BOOST_TEST_GLOBAL_FIXTURE(MyGlobalFixture);
+
+using Timestamp=oberon::reconstructor::Message::Timestamp;
+
+// workaround for bug in Boost.Test
+// see https://stackoverflow.com/q/17572583/5674719
+namespace std {
+std::ostream& operator<<(std::ostream& os, Timestamp const& ts)
+{
+    return date::operator<<(os, ts);
+}
+} 
+
+Timestamp operator \"\"_ts(const char *line, size_t) {
+  Timestamp output;
+  std::istringstream ss{line};
+  ss >> date::parse(\"%FT%TZ\", output);
+  return output;
+}
+
 "
       associated_elems
       end

@@ -1,10 +1,19 @@
 class File
+!!!1596806.cpp!!!	removeTrailingZeros(in str : string) : string
+str.erase(str.find_last_not_of('0') + 1);
+str.erase(str.find_last_not_of('.') + 1);
+return std::move(str);
 !!!1460486.cpp!!!	name(in exchange : string, in product : string, in era : Message::Timestamp) : string
 return exchange + "_" + product + "_" + date::format("%FT%H-%M-%SZ", era);
 
 !!!1072134.cpp!!!	~File()
-f_.close();
-s_.close();
+events_stream_.close();
+source_stream_.close();
+best_bids_stream_.close();
+best_asks_stream_.close();
+bids_stream_.close();
+asks_stream_.close();
+trades_stream_.close();
 !!!1072390.cpp!!!	orderEvent() : bool
 using namespace oberon::reconstructor;
 using boost::uuids::to_string;
@@ -63,7 +72,7 @@ if (event) {
 
   // volume
   if (!std::isnan(event->remaining())) {
-    int sign = event->side() == OrderEvent::BookSide::kAsk ? -1 : 1;
+    int sign = event->side() == BookSide::kAsk ? -1 : 1;
     if (event->remaining()) {
       std::ostringstream ss;
       ss << std::fixed << std::setprecision(base_precision_) 
@@ -77,7 +86,7 @@ if (event) {
 
   // change
   if( !std::isnan(event->change())) {
-    int sign = event->side() == OrderEvent::BookSide::kBid ? -1 : 1;
+    int sign = event->side() == BookSide::kBid ? -1 : 1;
     if (event->change()) {
       std::ostringstream ss;
       ss << std::fixed << std::setprecision(base_precision_)
@@ -116,36 +125,127 @@ if (event) {
     buffer << "\n";
 
   if(source_)
-    s_ << event->source() << "\n";
-  return (f_ << buffer.str()).good();
+    source_stream_ << event->source() << "\n";
+  return (events_stream_ << buffer.str()).good();
 }
 else 
  BOOST_LOG_TRIVIAL(error) << "Couldn't save " << event->toString();
 return true;
 !!!1092358.cpp!!!	era() : bool
 using namespace date;
-security_ = static_cast<Era*>(received_.get())->security();
+security_ = static_cast<Era *>(received_.get())->security();
 quote_precision_ = -std::floor(std::log10(security_->quote()));
 base_precision_ = -std::floor(std::log10(security_->base()));
 
-if(f_.is_open())
-  f_.close();
-auto base_name = name(security_->exchange(), security_->product(), received_->timestamp());
-BOOST_LOG_TRIVIAL(info) <<   "Era file:    " << base_name << " quote_precision=" << quote_precision_
-<< " base_precision=" << base_precision_;
-f_.open(base_name);
-f_ << "maker,ordinal,timestamp,mks,state,price,volume,change,trade,taker,heard,deleted\n";
-if(source_) {
-  if (s_.is_open())
-    s_.close();
-  s_.open(base_name + ".source");
-  s_ << "\n"; // To ensure that line numbers in era and source files are the same for the same event
-  BOOST_LOG_TRIVIAL(info) << "Source file: " << base_name + ".source";
+auto base_name =
+    name(security_->exchange(), security_->product(), received_->timestamp());
+
+if (events_) {
+  if (events_stream_.is_open())
+    events_stream_.close();
+  events_stream_.open(base_name);
+  if(!events_stream_.is_open()) {
+    BOOST_LOG_TRIVIAL(error)
+        << "Couldn't open era file: " << base_name;
+    return false;
+  }
+  else
+    BOOST_LOG_TRIVIAL(info) << "Era file:    " << base_name
+                            << " quote_precision=" << quote_precision_
+                            << " base_precision=" << base_precision_;
+  events_stream_ << "maker,ordinal,timestamp,mks,state,price,volume,change,trade,taker,"
+        "heard,deleted\n";
+  if (source_) {
+    if (source_stream_.is_open())
+      source_stream_.close();
+    source_stream_.open(base_name + ".source");
+    source_stream_ << "\n"; // To ensure that line numbers in era and source files are the
+                // same for the same event
+    if(source_stream_.is_open())
+      BOOST_LOG_TRIVIAL(info) << "Source file: " << base_name + ".source";
+    else {
+      BOOST_LOG_TRIVIAL(error) << "Couldn't open source file: " << base_name + ".source";
+      return false;
+    }
+  }
 }
-return f_.is_open();
+
+if(depth_) {
+  if(bids_stream_.is_open())
+    bids_stream_.close();
+  if(asks_stream_.is_open())
+    asks_stream_.close();
+
+  auto bids_name = base_name + ".bids";
+  auto ask_name = base_name + ".asks";
+
+  BOOST_LOG_TRIVIAL(info) << "Bids file:   " << bids_name;
+  BOOST_LOG_TRIVIAL(info) << "Asks file:   " << ask_name;
+
+  bids_stream_.open(bids_name); 
+  if(!bids_stream_.is_open()) {
+    BOOST_LOG_TRIVIAL(error) << "Couldn't open " << bids_name;
+    return false;
+  }
+
+  asks_stream_.open(ask_name); 
+  
+  if(!asks_stream_.is_open()) {
+    BOOST_LOG_TRIVIAL(error) << "Couldn't open " << ask_name;
+    return false;
+  }
+}
+
+if(spread_) {
+  if(best_bids_stream_.is_open())
+    best_bids_stream_.close();
+  if(best_asks_stream_.is_open())
+    best_asks_stream_.close();
+
+  auto best_bids_name = base_name + ".bids.best";
+  auto best_asks_name = base_name + ".asks.best";
+
+  BOOST_LOG_TRIVIAL(info) << "Best bids file:   " << best_bids_name;
+  BOOST_LOG_TRIVIAL(info) << "Best asks file:   " << best_asks_name;
+
+  best_bids_stream_.open(best_bids_name); 
+  if(!best_bids_stream_.is_open()) {
+    BOOST_LOG_TRIVIAL(error) << "Couldn't open " << best_bids_name;
+    return false;
+  }
+
+  best_asks_stream_.open(best_asks_name); 
+  
+  if(!best_asks_stream_.is_open()) {
+    BOOST_LOG_TRIVIAL(error) << "Couldn't open " << best_asks_name;
+    return false;
+  }
+}
+
+if(trades_) {
+  if(trades_stream_.is_open())
+    trades_stream_.close();
+
+  auto trades_name = base_name + ".trades";
+
+  BOOST_LOG_TRIVIAL(info) << "Trades file:   " << trades_name;
+
+  trades_stream_.open(trades_name); 
+  if(!trades_stream_.is_open()) {
+    BOOST_LOG_TRIVIAL(error) << "Couldn't open " << trades_name;
+    return false;
+  }
+
+}
+return true;
 !!!1385606.cpp!!!	reset() : bool
-if(f_.is_open()) f_.close();
-if(s_.is_open()) s_.close();
+events_stream_.close();
+source_stream_.close();
+best_bids_stream_.close();
+best_asks_stream_.close();
+bids_stream_.close();
+asks_stream_.close();
+trades_stream_.close();
 latest_seconds_ = std::chrono::seconds{};
 security_.reset();
 return true;
@@ -156,7 +256,126 @@ if( t > d)
   return t - seconds{1};
 else
   return t;
-!!!1432966.cpp!!!	removeTrailingZeros(in str : string) : string
-str.erase(str.find_last_not_of('0') + 1);
-str.erase(str.find_last_not_of('.') + 1);
-return std::move(str);
+!!!1596294.cpp!!!	stripe() : bool
+auto stripe = boost::static_pointer_cast<Stripe>(std::move(received_));
+if (check(stripe->price())) {
+  std::ofstream *depth, *spread;
+
+  if (stripe->side() == BookSide::kAsk) {
+    depth = &asks_stream_;
+    spread = &best_asks_stream_;
+  } else if (stripe->side() == BookSide::kBid) {
+    depth = &bids_stream_;
+    spread = &best_bids_stream_;
+  } else {
+    BOOST_LOG_TRIVIAL(error)
+        << "Couldn't determine side " << stripe->toString();
+    return false;
+  }
+
+  auto stripe_str = toCsv(*stripe);
+
+  if (depth_)
+    *depth << stripe_str << "\n";
+  if (stripe->isBest())
+    *spread << stripe_str << "\n";
+
+  return depth->good() && spread->good();
+} else
+  return true;
+!!!1597958.cpp!!!	toCsv(in stripe : Stripe) : string
+using namespace oberon::reconstructor;
+using boost::uuids::to_string;
+using std::chrono::duration;
+std::stringstream buffer;
+
+// timestamp
+date::to_stream(buffer, "%FT%TZ,", stripe.timestamp());
+
+// price
+if (!std::isnan(stripe.price())) {
+  std::ostringstream ss;
+  ss << std::fixed << std::setprecision(quote_precision_) << stripe.price();
+  buffer << removeTrailingZeros(ss.str()) << ",";
+} else
+  buffer << "NA,";
+
+// duration (timestamp change)
+std::ostringstream ss;
+ss << std::fixed << std::setprecision(6) << stripe.duration().count() << ",";
+buffer << removeTrailingZeros(ss.str());
+
+// volume
+if (!std::isnan(stripe.remaining())) {
+  int sign = stripe.side() == BookSide::kAsk ? -1 : 1;
+  if (stripe.remaining()) {
+    std::ostringstream ss;
+    ss << std::fixed << std::setprecision(base_precision_)
+       << sign * stripe.remaining();
+    buffer << removeTrailingZeros(ss.str());
+  } 
+  else 
+    BOOST_LOG_TRIVIAL(warning) << "Stripe with zero remaining - " << stripe.toString();
+} else
+  buffer << "NA";
+
+return buffer.str();
+!!!1619206.cpp!!!	toCsv(in dot : Dot) : string
+using namespace oberon::reconstructor;
+using boost::uuids::to_string;
+using std::chrono::duration;
+std::stringstream buffer;
+
+// timestamp
+date::to_stream(buffer, "%FT%TZ,", dot.timestamp());
+
+// price
+if (!std::isnan(dot.price())) {
+  std::ostringstream ss;
+  ss << std::fixed << std::setprecision(quote_precision_) << dot.price();
+  buffer << removeTrailingZeros(ss.str()) << ",";
+} else
+  buffer << "NA,";
+
+// volume
+if (!std::isnan(dot.remaining())) {
+  int sign = dot.side() == BookSide::kAsk ? 1 : -1;
+  if (dot.remaining()) {
+    std::ostringstream ss;
+    ss << std::fixed << std::setprecision(base_precision_)
+       << sign * dot.remaining();
+    buffer << removeTrailingZeros(ss.str()); 
+  } else
+     BOOST_LOG_TRIVIAL(warning) << "Dot with zero remaining - " << dot.toString(); 
+}
+
+return buffer.str();
+!!!1596422.cpp!!!	dot() : bool
+auto dot = boost::static_pointer_cast<Dot>(std::move(received_));
+if (check(dot->price())) {
+  if (trades_)
+    trades_stream_ << toCsv(*dot) << "\n";
+  return trades_stream_.good();
+} else
+  return true;
+
+!!!1597062.cpp!!!	saveDeleted(in save : bool) : File
+is_handles_deleted_ = save;
+return *this;
+!!!1597190.cpp!!!	saveOrderEvents(in save : bool) : File
+events_ = save;
+return *this;
+!!!1597702.cpp!!!	saveEventSource(in save : bool) : File
+source_ = save;
+return *this;
+!!!1597318.cpp!!!	saveDepth(in save : bool) : File
+depth_ = save;
+return *this;
+!!!1597446.cpp!!!	saveSpread(in save : bool) : File
+spread_ = save;
+return *this;
+!!!1597574.cpp!!!	saveTrades(in save : bool) : File
+trades_ = save;
+return *this;
+!!!1619078.cpp!!!	check(in price : Price) : bool
+return min_price_ <= price && price <= max_price_;

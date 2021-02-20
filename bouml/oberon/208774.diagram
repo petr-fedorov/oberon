@@ -8,10 +8,6 @@ classcanvas 131078 class_ref 441222 // TokenHandler
   classdiagramsettings member_max_width 0 end
   xyz 168 42 2005
 end
-classcanvas 131206 class_ref 903430 // Store
-  classdiagramsettings member_max_width 0 end
-  xyz 430 139 2000
-end
 classcanvas 131718 class_ref 448390 // OrderEvent
   classdiagramsettings member_max_width 0 end
   xyz 162 471 2005
@@ -20,13 +16,13 @@ classcanvas 131974 class_ref 521478 // Era
   classdiagramsettings member_max_width 0 end
   xyz 306 255 2000
 end
-classcanvas 132614 class_ref 852614 // shared_ptr
-  classdiagramsettings member_max_width 0 end
-  xyz 432 40 2010
-end
 classcanvas 132870 class_ref 1067398 // Security
   classdiagramsettings member_max_width 0 end
   xyz 40 256 3005
+end
+classcanvas 133766 class_ref 1080966 // Stripe
+  classdiagramsettings member_max_width 0 end
+  xyz 350 160 2000
 end
 relationcanvas 131590 relation_ref 1017734 // <generalisation>
   decenter_end 450
@@ -53,15 +49,10 @@ relationcanvas 132230 relation_ref 1068038 // <directional aggregation>
   role_a_pos 128 42 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
-relationcanvas 132742 relation_ref 1074950 // <realization>
-  from ref 131206 z 2011 label "<T->TokenHandler>" max_width 255 xyz 415.5 100.5 2011 stereotype "<<bind>>" xyz 443.5 118.5 3000 to ref 132614
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
-end
 relationcanvas 133254 relation_ref 1228550 // <directional aggregation>
   decenter_begin 510
   decenter_end 581
-  from ref 128774 z 3006 stereotype "<<shared_ptr>>" xyz 72.5 279.5 3000 to ref 132870
+  from ref 128774 z 3006 stereotype "<<shared_ptr>>" xyz 72 279 3000 to ref 132870
   role_a_pos 108 256 3000 no_role_b
   multiplicity_a_pos 108 289 3000 multiplicity_b_pos 107 288 3000
 end
@@ -69,8 +60,13 @@ relationcanvas 133382 relation_ref 1241734 // <directional aggregation>
   decenter_end 559
   from ref 131974 z 3006 to point 328 552
   line 133510 z 3006 to point 72 552
-  line 133638 z 3006 stereotype "<<shared_ptr>>" xyz 31 425.5 3000 to ref 132870
+  line 133638 z 3006 stereotype "<<shared_ptr>>" xyz 31 425 3000 to ref 132870
   role_a_pos 82 307 3000 no_role_b
   multiplicity_a_pos 55 307 3000 no_multiplicity_b
+end
+relationcanvas 133894 relation_ref 1277446 // <dependency>
+  from ref 128774 z 2001 to ref 133766
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
 end
 end

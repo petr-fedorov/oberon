@@ -1,5 +1,5 @@
 # Order Book Events ReconstructiON (OBERON)
-A stand-alone application for collection of data that allows re-construction of a cryptocurrency exchange order book dynamics. Connects to an API of the specified exchange and produces `.csv` files called *eras* containing reconstructed [order events]((https://petr-fedorov.github.io/oberon/methods.html#order-and-trade)) in the **exchange-independent** format described below:
+A stand-alone application for collection of data that allows re-construction of a crypto currency exchange order book dynamics. Connects to an API of the specified exchange and produces `.csv` files called *eras* containing reconstructed [order events]((https://petr-fedorov.github.io/oberon/methods.html#order-and-trade)) in the **exchange-independent** format described below:
 
 |maker|ordinal|timestamp|mks|state|price|volume|change|trade|taker|heard|deleted|
 | --- | ---| --- | ---| --- |---| ---| --- | ---| --- | ---| ---|
@@ -9,15 +9,15 @@ The columns contain the following data:
 
    * `maker` - UUID of the open order on the order book,
    * `ordinal` - a sequential number of the event (by `maker`). When an order opens on the order book, the related event has `ordinal` equals to 1; next event for `maker` will have 'ordinal' equals to 2 etc.; empty if it couldn't be determined,
-   * `timestamp` - time the event occured on an exchange, up to a second; empty, if it is not changed since the previously received event,
-   * `mks` - microseconds part of the time the event occured on an exchange
+   * `timestamp` - time the event occurred on an exchange, up to a second; empty, if it is not changed since the previously received event,
+   * `mks` - microseconds part of the time the event occurred on an exchange
    * `state` - 1, if the order is open on the order book after the event, otherwise empty,
    * `price` - price of the order
    * `volume` - volume of the order; it is a negative value for asks and positive for bids,
    * `change` - a increase or decrease of the order volume relative to the previous event; it is an exchange-provided trade volume when the event is originated from a trade or a calculated value (the difference between `volume` of this and the previous event),
    * `trade` - an exchange-generated trade identification number; empty, if the event is not originated from a trade,
    * `taker` - UUID of the taker order in a trade when the event is originated from the trade, otherwise - empty,
-   * `heard` - microseconds passed since the event occured on the exchange till it was received by OBERON,
+   * `heard` - microseconds passed since the event occurred on the exchange till it was received by OBERON,
    * `deleted` - 1, if the event was deleted by cleansing (for example, it was a duplicate event), otherwise - empty.
 
 The unknown value of the field is shown by `NA`.
@@ -106,7 +106,7 @@ Coinbase's [list of products](https://api.pro.coinbase.com/products/) contains p
 The event file will have its name in the following format: `<exchange name>_<product>_<timestamp>.csv`
 where `timestamp` is the timestamp of the initial order book snapshot. The file starts from the events having this `timestamp` collectively producing the snapshot. The following messages in the file are updates of the snapshot.
 
-There might be several files produced, with different `timestamp`s. That happens, for example, when an exchange websocket gets disconnected (i.e. when the exchainge does not respond to ping messages longer than `--pong-wait-time` seconds). In this case the application quitely restarts and creates a new output file.
+There might be several files produced, with different `timestamp`s. That happens, for example, when an exchange websocket gets disconnected (i.e. when the exchange does not respond to ping messages longer than `--pong-wait-time` seconds). In this case the application quietly restarts and creates a new output file.
 
 ### **slice**
 
@@ -133,4 +133,58 @@ This command tells OBERON to merge several era files into a single file. The inp
 
 ### **transmute**
 
-TBD
+This command tells OBERON to transmute each era files into five output files: four files with "stripes" and one file with "dots" as described below. These files are more suitable for visualization and analysis.
+
+**transmute** command recognizes the following additional options:
+
+    -i [ --input ] arg                    specifies the name(s) of an era file to
+                                          be read (mandatory)
+
+    -l [ --less-than ] arg                do not output a stripe or a trade, if
+                                          its price is less than arg
+    -g [ --greater-than ] arg             do not output a stripe or a trade, if
+                                          its price is greater than arg
+
+
+ The output files have the same name as the input `<era file name>` they are produced from with the following extensions added:
+
+* **.bids** - contains stripes of all bids
+* **.bids.best** - contains stripes of best bids only
+* **.asks** - contains stripes of all asks
+* **.asks.best** - contains stripes of best asks only
+* **.trades** - contains "dots" representing trades
+
+To visualize all five files you may, for example, run `gnuplot` and enter the following command:
+
+      call "/tmp/oberon/cpp/reconstructor/depth.gp" "<era file name>"
+
+The output will be similar to the picture below depending on input data, parameters used, zoom etc.
+
+![](transmuted.png)
+
+Stripes represent commitments to buy or sell certain volumes of base currency at given quote prices from the moment commitments appeared on an exchange order book until they ceased or changed. Red stripes are bids and blue stripes are asks. Saturation of colors represent absolute value of commitments volumes.
+
+Note that stripes often originate from several maker orders.
+
+Dot usually correspond to a single trade. Red dots are buys and blue are sells. Similarly, saturation of the color represents volume and white dots are actually either red or blue but their amount is too close to zero to be seen.  Note that sells are visualized by `gnuplot` as blue dots on red stripes and buys - as red dots on blue stripes.
+
+Sometimes a single dot may correspond to several trades that happened simultaneously at the same price (but with different maker orders). In this case the Dot's `volume` is an aggregated volume of these trades.
+
+"Stripes" files have the following format:
+
+|timestamp|price|duration|volume
+| --- | ---| --- |---|
+
+   * `timestamp` - ISO 8601 timestamp of the stripe start, with microseconds
+   * `price` - price, in quote currency
+   * `duration` - duration of the stripe, in seconds
+   * `volume` - bid amount (positive) or ask amount(negative), in base currency
+
+"Dots" file has the following format:
+
+|timestamp|price|volume
+| --- | ---| --- |
+
+* `timestamp` - ISO 8601 timestamp of the Dot, with microseconds
+* `price` - price, in quote currency
+* `volume` - sell amount (positive) or buy amount(negative), in base currency

@@ -18,9 +18,9 @@ if (type == "elapsed") {
   output->ordinal(1);
   output->state(OrderEvent::OrderState::kActive);
   if (tree.get<std::string>("data.order_type") == "0")
-    output->side(OrderEvent::BookSide::kBid);
+    output->side(BookSide::kBid);
   else
-    output->side(OrderEvent::BookSide::kAsk);
+    output->side(BookSide::kAsk);
 
   output->source(tree.get<std::string>("source"));
   assert(output->isOrderCreated());
@@ -35,9 +35,9 @@ else if (type == "order_changed") {
   output->remaining(
       std::strtod(tree.get<std::string>("data.amount_str").c_str(), nullptr));
   if (tree.get<std::string>("data.order_type") == "0")
-    output->side(OrderEvent::BookSide::kBid);
+    output->side(BookSide::kBid);
   else
-    output->side(OrderEvent::BookSide::kAsk);
+    output->side(BookSide::kAsk);
 
   output->state(OrderEvent::OrderState::kActive);
   output->source(tree.get<std::string>("source"));
@@ -54,9 +54,9 @@ else if (type == "order_deleted") {
     output->remaining(
         std::strtod(tree.get<std::string>("data.amount_str").c_str(), nullptr));
     if (tree.get<std::string>("data.order_type") == "0")
-      output->side(OrderEvent::BookSide::kBid);
+      output->side(BookSide::kBid);
     else
-      output->side(OrderEvent::BookSide::kAsk);
+      output->side(BookSide::kAsk);
 
     output->state(OrderEvent::OrderState::kFinished);
     output->source(tree.get<std::string>("source"));
@@ -66,11 +66,11 @@ else if (type == "order_deleted") {
   if (tree.get<std::string>("data.type") == "0") {
     output->maker(toUuid(tree.get<std::string>("data.sell_order_id")));
     output->taker(toUuid(tree.get<std::string>("data.buy_order_id")));
-    output->side(OrderEvent::BookSide::kAsk);
+    output->side(BookSide::kAsk);
   } else {
     output->maker(toUuid(tree.get<std::string>("data.buy_order_id")));
     output->taker(toUuid(tree.get<std::string>("data.sell_order_id")));
-    output->side(OrderEvent::BookSide::kBid);
+    output->side(BookSide::kBid);
   }
   output->timestamp(Timestamp{std::chrono::microseconds{
       std::stoll(tree.get<std::string>("data.microtimestamp"))}});
@@ -91,6 +91,6 @@ else if (type == "order_deleted") {
           tree.get<double>("base_increment")));
 
 } else if (type == "reset") {
-  return boost::make_unique<Reset>();
+  return boost::make_unique<Reset>(episode_timestamp_);
 }
 return std::move(output);

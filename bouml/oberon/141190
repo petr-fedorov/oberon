@@ -1,6 +1,6 @@
 format 224
 "Reconstructor" // Application::Reconstructor
-  revision 241
+  revision 249
   modified_by 6 "petr"
   // class settings
   
@@ -53,6 +53,261 @@ format 224
     
     activitydiagramsettings
      end
+    class 271366 "BookSide"
+      visibility public stereotype "enum"
+      cpp_decl "${comment}enum ${name} {
+${items}};
+"
+      java_decl "${comment}${@}${visibility}${static}${final}${abstract}enum ${name}${implements} {
+${items};
+${members}}
+"
+      php_decl "${comment}${visibility}final class ${name} {
+${items}}
+"
+      python_2_2 python_decl "class ${name}:
+${docstring}${members}
+"
+      idl_decl "${comment}enum ${name} {
+${items}};
+"
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      attribute 204294 "kBid"
+	public type class_ref 271366 // BookSide
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 204422 "kAsk"
+	public type class_ref 271366 // BookSide
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 465670 "kBookSideNA"
+	public type class_ref 271366 // BookSide
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+    end
+
+    class 305542 "Price"
+      visibility public 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl "${comment}${@}${visibility}${static}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl "${comment}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      python_2_2 python_decl "class ${name}${inherit}:
+${docstring}${members}
+"
+      idl_decl "${comment}${abstract}${custom}valuetype ${name}${inherit} {
+${members}};
+"
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      attribute 569350 "kPricePrecision"
+	class_attribute const_attribute private explicit_type "double"
+	init_value "0.000001"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 569478 "kPricePrecisionFraction"
+	class_attribute const_attribute private explicit_type "double"
+	init_value "kPricePrecision/4"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 569222 "price_"
+	private explicit_type "double"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      operation 879110 "Price"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw}: price_ {0.0} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 879238 "Price"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "price" explicit_type "double"
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} ${p0}${v0}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${volatile}${throw}: price_ {price} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 879366 "operator =="
+	const cpp_inline public explicit_return_type "bool"
+	nparams 1
+	  param in name "other" type class_ref 305542 // Price
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 879494 "operator <"
+	const cpp_inline public explicit_return_type "bool"
+	nparams 1
+	  param in name "other" type class_ref 305542 // Price
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 879622 "operator >"
+	const cpp_inline public explicit_return_type "bool"
+	nparams 1
+	  param in name "other" type class_ref 305542 // Price
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 879750 "operator double"
+	const cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 879878 "alignUp"
+	const public return_type class_ref 305542 // Price
+	nparams 1
+	  param in name "tick_size" explicit_type "double"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 880006 "alignDown"
+	const cpp_inline public return_type class_ref 305542 // Price
+	nparams 1
+	  param in name "tick_size" explicit_type "double"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 747910 // <dependency>
+	relation 737798 -_->
+	  a public
+	    cpp default "#include in header"
+	    classrelation_ref 747910 // <dependency>
+	  b parent class_ref 564358 // cmath
+      end
+    end
+
+    class 305798 "Volume"
+      visibility public stereotype "typedef" explicit_base_type "double"
+      cpp_decl "${comment}typedef ${type} ${name};
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl "${comment}typedef ${type} ${name};
+"
+      explicit_switch_type ""
+      mysql_decl ""
+      
+    end
+
     classdiagram 307590 "Message Hierarchy Overview"
       classdiagramsettings hide_attributes yes hide_operations yes member_max_width 0 end
       size A-Landscape
@@ -389,6 +644,36 @@ ${inlines}
 	
 	
       end
+
+      operation 1588742 "Message"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw}=default;
+"
+	
+	
+	
+	
+      end
+
+      operation 1588870 "Message"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "t" type class_ref 230278 // Timestamp
+	  param in name "d" explicit_type "bool"
+	    defaultvalue "false"
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, ${t1} ${p1}${v1}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}${)}${volatile}${throw}:is_deleted_{d}, timestamp_{t}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
     end
 
     class 902918 "Token"
@@ -430,6 +715,7 @@ ${inlines}
       
       classrelation 1027462 // <realization>
 	relation 1017094 -_-|>
+	  stereotype "bind"
 	  a public
 	    cpp default "${type}"
 	    classrelation_ref 1027462 // <realization>
@@ -543,6 +829,219 @@ ${inlines}
       end
     end
 
+    class 1087494 "PriceLevelAttached"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      attribute 414726 "side_"
+	private type class_ref 271366 // BookSide
+	init_value "kBookSideNA"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      operation 1264262 "price"
+	const cpp_inline public return_type class_ref 305542 // Price
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1447046 "price"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "price" type class_ref 305542 // Price
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      attribute 414598 "price_"
+	private type class_ref 305542 // Price
+	init_value "kNaPrice"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      operation 1263494 "remaining"
+	const public return_type class_ref 305798 // Volume
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1263622 "remaining"
+	cpp_virtual public explicit_return_type "void"
+	nparams 1
+	  param in name "remaining_size" type class_ref 305798 // Volume
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1270918 "side"
+	const cpp_inline public return_type class_ref 271366 // BookSide
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1446918 "side"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "side" type class_ref 271366 // BookSide
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      attribute 406022 "remaining_size_"
+	private type class_ref 305798 // Volume
+	init_value "kNaVolume"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 465030 "kNaVolume"
+	class_attribute const_attribute public type class_ref 305798 // Volume
+	init_value "std::nan(\"1954\")"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 465286 "kNaPrice"
+	class_attribute const_attribute public type class_ref 305798 // Volume
+	init_value "std::nan(\"1954\")"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      operation 1588998 "PriceLevelAttached"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} = default;
+"
+	
+	
+	
+	
+      end
+
+      operation 1589126 "PriceLevelAttached"
+	public explicit_return_type ""
+	nparams 4
+	  param in name "p" type class_ref 305542 // Price
+	  param in name "v" type class_ref 305798 // Volume
+	  param in name "s" type class_ref 271366 // BookSide
+	  param in name "d" explicit_type "bool"
+	    defaultvalue "false"
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, ${t3} ${p3}${v3}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, ${t3} ${p3}${)}${volatile}${throw} : side_{s}, price_{p}, remaining_size_{v} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1596678 "removeTrailingZeros"
+	class_operation cpp_inline protected explicit_return_type "string"
+	nparams 1
+	  param in name "str" explicit_type "string"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} && ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} && ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+    end
+
     class 448390 "OrderEvent"
       visibility protected 
       cpp_decl "${comment}${template}class ${name}${inherit} {
@@ -556,206 +1055,6 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
-      class 305542 "Price"
-	visibility public 
-	cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-	java_decl "${comment}${@}${visibility}${static}${final}${abstract}class ${name}${extends}${implements} {
-${members}}
-"
-	php_decl "${comment}${final}${abstract}class ${name}${extends}${implements} {
-${members}}
-"
-	python_2_2 python_decl "class ${name}${inherit}:
-${docstring}${members}
-"
-	idl_decl "${comment}${abstract}${custom}valuetype ${name}${inherit} {
-${members}};
-"
-	explicit_switch_type ""
-	mysql_decl ""
-	
-	attribute 569350 "kPricePrecision"
-	  class_attribute const_attribute private explicit_type "double"
-	  init_value "0.000001"
-	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	  java_decl ""
-	  php_decl ""
-	  python_decl ""
-	  idl_decl ""
-	  mysql_decl ""
-	  MysqlColumn
-	end
-
-	attribute 569478 "kPricePrecisionFraction"
-	  class_attribute const_attribute private explicit_type "double"
-	  init_value "kPricePrecision/4"
-	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	  java_decl ""
-	  php_decl ""
-	  python_decl ""
-	  idl_decl ""
-	  mysql_decl ""
-	  MysqlColumn
-	end
-
-	attribute 569222 "price_"
-	  private explicit_type "double"
-	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	  java_decl ""
-	  php_decl ""
-	  python_decl ""
-	  idl_decl ""
-	  mysql_decl ""
-	  MysqlColumn
-	end
-
-	operation 879110 "Price"
-	  public explicit_return_type ""
-	  nparams 0
-	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${)}${volatile}${throw};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw}: price_ {0.0} {
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	end
-
-	operation 879238 "Price"
-	  public explicit_return_type ""
-	  nparams 1
-	    param in name "price" explicit_type "double"
-	  cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} ${p0}${v0}${)}${volatile}${throw};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${volatile}${throw}: price_ {price} {
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	end
-
-	operation 879366 "operator =="
-	  const cpp_inline public explicit_return_type "bool"
-	  nparams 1
-	    param in name "other" type class_ref 305542 // Price
-	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	end
-
-	operation 879494 "operator <"
-	  const cpp_inline public explicit_return_type "bool"
-	  nparams 1
-	    param in name "other" type class_ref 305542 // Price
-	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	end
-
-	operation 879622 "operator >"
-	  const cpp_inline public explicit_return_type "bool"
-	  nparams 1
-	    param in name "other" type class_ref 305542 // Price
-	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	end
-
-	operation 879750 "operator double"
-	  const cpp_inline public explicit_return_type ""
-	  nparams 0
-	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	end
-
-	operation 879878 "alignUp"
-	  const public return_type class_ref 305542 // Price
-	  nparams 1
-	    param in name "tick_size" explicit_type "double"
-	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	end
-
-	operation 880006 "alignDown"
-	  const cpp_inline public return_type class_ref 305542 // Price
-	  nparams 1
-	    param in name "tick_size" explicit_type "double"
-	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	end
-
-	classrelation 747910 // <dependency>
-	  relation 737798 -_->
-	    a public
-	      cpp default "#include in header"
-	      classrelation_ref 747910 // <dependency>
-	    b parent class_ref 564358 // cmath
-	end
-      end
-
-      class 305798 "Volume"
-	visibility public stereotype "typedef" explicit_base_type "double"
-	cpp_decl "${comment}typedef ${type} ${name};
-"
-	java_decl ""
-	php_decl ""
-	python_2_2 python_decl ""
-	idl_decl "${comment}typedef ${type} ${name};
-"
-	explicit_switch_type ""
-	mysql_decl ""
-	
-      end
-
       class 306822 "OrderId"
 	visibility public stereotype "typedef" base_type class_ref 472582 // uuid
 	cpp_decl "${comment}typedef ${type} ${name};
@@ -856,61 +1155,6 @@ ${items}};
 	end
       end
 
-      class 271366 "BookSide"
-	visibility public stereotype "enum"
-	cpp_decl "${comment}enum ${name} {
-${items}};
-"
-	java_decl "${comment}${@}${visibility}${static}${final}${abstract}enum ${name}${implements} {
-${items};
-${members}}
-"
-	php_decl "${comment}${visibility}final class ${name} {
-${items}}
-"
-	python_2_2 python_decl "class ${name}:
-${docstring}${members}
-"
-	idl_decl "${comment}enum ${name} {
-${items}};
-"
-	explicit_switch_type ""
-	mysql_decl ""
-	
-	attribute 204294 "kBid"
-	  public type class_ref 271366 // BookSide
-	  cpp_decl "  ${name}${value},${comment}"
-	  java_decl ""
-	  php_decl ""
-	  python_decl ""
-	  idl_decl ""
-	  mysql_decl ""
-	  MysqlColumn
-	end
-
-	attribute 204422 "kAsk"
-	  public type class_ref 271366 // BookSide
-	  cpp_decl "  ${name}${value},${comment}"
-	  java_decl ""
-	  php_decl ""
-	  python_decl ""
-	  idl_decl ""
-	  mysql_decl ""
-	  MysqlColumn
-	end
-
-	attribute 465670 "kBookSideNA"
-	  public type class_ref 271366 // BookSide
-	  cpp_decl "  ${name}${value},${comment}"
-	  java_decl ""
-	  php_decl ""
-	  python_decl ""
-	  idl_decl ""
-	  mysql_decl ""
-	  MysqlColumn
-	end
-      end
-
       class 1040262 "OrderEvent_UP"
 	visibility public stereotype "template_typedef"
 	nactuals 1
@@ -933,32 +1177,6 @@ ${items}};
 	      classrelation_ref 1182598 // <realization>
 	    b parent class_ref 889478 // unique_ptr
 	end
-      end
-
-      attribute 465030 "kNaVolume"
-	class_attribute const_attribute public type class_ref 305798 // Volume
-	init_value "std::nan(\"1954\")"
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-      end
-
-      attribute 465286 "kNaPrice"
-	class_attribute const_attribute public type class_ref 305798 // Volume
-	init_value "std::nan(\"1954\")"
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
       end
 
       attribute 465414 "kNaOrderId"
@@ -1021,19 +1239,6 @@ ${items}};
 	MysqlColumn
       end
 
-      attribute 406022 "remaining_size_"
-	private type class_ref 305798 // Volume
-	init_value "kNaVolume"
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-      end
-
       attribute 437382 "change_size_"
 	private type class_ref 305798 // Volume
 	init_value "kNaVolume"
@@ -1061,35 +1266,9 @@ ${items}};
 	MysqlColumn
       end
 
-      attribute 414598 "price_"
-	private type class_ref 305542 // Price
-	init_value "kNaPrice"
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-      end
-
       attribute 819974 "state_"
 	private type class_ref 299014 // OrderState
 	init_value "OrderState::kNA"
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-      end
-
-      attribute 414726 "side_"
-	private type class_ref 271366 // BookSide
-	init_value "kBookSideNA"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -1197,35 +1376,6 @@ ${items}};
 	
       end
 
-      operation 1263494 "remaining"
-	const public return_type class_ref 305798 // Volume
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 1263622 "remaining"
-	cpp_virtual public explicit_return_type "void"
-	nparams 1
-	  param in name "remaining_size" type class_ref 305798 // Volume
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
       operation 1263750 "change"
 	const cpp_inline public return_type class_ref 305798 // Volume
 	nparams 0
@@ -1284,35 +1434,6 @@ ${items}};
 	
       end
 
-      operation 1264262 "price"
-	const cpp_inline public return_type class_ref 305542 // Price
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 1447046 "price"
-	public explicit_return_type "void"
-	nparams 1
-	  param in name "price" type class_ref 305542 // Price
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
       operation 1264390 "heard"
 	const cpp_inline public return_type class_ref 230278 // Timestamp
 	nparams 0
@@ -1332,35 +1453,6 @@ ${items}};
 	public explicit_return_type "void"
 	nparams 1
 	  param in name "timestamp" type class_ref 230278 // Timestamp
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 1270918 "side"
-	const cpp_inline public return_type class_ref 271366 // BookSide
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 1446918 "side"
-	public explicit_return_type "void"
-	nparams 1
-	  param in name "side" type class_ref 271366 // BookSide
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -1544,6 +1636,316 @@ ${items}};
 	
 	
       end
+
+      classrelation 1272966 // <generalisation>
+	relation 1262598 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 1272966 // <generalisation>
+	  b parent class_ref 1087494 // PriceLevelAttached
+      end
+
+      operation 1598726 "convertVolume"
+	const protected return_type class_ref 305798 // Volume
+	nparams 1
+	  param in name "field" explicit_type "string"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1598470 "OrderEvent"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} = default;
+"
+	
+	
+	
+	
+      end
+
+      operation 1598598 "OrderEvent"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "csv" explicit_type "string"
+	  param inout name "anchor" type class_ref 230278 // Timestamp
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, ${t1} & ${p1}${v1}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+    end
+
+    class 1080966 "Stripe"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      class 1094662 "seconds"
+	visibility public stereotype "template_typedef"
+	nactuals 2
+	actual class class_ref 1094790 // duration
+	  rank 0 explicit_value "double"
+	actual class class_ref 1094790 // duration
+	  rank 1 explicit_value ""
+	cpp_decl "${comment}${template}using ${name} = ${inherit};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 1287942 // <realization>
+	  relation 1277574 -_-|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 1287942 // <realization>
+	    b parent class_ref 1094790 // duration
+	end
+      end
+
+      class 1101446 "Stripe_UP"
+	visibility public stereotype "template_typedef"
+	nactuals 1
+	actual class class_ref 889478 // unique_ptr
+	  rank 0 value class_ref 1080966 // Stripe
+	cpp_decl "${comment}${template}using ${name} = ${inherit};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 1294982 // <realization>
+	  relation 1284614 -_-|>
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 1294982 // <realization>
+	    b parent class_ref 889478 // unique_ptr
+	end
+      end
+
+      classrelation 1265670 // <generalisation>
+	relation 1255302 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 1265670 // <generalisation>
+	  b parent class_ref 245766 // Message
+      end
+
+      classrelation 1273094 // <generalisation>
+	relation 1262726 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 1273094 // <generalisation>
+	  b parent class_ref 1087494 // PriceLevelAttached
+      end
+
+      operation 1588358 "accept"
+	const cpp_virtual public explicit_return_type "bool"
+	nparams 1
+	  param in name "mh" type class_ref 441222 // TokenHandler
+	multiplicity "1"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0}* ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0}* ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1588614 "Stripe"
+	public explicit_return_type ""
+	nparams 6
+	  param in name "t" type class_ref 230278 // Timestamp
+	  param in name "p" type class_ref 305542 // Price
+	  param in name "v" type class_ref 305798 // Volume
+	  param in name "s" type class_ref 271366 // BookSide
+	  param in name "duration" type class_ref 514950 // microseconds
+	  param in name "is_best" explicit_type "bool"
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}, const ${t4} & ${p4}${v4}, ${t5} ${p5}${v5}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, const ${t4} & ${p4}, ${t5} ${p5}${)}${volatile}${throw} : Message{t}, PriceLevelAttached{ p, v, s }, duration_{duration}, is_best_{is_best} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      attribute 979334 "duration_"
+	private type class_ref 514950 // microseconds
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 979462 "is_best_"
+	private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      operation 1596550 "toString"
+	const cpp_virtual public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1597830 "duration"
+	const cpp_inline public return_type class_ref 1094662 // seconds
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1598086 "isBest"
+	const cpp_inline public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+    end
+
+    class 1094406 "Dot"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      operation 1619334 "toString"
+	const cpp_virtual public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 1287430 // <generalisation>
+	relation 1277062 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 1287430 // <generalisation>
+	  b parent class_ref 245766 // Message
+      end
+
+      classrelation 1287558 // <generalisation>
+	relation 1277190 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 1287558 // <generalisation>
+	  b parent class_ref 1087494 // PriceLevelAttached
+      end
+
+      operation 1595782 "accept"
+	const cpp_virtual public explicit_return_type "bool"
+	nparams 1
+	  param in name "mh" type class_ref 441222 // TokenHandler
+	multiplicity "1"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0}* ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0}* ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1596038 "Dot"
+	public explicit_return_type ""
+	nparams 4
+	  param in name "t" type class_ref 230278 // Timestamp
+	  param in name "p" type class_ref 305542 // Price
+	  param in name "v" type class_ref 305798 // Volume
+	  param in name "s" type class_ref 271366 // BookSide
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}${)}${volatile}${throw}:Message{t}, PriceLevelAttached{p,v,s} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
     end
 
     class 441478 "Elapsed"
@@ -1626,6 +2028,23 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
+      operation 1612294 "Reset"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "t" type class_ref 230278 // Timestamp
+	  param in name "d" explicit_type "bool"
+	    defaultvalue "false"
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, ${t1} ${p1}${v1}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}${)}${volatile}${throw}: Message{t,d}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
       classrelation 1096070 // <generalisation>
 	relation 1085702 ---|>
 	  a public
@@ -4735,7 +5154,7 @@ ${inlines}
 	  param in name "next" type class_ref 950918 // TokenHandler_SP
 	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} : _current_state{0}, TokenHandler{next, \"SizeDeducer\"} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} : TokenHandler{next, \"SizeDeducer\"}, _current_state{0} {
   ${body}}
 "
 	
@@ -5058,6 +5477,14 @@ ${inlines}
 	    classrelation_ref 1252358 // <dependency>
 	  b parent class_ref 521478 // Era
       end
+
+      classrelation 1265926 // <dependency>
+	relation 1255558 -_->
+	  a public
+	    cpp default "#include in header"
+	    classrelation_ref 1265926 // <dependency>
+	  b parent class_ref 448390 // OrderEvent
+      end
     end
 
     classdiagram 433414 "Token Handler"
@@ -5104,6 +5531,18 @@ ${inlines}
 
       attribute 806790 "received_"
 	protected type class_ref 902918 // Token
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 978566 "episode_timestamp_"
+	protected type class_ref 230278 // Timestamp
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -5383,6 +5822,34 @@ ${inlines}
 	
 	
       end
+
+      operation 1588486 "stripe"
+	cpp_virtual public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1595910 "dot"
+	cpp_virtual public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
     end
 
     class 564230 "EventCounter"
@@ -5524,6 +5991,21 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
+      operation 1596806 "removeTrailingZeros"
+	class_operation cpp_inline protected explicit_return_type "string"
+	nparams 1
+	  param in name "str" explicit_type "string"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} && ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} && ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
       operation 1460486 "name"
 	class_operation public explicit_return_type "string"
 	nparams 3
@@ -5544,13 +6026,11 @@ ${inlines}
       operation 1072262 "File"
 	public explicit_return_type ""
 	nparams 2
-	  param in name "handle_deleted" explicit_type "bool"
-	    defaultvalue "false"
-	  param in name "source" explicit_type "bool"
-	    defaultvalue "false"
-	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}${)}${volatile}${throw};
+	  param in name "min_price" type class_ref 305542 // Price
+	  param in name "max_price" type class_ref 305542 // Price
+	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${volatile}${throw}: TokenHandler{\"File\", handle_deleted}, source_{source} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw}: TokenHandler{\"File\"}, min_price_{min_price}, max_price_{max_price} {
   ${body}}
 "
 	
@@ -5597,19 +6077,7 @@ ${inlines}
 	MysqlColumn
       end
 
-      attribute 826758 "source_"
-	private explicit_type "bool"
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-      end
-
-      attribute 711558 "f_"
+      attribute 711558 "events_stream_"
 	private type class_ref 800134 // ofstream
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -5621,7 +6089,7 @@ ${inlines}
 	MysqlColumn
       end
 
-      attribute 826886 "s_"
+      attribute 826886 "source_stream_"
 	private type class_ref 800134 // ofstream
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -5635,6 +6103,131 @@ ${inlines}
 
       attribute 870022 "latest_seconds_"
 	private type class_ref 1006598 // seconds
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 985990 "events_"
+	private explicit_type "bool"
+	init_value "false"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 826758 "source_"
+	private explicit_type "bool"
+	init_value "false"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 986246 "spread_"
+	private explicit_type "bool"
+	init_value "false"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 986758 "best_bids_stream_"
+	private type class_ref 800134 // ofstream
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 986886 "best_asks_stream_"
+	private type class_ref 800134 // ofstream
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 986374 "trades_"
+	private explicit_type "bool"
+	init_value "false"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 987014 "trades_stream_"
+	private type class_ref 800134 // ofstream
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 986118 "depth_"
+	private explicit_type "bool"
+	init_value "false"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 986502 "bids_stream_"
+	private type class_ref 800134 // ofstream
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 986630 "asks_stream_"
+	private type class_ref 800134 // ofstream
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -5727,21 +6320,6 @@ ${inlines}
 	
       end
 
-      operation 1432966 "removeTrailingZeros"
-	cpp_inline private explicit_return_type "string"
-	nparams 1
-	  param in name "str" explicit_type "string"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} && ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} && ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
       classrelation 1238918 // security_ (<directional aggregation>)
 	relation 1228550 o-->
 	  stereotype "shared_ptr"
@@ -5751,30 +6329,585 @@ ${inlines}
 	    classrelation_ref 1238918 // security_ (<directional aggregation>)
 	  b multiplicity "1..*" parent class_ref 1067398 // Security
       end
+
+      operation 1596294 "stripe"
+	cpp_override public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1597958 "toCsv"
+	const cpp_virtual private explicit_return_type "string"
+	nparams 1
+	  param in name "stripe" type class_ref 1080966 // Stripe
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1619206 "toCsv"
+	const cpp_virtual private explicit_return_type "string"
+	nparams 1
+	  param in name "dot" type class_ref 1094406 // Dot
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1596422 "dot"
+	cpp_override public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1597062 "saveDeleted"
+	public return_type class_ref 229510 // File
+	nparams 1
+	  param in name "save" explicit_type "bool"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type}& ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type}& ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1597190 "saveOrderEvents"
+	public return_type class_ref 229510 // File
+	nparams 1
+	  param in name "save" explicit_type "bool"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type}& ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type}& ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1597702 "saveEventSource"
+	public return_type class_ref 229510 // File
+	nparams 1
+	  param in name "save" explicit_type "bool"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type}& ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type}& ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1597318 "saveDepth"
+	public return_type class_ref 229510 // File
+	nparams 1
+	  param in name "save" explicit_type "bool"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type}& ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type}& ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1597446 "saveSpread"
+	public return_type class_ref 229510 // File
+	nparams 1
+	  param in name "save" explicit_type "bool"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type}& ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type}& ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1597574 "saveTrades"
+	public return_type class_ref 229510 // File
+	nparams 1
+	  param in name "save" explicit_type "bool"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type}& ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type}& ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 1287814 // <dependency>
+	relation 1277446 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1287814 // <dependency>
+	  b parent class_ref 1080966 // Stripe
+      end
+
+      attribute 1007878 "min_price_"
+	private type class_ref 305542 // Price
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 1008006 "max_price_"
+	private type class_ref 305542 // Price
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      operation 1619078 "check"
+	const cpp_inline protected explicit_return_type "bool"
+	nparams 1
+	  param in name "price" type class_ref 305542 // Price
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
     end
 
-    class 903430 "Store"
-      visibility package stereotype "typedef" base_type class_ref 852614 // shared_ptr
-      nactuals 1
-      actual class class_ref 852614 // shared_ptr
-        rank 0 value class_ref 441222 // TokenHandler
-      cpp_decl "${comment}typedef ${type} ${name};
+    classdiagram 525190 "Transmuter"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
+    class 1087622 "Transmuter"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
 "
       java_decl ""
       php_decl ""
       python_2_2 python_decl ""
-      idl_decl "${comment}typedef ${type} ${name};
-"
+      idl_decl ""
       explicit_switch_type ""
       mysql_decl ""
       
-      classrelation 1085318 // <realization>
-	relation 1074950 -_-|>
-	  stereotype "bind"
+      operation 1605638 "Transmuter"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "next" type class_ref 950918 // TokenHandler_SP
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} ${p0}${v0}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${volatile}${throw} : TokenHandler{next, \"Transmuter - \", false} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 1273222 // <generalisation>
+	relation 1262854 ---|>
 	  a public
 	    cpp default "${type}"
-	    classrelation_ref 1085318 // <realization>
-	  b parent class_ref 852614 // shared_ptr
+	    classrelation_ref 1273222 // <generalisation>
+	  b parent class_ref 441222 // TokenHandler
+      end
+
+      class 1087750 "PriceLevel"
+	visibility public 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	class 1087878 "PriceLevel_SP"
+	  visibility public stereotype "template_typedef"
+	  nactuals 1
+	  actual class class_ref 852614 // shared_ptr
+	    rank 0 value class_ref 1087750 // PriceLevel
+	  cpp_decl "${comment}${template}using ${name} = ${inherit};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_2_2 python_decl ""
+	  idl_decl ""
+	  explicit_switch_type ""
+	  mysql_decl ""
+	  
+	  classrelation 1273478 // <realization>
+	    relation 1263110 -_-|>
+	      stereotype "bind"
+	      a public
+		cpp default "${type}"
+		classrelation_ref 1273478 // <realization>
+	      b parent class_ref 852614 // shared_ptr
+	  end
+	end
+
+	operation 1587206 "take"
+	  public explicit_return_type "bool"
+	  nparams 2
+	    param inout name "event" type class_ref 1040262 // OrderEvent_UP
+	    param out name "stripes" type class_ref 903046 // Tokens
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} && ${p0}${v0}, ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} && ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 1589254 "advance"
+	  public explicit_return_type "void"
+	  nparams 2
+	    param in name "timestamp" type class_ref 230278 // Timestamp
+	    param out name "stripes" type class_ref 903046 // Tokens
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}, ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 1587718 "empty"
+	  cpp_inline public explicit_return_type "bool"
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	classrelation 1280390 // events_ (<directional aggregation>)
+	  relation 1270022 o-->
+	    stereotype "vector"
+	    a role_name "events_" multiplicity "*" private
+	      cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	      classrelation_ref 1280390 // events_ (<directional aggregation>)
+	    b parent class_ref 1040262 // OrderEvent_UP
+	end
+
+	operation 1587846 "bestSince"
+	  public explicit_return_type "void"
+	  nparams 2
+	    param in name "timestamp" type class_ref 230278 // Timestamp
+	    param out name "stripes" type class_ref 903046 // Tokens
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}, ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 1587974 "bestUntil"
+	  public explicit_return_type "void"
+	  nparams 2
+	    param in name "timestamp" type class_ref 230278 // Timestamp
+	    param out name "stripes" type class_ref 903046 // Tokens
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}, ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 1588230 "volume"
+	  const public return_type class_ref 305798 // Volume
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	attribute 978694 "start_"
+	  private type class_ref 230278 // Timestamp
+	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	end
+
+	attribute 978822 "is_best_"
+	  private explicit_type "bool"
+	  cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	end
+
+	classrelation 1280902 // <dependency>
+	  relation 1270534 -_->
+	    a public
+	      cpp default "#include in source"
+	      classrelation_ref 1280902 // <dependency>
+	    b parent class_ref 1080966 // Stripe
+	end
+
+	operation 1605254 "start"
+	  const cpp_inline public return_type class_ref 230278 // Timestamp
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 1605382 "isBest"
+	  const cpp_inline public explicit_return_type "bool"
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	classrelation 1308678 // <dependency>
+	  relation 1298310 -_->
+	    a public
+	      cpp default "#include in source"
+	      classrelation_ref 1308678 // <dependency>
+	    b parent class_ref 1094406 // Dot
+	end
+      end
+
+      classrelation 1273606 // previous_ (<directional composition>)
+	relation 1263238 *-->
+	  stereotype "map"
+	  a role_name "previous_" multiplicity "*" private
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<OrderEvent::OrderId, ${type}> ${name}${value};
+"
+	    classrelation_ref 1273606 // previous_ (<directional composition>)
+	  b parent class_ref 1087878 // PriceLevel_SP
+      end
+
+      classrelation 1273734 // bids_ (<directional composition>)
+	relation 1263366 *-->
+	  stereotype "map"
+	  a role_name "bids_" multiplicity "*" private
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<Price, ${type}> ${name}${value};
+"
+	    classrelation_ref 1273734 // bids_ (<directional composition>)
+	  b parent class_ref 1087878 // PriceLevel_SP
+      end
+
+      classrelation 1273862 // asks_ (<directional composition>)
+	relation 1263494 *-->
+	  stereotype "map"
+	  a role_name "asks_" multiplicity "*" private
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<Price, ${type}> ${name}${value};
+"
+	    classrelation_ref 1273862 // asks_ (<directional composition>)
+	  b parent class_ref 1087878 // PriceLevel_SP
+      end
+
+      operation 1586822 "orderEvent"
+	cpp_override public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1586950 "elapsed"
+	cpp_override public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1587078 "reset"
+	cpp_override public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 1280646 // best_bid_ (<directional aggregation>)
+	relation 1270278 o-->
+	  stereotype "shared_ptr"
+	  a role_name "best_bid_" multiplicity "0..1" private
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	    classrelation_ref 1280646 // best_bid_ (<directional aggregation>)
+	  b parent class_ref 1087750 // PriceLevel
+      end
+
+      classrelation 1280774 // best_ask_ (<directional aggregation>)
+	relation 1270406 o-->
+	  stereotype "shared_ptr"
+	  a role_name "best_ask_" multiplicity "0..1" private
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	    classrelation_ref 1280774 // best_ask_ (<directional aggregation>)
+	  b parent class_ref 1087750 // PriceLevel
+      end
+
+      operation 1587590 "endOfEpisode"
+	cpp_override public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "handle() triggers this event after each episode"
+      end
+
+      attribute 1008134 "buys_"
+	private type class_ref 305798 // Volume
+	multiplicity "*"
+	stereotype "map"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<Price, ${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 1008262 "sells_"
+	private type class_ref 305798 // Volume
+	multiplicity "*"
+	stereotype "map"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<Price, ${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
       end
     end
   end
@@ -5848,8 +6981,10 @@ ${inlines}
       end
 
       attribute 841094 "episode_"
-	private type class_ref 903046 // Tokens
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+	private type class_ref 902918 // Token
+	multiplicity "*"
+	stereotype "vector"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
 "
 	java_decl ""
 	php_decl ""
@@ -5895,7 +7030,7 @@ ${inlines}
 	  param in name "handler" type class_ref 950918 // TokenHandler_SP
 	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} ${p0}${v0}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${throw} : handler_{handler} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${throw} : TokenHandler{handler,\"Reconstructor - \",true} {
   ${body}}
 "
 	
@@ -5904,16 +7039,41 @@ ${inlines}
 	
       end
 
-      classrelation 1085190 // handler_ (<directional aggregation>)
-	relation 1074822 o-->
-	  stereotype "shared_ptr"
-	  a role_name "handler_" multiplicity "1" protected
-	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${stereotype}<${const}${type}> ${name}${value};
-"
-	    classrelation_ref 1085190 // handler_ (<directional aggregation>)
+      classrelation 1302150 // <generalisation>
+	relation 1291782 ---|>
+	  a protected
+	    cpp default "${type}"
+	    classrelation_ref 1302150 // <generalisation>
 	  b parent class_ref 441222 // TokenHandler
       end
 
+      operation 1612422 "message"
+	cpp_virtual public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1612550 "reset"
+	cpp_virtual public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
     end
   end
 
@@ -6022,6 +7182,7 @@ ${namespace_end}
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/uuid/nil_generator.hpp>
 #include <boost/log/trivial.hpp>
+#include <boost/pointer_cast.hpp>
 #include <iomanip>
 #include <sstream>
 #include \"date.h\"
@@ -6031,30 +7192,6 @@ ${members}
 ${namespace_end}"
       associated_elems
 	class_ref 229510 // File
-      end
-    end
-
-    artifact 266758 "Store"
-      stereotype "source"
-      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
-#define ${NAMESPACE}_${NAME}_H
-
-${comment}
-#include <memory>
-${includes}
-${declarations}
-${namespace_start}
-${definition}
-${namespace_end}
-#endif
-"
-      cpp_src "${comment}
-${includes}
-${namespace_start}
-${members}
-${namespace_end}"
-      associated_elems
-	class_ref 903430 // Store
       end
     end
 
@@ -6172,18 +7309,29 @@ ${includes}
 ${declarations}
 ${namespace_start}
 ${definition}
+
+std::unique_ptr<OrderEvent> operator \"\"_oe(const char *, size_t);
 ${namespace_end}
 #endif
 "
       cpp_src "${comment}
 #include <boost/uuid/random_generator.hpp>
+#include <boost/uuid/string_generator.hpp>
 #include <boost/uuid/uuid_io.hpp>
+#include <boost/smart_ptr/make_unique.hpp>
 #include <sstream>
 #include <boost/smart_ptr/make_unique.hpp>
+#include <boost/log/trivial.hpp>
+#include \"../date.h\"
 ${includes}
 ${namespace_start}
+std::unique_ptr<OrderEvent> operator \"\"_oe(const char *line, size_t) {
+  Message::Timestamp dummy;
+  return boost::make_unique<OrderEvent>(line, dummy);
+}
 ${members}
-${namespace_end}"
+${namespace_end}
+"
       associated_elems
 	class_ref 448390 // OrderEvent
       end
@@ -6291,6 +7439,261 @@ ${module_end}
       associated_elems
 	class_ref 1067398 // Security
       end
+    end
+
+    artifact 380550 "Price"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      php_src "<?php
+${comment}
+${namespace}
+${require_once}
+${use}
+${definition}
+?>
+"
+      python_src "${comment}
+${import}
+${definition}"
+      idl_src "#ifndef ${MODULE}_${NAME}_H
+#define ${MODULE}_${NAME}_H
+
+${comment}
+${includes}
+${module_start}
+${definition}
+${module_end}
+#endif
+"
+      associated_elems
+	class_ref 305542 // Price
+      end
+    end
+
+    artifact 380678 "Volume"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      idl_src "#ifndef ${MODULE}_${NAME}_H
+#define ${MODULE}_${NAME}_H
+
+${comment}
+${includes}
+${module_start}
+${definition}
+${module_end}
+#endif
+"
+      associated_elems
+	class_ref 305798 // Volume
+      end
+    end
+
+    artifact 387974 "BookSide"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      java_src "${comment}
+${package}
+${imports}
+${definition}"
+      php_src "<?php
+${comment}
+${namespace}
+${require_once}
+${use}
+${definition}
+?>
+"
+      python_src "${comment}
+${import}
+${definition}"
+      idl_src "#ifndef ${MODULE}_${NAME}_H
+#define ${MODULE}_${NAME}_H
+
+${comment}
+${includes}
+${module_start}
+${definition}
+${module_end}
+#endif
+"
+      associated_elems
+	class_ref 271366 // BookSide
+      end
+    end
+
+    artifact 388102 "PriceLevelAttached"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 1087494 // PriceLevelAttached
+      end
+    end
+
+    artifact 394630 "Transmuter"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+#include <boost/pointer_cast.hpp>
+#include <boost/log/trivial.hpp>
+#include <boost/smart_ptr/make_unique.hpp>
+#include <boost/smart_ptr/make_shared.hpp>
+#include \"../date.h\"
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 1087622 // Transmuter
+      end
+    end
+
+    artifact 394758 "Stripe"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+#include <sstream>
+#include \"../date.h\"
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 1080966 // Stripe
+      end
+    end
+
+    artifact 401286 "Dot"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+#include <sstream>
+#include \"../date.h\"
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 1094406 // Dot
+      end
+    end
+
+    artifact 414598 "depth.gp"
+      stereotype "text"
+      cpp_src "# Plot depth
+set datafile separator \",\"
+set xdata time
+set timefmt \"%Y-%m-%dT%H:%M:%SZ\"
+set xtics format \"%H:%M:%.3SZ\" rotate
+set palette defined (-1 \"blue\", 0 'white', 1 'red')
+set cbrange [-1:1]
+bids=\"\\\"\".ARG1.\".bids\\\"\"
+asks=\"\\\"\".ARG1.\".asks\\\"\"
+best_bids=\"\\\"\".ARG1.\".bids.best\\\"\"
+best_asks=\"\\\"\".ARG1.\".asks.best\\\"\"
+trades=\"\\\"\".ARG1.\".trades\\\"\"
+
+plot [][] b1=NaN, a1=NaN @bids u 1:2:3:(0):4 w vectors lc palette z lw 2 nohead notitle,\\
+ @asks u 1:2:3:(0):4 w vectors lc palette z lw 2 nohead notitle,\\
+bb1=NaN, ba1=NaN @best_bids u 1:2:3:(0):4 w vectors lc palette z lw 2 nohead notitle,\\
+ \"\" u 1:(b0=bb1, bb1=$2, b0):(0):($2-b0) w vectors lc rgb \"red\" lw 0.1 nohead notitle,\\
+ @best_asks u 1:2:3:(0):4 w vectors lc palette z lw 2 nohead notitle,\\
+ \"\" u 1:(a0=ba1, ba1=$2, a0):(0):($2-a0) w vectors lc rgb \"blue\" lw 0.1 nohead notitle,\\
+ @trades u 1:2:3 w points lc palette z notitle
+"
     end
   end
 end

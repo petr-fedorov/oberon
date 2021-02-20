@@ -2,12 +2,7 @@ format 224
 
 classcanvas 132230 class_ref 245766 // Message
   classdiagramsettings member_max_width 0 end
-  xyz 430 41 2000
-end
-classcanvas 132614 class_ref 246022 // Filled
-  classdiagramsettings hide_attributes no show_members_full_definition yes member_max_width 0 show_parameter_name yes end
-  color lightmediumgreen
-  xyzwh 40 979 2011 249 171
+  xyz 521 21 2000
 end
 classcanvas 140678 class_ref 271366 // BookSide
   classdiagramsettings member_max_width 0 end
@@ -16,11 +11,6 @@ end
 classcanvas 144518 class_ref 305542 // Price
   classdiagramsettings member_max_width 0 end
   xyz 675 643 2000
-end
-classcanvas 147718 class_ref 328710 // Cancelled
-  classdiagramsettings member_max_width 0 end
-  color lightmediumgreen
-  xyz 303 980 2000
 end
 classcanvas 153094 class_ref 441478 // Elapsed
   classdiagramsettings member_max_width 0 end
@@ -39,16 +29,6 @@ end
 classcanvas 157446 class_ref 564358 // cmath
   classdiagramsettings member_max_width 0 end
   xyz 724 558 2000
-end
-classcanvas 157702 class_ref 570886 // Changed
-  classdiagramsettings member_max_width 0 end
-  color lightmediumgreen
-  xyzwh 412 980 2018 135 137
-end
-classcanvas 159238 class_ref 597126 // Created
-  classdiagramsettings member_max_width 0 end
-  color lightmediumgreen
-  xyzwh 609 980 2000 107 137
 end
 classcanvas 162438 class_ref 902918 // Token
   classdiagramsettings member_max_width 0 end
@@ -74,10 +54,22 @@ classcanvas 163718 class_ref 889478 // unique_ptr
   classdiagramsettings member_max_width 0 end
   xyz 89 372 2005
 end
+classcanvas 163974 class_ref 1094662 // seconds
+  classdiagramsettings member_max_width 0 end
+  xyz 709 198 2000
+end
+classcanvas 164102 class_ref 1094790 // duration
+  classdiagramsettings member_max_width 0 end
+  xyz 731 70 2005
+end
+classcanvas 164358 class_ref 1101446 // Stripe_UP
+  classdiagramsettings member_max_width 0 end
+  xyz 6 237 2010
+end
 relationcanvas 153222 relation_ref 442374 // <generalisation>
   geometry VHV unfixed
   from ref 153094 z 2001 to point 702 296
-  line 160902 z 2001 to point 466 296
+  line 160902 z 2001 to point 550 296
   line 161030 z 2001 to ref 132230
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
@@ -87,41 +79,11 @@ relationcanvas 154374 relation_ref 449542 // <generalisation>
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
-relationcanvas 154758 relation_ref 449798 // <generalisation>
-  geometry VHV unfixed
-  from ref 132614 z 2013 to point 159 936
-  line 160390 z 2013 to point 612 936
-  line 160518 z 2013 to ref 154246
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
-end
 relationcanvas 157318 relation_ref 558214 // <generalisation>
   geometry VHV unfixed
   from ref 157190 z 2001 to point 251 296
-  line 160134 z 2001 to point 466 296
+  line 160134 z 2001 to point 550 296
   line 160262 z 2001 to ref 132230
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
-end
-relationcanvas 157830 relation_ref 612358 // <generalisation>
-  from ref 157702 z 2019 to ref 154246
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
-end
-relationcanvas 159366 relation_ref 640262 // <generalisation>
-  geometry VHV unfixed
-  from ref 159238 z 2013 to point 660 936
-  line 161670 z 2013 to point 612 936
-  line 161798 z 2013 to ref 154246
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
-end
-relationcanvas 159622 relation_ref 640390 // <generalisation>
-  geometry VHV unfixed
-  decenter_begin 538
-  from ref 147718 z 2013 to point 340 936
-  line 161158 z 2013 to point 612 936
-  line 161286 z 2013 to ref 154246
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
@@ -137,18 +99,24 @@ relationcanvas 162694 relation_ref 1016966 // <realization>
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 163078 relation_ref 1017094 // <realization>
-  from ref 162950 z 2006 label "<T->Token>" max_width 255 xyz 262 98 2006 to ref 162822
+  from ref 162950 z 2006 label "<T->Token>" max_width 255 xyz 262 98 2006 stereotype "<<bind>>" xyz 270 116 3000 to ref 162822
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
-line 163206 ---+
-  from ref 144518 z 2013 to ref 154246
-line 163334 ---+
-  from ref 140678 z 2013 to ref 154246
 line 163590 ---+
   from ref 163462 z 2019 to ref 154246
 relationcanvas 163846 relation_ref 1172230 // <realization>
   from ref 163462 z 2019 label "<T->OrderEvent>" max_width 255 xyz 77 459 2019 stereotype "<<bind>>" xyz 98 477 3000 to ref 163718
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 164230 relation_ref 1277574 // <realization>
+  from ref 163974 z 2006 label "<Rep->double>" max_width 255 xyz 726 145 2006 to ref 164102
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 164486 relation_ref 1284614 // <realization>
+  from ref 164358 z 2011 label "<T->Stripe>" max_width 255 xyz 67 318 2011 to ref 163718
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end

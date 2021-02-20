@@ -1,5 +1,5 @@
 class Reconstructor
-!!!793222.cpp!!!	Reconstructor(in security : Security::Security_SP, inout handler : Store)
+!!!793222.cpp!!!	Reconstructor(inout handler : Store)
 
 !!!792582.cpp!!!	extract(in tree : ptree [1]) : Token [1..*]
 using namespace date;
@@ -17,10 +17,10 @@ if (type == "elapsed") {
   auto r = std::stod(tree.get<std::string>("amount"));
   if (r < 0) {
     output->remaining(-r);
-    output->side(OrderEvent::BookSide::kAsk);
+    output->side(BookSide::kAsk);
   } else {
     output->remaining(r);
-    output->side(OrderEvent::BookSide::kBid);
+    output->side(BookSide::kBid);
   }
   assert(output->isOrderChanged());
   return std::move(output);
@@ -30,9 +30,9 @@ if (type == "elapsed") {
   output->heard(toTimestamp(tree.get<std::string>("local_timestamp")));
   output->maker(toUuid(tree.get<std::string>("order_id")));
   if (std::stod(tree.get<std::string>("amount")) < 0) {
-    output->side(OrderEvent::BookSide::kAsk);
+    output->side(BookSide::kAsk);
   } else
-    output->side(OrderEvent::BookSide::kBid);
+    output->side(BookSide::kBid);
   assert(output->isOrderCancelled());
   return std::move(output);
 } else if (type == "match") {
@@ -42,10 +42,10 @@ if (type == "elapsed") {
   auto change_size = std::stod(tree.get<std::string>("amount"));
   if (change_size < 0) {
     output->change(-change_size);
-    output->side(OrderEvent::BookSide::kBid);
+    output->side(BookSide::kBid);
   } else {
     output->change(change_size);
-    output->side(OrderEvent::BookSide::kAsk);
+    output->side(BookSide::kAsk);
   }
   output->trade(std::stol(tree.get<std::string>("id")));
   assert(output->isOrderFilled());

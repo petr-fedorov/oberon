@@ -14,7 +14,11 @@ classcanvas 129030 class_ref 1067398 // Security
 end
 classcanvas 129286 class_ref 521478 // Era
   classdiagramsettings member_max_width 0 end
-  xyz 398 318 2006
+  xyz 350 319 2006
+end
+classcanvas 129926 class_ref 448390 // OrderEvent
+  classdiagramsettings member_max_width 0 end
+  xyz 453 210 2000
 end
 relationcanvas 128518 relation_ref 1068038 // <directional aggregation>
   decenter_begin 167
@@ -30,17 +34,22 @@ relationcanvas 128902 relation_ref 1076742 // <generalisation>
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 129158 relation_ref 1241862 // <directional aggregation>
-  from ref 128006 z 2001 stereotype "<<shared_ptr>>" xyz 185.5 125.5 3000 to ref 129030
+  from ref 128006 z 2001 stereotype "<<shared_ptr>>" xyz 185 125 3000 to ref 129030
   role_a_pos 137 102 3000 no_role_b
   multiplicity_a_pos 137 135 3000 no_multiplicity_b
 end
 relationcanvas 129414 relation_ref 1241734 // <directional aggregation>
-  from ref 129286 z 2007 stereotype "<<shared_ptr>>" xyz 220 234 2007 to ref 129030
-  role_a_pos 137 127 3000 no_role_b
-  multiplicity_a_pos 137 160 3000 no_multiplicity_b
+  from ref 129286 z 2007 stereotype "<<shared_ptr>>" xyz 195.5 234 2007 to ref 129030
+  role_a_pos 136 130 3000 no_role_b
+  multiplicity_a_pos 136 163 3000 no_multiplicity_b
 end
 relationcanvas 129542 relation_ref 1241990 // <dependency>
   from ref 128006 z 2007 to ref 129286
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130054 relation_ref 1255558 // <dependency>
+  from ref 128006 z 2001 to ref 129926
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end

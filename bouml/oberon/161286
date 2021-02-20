@@ -1,6 +1,6 @@
-format 223
+format 224
 "chrono" // std::chrono
-  revision 4
+  revision 5
   modified_by 6 "petr"
   // class settings
   
@@ -100,6 +100,25 @@ format 223
 
     class 1006598 "seconds"
       visibility package 
+      cpp_external cpp_decl "${name}
+#include <chrono>
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+    end
+
+    class 1094790 "duration"
+      visibility package 
+      nformals 2
+      formal name "Rep" type "class" explicit_default_value ""
+        explicit_extends ""
+      formal name "Period" type "class" explicit_default_value ""
+        explicit_extends ""
       cpp_external cpp_decl "${name}
 #include <chrono>
 "

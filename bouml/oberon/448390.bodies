@@ -16,22 +16,22 @@ if (!ordinal_)
 else
   buf << ordinal_;
 buf << " ";
-if (side_ == kBid)
+if (side() == kBid)
   buf << "B";
-else if (side_ == kAsk)
+else if (side() == kAsk)
   buf << "A";
 else
   buf << "NA";
 buf << " ";
-if (std::isnan(price_))
+if (std::isnan(price()))
   buf << "NA";
 else
-  buf << price_;
+  buf << price();
 buf << " ";
-if (std::isnan(remaining_size_))
+if (std::isnan(remaining()))
   buf << "NA";
 else
-  buf << remaining_size_;
+  buf << remaining();
 buf << " ";
 if (std::isnan(change_size_))
   buf << "NA";
@@ -39,14 +39,17 @@ else
   buf << change_size_;
 buf << " ";
 if (state_ == OrderState::kActive) {
-  buf << "a";
+  buf << "act";
 } else if (state_ == OrderState::kFinished) {
-  buf << "f";
+  buf << "fin";
 } else {
   buf << "na";
 }
 buf << " ";
-  buf << (deleted() ? " DELETED " : "");
+if(trade_id_) {
+  buf << trade_id_ << " " << taker_order_id_ << " ";
+}
+buf << (deleted() ? " DELETED " : "");
 return buf.str();
 !!!1285510.cpp!!!	accept(in mh : TokenHandler [1]) : bool
 if(isOrderCreated())
@@ -62,30 +65,18 @@ return mh->orderEvent();
 return order_id_;
 !!!1263366.cpp!!!	maker(in order_id : OrderEvent::OrderId) : void
 order_id_ = order_id;
-!!!1263494.cpp!!!	remaining() : OrderEvent::Volume
-return remaining_size_;
-!!!1263622.cpp!!!	remaining(in remaining_size : OrderEvent::Volume) : void
-remaining_size_ = remaining_size;
-!!!1263750.cpp!!!	change() : OrderEvent::Volume
+!!!1263750.cpp!!!	change() : Volume
 return change_size_;
-!!!1263878.cpp!!!	change(in change_size : OrderEvent::Volume) : void
+!!!1263878.cpp!!!	change(in change_size : Volume) : void
 change_size_ = change_size;
 !!!1264006.cpp!!!	ordinal() : OrderEvent::Ordinal
 return ordinal_;
 !!!1264134.cpp!!!	ordinal(in ordinal : OrderEvent::Ordinal) : void
 ordinal_ = ordinal;
-!!!1264262.cpp!!!	price() : OrderEvent::Price
-return price_;
-!!!1447046.cpp!!!	price(in price : OrderEvent::Price) : void
-price_ = price; 
 !!!1264390.cpp!!!	heard() : Message::Timestamp
 return heard_;
 !!!1446790.cpp!!!	heard(in timestamp : Message::Timestamp) : void
 heard_ = timestamp;
-!!!1270918.cpp!!!	side() : OrderEvent::BookSide
-return side_;
-!!!1446918.cpp!!!	side(in side : OrderEvent::BookSide) : void
-side_ = side;
 !!!1277830.cpp!!!	taker() : OrderEvent::OrderId
 return taker_order_id_;
 !!!1447302.cpp!!!	taker(in taker_id : OrderEvent::OrderId) : void
@@ -110,3 +101,178 @@ return ordinal() != 1 && state() != kFinished && !trade();
 return state() == kFinished && !trade();
 !!!1539334.cpp!!!	isOrderFilled() : bool
 return trade();
+!!!1598726.cpp!!!	convertVolume(in field : string) : Volume
+if (!field.empty()) {
+  if (field != "NA") {
+    try {
+      return std::stod(field);
+    } catch (...) {
+    };
+  }
+  return reconstructor::OrderEvent::kNaVolume;
+} else
+  return 0.0;
+!!!1598598.cpp!!!	OrderEvent(in csv : string, inout anchor : Message::Timestamp)
+// std::ostringstream ss;
+// boost::property_tree::write_json(ss, tree, false);
+using namespace oberon::reconstructor;
+std::istringstream is{csv};
+std::string field;
+boost::uuids::string_generator gen;
+
+// maker
+std::getline(is, field, ',');
+if (is.good()) {
+  maker(gen(field));
+}
+else
+  BOOST_LOG_TRIVIAL(warning) << "Couldn't read maker from " << csv;
+
+// ordinal
+std::getline(is, field, ',');
+if (is.good()) {
+  if (!(field.empty() || field == "NA"))
+    ordinal(std::stol(field));
+  else
+    ordinal(0L);
+}
+else
+  BOOST_LOG_TRIVIAL(warning) << "Couldn't read ordinal from " << csv;
+
+// timestamp
+std::getline(is, field, ',');
+if (is.good()) {
+  if (!field.empty()) {
+    std::istringstream ss{field};
+    ss >> date::parse("%FT%TZ", anchor);
+    if (ss.fail()) {
+      BOOST_LOG_TRIVIAL(warning)
+          << "Couldn't parse a timestamp: " << field << ", ignored ...";
+    }
+  }
+}
+else
+  BOOST_LOG_TRIVIAL(warning) << "Couldn't read timestamp from " << csv;
+
+//mks
+std::getline(is, field, ',');
+if (is.good()) {
+  timestamp(anchor +
+                    std::chrono::microseconds{std::stoi(field)});
+}
+else
+  BOOST_LOG_TRIVIAL(warning) << "Couldn't read mks from " << csv;
+
+
+// state
+std::getline(is, field, ',');
+if (is.good()) {
+  using OrderState = reconstructor::OrderEvent::OrderState;
+  if (!field.empty()) {
+    if (field == "NA")
+      state(OrderState::kNA);
+    else
+      state(OrderState::kActive);
+  } else
+    state(OrderState::kFinished);
+}
+else
+  BOOST_LOG_TRIVIAL(warning) << "Couldn't read state from " << csv;
+
+//price 
+std::getline(is, field, ',');
+if (is.good()) {
+  price(std::stod(field));
+}
+else
+  BOOST_LOG_TRIVIAL(warning) << "Couldn't read price from " << csv;
+
+Volume r = PriceLevelAttached::kNaVolume;
+Volume c = PriceLevelAttached::kNaVolume;
+
+// remaining
+std::getline(is, field, ',');
+if (is.good()) {
+  r = convertVolume(field);
+}
+else
+  BOOST_LOG_TRIVIAL(warning) << "Couldn't read volume from " << csv;
+
+// change
+std::getline(is, field, ',');
+if (is.good()) {
+  c = convertVolume(field); 
+}
+else
+  BOOST_LOG_TRIVIAL(warning) << "Couldn't read change from " << csv;
+
+using OrderEvent = reconstructor::OrderEvent;
+using BookSide = BookSide;
+
+if (std::isnan(r)) {
+  this->remaining(r);
+  this->change(c);
+  this->side(BookSide::kBookSideNA);
+} else if (r == 0) {
+  if (c > 0) {
+    this->remaining(r);
+    this->change(c);
+    this->side(BookSide::kAsk);
+  } else {
+    if (c < 0) {
+      this->remaining(r);
+      this->change(-c);
+      this->side(BookSide::kBid);
+    } else { // c == 0 or std::isnan(c)
+      this->remaining(r);
+      this->change(c);
+      this->side(BookSide::kBookSideNA);
+    }
+  }
+} else { // r != 0
+  if (r > 0) {
+    this->remaining(r);
+    this->change(-c);
+    this->side(BookSide::kBid);
+  } else { // r < 0
+    this->remaining(-r);
+    this->change(c);
+    this->side(BookSide::kAsk);
+  }
+}
+
+//trade 
+std::getline(is, field, ',');
+if (is.good()) {
+  if (!field.empty()) {
+    trade(std::stol(field));
+  } 
+}
+else
+  BOOST_LOG_TRIVIAL(warning) << "Couldn't read trade from " << csv;
+
+// taker
+std::getline(is, field, ',');
+if (is.good()) {
+ if(!field.empty())
+  taker(gen(field));
+}
+else
+  BOOST_LOG_TRIVIAL(warning) << "Couldn't read taker from " << csv;
+
+// heard
+std::getline(is, field, ',');
+if (is.good()) {
+  heard(timestamp() + std::chrono::microseconds{std::stoi(field)});
+}
+else
+  BOOST_LOG_TRIVIAL(warning) << "Couldn't read heard from " << csv;
+  
+// deleted
+std::getline(is, field, ',');
+if (is.good() && !field.empty()) {
+  deleted(true);
+}
+
+assert(isOrderCreated() || isOrderCancelled() || isOrderChanged() ||
+       isOrderFilled());

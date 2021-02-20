@@ -1,12 +1,18 @@
 class TokenHandler
 !!!590214.cpp!!!	handle(in episode : Tokens [*]) : bool [*]
+if (!episode.empty())
+  episode_timestamp_ = episode.front()->timestamp();
+else
+  episode_timestamp_ = Message::Timestamp{};
 for (auto &msg : episode) {
+  assert( msg->timestamp() == episode_timestamp_);
   if (msg) {
     if (is_handles_deleted_ || !msg->deleted()) {
       received_ = std::move(msg);
+      auto str = received_->toString();
       if (!received_->accept(this)) {
         BOOST_LOG_TRIVIAL(error)
-            << handler_name_ << " not accepted " << received_->toString();
+            << handler_name_ << " not accepted " << str;
         return false;
       }
 
@@ -40,9 +46,9 @@ if (endOfEpisode()) {
   }
   output_.clear();
   return result;
-}
-else {
-  BOOST_LOG_TRIVIAL(error) << handler_name_ << "  after_handle returned false";
+} else {
+  BOOST_LOG_TRIVIAL(error) << handler_name_
+                           << "  endOfEpisode() returned false";
   return false;
 }
 !!!1357958.cpp!!!	endOfEpisode() : bool
@@ -70,3 +76,7 @@ return orderEvent();
 return orderEvent();
 !!!485382.cpp!!!	cancelled() : bool
 return orderEvent();
+!!!1588486.cpp!!!	stripe() : bool
+return message();
+!!!1595910.cpp!!!	dot() : bool
+return message();

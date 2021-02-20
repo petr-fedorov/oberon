@@ -1,6 +1,6 @@
 format 224
 "File" // Application::Reconstructor::File
-  revision 2
+  revision 5
   modified_by 6 "petr"
   // class settings
   
@@ -147,52 +147,6 @@ ${inlines}
 	  b parent class_ref 966278 // Reset
       end
 
-      operation 1559302 "convertState"
-	const public return_type class_ref 299014 // OrderState
-	nparams 1
-	  param in name "state" explicit_type "string"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 1565958 "convertVolume"
-	const public return_type class_ref 305798 // Volume
-	nparams 1
-	  param in name "field" explicit_type "string"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 1566086 "setRemainingChangeSide"
-	public explicit_return_type "void"
-	nparams 3
-	  param inout name "output" type class_ref 1040262 // OrderEvent_UP
-	  param in name "remaining" type class_ref 305798 // Volume
-	  param in name "change" type class_ref 305798 // Volume
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
     end
   end
 

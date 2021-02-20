@@ -1,22 +1,29 @@
 class Main
 !!!1439494.cpp!!!	main(in argc : int, in argv : char **) : int
-boost::log::register_simple_formatter_factory< boost::log::trivial::severity_level, char >("Severity");
+boost::log::register_simple_formatter_factory<
+    boost::log::trivial::severity_level, char>("Severity");
 boost::log::add_common_attributes();
-boost::log::add_console_log(std::cout, boost::log::keywords::auto_flush=true, boost::log::keywords::format="%TimeStamp% [%Severity%] %Message%");
-boost::log::core::get()->set_filter
-    (
-        boost::log::trivial::severity >= boost::log::trivial::info
-    );
+boost::log::add_console_log(
+    std::cout, boost::log::keywords::auto_flush = true,
+    boost::log::keywords::format = "%TimeStamp% [%Severity%] %Message%");
+boost::log::core::get()->set_filter(boost::log::trivial::severity >=
+                                    boost::log::trivial::info);
 namespace po = boost::program_options;
 
-po::options_description common_options("Options are"), input_options, slice_options, capture_options, command_option, help_options;
+po::options_description common_options("Options are"), deleted_option, input_options,
+    slice_options, capture_options, price_filter_options, command_option, help_options;
 
-help_options.add_options()("help,h","produce this help message");
-common_options.add_options()
-    ("quote-increment,q", po::value<std::string>(&quote_increment_)->default_value("0.01"), "specifies the minimum increment for the quote currency " "(i.e. USD in BTC-USD)")(
-    "base-increment,b", po::value<std::string>(&base_increment_)->default_value("0.00000001"),
+help_options.add_options()("help,h", "produce this help message");
+common_options.add_options()(
+    "quote-increment,q",
+    po::value<std::string>(&quote_increment_)->default_value("0.01"),
+    "specifies the minimum increment for the quote currency "
+    "(i.e. USD in BTC-USD)")(
+    "base-increment,b",
+    po::value<std::string>(&base_increment_)->default_value("0.00000001"),
     "specifies the minimum increment for the base currency (i.e. BTC in "
-    "BTC-USD)")("deleted,d","output deleted events");
+    "BTC-USD)");
+deleted_option.add_options()("deleted,d", "output deleted events");
 capture_options.add_options()("exchange,e", po::value(&exchange_),
                               "specifies the name of the exchange (mandatory)")(
     "product,p", po::value(&product_),
@@ -35,17 +42,28 @@ slice_options.add_options()("max-duration,m",
                             po::value<int>(&boundary_)->default_value(60),
                             "specifies that a new era will be started every "
                             "arg minutes since UNIX epoch");
+price_filter_options.add_options()(
+    "less-than,l", po::value<double>(&min_price_), "do not output a stripe or a trade, if its price is less than arg")(
+    "greater-than,g", po::value<double>(&max_price_), "do not output a stripe or a trade, if the price is greater than arg");
 
 boost::optional<std::string> command;
-command_option.add_options()("command",  po::value(&command), "");
+command_option.add_options()("command", po::value(&command), "");
 po::positional_options_description p;
 p.add("command", 1);
 
 po::options_description all;
-all.add(common_options).add(capture_options).add(input_options).add(slice_options).add(help_options).add(command_option);
+all.add(common_options)
+    .add(capture_options)
+    .add(input_options)
+    .add(deleted_option)
+    .add(slice_options)
+    .add(price_filter_options)
+    .add(help_options)
+    .add(command_option);
 
 po::variables_map vm;
-po::store(po::command_line_parser(argc, argv).options(all).positional(p).run(), vm);
+po::store(po::command_line_parser(argc, argv).options(all).positional(p).run(),
+          vm);
 po::notify(vm);
 
 if (vm.count("help"))
@@ -57,28 +75,27 @@ if (vm.count("deleted"))
 if (vm.count("source"))
   source_ = true;
 
-if(vm.count("input"))
+if (vm.count("input"))
   era_ = std::move(vm["input"].as<std::vector<std::string>>());
 
 // Check command line arguments.
 if (command) {
-  if( *command == "capture") {
-    common_options.add(capture_options).add(help_options);
+  if (*command == "capture") {
+    common_options.add(capture_options).add(deleted_option).add(help_options);
     return capture(common_options);
-  }
-  else if( *command == "transmute") 
-    return not_yet_implemented();
-  else if( *command == "slice") {
-    common_options.add(input_options).add(slice_options).add(help_options);
+  } else if (*command == "transmute") {
+    common_options.add(input_options).add(price_filter_options).add(help_options);
+    return transmute(common_options);
+  } else if (*command == "slice") {
+    common_options.add(input_options).add(deleted_option).add(slice_options).add(help_options);
     return slice(common_options);
-  }
-  else if (*command == "merge") {
-    common_options.add(input_options).add(help_options);
+  } else if (*command == "merge") {
+    common_options.add(input_options).add(deleted_option).add(help_options);
     return merge(common_options);
   }
 }
 std::cerr << "Usage: oberon <command> [options]\n"
-          << "Commands are:\n capture\n transmute\n split\n merge\nRun oberon "
+          << "Commands are:\n capture\n transmute\n slice\n merge\nRun oberon "
              "<command> --help for the list of options per command.\n";
 return EXIT_FAILURE;
 !!!1439750.cpp!!!	capture(in od : options_description) : int
@@ -89,7 +106,8 @@ if (exchange_ && product_ && !help_) {
   // The io_context is required for all I/O
   boost::shared_ptr<boost::asio::io_context> ioc =
       boost::make_shared<boost::asio::io_context>();
-  auto store = boost::make_shared<reconstructor::File>(deleted_, source_);
+  auto store = boost::make_shared<reconstructor::File>(min_price_, max_price_);
+  store->saveOrderEvents(true).saveDeleted(deleted_).saveEventSource(source_);
 
   if (*exchange_ == "Bitstamp") {
     using Receiver = oberon::acquirer::bitstamp::Receiver;
@@ -110,8 +128,7 @@ if (exchange_ && product_ && !help_) {
     boost::shared_ptr<reconstructor::TokenHandler> deduplicator = boost::make_shared<Deduplicator>(size_deducer);
     auto cleaner = boost::make_shared<Synchronizer>(output_delay_ > 0 ? boost::make_shared<TimeOrderEnforcer>(deduplicator, output_delay_, deleted_) : deduplicator);
     cleaner->create();
-    auto reconstructor =
-        Reconstructor{cleaner};
+    Reconstructor reconstructor{cleaner};
 
     auto receiver = boost::make_shared<Receiver>(
         ioc, boost::static_pointer_cast<Feeder>(feeder), snapshot,
@@ -161,8 +178,7 @@ if (exchange_ && product_ && !help_) {
     auto size_deducer = boost::make_shared<SizeDeducer>(event_counter);
     size_deducer->create();
     auto cleaner = boost::make_shared<Synchronizer>(size_deducer);
-    auto reconstructor =
-        Reconstructor{cleaner };
+    Reconstructor reconstructor{cleaner};
     auto coinbase = boost::make_shared<Receiver>(
         ioc, boost::static_pointer_cast<Feeder>(feeder), snapshot,
         std::bind(&Reconstructor::process, &reconstructor,
@@ -197,7 +213,8 @@ std::cerr << "Usage: oberon capture [options]\n" << od;
 return EXIT_FAILURE;
 !!!1453958.cpp!!!	slice(in od : options_description) : int
 if (!help_ && !era_.empty()) {
-  auto store = boost::make_shared<reconstructor::File>(deleted_ ? true : false);
+  auto store = boost::make_shared<reconstructor::File>(min_price_, max_price_);
+  store->saveOrderEvents(true).saveDeleted(deleted_);
   auto event_counter = boost::make_shared<reconstructor::EventCounter>(store);
   auto slicer =
       boost::make_shared<reconstructor::EraSlicer>(boundary_, event_counter);
@@ -213,7 +230,8 @@ if (!help_ && !era_.empty()) {
 return EXIT_SUCCESS;
 !!!1504134.cpp!!!	merge(in od : options_description) : int
 if (!help_ && !era_.empty()) {
-  auto store = boost::make_shared<reconstructor::File>( deleted_ ? true : false);
+  auto store = boost::make_shared<reconstructor::File>(min_price_, max_price_);
+  store->saveOrderEvents(true).saveDeleted(deleted_);
   auto event_counter = boost::make_shared<reconstructor::EventCounter>(store);
   auto merger = boost::make_shared<reconstructor::EraMerger>(event_counter);
   merger->create();
@@ -222,6 +240,19 @@ if (!help_ && !era_.empty()) {
   return reader.readAndProcess(era_, std::bind(&reconstructor::file::Reconstructor::process, &r, std::placeholders::_1), ".merged", quote_increment_, base_increment_);
 } else {
   std::cerr << "Usage: oberon merge [options]\n";
+  std::cout << od;
+  return EXIT_FAILURE;
+}
+!!!1596934.cpp!!!	transmute(in od : options_description) : int
+if (!help_ && !era_.empty()) {
+  auto store = boost::make_shared<reconstructor::File>(min_price_, max_price_);
+  store->saveDeleted(deleted_).saveDepth(true).saveSpread(true).saveTrades(true);
+  auto transmuter = boost::make_shared<reconstructor::Transmuter>(store);
+  reconstructor::file::Reconstructor r{transmuter};
+  acquirer::file::Reader reader;
+  return reader.readAndProcess(era_, std::bind(&reconstructor::file::Reconstructor::process, &r, std::placeholders::_1), std::string{}, quote_increment_, base_increment_);
+} else {
+  std::cerr << "Usage: oberon transmute [options]\n";
   std::cout << od;
   return EXIT_FAILURE;
 }

@@ -1,0 +1,35 @@
+class Stripe
+!!!1588358.cpp!!!	accept(in mh : TokenHandler [1]) : bool
+return mh->stripe();
+
+!!!1588614.cpp!!!	Stripe(in t : Message::Timestamp, in p : Price, in v : Volume, in s : BookSide, in duration : microseconds, in is_best : bool)
+timestamp(t);
+!!!1596550.cpp!!!	toString() : string
+std::stringstream buf;
+buf << date::format("%FT%TZ ", timestamp());
+if (side() == kBid)
+  buf << "B";
+else if (side() == kAsk)
+  buf << "A";
+else
+  buf << "NA";
+buf << " ";
+if (std::isnan(price()))
+  buf << "NA";
+else
+  buf << price();
+buf << " ";
+if (std::isnan(remaining()))
+  buf << "NA";
+else
+  buf << remaining();
+buf << " ";
+buf << duration().count();
+buf << " ";
+buf << (deleted() ? " DELETED " : "");
+return buf.str();
+
+!!!1597830.cpp!!!	duration() : Stripe::seconds
+return std::chrono::duration_cast<seconds>(duration_);
+!!!1598086.cpp!!!	isBest() : bool
+return is_best_;

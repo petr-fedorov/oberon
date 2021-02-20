@@ -1,6 +1,6 @@
 format 224
 "Bitfinex" // Application::Reconstructor::Bitfinex
-  revision 10
+  revision 12
   modified_by 6 "petr"
   // class settings
   
@@ -34,6 +34,102 @@ format 224
   cpp_src_dir "cpp/reconstructor/bitfinex"
   cpp_namespace "oberon::reconstructor::bitfinex"
   classview 214022 "Reconstructor"
+    
+    classdiagramsettings member_max_width 0 end
+    
+    classcompositediagramsettings end
+    
+    collaborationdiagramsettings end
+    
+    objectdiagramsettings end
+    
+    objectcompositediagramsettings end
+    
+    sequencediagramsettings end
+    
+    statediagramsettings
+     end
+    
+    
+    activitydiagramsettings
+     end
+    classdiagram 327302 "Bitfinex Reconstructor"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
+    class 624902 "Reconstructor"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      operation 793222 "Reconstructor"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "handler" type class_ref 950918 // TokenHandler_SP
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} ${p0}${v0}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${throw} : oberon::reconstructor::Reconstructor(handler) {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 792582 "extract"
+	cpp_override protected return_type class_ref 902918 // Token
+	multiplicity "1..*"
+	nparams 1
+	  param in name "tree" type class_ref 174214 // ptree
+	multiplicity "1"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 688134 // <generalisation>
+	relation 678022 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 688134 // <generalisation>
+	  b parent class_ref 486278 // Reconstructor
+      end
+
+      classrelation 1137542 // <dependency>
+	relation 1127174 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1137542 // <dependency>
+	  b parent class_ref 441478 // Elapsed
+      end
+
+      classrelation 1266054 // <dependency>
+	relation 1255686 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1266054 // <dependency>
+	  b parent class_ref 448390 // OrderEvent
+      end
+    end
+  end
+
+  classview 346758 "Handlers"
     
     classdiagramsettings member_max_width 0 end
     
@@ -129,73 +225,19 @@ ${inlines}
 	mysql_decl ""
 	MysqlColumn
       end
+
+      classrelation 1266182 // <dependency>
+	relation 1255814 -_->
+	  a public
+	    cpp default "#include in header"
+	    classrelation_ref 1266182 // <dependency>
+	  b parent class_ref 448390 // OrderEvent
+      end
     end
 
-    classdiagram 327302 "Bitfinex Reconstructor"
+    classdiagram 518662 "DeduceSize"
       classdiagramsettings member_max_width 0 end
       size A4
-    end
-
-    class 624902 "Reconstructor"
-      visibility package 
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      mysql_decl ""
-      
-      operation 793222 "Reconstructor"
-	public explicit_return_type ""
-	nparams 1
-	  param inout name "handler" type class_ref 903430 // Store
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} ${p0}${v0}${)}${volatile}${throw};
-"
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${throw} : oberon::reconstructor::Reconstructor(handler) {
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 792582 "extract"
-	cpp_override protected return_type class_ref 902918 // Token
-	multiplicity "1..*"
-	nparams 1
-	  param in name "tree" type class_ref 174214 // ptree
-	multiplicity "1"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      classrelation 688134 // <generalisation>
-	relation 678022 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 688134 // <generalisation>
-	  b parent class_ref 486278 // Reconstructor
-      end
-
-      classrelation 1137542 // <dependency>
-	relation 1127174 -_->
-	  a public
-	    cpp default "#include in source"
-	    classrelation_ref 1137542 // <dependency>
-	  b parent class_ref 441478 // Elapsed
-      end
     end
   end
 
@@ -224,8 +266,30 @@ ${namespace_start}
 ${members}
 ${namespace_end}"
       associated_elems
-	class_ref 638726 // DeduceSizeBitfinex
 	class_ref 624902 // Reconstructor
+      end
+    end
+
+    artifact 381446 "DeduceSize"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 638726 // DeduceSizeBitfinex
       end
     end
   end

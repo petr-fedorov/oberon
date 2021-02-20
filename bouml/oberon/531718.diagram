@@ -1,0 +1,38 @@
+format 224
+
+classcanvas 128006 class_ref 1101702 // Gatherer
+  classdiagramsettings member_max_width 0 end
+  xyz 195 321 2000
+end
+classcanvas 128134 class_ref 441222 // TokenHandler
+  classdiagramsettings member_max_width 0 end
+  xyz 175 182 3005
+end
+classcanvas 128774 class_ref 1101958 // Gatherer_SP
+  classdiagramsettings member_max_width 0 end
+  xyz 475 302 2006
+end
+classcanvas 129030 class_ref 852614 // shared_ptr
+  classdiagramsettings member_max_width 0 end
+  xyz 502 124 2005
+end
+relationcanvas 128262 relation_ref 1068038 // <directional aggregation>
+  from ref 128134 z 3006 stereotype "<<shared_ptr>>" xyz 118 187 3006 to point 145 182
+  line 128390 z 3006 to point 145 212
+  line 128518 z 3006 to ref 128134
+  role_a_pos 135 182 3000 no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 128646 relation_ref 1284870 // <generalisation>
+  from ref 128006 z 3006 to ref 128134
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+line 128902 ---+
+  from ref 128774 z 2007 to ref 128006
+relationcanvas 129158 relation_ref 1285126 // <realization>
+  from ref 128774 z 2007 label "<T->Gatherer>" max_width 255 xyz 500 224 2007 stereotype "<<bind>>" xyz 514 242 3000 to ref 129030
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+end

@@ -1,6 +1,6 @@
 format 224
 "Coinbase" // Application::Reconstructor::Coinbase
-  revision 19
+  revision 22
   modified_by 6 "petr"
   // class settings
   
@@ -116,16 +116,6 @@ ${inlines}
 	
       end
 
-      classrelation 553862 // remaining_size_ (<directional composition>)
-	relation 543750 *-->
-	  stereotype "map"
-	  a role_name "remaining_size_" multiplicity "*" private
-	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<OrderEvent::OrderId, ${type}> ${name}${value};
-"
-	    classrelation_ref 553862 // remaining_size_ (<directional composition>)
-	  b parent class_ref 305798 // Volume
-      end
-
       classrelation 561542 // <dependency>
 	relation 551430 -_->
 	  a private
@@ -181,6 +171,14 @@ ${inlines}
 	    cpp default "#include in source"
 	    classrelation_ref 1160710 // <dependency>
 	  b parent class_ref 521478 // Era
+      end
+
+      classrelation 1266438 // <dependency>
+	relation 1256070 -_->
+	  a public
+	    cpp default "#include in header"
+	    classrelation_ref 1266438 // <dependency>
+	  b parent class_ref 448390 // OrderEvent
       end
     end
   end
