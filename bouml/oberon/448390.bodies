@@ -206,9 +206,6 @@ if (is.good()) {
 else
   BOOST_LOG_TRIVIAL(warning) << "Couldn't read change from " << csv;
 
-using OrderEvent = reconstructor::OrderEvent;
-using BookSide = BookSide;
-
 if (std::isnan(r)) {
   this->remaining(r);
   this->change(c);
@@ -262,7 +259,7 @@ else
 
 // heard
 std::getline(is, field, ',');
-if (is.good()) {
+if (is) { // We accept that empty deleted column is even without comma
   heard(timestamp() + std::chrono::microseconds{std::stoi(field)});
 }
 else
@@ -270,7 +267,7 @@ else
   
 // deleted
 std::getline(is, field, ',');
-if (is.good() && !field.empty()) {
+if (is && !field.empty()) {
   deleted(true);
 }
 

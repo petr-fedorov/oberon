@@ -91,10 +91,14 @@ else if (best_ask_) {
   best_ask_->bestUntil(episode_timestamp_, output_);
   best_ask_.reset();
 }
-for(auto sell : sells_)
+for(auto sell : sells_) {
   output_.push_back(boost::make_unique<Dot>(episode_timestamp_, sell.first, sell.second, BookSide::kBid));
-for(auto buy : buys_)
+  BOOST_LOG_TRIVIAL(debug) << "Created " << output_.back()->toString();
+}
+for(auto buy : buys_) {
   output_.push_back(boost::make_unique<Dot>(episode_timestamp_, buy.first, buy.second, BookSide::kAsk));
+  BOOST_LOG_TRIVIAL(debug) << "Created " << output_.back()->toString();
+}
 
 
 sells_.clear();

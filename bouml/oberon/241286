@@ -1,6 +1,6 @@
 format 224
 "Reconstructor" // Tests::Reconstructor
-  revision 9
+  revision 11
   modified_by 6 "petr"
   // class settings
   
@@ -404,8 +404,6 @@ ${inlines}
       end
     end
   end
-
-  package_ref 247814 // File
 
   deploymentview 213510 "Source files"
     //deployment diagram settings
@@ -841,7 +839,8 @@ BOOST_FIXTURE_TEST_CASE(returns_spread_stripes, TransmuterFixture)
   BOOST_TEST(sut.handle(std::move(episode)));
   BOOST_TEST(gatherer->gathered.empty());
   episode.clear();
-  episode.push_back(\"9208e32d-06dc-46e9-898e-51208e0f58dd,2,2021-02-08T06:54:53Z,170016,,39029.57,,-0.09013171,130344065,9df46d09-0e13-483d-b40b-f82f79e918f5,71290,\"_oe);
+  // episode.push_back(\"9208e32d-06dc-46e9-898e-51208e0f58dd,2,2021-02-08T06:54:53Z,170016,,39029.57,,-0.09013171,130344065,9df46d09-0e13-483d-b40b-f82f79e918f5,71290,\"_oe);
+  episode.push_back(\"9208e32d-06dc-46e9-898e-51208e0f58dd,2,2021-02-08T06:54:53Z,170016,,39029.57,,-0.09013171,,,71290,\"_oe);
   episode.push_back(\"00000000-0000-0000-0000-000000000001,2,2021-02-08T06:54:53Z,170016,,39030.00,,0.08,,,71291,\"_oe);
   BOOST_TEST(sut.handle(std::move(episode)));
   BOOST_TEST(gatherer->gathered.size()==2);

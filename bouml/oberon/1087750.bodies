@@ -18,6 +18,7 @@ if (event->ordinal() != 1) {
     BOOST_LOG_TRIVIAL(debug) << "Removed " << (*pe)->toString();
     if (event->timestamp() != start_) { // Produce a stripe, if it has not been produced yet
         stripes.push_back(boost::make_unique<Stripe>(start_, (*pe)->price(), volume(),  (*pe)->side(), event->timestamp() - start_, is_best_));
+        BOOST_LOG_TRIVIAL(debug) << "Created " << stripes.back()->toString();
     }
     events_.erase(pe);
     if (!events_.size())
@@ -32,6 +33,7 @@ if (event->price() == level_price) {
     if (!events_.empty() &&
         event->timestamp() != start_) { // Produce a stripe, if it has not been produced yet
         stripes.push_back(boost::make_unique<Stripe>(start_, event->price(), volume(),  event->side(), event->timestamp() - start_, is_best_));
+        BOOST_LOG_TRIVIAL(debug) << "Created " << stripes.back()->toString();
     }
     start_ = event->timestamp();
     events_.push_back(std::move(event));
@@ -43,14 +45,17 @@ if (event->price() == level_price) {
 } else
   return false;
 !!!1589254.cpp!!!	advance(in timestamp : Message::Timestamp, out stripes : Tokens) : void
-if (!empty() && start_ < timestamp) 
+if (!empty() && start_ < timestamp) {
         stripes.push_back(boost::make_unique<Stripe>(start_, events_.front()->price(), volume(),  events_.front()->side(), timestamp - start_, is_best_));
+        BOOST_LOG_TRIVIAL(debug) << "Created " << stripes.back()->toString();
+}
 start_ = timestamp;
 !!!1587718.cpp!!!	empty() : bool
 return events_.empty();
 !!!1587846.cpp!!!	bestSince(in timestamp : Message::Timestamp, out stripes : Tokens) : void
 if (!empty() && start_ < timestamp) {
   stripes.push_back(boost::make_unique<Stripe>(start_, events_[0]->price(), volume(),  events_[0]->side(), timestamp - start_, is_best_));
+  BOOST_LOG_TRIVIAL(debug) << "Created " << stripes.back()->toString();
 }
 
 start_ = timestamp;
@@ -59,6 +64,7 @@ is_best_ = true;
 !!!1587974.cpp!!!	bestUntil(in timestamp : Message::Timestamp, out stripes : Tokens) : void
 if (!empty() && start_ < timestamp) {
   stripes.push_back(boost::make_unique<Stripe>(start_, events_[0]->price(), volume(),  events_[0]->side(), timestamp - start_, is_best_));
+  BOOST_LOG_TRIVIAL(debug) << "Created " << stripes.back()->toString();
 }
 
 start_ = timestamp;

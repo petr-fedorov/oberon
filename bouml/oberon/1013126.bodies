@@ -11,7 +11,7 @@ boost::log::core::get()->set_filter(boost::log::trivial::severity >=
 namespace po = boost::program_options;
 
 po::options_description common_options("Options are"), deleted_option, input_options,
-    slice_options, capture_options, price_filter_options, command_option, help_options;
+    slice_options, capture_options, command_option, help_options;
 
 help_options.add_options()("help,h", "produce this help message");
 common_options.add_options()(
@@ -42,10 +42,6 @@ slice_options.add_options()("max-duration,m",
                             po::value<int>(&boundary_)->default_value(60),
                             "specifies that a new era will be started every "
                             "arg minutes since UNIX epoch");
-price_filter_options.add_options()(
-    "less-than,l", po::value<double>(&min_price_), "do not output a stripe or a trade, if its price is less than arg")(
-    "greater-than,g", po::value<double>(&max_price_), "do not output a stripe or a trade, if the price is greater than arg");
-
 boost::optional<std::string> command;
 command_option.add_options()("command", po::value(&command), "");
 po::positional_options_description p;
@@ -57,7 +53,6 @@ all.add(common_options)
     .add(input_options)
     .add(deleted_option)
     .add(slice_options)
-    .add(price_filter_options)
     .add(help_options)
     .add(command_option);
 
@@ -84,7 +79,7 @@ if (command) {
     common_options.add(capture_options).add(deleted_option).add(help_options);
     return capture(common_options);
   } else if (*command == "transmute") {
-    common_options.add(input_options).add(price_filter_options).add(help_options);
+    common_options.add(input_options).add(help_options);
     return transmute(common_options);
   } else if (*command == "slice") {
     common_options.add(input_options).add(deleted_option).add(slice_options).add(help_options);

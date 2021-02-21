@@ -1,6 +1,6 @@
 format 224
 "Application" // Application
-  revision 142
+  revision 145
   modified_by 6 "petr"
   // class settings
   
@@ -1381,6 +1381,37 @@ ${inlines}
     //deployment diagram settings
     deploymentdiagramsettings
      end
+    artifact 414598 "depth.gp"
+      stereotype "text"
+      cpp_src "# Plot depth
+set datafile separator \",\"
+set xdata time
+set timefmt \"%Y-%m-%dT%H:%M:%SZ\"
+set xtics format \"%H:%M:%.3SZ\" rotate
+set ytics format \"%.2f\"
+set palette defined (-1 \"blue\", 0 'white', 1 'red')
+set cbrange [-1:1]
+bids=\"\\\"\".ARG1.\".bids\\\"\"
+asks=\"\\\"\".ARG1.\".asks\\\"\"
+best_bids=\"\\\"\".ARG1.\".bids.best\\\"\"
+best_asks=\"\\\"\".ARG1.\".asks.best\\\"\"
+trades=\"\\\"\".ARG1.\".trades\\\"\"
+if(ARGC > 2) {
+  set yrange [@ARG2:@ARG3]
+}
+if(ARGC == 5) {
+  set xrange [ARG4:ARG5]
+}
+plot [][] b1=NaN, a1=NaN @bids u 1:2:3:(0):4 w vectors lc palette z lw 2 nohead notitle,\\
+ @asks u 1:2:3:(0):4 w vectors lc palette z lw 2 nohead notitle,\\
+bb1=NaN, ba1=NaN @best_bids u 1:2:3:(0):4 w vectors lc palette z lw 2 nohead notitle,\\
+ \"\" u 1:(b0=bb1, bb1=$2, b0):(0):($2-b0) w vectors lc rgb \"red\" lw 0.1 nohead notitle,\\
+ @best_asks u 1:2:3:(0):4 w vectors lc palette z lw 2 nohead notitle,\\
+ \"\" u 1:(a0=ba1, ba1=$2, a0):(0):($2-a0) w vectors lc rgb \"blue\" lw 0.1 nohead notitle,\\
+ @trades u 1:2:3 w points lc palette z notitle
+"
+    end
+
     artifact 253446 "date"
       stereotype "source"
       cpp_h "#ifndef DATE_H

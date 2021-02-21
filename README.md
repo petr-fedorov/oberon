@@ -154,15 +154,25 @@ This command tells OBERON to transmute each era files into five output files: fo
 * **.asks.best** - contains stripes of best asks only
 * **.trades** - contains "dots" representing trades
 
-To visualize all five files you may, for example, run `gnuplot` and enter the following command:
+To visualize all five files run `gnuplot` and enter the following command:
 
-      call "/tmp/oberon/cpp/reconstructor/depth.gp" "<era file name>"
+      call "/tmp/oberon/cpp/depth.gp" "<era file name>" <min-price> <max-price> "<start-time>" "<end-time>"
 
-The output will be similar to the picture below depending on input data, parameters used, zoom etc.
+Here is the visualization of the market reaction to Tesla, Inc. Form 10-K saying that the company ["invested an aggregate $1.50 billion in bitcoin ... may acquire and hold digital assets from time to time or long-term. Moreover, Tesla expects to begin accepting bitcoin as a form of payment for Tesla's products in the near future, subject to applicable laws and initially on a limited basis ..."](https://www.sec.gov/Archives/edgar/data/1318605/000156459021004599/tsla-10k_20201231.htm):  
 
-![](transmuted.png)
+    call "/tmp/oberon/cpp/depth.gp" "Bitstamp_btcusd_2021-02-08T12-00-00.000000Z" 39000 45000 "2021-02-08T12:30:00.000000Z" "2021-02-08T14:00:00.000000Z"
 
-Stripes represent commitments to buy or sell certain volumes of base currency at given quote prices from the moment commitments appeared on an exchange order book until they ceased or changed. Red stripes are bids and blue stripes are asks. Saturation of colors represent absolute value of commitments volumes.
+
+![](tesla.png)
+
+... and the visualization of an attempt at ~13:11:01 to reverse the growth:
+
+    call "/tmp/oberon/cpp/depth.gp" "Bitstamp_btcusd_2021-02-08T12-00-00.000000Z" 40600 42300 "2021-02-08T13:10:55.000000Z" "2021-02-08T13:11:30.000000Z"
+
+![](tesla_zoom.png)
+
+
+Stripes represent commitments to buy or sell certain volumes of base currency at given quote prices from the moment commitments appeared on an exchange order book until they ceased or changed. Red stripes are bids and blue stripes are asks. Saturation of colors represent absolute value of a commitment volume.
 
 Note that stripes often originate from several maker orders.
 

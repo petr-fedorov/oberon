@@ -1,6 +1,6 @@
 format 224
 "Reconstructor" // Application::Reconstructor
-  revision 249
+  revision 251
   modified_by 6 "petr"
   // class settings
   
@@ -7325,7 +7325,7 @@ ${namespace_end}
 #include \"../date.h\"
 ${includes}
 ${namespace_start}
-std::unique_ptr<OrderEvent> operator \"\"_oe(const char *line, size_t) {
+std::unique_ptr<OrderEvent> operator \"\" _oe(const char *line, size_t) {
   Message::Timestamp dummy;
   return boost::make_unique<OrderEvent>(line, dummy);
 }
@@ -7669,31 +7669,6 @@ ${namespace_end}"
       associated_elems
 	class_ref 1094406 // Dot
       end
-    end
-
-    artifact 414598 "depth.gp"
-      stereotype "text"
-      cpp_src "# Plot depth
-set datafile separator \",\"
-set xdata time
-set timefmt \"%Y-%m-%dT%H:%M:%SZ\"
-set xtics format \"%H:%M:%.3SZ\" rotate
-set palette defined (-1 \"blue\", 0 'white', 1 'red')
-set cbrange [-1:1]
-bids=\"\\\"\".ARG1.\".bids\\\"\"
-asks=\"\\\"\".ARG1.\".asks\\\"\"
-best_bids=\"\\\"\".ARG1.\".bids.best\\\"\"
-best_asks=\"\\\"\".ARG1.\".asks.best\\\"\"
-trades=\"\\\"\".ARG1.\".trades\\\"\"
-
-plot [][] b1=NaN, a1=NaN @bids u 1:2:3:(0):4 w vectors lc palette z lw 2 nohead notitle,\\
- @asks u 1:2:3:(0):4 w vectors lc palette z lw 2 nohead notitle,\\
-bb1=NaN, ba1=NaN @best_bids u 1:2:3:(0):4 w vectors lc palette z lw 2 nohead notitle,\\
- \"\" u 1:(b0=bb1, bb1=$2, b0):(0):($2-b0) w vectors lc rgb \"red\" lw 0.1 nohead notitle,\\
- @best_asks u 1:2:3:(0):4 w vectors lc palette z lw 2 nohead notitle,\\
- \"\" u 1:(a0=ba1, ba1=$2, a0):(0):($2-a0) w vectors lc rgb \"blue\" lw 0.1 nohead notitle,\\
- @trades u 1:2:3 w points lc palette z notitle
-"
     end
   end
 end
