@@ -140,12 +140,6 @@ This command tells OBERON to transmute each era files into five output files: fo
     -i [ --input ] arg                    specifies the name(s) of an era file to
                                           be read (mandatory)
 
-    -l [ --less-than ] arg                do not output a stripe or a trade, if
-                                          its price is less than arg
-    -g [ --greater-than ] arg             do not output a stripe or a trade, if
-                                          its price is greater than arg
-
-
  The output files have the same name as the input `<era file name>` they are produced from with the following extensions added:
 
 * **.bids** - contains stripes of all bids
