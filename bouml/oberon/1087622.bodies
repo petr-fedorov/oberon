@@ -48,11 +48,17 @@ for (auto & b : bids_)
   b.second->advance(received_->timestamp(), output_);
 for (auto & a : asks_)
   a.second->advance(received_->timestamp(), output_);
-output_.push_back(std::move(received_));
 bids_.clear();
 asks_.clear();
 previous_.clear();
 return true;
+!!!1625862.cpp!!!	era() : bool
+if(!passed_era_) {
+  output_.push_back(std::move(received_));
+  passed_era_ = true;
+}
+return true;
+
 !!!1587590.cpp!!!	endOfEpisode() : bool
 if (!bids_.empty()) {
   auto b = std::prev(bids_.end());

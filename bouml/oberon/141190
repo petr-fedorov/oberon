@@ -1,6 +1,6 @@
 format 224
 "Reconstructor" // Application::Reconstructor
-  revision 251
+  revision 252
   modified_by 6 "petr"
   // class settings
   
@@ -6847,6 +6847,20 @@ ${inlines}
 	
       end
 
+      operation 1625862 "era"
+	cpp_override public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
       classrelation 1280646 // best_bid_ (<directional aggregation>)
 	relation 1270278 o-->
 	  stereotype "shared_ptr"
@@ -6901,6 +6915,19 @@ ${inlines}
 	multiplicity "*"
 	stereotype "map"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<Price, ${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 1014918 "passed_era_"
+	private explicit_type "bool"
+	init_value "false"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
 	php_decl ""
@@ -7310,7 +7337,7 @@ ${declarations}
 ${namespace_start}
 ${definition}
 
-std::unique_ptr<OrderEvent> operator \"\"_oe(const char *, size_t);
+std::unique_ptr<OrderEvent> operator \"\" _oe(const char *, size_t);
 ${namespace_end}
 #endif
 "
