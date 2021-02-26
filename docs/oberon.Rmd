@@ -131,53 +131,55 @@ The above definition and description are incomplete:
 Below we propose stricter definitions that address these and the other similar issues while staying as close as possible to [@bouchaud_trades_2018].
 
 
-## Mathematical formulation
+## Definitions
 
-### Basic Tools
-
-
-```{definition Support, name="Support", label=support}
-Suppose $X \subset \mathbb{R}$ and $f : X \mapsto \mathbb{R}$. The support of $f$ is defined as the closure of the subset of $X$ where $f$ is non-zero: 
-  $$
-    \text{supp}(f) = \overline{\{x : x \in X, f(x) \neq 0 \}}
-  $$
-
-```
+### Order as a function
 
 
-```{definition Piecewise Constant Function, name="Piecewise Constant Function", label=piecewise-constant}
-A function $f : \mathbb{R} \mapsto \mathbb{R}$ is called a piecewise constant function if it can be written as 
+```{definition Order Function, name="Order Function", label="order" }
+
+A function $o : \mathbb{R}^2_{\geq 0} \mapsto \mathbb{R}$ is called a limit *order function* if it can be written as 
 $$ 
-  f(t) = \sum_{T_k \in \mathcal{T} } f_k \mathbf{1}_{T_k}(t)
+  o(p,t) = \sum_{k=1}^K o_k \mathbf{1}_{P_k \times T_k}(p,t)
 $$
 where  
 
- a. $\mathcal{T} = \{T_k\}_{k=1}^{K}$ is a set of proper intervals of $\mathbb{R}$ with endpoints $t_{k,1} \in \mathbb{R}$, $t_{k,2} \in \mathbb{R} \cup \{+\infty\}$, $t_{k,1} < t_{k,2}$ such that $\forall k_1 \neq k_2 : T_{k_1} \cap T_{k_2} = \emptyset$, 
+   a. $\mathcal{T} = \{T_k\}_{k=1}^{K}$ is a set of proper intervals of $\mathbb{R}_{\geq 0}$ with endpoints $t_{k,1} \in \mathbb{R}_{\geq 0}$, $t_{k,2} \in \mathbb{R}_{\geq 0} \cup \{+\infty\}$, such that:
+      i. $t_{k,1} < t_{k,2}$
+      i. $t_{k,1},t_{k,2} \in \{n \tau : n \in \mathbb{N}\}$ where $\tau \in \mathbb{R}_{>0}$ is a constant called *sample interval* 
+      i. $\forall k_1 \neq k_2 : T_{k_1} \cap T_{k_2} = \emptyset$, 
  
- a. $\mathbf{1}_{T_k}(\cdot)$ is an indicator function of interval $T_k$: 
+a. $\mathcal{P} = \{P_k\}_{k=1}^{K}$ is a set of degenerate intervals $\{p_k\}$ with endpoints $p_k \in \mathbb{R}_{\geq 0}$, such that $\forall k: p_k \in \{ n \pi : n \in \mathbb{N} \}$ where $\pi \in \mathbb{R}_{>0}$ is a constant called *quote increment* or *tick size*,
+ 
+ a. $\mathbf{1}_{P_k \times T_k}(\cdot,\cdot)$ is an indicator function of the set ${P_k \times T_k}$: 
 $$
-\mathbf{1}_{T_k}(t) = \begin{cases} 1, & t \in T_k \\ 0, & t \not \in T_k  \end{cases}
+\mathbf{1}_{P_k \times T_k}(p,t) = \begin{cases} 1, & (p,t) \in P_k \times T_k \\ 0, & (p,t) \not \in P_k \times T_k  \end{cases}
 $$
- a. $f_k \in \mathbb{R}$ are constants called *function values* such that $\forall k_1 \neq k_2 : f_{k_1} \neq f_{k_2}$
+ a. $o_k \in \mathbb{R}$ are constants called *order volume* such that either $o_k \in \mathbb{R}_{\geq 0}$ (buy order) or $o_k \in \mathbb{R}_{\leq 0}$ (sell order) for all $k$ and $|o_k| \in \{ n \phi : n \in \mathbb{N}\}$ where $\phi \in \mathbb{R}_{>0}$ is a constant called *base increment* or *lot size*, 
+ a. $\forall p$ the function of time $o_p(t) \equiv o(p,t)$ is either càdlàg or càglàd at each point of discontinuity.
+ 
 ```
 
-All piece-wise constant functions we use hereafter must also have either left or right (or both) limits at every point of their domains. So in our definition of piece wise constant function set $\mathcal{T}$ does not include  degenerate intervals. 
+The sample interval $\tau$, quote increment $\pi$ and base increment $\phi$ are collectively called *resolution parameters*.
+
+
+
+```{definition Price Function, name="Price Function", label="price-function"}
+Suppose an order function $o(p,t)$ as defined by \@ref(def:order) is given. A function of time $$p(t) \equiv \arg\!\max_p |o(p,t)|$$
+is called a *price function*.
+```
+
 
 
 ```{definition Volume Function, name="Volume Function", label="volume-function"}
-A function $v : \mathbb{R} \mapsto \mathbb{R}_{\geq 0}$ or $v : \mathbb{R} \mapsto \mathbb{R}_{\leq 0}$ such that
-
- a. $v(\cdot)$ is a piecewise constant function as defined by \@ref(def:piecewise-constant) with values in the set $\{ n v_0 : n \in \mathbb{Z}\setminus \{0\} \}$ where $v_0$ is a constant called *lot size*,
- b. $v(\cdot)$ is either càdlàg or càglàd at each point of discontinuity 
- 
-is called a *volume function*.
+Suppose an order function $o(p,t)$ as defined by \@ref(def:order) and related price function $p(t)$ as defined by \@ref(def:price-function) are given. A function of time $$v(t) \equiv o(p(t),t)$$ is called a *volume function*.
 ```
 
 
 ```{definition Filled Volume, name="Filled Volume", label=fill-volume}
 Suppose a volume function $v(t)$ as defined by \@ref(def:volume-function) is given. The function 
   $$
-  f_{v}(t) = \lim_{t^{'} \uparrow t} v(t^{'}) - v(t)
+  f_{v}(t) = v(t) - \lim_{t^{'} \uparrow t} v(t^{'}) 
   $$ is called a *filled volume* at time $t$.  
 
 ```
@@ -186,135 +188,25 @@ Suppose a volume function $v(t)$ as defined by \@ref(def:volume-function) is giv
 ```{definition Amended Volume, name="Amended Volume", label=amended-volume}
 Suppose a volume function $v(t)$ as defined by \@ref(def:volume-function) is given. The function 
   $$
-  a_{v}(t) = v(t) - \lim_{t^{'} \downarrow t} v(t^{'})
+  a_{v}(t) = \lim_{t^{'} \downarrow t} v(t^{'}) - v(t)
 $$ is called an *amended* volume at time $t$.
 
 ```
 
 
-
-```{r Sample Order Table Data, include=FALSE}
-time_0 <- as.POSIXct('2020-04-02 13:59:57', origin='1970-01-01 00:00:00')
-sot <- tribble( ~i, ~n,   ~t,   ~f, ~e,   ~p,   ~v,
-                1,   1,	  0.3,   0,	 1,	50,	200,
-                1,   2,	  3.1,   1,	 0,	50,	200,
-                2,   1,	  1.1,   0,	 1,	80,  -200,
-                2,   2,	  1.9,   0,	 1,	80,  -100,
-                2,   3,	  4.3,   0,	 0,	80,  -100,
-                3,   1,	  2.5,   0,	 1,	25,  500,
-                3,   2,	  3.1,   2,	 0,	25,  500,
-                4,   1,	  3.1,   0,	 1,	25,  -500,
-                4,   2,	  5.0,   3,	 0,	25,	-500,
-                5,   1,	  3.7,   0,	 1,	50,  -400,
-                5,   2,	  5.0,   4,	 1,	50,  -100,
-                5,   3,	  5.4,   5,	 0,	50,  -100,
-                6,   1,	  4.8,   0,	 1,	10,	500,
-                6,   2,	  5.4,   0,	 1,	60,	400,
-                6,   3,	  6.0,   6,	 1,	20,	100,)
-setDT(sot)
-sot[ ,"volume.decrease" := nafill(shift(v,1),fill=0) - nafill(xor(1,xor(e,1)*f)*v,fill=0), by=i]
-
-sot.intervals <- sot[,
-                   .(t_1=t,
-                     t_2=shift(t, fill=max(sot$t) + 0.4, type="lead"), # infinity is emulated by max(sot$t) + 0.2                            
-                     n=n,
-                     e,
-                     p.p = nafill(shift(p,type="lag"),fill=0),
-                     p, 
-                     p.v=nafill(shift(v,type="lag"), fill=0), 
-                     v,
-                     f,
-                     volume.decrease),
-                   by=i ]
-
-
-sample.colours <- c('1'='#66bd63', # 'Buy order 1'
-             '2'='#f46d43', # 'Sell order 2'
-             '3'='#1a9850', # Buy order 3'
-             '4'='#d73027', # 'Sell order 4'
-             '5'='#a50026', # Sell order 5'
-             '6'='#006837' # 'Buy order 6'
-             )
-sample.labels <- c('1'='Order 1 (buy)',
-                                '2'='Order 2 (sell)',
-                                '3'='Order 3 (buy)',
-                                '4'='Order 4 (sell)',
-                                '5'='Order 5 (sell)',
-                                '6'='Order 6 (buy)')
-
-
-
-```
-
-
-
-```{definition Price Function, name="Price Function", label="price-function"}
-A function $p : \mathbb{R} \mapsto \mathbb{R}_{\geq 0}$ such that
-
- a. $p(\cdot)$ is a piecewise constant function as defined by \@ref(def:piecewise-constant) with values in the set $\{ n \vartheta : n \in \mathbb{Z}\setminus \{0\} \}$ where $\vartheta$ is a constant called *tick size*
- b. $p(\cdot)$ is a càglàd at each point of discontinuity 
- 
-is called a *price function*.
-```
-
-The lot size $v_0$ and tick size $\vartheta$ are collectively called *resolution parameters*.
-
-### Order and Trade
-
-
-Hereafter is assumed that a single asset is traded and a single currency is used. 
-
-As it has already been mentioned above an order is a commitment at a given time, to buy or sell a given volume of an asset at no worse than a given price. Figure \@ref(fig:order-life-cycle) shows UML2 State Machine of High-level Order Life Cycle while the order is being processed by an exchange.  The possible states an order can be in are:
-
- * *Taker* - a valid order has just been received by an exchange or its price has been changed in such a way that it may be filled immediately. This state is fleeting.
- * *Maker* - the order is open on the order book. Orders which are not fully filled or cancelled immediately enters this state. This state is lasting.
- 
-
-```{r order-life-cycle, echo=FALSE, fig.cap="States of an order while it being processed by an exchange", fig.align="center"}
-knitr::include_graphics("order-life-cycle.png", dpi=80)
-```
-
-An order which has ever entered Maker state is called a [limit order](https://www.investopedia.com/terms/l/limitorder.asp). 
-
-An order which has never entered Maker state is called a [market order](https://www.investopedia.com/terms/m/marketorder.asp).
-
-If an order has been *matched* before entering *Maker* state or it has been *matched* after *price amendment*, then the order is sometimes called a market limit order.  We always model market limit orders as a combination of an appropriate market order and a limit order that placed simultaneously. 
-
-Market orders are always fleeting. To model an evolution of a limit order we use the following function:
-
-```{definition Order, name="Order", label=order}
-Suppose that $i \in \mathbb{N}$ is an *unique order identification*, $v^i(t)$ is a volume function as defined by \@ref(def:volume-function), $p^i(t)$ is a price function as defined by \@ref(def:price-function) such that $$\text{supp}\,(v^i) = \text{supp}\,(p^i)$$ Then a vector-valued function $o^i : \mathbb{R} \mapsto \mathbb{R}_{>0} \times \mathbb{R}$ representing a commitment to buy or sell a given volume $v^i(t)$ of an asset at no worse than a given price $p^i(t)$ at a particular time $t$  with a closed form $$o^i(t) = (p^i(t), v^i(t))$$ is called an *order*. If $\forall t : v^i(t) \leq 0$ the order is a commitment to *sell* and is also called a *sell order*. If $\forall t : v^i(t) \geq 0$ the order is a commitment to *buy* and is also called a *buy order*.
-```
-
-
-Now we can define
-
-```{definition Order Volume, name="Order Volume", label=order-volume}
-The function $v^i(t)$ in definition \@ref(def:order) is called an *order volume*.
-```
-
-
-```{definition Order Price, name="Order Price", label=order-price}
-The function $p^i(t)$ in definition \@ref(def:order) is called an *order price*.
-```
-
-
-```{definition Trade, name="Trade", label=trade}
-Suppose an order $o^i(t)$ is given and $\exists t_j : f_{v^i}(t_j) \neq 0$. Then a tuple $$(t_j, i,p^i(t_j), f_{v^i}(t_j))$$ is called a *trade*. If $f_{v^i}(t_j) < 0$ or, equivalently, $i$ is a sell order, then the trade is a buy trade. Otherwise it is a sell trade.
-
-```
-
-
-Note that we follow [@bouchaud_trades_2018] while modelling the actions of an order owner:
+Note that we follow [@bouchaud_trades_2018] while modelling order amendments and, in particular, order placement, as càglàd (continue à gauche, limite à droite) process:
 
 > ... we will consider the evolution of an LOB $\mathcal{L}(t)$ as a so-called *càglàd process (continu à gauche, limite à droite)*. Informally, this means that when a new order $x$ is submitted at time $t_x$ , we regard it to be present in the LOB immediately after its arrival, but not immediately upon its arrival.
 
 In other words, definition \@ref(def:amended-volume) means that when order $v$ is cancelled at time $t$, we regard the cancellation visible in the LOB immediately after its arrival, but not immediately upon its arrival. 
 
-Trades are modeled as *càdlàg (continue à droite, limite à gauche)* occurrences so they are visible immediately upon arrival.  
+Trades are modeled as *càdlàg (continue à droite, limite à gauche)* occurrences so they are visible immediately upon arrival. If an order is fully executed upon arrival, it will never be shown in order book.
 
-The consequence of the above is that $v(t)$ can be interpreted as a amount available for trade at time $t$ as it should and if a cancellation and a trade happen simultaneously, the trade is executed.
+The consequence of the above is that $v(t)$ can be interpreted as a amount available in order book for trade at time $t$ as it should.
 
+### Order as a table
+
+**To be updated**
 
 An order can be conveniently represented in the form of a order table defined by \@ref(def:order-table).
 
@@ -360,7 +252,7 @@ Typically the term [order book](https://www.investopedia.com/terms/o/order-book.
 
 
 ```{definition Order Book, name="Order Book", label=order-book}
-A set of orders with common resolution parameters $v_0$ and $\vartheta$ $\mathcal{O} = \{o^i(\cdot)\}_i$ where $o^i(\cdot)$ is defined by \@ref(def:order) is called an *order book*. 
+A set of orders with common resolution parameters $\tau$, $\pi$ and $\phi$ $$\mathcal{O} = \{o^i(\cdot)\}_i$$ where $o^i(\cdot)$ is defined by \@ref(def:order) is called an *order book*. 
 
 A (possibly empty) subset $\mathcal{B} =\{o^b(\cdot)\}_{v^b(\cdot) \geq 0} \subset \mathcal{O}$ of buy orders is called *bids*.  A (possibly empty) subset of *bids* $\mathcal{B}(t) =\{o^b(\cdot)\}_{v^b(\cdot) \geq 0 \land p^b(t) > 0} \subset \mathcal{B}$ of buy orders is called *bids* at time $t$.
 
@@ -420,7 +312,52 @@ Suppose a Limit Order Book $\mathcal{L}$ is given as defined by \@ref(def:lob). 
 
 To make the above definitions intuitively clear, let's consider an example. Table \@ref(tab:example-order-table) contains a consolidated order table for six limit orders 
 
-
+```{r Sample Order Table Data, include=FALSE}
+time_0 <- as.POSIXct('2020-04-02 13:59:57', origin='1970-01-01 00:00:00')
+sot <- tribble( ~i, ~n,   ~t,   ~f, ~e,   ~p,   ~v,
+                1,   1,	  0.3,   0,	 1,	50,	200,
+                1,   2,	  3.1,   1,	 0,	50,	200,
+                2,   1,	  1.1,   0,	 1,	80,  -200,
+                2,   2,	  1.9,   0,	 1,	80,  -100,
+                2,   3,	  4.3,   0,	 0,	80,  -100,
+                3,   1,	  2.5,   0,	 1,	25,  500,
+                3,   2,	  3.1,   2,	 0,	25,  500,
+                4,   1,	  3.1,   0,	 1,	25,  -500,
+                4,   2,	  5.0,   3,	 0,	25,	-500,
+                5,   1,	  3.7,   0,	 1,	50,  -400,
+                5,   2,	  5.0,   4,	 1,	50,  -100,
+                5,   3,	  5.4,   5,	 0,	50,  -100,
+                6,   1,	  4.8,   0,	 1,	10,	500,
+                6,   2,	  5.4,   0,	 1,	60,	400,
+                6,   3,	  6.0,   6,	 1,	20,	100,)
+setDT(sot)
+sot[ ,"volume.decrease" := nafill(shift(v,1),fill=0) - nafill(xor(1,xor(e,1)*f)*v,fill=0), by=i]
+sot.intervals <- sot[,
+                   .(t_1=t,
+                     t_2=shift(t, fill=max(sot$t) + 0.4, type="lead"), # infinity is emulated by max(sot$t) + 0.2                            
+                     n=n,
+                     e,
+                     p.p = nafill(shift(p,type="lag"),fill=0),
+                     p, 
+                     p.v=nafill(shift(v,type="lag"), fill=0), 
+                     v,
+                     f,
+                     volume.decrease),
+                   by=i ]
+sample.colours <- c('1'='#66bd63', # 'Buy order 1'
+             '2'='#f46d43', # 'Sell order 2'
+             '3'='#1a9850', # Buy order 3'
+             '4'='#d73027', # 'Sell order 4'
+             '5'='#a50026', # Sell order 5'
+             '6'='#006837' # 'Buy order 6'
+             )
+sample.labels <- c('1'='Order 1 (buy)',
+                                '2'='Order 2 (sell)',
+                                '3'='Order 3 (buy)',
+                                '4'='Order 4 (sell)',
+                                '5'='Order 5 (sell)',
+                                '6'='Order 6 (buy)')
+```
 
 ```{r Sample Order Table Print, echo=FALSE}
 as_hux(sot[order(t),
