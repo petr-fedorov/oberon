@@ -91,6 +91,6 @@ else if (type == "order_deleted") {
           tree.get<double>("base_increment")));
 
 } else if (type == "reset") {
-  return boost::make_unique<Reset>(episode_timestamp_);
+  return boost::make_unique<Reset>(exchange_time_);
 }
 return std::move(output);

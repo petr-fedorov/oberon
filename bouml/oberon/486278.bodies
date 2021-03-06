@@ -12,15 +12,8 @@ std::istringstream ss{timestamp};
 Message::Timestamp output;
 ss >> parse("%FT%TZ", output);
 return output;
-!!!575878.cpp!!!	process(in message : ptree [1]) : bool
-auto msg = extract(message);
-if(msg) {
-  Tokens episode;
-  episode.push_back(std::move(msg));
-  return handle(std::move(episode));
-}
-else
-  return false;
+!!!575878.cpp!!!	process(in message : ptree [1]) : void
+handle(extract(message));
 !!!1612422.cpp!!!	message() : bool
 if (episode_.empty() || received_->timestamp() == episode_.back()->timestamp())
   episode_.push_back(std::move(received_));

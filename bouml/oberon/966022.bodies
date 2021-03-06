@@ -1,39 +1,24 @@
 class TimeOrderEnforcer
-!!!1383686.cpp!!!	message() : bool
-episode_.push_back(std::move(received_));
+!!!1385350.cpp!!!	reset() : bool
+std::move(buffer_.begin(), buffer_.end(), std::back_inserter(output_));
+buffer_.clear();
+output_.push_back(std::move(received_));
+return true;
+!!!1383686.cpp!!!	orderEvent() : bool
+buffer_.insert(find_if(buffer_.begin(), buffer_.end(),
+                       [&](const Token &t) {
+                         return t->timestamp() > received_->timestamp();
+                       }),
+               std::move(received_));
 return true;
 
-!!!1383814.cpp!!!	endOfEpisode() : bool
-if (!episode_.empty()) {
-  if (episode_.back()->timestamp() > latest_) {
-    latest_ = episode_.back()->timestamp();
-    std::move(episode_.begin(), episode_.end(), std::back_inserter(buffer_));
-  } else {
-    auto iter = buffer_.begin();
-    for (; iter != buffer_.end(); ++iter)
-      if ((*iter)->timestamp() > episode_.back()->timestamp())
-        break;
-    std::move(episode_.begin(), episode_.end(), std::inserter(buffer_, iter));
-  }
-  episode_.clear();
-  auto iter = buffer_.begin();
-  for (; iter != buffer_.end(); ++iter)
-    if ((*iter)->timestamp() > latest_ - delay_)
-      break;
-  std::move(buffer_.begin(), iter, std::back_inserter(output_));
-  buffer_.erase(buffer_.begin(), iter);
-}
-return true;
-!!!1383942.cpp!!!	era() : bool
-output_.push_back(std::move(received_));
+!!!1383814.cpp!!!	elapsed() : bool
+auto iter = std::find_if(
+    buffer_.begin(), buffer_.end(), [&](const Token &t) {
+      return t->timestamp() > exchange_time_ - delay_;
+    });
+std::move(buffer_.begin(), iter, std::back_inserter(output_));
+buffer_.erase(buffer_.begin(), iter);
 return true;
 !!!1384070.cpp!!!	TimeOrderEnforcer(in next : TokenHandler::TokenHandler_SP, in delay : int, in handle_deleted : bool)
 BOOST_LOG_TRIVIAL(info) << "Output will be delayed for " << delay << " seconds";
-!!!1385350.cpp!!!	reset() : bool
-std::move(buffer_.begin(), buffer_.end(), std::back_inserter(output_));
-std::move(episode_.begin(), episode_.end(), std::back_inserter(output_));
-buffer_.clear();
-episode_.clear();
-latest_ = Message::Timestamp{};
-output_.push_back(std::move(received_));
-return true;

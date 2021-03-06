@@ -37,8 +37,7 @@ boost::asio::post(boost::asio::bind_executor(
         era.put<std::string>("product", d_->product);
         era.put<std::string>("quote_increment", d_->quote_increment);
         era.put<std::string>("base_increment",d_->base_increment );
-        if (!this->d_->process(era))
-          throw std::logic_error("Couldn't process era message");
+        this->d_->process(era);
 
         boost::property_tree::ptree order_tree;
 
@@ -65,8 +64,7 @@ boost::asio::post(boost::asio::bind_executor(
           order_tree.put<std::string>("order_id",
                                  iter2++->second.get_value<std::string>());
           order_tree.put<std::string>("local_timestamp", local_timestamp);
-          if (!this->d_->process(order_tree))
-            throw std::logic_error("Couldn't process bid message");
+          this->d_->process(order_tree);
         }
         for (auto iter = this->d_->snapshot_tree_->get_child("asks").begin();
              iter != this->d_->snapshot_tree_->get_child("asks").end() &&
@@ -91,8 +89,7 @@ boost::asio::post(boost::asio::bind_executor(
           order_tree.put<std::string>("order_id",
                                  iter2++->second.get_value<std::string>());
           order_tree.put<std::string>("local_timestamp", local_timestamp);
-          if (!this->d_->process(order_tree))
-            throw std::logic_error("Couldn't process ask message");
+          this->d_->process(order_tree);
         }
         if (!this->d_->stop_thread_) // We don't care too much about race condition
                                // here
@@ -102,24 +99,20 @@ boost::asio::post(boost::asio::bind_executor(
             this->d_->error_message_ = "Snapshot saved has been stopped, exiting ...";
             this->failure();
           });
-      } catch (const std::logic_error &e) {
-        std::string w{e.what()};
-        this->_post([this, self, w]() {
-          this->d_->error_message_ = w;
+      } catch (const reconstructor::processing_error &e) {
+        this->_post([this, self]() {
           this->stop(); // We can't process received messages, so we stop the
                       // machine
         });
-      } catch (const std::exception &e) {
+      } catch (const std::exception& e) {
         std::string w{e.what()};
         this->_post([this, self, w]() {
           this->d_->error_message_ = w;
           this->failure();
         });
-
       } catch (...) {
         this->_post([this, self]() {
-          this->d_->error_message_ =
-              "Snapshot saved failed due to an exception, exiting ...";
+          BOOST_LOG_TRIVIAL(error) << this->_machine_name << " unknown exception caught.";
           this->failure();
         });
       }

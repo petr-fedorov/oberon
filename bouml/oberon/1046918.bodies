@@ -5,17 +5,6 @@ class EraMerger
 if (_current_state == 0)
   (_current_state = &(*this)._eramerger_state)->create(*this);
 return (_current_state != 0);
-!!!1485318.cpp!!!	endOfEpisode() : bool
-  if (_current_state != 0) {
- #ifdef VERBOSE_STATE_MACHINE
-EraMerger & stm =*this;
- #endif
-#ifdef VERBOSE_STATE_MACHINE
-   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger endOfEpisode";
-#endif
-_current_state->endOfEpisode(*this);
-  }
-  return (_current_state != 0);
 !!!1485702.cpp!!!	created() : bool
   if (_current_state != 0) {
  #ifdef VERBOSE_STATE_MACHINE
@@ -94,3 +83,14 @@ EraMerger & stm =*this;
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "final state reached";
 #endif
+!!!1632646.cpp!!!	elapsed() : bool
+  if (_current_state != 0) {
+ #ifdef VERBOSE_STATE_MACHINE
+EraMerger & stm =*this;
+ #endif
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger elapsed";
+#endif
+_current_state->elapsed(*this);
+  }
+  return (_current_state != 0);

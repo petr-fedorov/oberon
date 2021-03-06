@@ -1,6 +1,6 @@
 format 224
-"Acquirer" // Application::Acquirer
-  revision 57
+"Acquirer" // App::Acquirer
+  revision 59
   modified_by 6 "petr"
   // class settings
   
@@ -5719,8 +5719,8 @@ stm.d_->feeder_->postEvent(&Feeder::stop);"
       reset.put<std::string>(\"type\", \"reset\");  // Coinbase
       reset.put<std::string>(\"event\", \"reset\"); // Bitstamp
       try {
-        if (stm.d_->process(reset))
-          return;
+        stm.d_->process(reset);
+        return;
       } catch (...) {
       }
       stm.postEvent(&Receiver::failure);
@@ -5756,16 +5756,16 @@ stm.exit_code_ = EXIT_FAILURE;
 	  state 219782 "Processing messages"
 	      uml_on_entry "pass to reconstructor"
 	      cpp_on_entry "boost::asio::post(boost::asio::bind_executor(
-    *stm.d_->processing_strand_, [
-                                  messages = std::move(stm.d_->messages_),
-                                  &stm
-                                 ]() {
-     for (auto& message : messages)
-      if (!stm.d_->process(*message)) {
-       stm.postEvent(&Receiver::failure);
-       return;
-      };
-     stm.postEvent(&Receiver::success);
+    *stm.d_->processing_strand_,
+    [messages = std::move(stm.d_->messages_), &stm]() {
+      for (auto &message : messages)
+        try {
+          stm.d_->process(*message);
+          stm.postEvent(&Receiver::success);
+        } catch (const reconstructor::processing_error &e) {
+          stm.postEvent(&Receiver::failure);
+        }
+      return;
     }));
 "
 	    transition 492294 "success"
@@ -5962,7 +5962,7 @@ else
 
     class 909958 "ConsumerFn"
       visibility package stereotype "typedef" base_type class_ref 174214 // ptree
-      cpp_decl "${comment}typedef std::function<bool(const ${type} &)> ${name};
+      cpp_decl "${comment}typedef std::function<void(const ${type} &)> ${name};
 "
       java_decl ""
       php_decl ""
@@ -8028,6 +8028,14 @@ ${inlines}
 	    cpp default "${type}"
 	    classrelation_ref 1218182 // <dependency>
 	  b parent class_ref 1054342 // Failing_State
+      end
+
+      classrelation 1336454 // <dependency>
+	relation 1326086 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1336454 // <dependency>
+	  b parent class_ref 1108486 // processing_error
       end
     end
 

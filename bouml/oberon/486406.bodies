@@ -90,7 +90,7 @@ try {
           tree.get<double>("quote_increment"),
           tree.get<double>("base_increment")));
   } else if (type == "reset") {
-    return boost::make_unique<Reset>(episode_timestamp_);
+    return boost::make_unique<Reset>(exchange_time_);
   }
 } catch (const std::exception &e) {
   std::stringstream s;

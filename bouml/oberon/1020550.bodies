@@ -27,7 +27,7 @@ if (tree.get<std::string>("type") == "event") {
       BOOST_LOG_TRIVIAL(error) << "Era message with an empty timestamp "; 
   
 } else if (tree.get<std::string>("type") == "reset")
-  return boost::make_unique<Reset>(episode_timestamp_);
+  return boost::make_unique<Reset>(exchange_time_);
   else
       BOOST_LOG_TRIVIAL(error) << "Unknown message type: " << tree.get<std::string>("type");
 return Token{};

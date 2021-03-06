@@ -1,6 +1,6 @@
 format 224
-"Bitstamp" // Application::Acquirer::Bitstamp
-  revision 18
+"Bitstamp" // App::Acquirer::Bitstamp
+  revision 19
   modified_by 6 "petr"
   // class settings
   
@@ -130,6 +130,14 @@ ${inlines}
 	    cpp default "#include in source"
 	    classrelation_ref 1065094 // <dependency>
 	  b parent class_ref 868230 // ReceiverData
+      end
+
+      classrelation 1336198 // <dependency>
+	relation 1325830 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1336198 // <dependency>
+	  b parent class_ref 1108486 // processing_error
       end
     end
 

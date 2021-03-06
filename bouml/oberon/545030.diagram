@@ -1,0 +1,54 @@
+format 224
+
+classinstance 128134 class_ref 902918 // Token
+  name "aMessage"   xyz 449 95 2005 life_line_z 2000
+classinstance 128902 class_ref 486278 // Reconstructor
+  name "r"   xyz 283 27 2005 life_line_z 2000
+fragment 132358 "sd Reconstructor - process"
+  xyzwh 91 14 2000 622 355
+end
+durationcanvas 129030 classinstance_ref 128902 // r:Reconstructor
+  xyzwh 324 80 2010 11 257
+  overlappingdurationcanvas 129414
+    xyzwh 330 94 2020 11 112
+  end
+  overlappingdurationcanvas 130310
+    xyzwh 330 253 2020 11 66
+  end
+end
+durationcanvas 129798 classinstance_ref 128134 // aMessage:Token
+  xyzwh 495 145 2010 11 52
+end
+lostfoundmsgsupport 129158 xyz 244 82 2015
+msg 129286 found_synchronous
+  from lostfoundmsgsupport_ref 129158
+  to durationcanvas_ref 129030
+  yz 80 2015 msg operation_ref 575878 // "process(in message : ptree [1]) : void"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  args "ptree"
+  label_xy 249 62
+reflexivemsg 129542 synchronous
+  to durationcanvas_ref 129414
+  yz 94 2025 msg operation_ref 576006 // "extract(in tree : ptree [1]) : Token [1..*]"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  args "ptree"
+  label_xy 343 75
+msg 129926 return
+  from durationcanvas_ref 129414
+  to durationcanvas_ref 129798
+  yz 150 2025 explicitmsg "\"create\""
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 383 132
+msg 130054 return
+  from durationcanvas_ref 129798
+  to durationcanvas_ref 129414
+  yz 186 2030 explicitmsg "aMessage"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 390 168
+reflexivemsg 130438 synchronous
+  to durationcanvas_ref 130310
+  yz 253 2025 msg operation_ref 590214 // "handle(in msg : Token [1]) : void [*]"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  args "aMessage"
+  label_xy 338 233
+end

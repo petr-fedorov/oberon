@@ -1,6 +1,6 @@
 format 224
-"Bitstamp" // Application::Reconstructor::Bitstamp
-  revision 37
+"Bitstamp" // App::Reconstr::Bitstamp
+  revision 40
   modified_by 6 "petr"
   // class settings
   
@@ -219,6 +219,34 @@ ${inlines}
 	MysqlColumn
       end
 
+      attribute 1021574 "episode_"
+	private type class_ref 902918 // Token
+	multiplicity "*"
+	stereotype "vector"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      operation 1632518 "message"
+	cpp_override public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
       operation 1383174 "changed"
 	cpp_override public explicit_return_type "bool"
 	nparams 0
@@ -261,7 +289,7 @@ ${inlines}
 	
       end
 
-      operation 1383430 "endOfEpisode"
+      operation 1383430 "elapsed"
 	cpp_override public explicit_return_type "bool"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
@@ -296,6 +324,20 @@ ${inlines}
 	    cpp default "#include in source"
 	    classrelation_ref 1096454 // <dependency>
 	  b parent class_ref 448390 // OrderEvent
+      end
+
+      operation 1639430 "era"
+	cpp_override public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
       end
     end
 
@@ -337,18 +379,6 @@ ${inlines}
 	MysqlColumn
       end
 
-      attribute 848902 "episode_"
-	private type class_ref 903046 // Tokens
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-      end
-
       attribute 849030 "latest_"
 	private type class_ref 230278 // Timestamp
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
@@ -373,7 +403,7 @@ ${inlines}
 	MysqlColumn
       end
 
-      operation 1383686 "message"
+      operation 1385350 "reset"
 	cpp_override public explicit_return_type "bool"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
@@ -387,7 +417,7 @@ ${inlines}
 	
       end
 
-      operation 1383814 "endOfEpisode"
+      operation 1383686 "orderEvent"
 	cpp_override public explicit_return_type "bool"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
@@ -401,7 +431,7 @@ ${inlines}
 	
       end
 
-      operation 1383942 "era"
+      operation 1383814 "elapsed"
 	cpp_override public explicit_return_type "bool"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
@@ -424,20 +454,6 @@ ${inlines}
 	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} ${p2}${v2}${)}${volatile}${throw};
 "
 	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${volatile}${throw} : TokenHandler{next, \"TimeOrderEnforcer\", handle_deleted}, delay_{delay*1000000} {
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 1385350 "reset"
-	cpp_override public explicit_return_type "bool"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
@@ -1618,8 +1634,10 @@ ${inlines}
       end
 
       attribute 856710 "before_messages_"
-	private type class_ref 903046 // Tokens
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+	private type class_ref 902918 // Token
+	multiplicity "*"
+	stereotype "vector"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
 "
 	java_decl ""
 	php_decl ""
@@ -1630,8 +1648,10 @@ ${inlines}
       end
 
       attribute 856838 "era_messages_"
-	private type class_ref 903046 // Tokens
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+	private type class_ref 902918 // Token
+	multiplicity "*"
+	stereotype "vector"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
 "
 	java_decl ""
 	php_decl ""

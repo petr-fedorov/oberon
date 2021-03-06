@@ -1,0 +1,65 @@
+format 224
+
+classinstance 128006 class_ref 712966 // Receiver
+  name ""   xyz 97 4 2005 life_line_z 2000
+classinstance 128134 class_ref 486278 // Reconstructor
+  name ""   xyz 352 4 2005 life_line_z 2000
+classinstance 129414 class_ref 903046 // Tokens
+  name "episode"   xyz 542 4 2005 life_line_z 2000
+durationcanvas 128262 classinstance_ref 128006 // :Receiver
+  xyzwh 123 102 2010 11 40
+end
+durationcanvas 128390 classinstance_ref 128134 // :Reconstructor
+  xyzwh 391 103 2010 11 183
+  overlappingdurationcanvas 128646
+    xyzwh 397 107 2020 11 43
+  end
+  overlappingdurationcanvas 129926
+    xyzwh 397 225 2020 11 46
+  end
+end
+durationcanvas 129542 classinstance_ref 129414 // episode:Tokens
+  xyzwh 584 171 2010 11 36
+end
+msg 128518 synchronous
+  from durationcanvas_ref 128262
+  to durationcanvas_ref 128390
+  yz 103 2015 msg operation_ref 575878 // "process(in message : ptree [1]) : bool"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  args "ptree"
+  label_xy 223 85
+reflexivemsg 128774 synchronous
+  to durationcanvas_ref 128646
+  yz 107 2025 msg operation_ref 576006 // "extract(in tree : ptree [1]) : Token [1..*]"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  args "ptree"
+  label_xy 414 89
+selfreflexivemsg 129158
+  to durationcanvas_ref 128646
+  yz 142 2025 explicitmsg "aMessage"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 431 136
+msg 129670 synchronous
+  from durationcanvas_ref 128390
+  to durationcanvas_ref 129542
+  yz 171 2015 explicitmsg "push_back(aMessage)"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 422 153
+msg 129798 return
+  from durationcanvas_ref 129542
+  to durationcanvas_ref 128390
+  yz 196 2015 explicitmsg "anEpisode"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 455 178
+reflexivemsg 130054 synchronous
+  to durationcanvas_ref 129926
+  yz 225 2025 msg operation_ref 590214 // "handle(in episode : Tokens [*]) : bool [*]"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  args "anEpisode"
+  label_xy 433 219
+selfreflexivemsg 130182
+  to durationcanvas_ref 129926
+  yz 263 2025 explicitmsg "result"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 432 258
+end

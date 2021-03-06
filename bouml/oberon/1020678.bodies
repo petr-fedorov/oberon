@@ -48,7 +48,7 @@ using namespace date;
 using namespace std::chrono;
 using OrderEvent=reconstructor::OrderEvent;
 if(received_->timestamp() > next_era_) {
-  output_.push_back(boost::make_unique<reconstructor::Reset>(episode_timestamp_));
+  output_.push_back(boost::make_unique<reconstructor::Reset>(exchange_time_));
   output_.push_back(boost::make_unique<reconstructor::Era>(next_era_, security_));
   for(auto &p : active_orders_) {
     auto event = boost::make_unique<OrderEvent>(*p.second);

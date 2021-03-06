@@ -1,6 +1,6 @@
 format 224
-"Application" // Application
-  revision 146
+"App" // App
+  revision 152
   modified_by 6 "petr"
   // class settings
   
@@ -54,8 +54,8 @@ format 224
     
     activitydiagramsettings
      end
-    activity 148230 "S.1 Standalone application"
-      activitydiagram 181766 "S.1 Standalone application"
+    activity 148230 "Standalone application - capture"
+      activitydiagram 181766 "Standalone application - capture"
 	activitydiagramsettings
 	 end
 	size A4
@@ -154,7 +154,7 @@ format 224
 
 	activityaction 247302 "Reconstruct Order Book"
 	  call_behavior_action
-	  synchronous activity_ref 175238 // R.1 Reconstruct Order Book
+	  synchronous activity_ref 175238 // Reconstruct Order Book
 	  pin 348678 "ptree" type class_ref 174214 // ptree
 	     multiplicity "*" fifo 
 	    in stream
@@ -166,6 +166,13 @@ format 224
 	  end
 
 	  flow 416006 "S.1.11"
+	    on activitynode_ref 317190 // activity_final
+	  end
+	end
+
+	activityaction 273798 "Interrupt"
+	  accept_event_action
+	  flow 430598 "<flow>"
 	    on activitynode_ref 317190 // activity_final
 	  end
 	end
@@ -343,21 +350,9 @@ format 224
       end
     end
 
-    activity 201734 "S.3 Store"
-      parameter 225926 "store" explicit_type ""
-	 multiplicity "1" unordered 
-	in
-      end
-
-      parameter 226054 "events" explicit_type ""
-	 multiplicity "*" fifo 
-	in stream
-      end
-    end
-
-    activity 175238 "R.1 Reconstruct Order Book"
+    activity 175238 "Reconstruct Order Book"
       specification operation_ref 575878 // process
-      activitydiagram 274822 "R.1 Reconstruct Order Book"
+      activitydiagram 274822 "Reconstruct Order Book"
 	activitydiagramsettings
 	 end
 	size A4
@@ -366,30 +361,8 @@ format 224
       parameter 178694 "ptree" type class_ref 174214 // ptree
 	 multiplicity "1" unordered 
 	in stream
-	flow 290310 "<flow>"
-	  on pin_ref 282118 // 
-	end
-      end
-
-      activityaction 226950 "R.2 Extract"
-	call_operation_action
-	operation_ref 576006 // extract
-	pin 281862 "target" type class_ref 486278 // Reconstructor
-	   multiplicity "1" unordered 
-	  in
-	end
-
-	pin 281990 "" type class_ref 902918 // Token
-	   multiplicity "1" fifo is_control
-	  return
-	  flow 423174 "<flow>"
-	    on activityobject_ref 207238 // activity object New Token
-	  end
-	end
-
-	pin 282118 "" type class_ref 174214 // ptree
-	   multiplicity "1" unordered 
-	  in
+	flow 430086 "<flow>"
+	  on pin_ref 371590 // message
 	end
       end
 
@@ -397,13 +370,13 @@ format 224
 	stereotype "datastore"
 	 type class_ref 486278 // Reconstructor
 	unordered 
-	flow 290182 "<flow>"
-	  on pin_ref 281862 // target
-	end
-
 	flow 305414 "<flow>"
 	  on pin_ref 289414 // target
 	      uml_transformation "To be defined"
+	end
+
+	flow 429958 "<flow>"
+	  on pin_ref 371462 // target
 	end
       end
 
@@ -426,288 +399,58 @@ format 224
 	end
       end
 
-      activityaction 247174 "R.3 Cleanse"
-	call_operation_action
-	synchronous operation_ref 590214 // handle
-	pin 364038 "target" type class_ref 441222 // TokenHandler
-	  unordered 
-	  in
-	end
-
-	pin 364166 "" explicit_type "bool"
-	  unordered 
-	  return
-	end
-
-	pin 364294 "episode" type class_ref 903046 // Tokens
-	  unordered 
-	  in
-	end
-      end
-
-      activitynode 310534 merge ""
-	flow 408838 "<flow>"
-	  on activityaction_ref 226950 // activity action R.2 Extract
-	end
-      end
-
       activitynode 310662 initial_node ""
-	flow 408710 "<flow>"
-	  on activitynode_ref 310534 // merge
+	flow 430214 "<flow>"
+	  on activitynode_ref 324230 // merge
 	end
       end
 
-      activityaction 267142 "Read self"
-	read_self_action
-	pin 364934 "result" type class_ref 486278 // Reconstructor
+      activityaction 273670 "Process message"
+	call_operation_action
+	synchronous operation_ref 575878 // process
+	pin 371462 "target" type class_ref 486278 // Reconstructor
 	   multiplicity "1" unordered 
-	  out
-	  flow 422534 "<flow>"
-	    on activityobject_ref 154502 // activity object this
+	  in
+	end
+
+	pin 371590 "message" type class_ref 174214 // ptree
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 371718 "" type class_ref 1108486 // processing_error
+	  unordered is_control
+	  out exception
+	  flow 429702 "<flow>"
+	    on activitynode_ref 324102 // activity_final
 	  end
 	end
-      end
 
-      activityobject 207110 "Episode"
-	stereotype "datastore"
-	 type class_ref 902918 // Token
-	 multiplicity "*" unordered 
-	flow 422918 "<flow>"
-	  on pin_ref 364294 // episode
+	flow 430470 "<flow>"
+	  on activitynode_ref 324230 // merge
 	end
       end
 
-      activityobject 207238 "New Token"
-	 explicit_type ""
-	unordered 
-      end
-    end
-
-    activity 181894 "R.2 Extract"
-      specification operation_ref 576006 // extract
-    end
-
-    activity 181766 "R.3 Cleanse"
-      activitydiagram 300934 "R.3 Cleanse"
-	activitydiagramsettings
-	 end
-	size A4
+      activitynode 323846 activity_final ""
       end
 
-      parameter 191878 "message" type class_ref 245766 // Message
-	 multiplicity "1" unordered is_control
-	in
-	flow 374406 "<flow>"
-	  on activitynode_ref 270086 // decision
-	end
+      activitynode 323974 flow_final ""
       end
 
-      parameter 192006 "target" type class_ref 486278 // Reconstructor
+      activitynode 324102 activity_final ""
+      end
+
+      parameter 232582 "target" type class_ref 486278 // Reconstructor
 	 multiplicity "1" unordered 
 	in
-	flow 313350 "<flow>"
-	  on activityobject_ref 180614 // activity object this
+	flow 429830 "<flow>"
+	  on activityobject_ref 154502 // activity object this
 	end
       end
 
-      parameter 192134 "output" type class_ref 245766 // Message
-	 multiplicity "*" fifo is_control
-	out
-      end
-
-      activityaction 246662 "Deduplicate"
-	call_operation_action
-	operation_ref 590214 // handle
-	pin 305414 "target" type class_ref 441222 // TokenHandler
-	  unordered 
-	  in
-	end
-
-	pin 305542 "output" type class_ref 245766 // Message
-	   multiplicity "*" unordered is_control
-	  return
-	  flow 337542 "<flow>"
-	    on activitynode_ref 270214 // merge
-	  end
-	end
-
-	pin 305670 "messages" type class_ref 245766 // Message
-	   multiplicity "*" unordered is_control
-	  in
-	end
-      end
-
-      activityaction 246918 "Re-classify"
-	call_operation_action
-	operation_ref 590214 // handle
-	pin 296966 "target" type class_ref 441222 // TokenHandler
-	  unordered 
-	  in
-	end
-
-	pin 297094 "output" type class_ref 245766 // Message
-	   multiplicity "*" unordered 
-	  return
-	  flow 352134 "<flow>"
-	    on activitynode_ref 283526 // merge
-	  end
-	end
-
-	pin 297222 "messages" type class_ref 245766 // Message
-	   multiplicity "*" unordered is_control
-	  in
-	end
-      end
-
-      activityobject 180614 "this"
-	stereotype "datastore"
-	 type class_ref 486278 // Reconstructor
-	unordered 
-	flow 337030 "<flow>"
-	  on activityobject_ref 193926 // activity object deduplicator
-	      uml_transformation "Deduplicator"
-	end
-
-	flow 351366 "<flow>"
-	  on activityobject_ref 200454 // activity object classifier
-	      uml_transformation "Classifier"
-	end
-      end
-
-      activitynode 270086 decision ""
-	flow 336774 "<flow>"
-	  on pin_ref 305670 // messages
-	    uml_guard "else"
-	end
-
-	flow 337414 "<flow>"
-	  on activitynode_ref 270214 // merge
-	    uml_guard "deduplicator is null"
-	end
-      end
-
-      activityobject 193926 "deduplicator"
-	stereotype "datastore"
-	 explicit_type ""
-	unordered 
-	flow 337158 "<flow>"
-	  on activitynode_ref 270086 // decision
-	end
-
-	flow 337286 "<flow>"
-	  on pin_ref 305414 // target
-	end
-      end
-
-      activitynode 270214 merge ""
-	flow 374534 "<flow>"
-	  on activitynode_ref 283398 // decision
-	end
-      end
-
-      activitynode 283398 decision ""
-	flow 351878 "<flow>"
-	  on pin_ref 297222 // messages
-	end
-
-	flow 352006 "<flow>"
-	  on activitynode_ref 283526 // merge
-	    uml_guard "classifier is null"
-	end
-      end
-
-      activityobject 200454 "classifier"
-	stereotype "datastore"
-	 explicit_type ""
-	unordered 
-	flow 351494 "<flow>"
-	  on activitynode_ref 283398 // decision
-	end
-
-	flow 351622 "<flow>"
-	  on pin_ref 296966 // target
-	end
-      end
-
-      activitynode 283526 merge ""
-	flow 374662 "<flow>"
-	  on parameter_ref 192134 // output
-	end
-      end
-    end
-
-    activity 182022 "R.4 Transmit"
-      activitydiagram 301062 "R.4 Transmit"
-	activitydiagramsettings
-	 end
-	size A4
-      end
-
-      parameter 192262 "messages" type class_ref 245766 // Message
-	 multiplicity "*" fifo is_control
-	in
-	flow 352646 "<flow>"
-	  on pin_ref 312454 // messages
-	end
-      end
-
-      parameter 192390 "target" type class_ref 486278 // Reconstructor
-	 multiplicity "1" unordered 
-	in
-	flow 352518 "<flow>"
-	  on activityobject_ref 200582 // activity object this
-	end
-      end
-
-      activityaction 247046 "Transmit to store"
-	call_operation_action
-	synchronous no_operation
-	pin 297350 "target" explicit_type "Store1"
-	  unordered 
-	  in
-	end
-
-	pin 297478 "event" explicit_type "Event"
-	   multiplicity "0..1" unordered is_control
-	  in
-	end
-      end
-
-      activityaction 260486 "Generate event numbers"
-	call_operation_action
-	operation_ref 590214 // handle
-	pin 312198 "target" type class_ref 441222 // TokenHandler
-	  unordered 
-	  in
-	end
-
-	pin 312326 "output" type class_ref 245766 // Message
-	   multiplicity "*" fifo is_control
-	  return
-	  flow 360582 "<flow>"
-	    on pin_ref 297478 // event
-		uml_transformation "to event"
-	  end
-	end
-
-	pin 312454 "messages" type class_ref 245766 // Message
-	   multiplicity "*" unordered is_control
-	  in
-	end
-      end
-
-      activityobject 200582 "this"
-	stereotype "datastore"
-	 type class_ref 486278 // Reconstructor
-	 multiplicity "1" unordered 
-	flow 352902 "<flow>"
-	  on pin_ref 312198 // target
-	      uml_transformation "generator"
-	end
-
-	flow 353030 "<flow>"
-	  on pin_ref 297350 // target
-	      uml_transformation "store"
+      activitynode 324230 merge ""
+	flow 430342 "<flow>"
+	  on activityaction_ref 273670 // activity action Process message
 	end
       end
     end
@@ -846,11 +589,41 @@ format 224
 	end
       end
     end
+
+    sequencediagram 545030 "Reconstructor  - process"
+      sequencediagramsettings end
+      overlapping_bars size A4
+    end
+
+    sequencediagram 545286 "Message - accept"
+      sequencediagramsettings end
+      overlapping_bars size A4
+    end
+
+    sequencediagram 551814 "TokenHandler - handle"
+      sequencediagramsettings end
+      overlapping_bars size A4
+    end
+
+    classdiagram 551942 "Reconstructor hierarchy for process"
+      classdiagramsettings draw_all_relations no hide_attributes yes hide_operations no show_members_full_definition yes member_max_width 0 show_context_mode uml end
+      size A-Landscape
+    end
+
+    classdiagram 552070 "Message hierarchy for process"
+      classdiagramsettings hide_attributes yes hide_operations yes member_max_width 0 end
+      size A4
+    end
+
+    classdiagram 552198 "Tokens"
+      classdiagramsettings hide_attributes yes hide_operations yes member_max_width 0 end
+      size A4
+    end
   end
 
   package_ref 194822 // Acquirer
 
-  package_ref 141190 // Reconstructor
+  package_ref 141190 // Reconstr
 
   classview 306950 "Application"
     
@@ -9464,6 +9237,7 @@ int main(int argc, char **argv) {
 	artifact_ref 394630 // Transmuter
 	artifact_ref 394758 // Stripe
 	artifact_ref 401286 // Dot
+	artifact_ref 421126 // processing_error
       end
       ncouples 10
       key "genpro pro" value "/tmp/oberon/cpp/oberon.pro"

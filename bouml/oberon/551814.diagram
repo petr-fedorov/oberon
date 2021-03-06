@@ -1,0 +1,115 @@
+format 224
+
+classinstance 128006 class_ref 441222 // TokenHandler
+  name "this"   xyz 194 36 2005 life_line_z 2005
+classinstance 128134 class_ref 441222 // TokenHandler
+  name "this.next"   xyz 612 31 2005 life_line_z 2005
+classinstance 128646 class_ref 903046 // Tokens
+  name "this.output_"   xyz 483 31 2005 life_line_z 2005
+fragment 129158 "loop"
+  xyzwh 224 408 3015 473 114
+end
+fragment 129286 "opt"
+  xyzwh 187 371 3025 537 160
+end
+textcanvas 129414 "[this.next exists]"
+  xyzwh 268 378 2035 167 22
+classinstance 130054 class_ref 902918 // Token
+  name "msg"   xyz 406 31 2005 life_line_z 2005
+textcanvas 130566 "[!output_.empty()]"
+  xyzwh 286 417 3020 94 18
+fragment 131206 "sd TokenHandler - handle"
+  xyzwh 45 6 2000 732 601
+end
+fragment 131334 "ref"
+  color white refer sequencediagram_ref 545286 // Message - accept
+  xyzwh 188 257 3005 284 87
+end
+fragment 132102 "opt"
+  xyzwh 187 134 2015 286 113
+end
+textcanvas 132486 "[current_time  > exchange_time]"
+  xyzwh 261 138 3005 178 19
+note 132614 "Note that elapsed() may be triggered by any message type, not by Elapsed only"
+  xyzwh 484 152 2010 185 73
+durationcanvas 128262 classinstance_ref 128006 // this:TokenHandler
+  xyzwh 242 84 2010 11 498
+  overlappingdurationcanvas 131462
+    xyzwh 248 282 2020 11 78
+  end
+  overlappingdurationcanvas 132230
+    xyzwh 248 200 2020 11 25
+  end
+end
+durationcanvas 128390 classinstance_ref 128134 // this.next:TokenHandler
+  xyzwh 673 472 2010 11 37
+end
+durationcanvas 128902 classinstance_ref 128646 // this.output_:Tokens
+  xyzwh 535 552 2010 11 30
+end
+durationcanvas 131846 classinstance_ref 130054 // msg:Token
+  xyzwh 435 175 2010 11 26
+end
+durationcanvas 132742 classinstance_ref 130054 // msg:Token
+  xyzwh 435 99 2030 11 33
+end
+lostfoundmsgsupport 129798 xyz 128 86 2025
+msg 128518 synchronous
+  from durationcanvas_ref 128262
+  to durationcanvas_ref 128390
+  yz 472 2020 msg operation_ref 590214 // "handle(in msg : Token [1]) : void [*]"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  args "output_.pop_front()"
+  label_xy 314 454
+msg 129926 found_synchronous
+  from lostfoundmsgsupport_ref 129798
+  to durationcanvas_ref 128262
+  yz 84 2025 msg operation_ref 590214 // "handle(in msg : Token [1]) : void [*]"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  args "aMessage"
+  label_xy 139 66
+msg 130822 synchronous
+  from durationcanvas_ref 128262
+  to durationcanvas_ref 128902
+  yz 552 2025 explicitmsg "clear()"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 360 534
+msg 130950 return
+  from durationcanvas_ref 128390
+  to durationcanvas_ref 128262
+  yz 498 2015 unspecifiedmsg
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+msg 131078 return
+  from durationcanvas_ref 128902
+  to durationcanvas_ref 128262
+  yz 571 2030 unspecifiedmsg
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+selfreflexivemsg 131718
+  to durationcanvas_ref 131462
+  yz 352 2020 explicitmsg "output_"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 284 348
+msg 131974 synchronous
+  from durationcanvas_ref 128262
+  to durationcanvas_ref 131846
+  yz 175 2015 explicitmsg "exchange_time = timestamp()"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 264 157
+reflexivemsg 132358 synchronous
+  to durationcanvas_ref 132230
+  yz 200 2025 msg operation_ref 483590 // "elapsed() : bool"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 282 196
+msg 132870 synchronous
+  from durationcanvas_ref 128262
+  to durationcanvas_ref 132742
+  yz 99 3010 explicitmsg "timestamp()"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 312 81
+msg 132998 return
+  from durationcanvas_ref 132742
+  to durationcanvas_ref 128262
+  yz 121 3015 explicitmsg "current_time"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 311 103
+end

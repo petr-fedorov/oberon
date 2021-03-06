@@ -36,13 +36,6 @@ else if (event->side() == BookSide::kAsk) {
 }
 BOOST_LOG_TRIVIAL(warning) << handler_name_ << " ignored " << event->toString();
 return true;
-!!!1586950.cpp!!!	elapsed() : bool
-for (auto & b : bids_)
-  b.second->advance(received_->timestamp(), output_);
-for (auto & a : asks_)
-  a.second->advance(received_->timestamp(), output_);
-output_.push_back(std::move(received_));
-return true;
 !!!1587078.cpp!!!	reset() : bool
 for (auto & b : bids_)
   b.second->advance(received_->timestamp(), output_);
@@ -59,7 +52,7 @@ if(!passed_era_) {
 }
 return true;
 
-!!!1587590.cpp!!!	endOfEpisode() : bool
+!!!1587590.cpp!!!	elapsed() : bool
 if (!bids_.empty()) {
   auto b = std::prev(bids_.end());
   while (b != bids_.begin() && b->second->empty())
@@ -71,12 +64,12 @@ if (!bids_.empty()) {
 if (!bids_.empty()) {
   if (bids_.rbegin()->second != best_bid_) {
     if (best_bid_)
-      best_bid_->bestUntil(episode_timestamp_, output_);
+      best_bid_->bestUntil(exchange_time_, output_);
     best_bid_ = bids_.rbegin()->second;
-    best_bid_->bestSince(episode_timestamp_, output_);
+    best_bid_->bestSince(exchange_time_, output_);
   }
 } else if (best_bid_) {
-  best_bid_->bestUntil(episode_timestamp_, output_);
+  best_bid_->bestUntil(exchange_time_, output_);
   best_bid_.reset();
 }
 if (!asks_.empty()) {
@@ -88,21 +81,21 @@ if (!asks_.empty()) {
 if(!asks_.empty()) {
   if (asks_.begin()->second != best_ask_) {
     if (best_ask_)
-      best_ask_->bestUntil(episode_timestamp_, output_);
+      best_ask_->bestUntil(exchange_time_, output_);
     best_ask_ = asks_.begin()->second;
-    best_ask_->bestSince(episode_timestamp_, output_);
+    best_ask_->bestSince(exchange_time_, output_);
   }
 }
 else if (best_ask_) {
-  best_ask_->bestUntil(episode_timestamp_, output_);
+  best_ask_->bestUntil(exchange_time_, output_);
   best_ask_.reset();
 }
 for(auto sell : sells_) {
-  output_.push_back(boost::make_unique<Dot>(episode_timestamp_, sell.first, sell.second, BookSide::kBid));
+  output_.push_back(boost::make_unique<Dot>(exchange_time_, sell.first, sell.second, BookSide::kBid));
   BOOST_LOG_TRIVIAL(debug) << "Created " << output_.back()->toString();
 }
 for(auto buy : buys_) {
-  output_.push_back(boost::make_unique<Dot>(episode_timestamp_, buy.first, buy.second, BookSide::kAsk));
+  output_.push_back(boost::make_unique<Dot>(exchange_time_, buy.first, buy.second, BookSide::kAsk));
   BOOST_LOG_TRIVIAL(debug) << "Created " << output_.back()->toString();
 }
 
@@ -111,5 +104,5 @@ sells_.clear();
 buys_.clear();
 
 BOOST_LOG_TRIVIAL(debug) << "Episode "
-                         << date::format("%FT%TZ", episode_timestamp_);
+                         << date::format("%FT%TZ", exchange_time_);
 return true;

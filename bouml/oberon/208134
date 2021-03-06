@@ -1,6 +1,6 @@
 format 224
-"Coinbase" // Application::Acquirer::Coinbase
-  revision 33
+"Coinbase" // App::Acquirer::Coinbase
+  revision 34
   modified_by 6 "petr"
   // class settings
   
@@ -138,6 +138,14 @@ ${inlines}
 	    cpp default "#include in source"
 	    classrelation_ref 1071750 // <dependency>
 	  b parent class_ref 245766 // Message
+      end
+
+      classrelation 1336326 // <dependency>
+	relation 1325958 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1336326 // <dependency>
+	  b parent class_ref 1108486 // processing_error
       end
     end
 

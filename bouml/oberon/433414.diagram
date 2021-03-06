@@ -12,18 +12,27 @@ classcanvas 129030 class_ref 852614 // shared_ptr
   classdiagramsettings member_max_width 0 end
   xyz 549 128 2005
 end
+classcanvas 131462 class_ref 1108486 // processing_error
+  classdiagramsettings member_max_width 0 end
+  xyz 707 479 2000
+end
 relationcanvas 128390 relation_ref 1068038 // <directional aggregation>
   decenter_begin 207
-  from ref 128006 z 2001 stereotype "<<shared_ptr>>" xyz 155 189 3000 to point 114 187
-  line 128518 z 2001 to point 114 309
-  line 128646 z 2001 to ref 128006
-  role_a_pos 241 297 3000 no_role_b
+  from ref 128006 z 2001 stereotype "<<shared_ptr>>" xyz 155 191 3000 to point 115 192
+  line 128518 z 2001 to point 117 321
+  line 129670 z 2001 to ref 128006
+  role_a_pos 241 300 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 line 128902 ---+
   from ref 128774 z 2007 to ref 128006
 relationcanvas 129158 relation_ref 1068166 // <realization>
   from ref 128774 z 2007 label "<T->TokenHandler>" max_width 255 xyz 532 219 2007 stereotype "<<bind>>" xyz 561 237 3000 to ref 129030
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131590 relation_ref 1325446 // <dependency>
+  from ref 128006 z 2001 to ref 131462
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end

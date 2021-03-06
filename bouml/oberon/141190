@@ -1,6 +1,6 @@
 format 224
-"Reconstructor" // Application::Reconstructor
-  revision 252
+"Reconstr" // App::Reconstr
+  revision 257
   modified_by 6 "petr"
   // class settings
   
@@ -692,6 +692,7 @@ ${inlines}
       
       classrelation 1027334 // <realization>
 	relation 1016966 -_-|>
+	  stereotype "bind"
 	  a public
 	    cpp default "${type}"
 	    classrelation_ref 1027334 // <realization>
@@ -702,7 +703,7 @@ ${inlines}
     class 903046 "Tokens"
       visibility package stereotype "template_typedef"
       nactuals 1
-      actual class class_ref 889734 // vector
+      actual class class_ref 1115142 // list
         rank 0 value class_ref 902918 // Token
       cpp_decl "${comment}${template}using ${name} = ${inherit};
 "
@@ -713,13 +714,13 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
-      classrelation 1027462 // <realization>
-	relation 1017094 -_-|>
+      classrelation 1335686 // <realization>
+	relation 1325318 -_-|>
 	  stereotype "bind"
 	  a public
 	    cpp default "${type}"
-	    classrelation_ref 1027462 // <realization>
-	  b parent class_ref 889734 // vector
+	    classrelation_ref 1335686 // <realization>
+	  b parent class_ref 1115142 // list
       end
     end
 
@@ -2127,11 +2128,11 @@ ${inlines}
 	end
 
 	state 315782 "Prepare merge"
-	  transition 573574 "endOfEpisode"
+	  transition 573574 "elapsed"
 	    on state_ref 315526 // Era started
-	      uml_trigger "endOfEpisode"
+	      uml_trigger "elapsed"
 	      uml_expr "pass deletions"
-	      cpp_trigger "endOfEpisode"
+	      cpp_trigger "elapsed"
 	      cpp_expr "for(auto iter = stm.active_orders_.begin(); iter != stm.active_orders_.end(); ++iter)
 if(iter->second->deleted()) {
   auto c = boost::make_unique<reconstructor::OrderEvent>(*iter->second);
@@ -2270,12 +2271,6 @@ stm.output_.push_back(std::move(stm.received_));
 	      cpp_trigger "reset"
 	      cpp_expr "stm.output_.push_back(std::move(stm.received_));"
 	  end
-	end
-
-	transition 574726 "<transition>"
-	  on state_ref 315910 // Engage
-	    uml_trigger "endOfEpisode"
-	    cpp_trigger "endOfEpisode"
 	end
 
 	transition 577542 "created"
@@ -2466,24 +2461,6 @@ ${inlines}
 	  key "STM generated" value ""
 	end
 
-	operation 1485446 "endOfEpisode"
-	  force_body_gen cpp_virtual public explicit_return_type "void"
-	  nparams 1
-	    param inout name "stm" type class_ref 1046918 // EraMerger
-	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	  ncouples 1
-	  key "STM generated" value ""
-	  comment " the current state doesn't manage the event endOfEpisode, give it to the upper state"
-	end
-
 	operation 1485830 "created"
 	  force_body_gen cpp_virtual public explicit_return_type "void"
 	  nparams 1
@@ -2591,6 +2568,24 @@ ${inlines}
 	  key "STM generated" value ""
 	  comment " the current state doesn't manage the event changed, give it to the upper state"
 	end
+
+	operation 1632774 "elapsed"
+	  force_body_gen cpp_virtual public explicit_return_type "void"
+	  nparams 1
+	    param inout name "stm" type class_ref 1046918 // EraMerger
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  ncouples 1
+	  key "STM generated" value ""
+	  comment " the current state doesn't manage the event elapsed, give it to the upper state"
+	end
       end
 
       class 1047174 "EraMerger_State"
@@ -2665,24 +2660,6 @@ ${inlines}
 		b parent class_ref 1047046 // AnyState
 	    end
 
-	    operation 1485574 "endOfEpisode"
-	      force_body_gen cpp_virtual public explicit_return_type "void"
-	      nparams 1
-	        param inout name "stm" type class_ref 1046918 // EraMerger
-	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-	      cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	      
-	      
-	      
-	      
-	      ncouples 1
-	      key "STM generated" value ""
-	      comment " to manage the event endOfEpisode"
-	    end
-
 	    operation 1485958 "created"
 	      force_body_gen cpp_virtual public explicit_return_type "void"
 	      nparams 1
@@ -2717,6 +2694,24 @@ ${inlines}
 	      ncouples 1
 	      key "STM generated" value ""
 	      comment " returns the state containing the current"
+	    end
+
+	    operation 1632902 "elapsed"
+	      force_body_gen cpp_virtual public explicit_return_type "void"
+	      nparams 1
+	        param inout name "stm" type class_ref 1046918 // EraMerger
+	      cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	      cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	      
+	      
+	      
+	      
+	      ncouples 1
+	      key "STM generated" value ""
+	      comment " to manage the event elapsed"
 	    end
 	  end
 
@@ -3195,23 +3190,6 @@ ${inlines}
 	    comment " returns the state containing the current"
 	  end
 
-	  operation 1490438 "endOfEpisode"
-	    force_body_gen cpp_virtual public explicit_return_type "void"
-	    nparams 1
-	      param inout name "stm" type class_ref 1046918 // EraMerger
-	    cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-	    cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	    
-	    
-	    
-	    
-	    ncouples 1
-	    key "STM generated" value ""
-	    comment " to manage the event endOfEpisode"
-	  end
 	end
 
 	operation 1484038 "~EraMerger_State"
@@ -3368,7 +3346,7 @@ ${inlines}
 	  param in name "next" type class_ref 950918 // TokenHandler_SP
 	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw}: _current_state{0}, TokenHandler{next, \"EraMerger\"} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw}: TokenHandler{next, \"EraMerger\"}, _current_state{0} {
   ${body}}
 "
 	
@@ -3394,7 +3372,7 @@ ${inlines}
       end
 
       operation 1484934 "create"
-	force_body_gen public explicit_return_type "bool"
+	force_body_gen cpp_override public explicit_return_type "bool"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3410,25 +3388,8 @@ ${inlines}
 	comment " the operation you call to signal the event create"
       end
 
-      operation 1485318 "endOfEpisode"
-	force_body_gen public explicit_return_type "bool"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-	ncouples 1
-	key "STM generated" value ""
-	comment " the operation you call to signal the event endOfEpisode"
-      end
-
       operation 1485702 "created"
-	force_body_gen public explicit_return_type "bool"
+	force_body_gen cpp_override public explicit_return_type "bool"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3454,7 +3415,7 @@ ${inlines}
       end
 
       operation 1486214 "era"
-	force_body_gen public explicit_return_type "bool"
+	force_body_gen cpp_override public explicit_return_type "bool"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3471,7 +3432,7 @@ ${inlines}
       end
 
       operation 1486598 "reset"
-	force_body_gen public explicit_return_type "bool"
+	force_body_gen cpp_override public explicit_return_type "bool"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3488,7 +3449,7 @@ ${inlines}
       end
 
       operation 1486982 "cancelled"
-	force_body_gen public explicit_return_type "bool"
+	force_body_gen cpp_override public explicit_return_type "bool"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3505,7 +3466,7 @@ ${inlines}
       end
 
       operation 1487366 "filled"
-	force_body_gen public explicit_return_type "bool"
+	force_body_gen cpp_override public explicit_return_type "bool"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3522,7 +3483,7 @@ ${inlines}
       end
 
       operation 1487878 "changed"
-	force_body_gen public explicit_return_type "bool"
+	force_body_gen cpp_override public explicit_return_type "bool"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3660,6 +3621,23 @@ ${inlines}
 	    cpp default "#include in source"
 	    classrelation_ref 1259142 // <dependency>
 	  b parent class_ref 521478 // Era
+      end
+
+      operation 1632646 "elapsed"
+	force_body_gen cpp_override public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	ncouples 1
+	key "STM generated" value ""
+	comment " the operation you call to signal the event elapsed"
       end
     end
 
@@ -3884,15 +3862,6 @@ ${inlines}
 	    cpp_guard "static_cast<OrderEvent*>(stm.received_.get())->state() == OrderEvent::OrderState::kActive
 "
 	  external 
-	end
-
-	transition 358534 "elapsed"
-	  on state_ref 198022 // Wait
-	    uml_trigger "elapsed"
-	    uml_expr "output message"
-	    cpp_trigger "elapsed"
-	    cpp_expr "stm.output_.push_back(std::move(stm.received_));
-"
 	end
 
 	transition 358662 "era"
@@ -4200,24 +4169,6 @@ ${inlines}
 	  comment " the current state doesn't manage the event created, give it to the upper state"
 	end
 
-	operation 1372678 "elapsed"
-	  force_body_gen cpp_virtual public explicit_return_type "void"
-	  nparams 1
-	    param inout name "stm" type class_ref 542982 // SizeDeducer
-	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	  
-	  
-	  
-	  
-	  ncouples 1
-	  key "STM generated" value ""
-	  comment " the current state doesn't manage the event elapsed, give it to the upper state"
-	end
-
 	operation 1373190 "filled"
 	  force_body_gen cpp_virtual public explicit_return_type "void"
 	  nparams 1
@@ -4380,24 +4331,6 @@ ${inlines}
 	    ncouples 1
 	    key "STM generated" value ""
 	    comment " to manage the event created"
-	  end
-
-	  operation 1372806 "elapsed"
-	    force_body_gen cpp_virtual public explicit_return_type "void"
-	    nparams 1
-	      param inout name "stm" type class_ref 542982 // SizeDeducer
-	    cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-	    cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	    
-	    
-	    
-	    
-	    ncouples 1
-	    key "STM generated" value ""
-	    comment " to manage the event elapsed"
 	  end
 
 	  operation 1373318 "filled"
@@ -5179,23 +5112,6 @@ ${inlines}
 	key "STM generated" value ""
       end
 
-      operation 687494 "elapsed"
-	force_body_gen cpp_override public explicit_return_type "bool"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-	ncouples 1
-	key "STM generated" value ""
-	comment " the operation you call to signal the event elapsed"
-      end
-
       operation 688262 "filled"
 	force_body_gen cpp_override public explicit_return_type "bool"
 	nparams 0
@@ -5488,7 +5404,7 @@ ${inlines}
     end
 
     classdiagram 433414 "Token Handler"
-      classdiagramsettings member_max_width 0 end
+      classdiagramsettings draw_all_relations yes member_max_width 0 end
       size A4
     end
 
@@ -5541,7 +5457,7 @@ ${inlines}
 	MysqlColumn
       end
 
-      attribute 978566 "episode_timestamp_"
+      attribute 978566 "exchange_time_"
 	protected type class_ref 230278 // Timestamp
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -5652,11 +5568,11 @@ ${inlines}
       end
 
       operation 590214 "handle"
-	public explicit_return_type "bool"
+	public explicit_return_type "void"
 	multiplicity "*"
 	nparams 1
-	  param in name "episode" type class_ref 903046 // Tokens
-	multiplicity "*"
+	  param in name "msg" type class_ref 902918 // Token
+	multiplicity "1"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} && ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} && ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -5666,21 +5582,6 @@ ${inlines}
 	
 	
 	
-      end
-
-      operation 1357958 "endOfEpisode"
-	cpp_virtual public explicit_return_type "bool"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-	comment "handle() triggers this event after each episode"
       end
 
       operation 1093254 "era"
@@ -5849,6 +5750,14 @@ ${inlines}
 	
 	
 	
+      end
+
+      classrelation 1335814 // <dependency>
+	relation 1325446 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1335814 // <dependency>
+	  b parent class_ref 1108486 // processing_error
       end
     end
 
@@ -6819,20 +6728,6 @@ ${inlines}
 	
       end
 
-      operation 1586950 "elapsed"
-	cpp_override public explicit_return_type "bool"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
       operation 1587078 "reset"
 	cpp_override public explicit_return_type "bool"
 	nparams 0
@@ -6881,7 +6776,7 @@ ${inlines}
 	  b parent class_ref 1087750 // PriceLevel
       end
 
-      operation 1587590 "endOfEpisode"
+      operation 1587590 "elapsed"
 	cpp_override public explicit_return_type "bool"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
@@ -6893,7 +6788,6 @@ ${inlines}
 	
 	
 	
-	comment "handle() triggers this event after each episode"
       end
 
       attribute 1008134 "buys_"
@@ -6959,6 +6853,79 @@ ${inlines}
     
     activitydiagramsettings
      end
+    class 1108486 "processing_error"
+      visibility public 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      class 1121670 "Message_SP"
+	visibility public stereotype "template_typedef"
+	nactuals 1
+	actual class class_ref 852614 // shared_ptr
+	  rank 0 value class_ref 245766 // Message
+	cpp_decl "${comment}${template}using ${name} = ${inherit};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 1334790 // <realization>
+	  relation 1324422 -_-|>
+	    stereotype "bind"
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 1334790 // <realization>
+	    b parent class_ref 852614 // shared_ptr
+	end
+      end
+
+      classrelation 1321734 // <generalisation>
+	relation 1311366 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 1321734 // <generalisation>
+	  b parent class_ref 1108614 // exception
+      end
+
+      operation 1632390 "processing_error"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "msg" type class_ref 1121670 // Message_SP
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} && ${p0}${v0}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} && ${p0}${)}${throw} : msg_{msg} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      attribute 1021446 "msg_"
+	private type class_ref 1121670 // Message_SP
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+    end
+
     classdiagram 287878 "Reconstructor"
       classdiagramsettings show_members_visibility yes member_max_width 0 end
       size A4
@@ -7021,22 +6988,6 @@ ${inlines}
 	MysqlColumn
       end
 
-      operation 575878 "process"
-	cpp_virtual cpp_final public explicit_return_type "bool"
-	nparams 1
-	  param in name "message" type class_ref 174214 // ptree
-	multiplicity "1"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
       operation 576006 "extract"
 	abstract cpp_virtual protected return_type class_ref 902918 // Token
 	multiplicity "1..*"
@@ -7044,6 +6995,24 @@ ${inlines}
 	  param in name "tree" type class_ref 174214 // ptree
 	multiplicity "1"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	
+	
+      end
+
+      operation 575878 "process"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "message" type class_ref 174214 // ptree
+	multiplicity "1"
+	nexceptions 1
+	  exception class_ref 1108486 // processing_error
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
+  ${body}}
 "
 	
 	
@@ -7266,6 +7235,7 @@ ${namespace_end}
 "
       cpp_src "${comment}
 #include <boost/log/trivial.hpp>
+#include \"../date.h\"
 ${includes}
 ${namespace_start}
 ${members}
@@ -7695,6 +7665,29 @@ ${members}
 ${namespace_end}"
       associated_elems
 	class_ref 1094406 // Dot
+      end
+    end
+
+    artifact 421126 "processing_error"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 1108486 // processing_error
       end
     end
   end

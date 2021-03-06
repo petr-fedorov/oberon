@@ -1,0 +1,219 @@
+format 224
+
+classinstance 128006 class_ref 441222 // TokenHandler
+  name ""   xyz 217 13 2005 life_line_z 2015
+classinstance 129158 class_ref 521478 // Era
+  name "ob1"   xyz 413 14 2005 life_line_z 2010
+classinstance 130182 class_ref 448390 // OrderEvent
+  name "ob2..N"   xyz 528 14 2005 life_line_z 2010
+classinstance 130950 class_ref 486278 // Reconstructor
+  name ""   xyz 51 12 0 life_line_z 2015
+classinstance 135686 class_ref 966278 // Reset
+  name "obN+1"   xyz 689 14 2005 life_line_z 2000
+fragment 135942 "ref"
+  refer sequencediagram_ref 545030 // Reconstructor process
+  xyzwh 282 194 2025 143 63
+end
+fragment 136070 "ref"
+  refer sequencediagram_ref 545030 // Reconstructor process
+  xyzwh 278 487 2010 143 63
+end
+fragment 137350 "ref"
+  refer sequencediagram_ref 545030 // Reconstructor process
+  xyzwh 288 685 2000 143 63
+end
+fragment 137606 "loop(2,N)"
+  xyzwh 24 280 2000 635 297
+end
+fragment 138118 "ref"
+  refer sequencediagram_ref 545158 // Handling of OrderEvent
+  xyzwh 286 363 2035 139 63
+end
+durationcanvas 131974 classinstance_ref 128006 // :TokenHandler
+  xyzwh 256 68 2015 11 389
+  overlappingdurationcanvas 133254
+    xyzwh 262 101 2020 11 69
+  end
+end
+durationcanvas 132742 classinstance_ref 129158 // ob1:Era
+  xyzwh 434 79 2010 11 112
+  overlappingdurationcanvas 137734
+    xyzwh 440 116 2020 11 35
+  end
+end
+durationcanvas 134406 classinstance_ref 130950 // :Reconstructor
+  xyzwh 90 318 2015 11 247
+end
+durationcanvas 134534 classinstance_ref 128006 // :TokenHandler
+  xyzwh 256 319 2015 11 246
+  overlappingdurationcanvas 135046
+    xyzwh 262 345 2020 11 110
+  end
+end
+durationcanvas 134790 classinstance_ref 130182 // ob2..N:OrderEvent
+  xyzwh 578 326 2015 11 153
+end
+durationcanvas 136198 classinstance_ref 130950 // :Reconstructor
+  xyzwh 90 603 2010 11 169
+end
+durationcanvas 136326 classinstance_ref 128006 // :TokenHandler
+  xyzwh 256 604 2010 11 166
+  overlappingdurationcanvas 136838
+    xyzwh 262 621 2020 11 42
+  end
+end
+durationcanvas 136582 classinstance_ref 135686 // obN+1:Reset
+  xyzwh 724 603 2010 11 83
+end
+durationcanvas 139654 classinstance_ref 130950 // :Reconstructor
+  xyzwh 90 821 2025 11 30
+end
+durationcanvas 141190 classinstance_ref 128006 // :TokenHandler
+  xyzwh 256 800 2025 11 126
+end
+durationcanvas 142342 classinstance_ref 130950 // :Reconstructor
+  xyzwh 90 61 2025 11 193
+end
+lostfoundmsgsupport 139782 xyz 38 823 2030
+lostfoundmsgsupport 142470 xyz 21 68 2030
+msg 132870 synchronous
+  from durationcanvas_ref 131974
+  to durationcanvas_ref 132742
+  yz 80 3010 msg operation_ref 642182 // "accept(in mh : TokenHandler [1]) : bool"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  args "*this"
+  label_xy 308 62
+msg 133382 synchronous
+  from durationcanvas_ref 132742
+  to durationcanvas_ref 133254
+  yz 101 2025 msg operation_ref 1093254 // "era() : bool"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  args "ob1"
+  label_xy 308 83
+msg 133510 return
+  from durationcanvas_ref 133254
+  to durationcanvas_ref 132742
+  yz 159 2030 explicitmsg "true"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 323 141
+msg 133638 return
+  from durationcanvas_ref 132742
+  to durationcanvas_ref 131974
+  yz 180 2015 explicitmsg "true"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 320 162
+msg 134662 synchronous
+  from durationcanvas_ref 134406
+  to durationcanvas_ref 134534
+  yz 319 2015 msg operation_ref 590214 // "handle(in episode : Tokens [*]) : bool [*]"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  args "ob2..N"
+  label_xy 151 301
+msg 134918 synchronous
+  from durationcanvas_ref 134534
+  to durationcanvas_ref 134790
+  yz 327 2020 msg operation_ref 1285510 // "accept(in mh : TokenHandler [1]) : bool"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  args "*this"
+  label_xy 400 309
+msg 135174 synchronous
+  from durationcanvas_ref 134790
+  to durationcanvas_ref 135046
+  yz 351 2025 msg operation_ref 721798 // "orderEvent() : bool"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  args "ob2..N"
+  label_xy 361 333
+msg 135302 return
+  from durationcanvas_ref 135046
+  to durationcanvas_ref 134790
+  yz 444 2030 explicitmsg "true"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 384 426
+msg 135430 return
+  from durationcanvas_ref 134790
+  to durationcanvas_ref 134534
+  yz 468 2025 explicitmsg "true"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 381 450
+msg 135558 return
+  from durationcanvas_ref 134534
+  to durationcanvas_ref 134406
+  yz 554 2030 explicitmsg "true"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 163 536
+msg 136454 synchronous
+  from durationcanvas_ref 136198
+  to durationcanvas_ref 136326
+  yz 605 2015 msg operation_ref 590214 // "handle(in episode : Tokens [*]) : bool [*]"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  args "obN+1"
+  label_xy 153 587
+msg 136710 synchronous
+  from durationcanvas_ref 136326
+  to durationcanvas_ref 136582
+  yz 604 2015 msg operation_ref 1384710 // "accept(in mh : TokenHandler [1]) : bool"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  args "*this"
+  label_xy 485 586
+msg 136966 synchronous
+  from durationcanvas_ref 136582
+  to durationcanvas_ref 136838
+  yz 629 2025 msg operation_ref 1385094 // "reset() : bool"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  args "obN+1"
+  label_xy 493 611
+msg 137094 return
+  from durationcanvas_ref 136838
+  to durationcanvas_ref 136582
+  yz 652 2025 explicitmsg "true"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 500 634
+msg 137222 return
+  from durationcanvas_ref 136582
+  to durationcanvas_ref 136326
+  yz 675 2015 explicitmsg "true"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 497 657
+msg 137478 return
+  from durationcanvas_ref 136326
+  to durationcanvas_ref 136198
+  yz 756 2015 explicitmsg "true"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 165 738
+msg 137862 synchronous
+  from durationcanvas_ref 133254
+  to durationcanvas_ref 137734
+  yz 120 3005 msg operation_ref 1277446 // "timestamp() : Message::Timestamp"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 324 102
+msg 137990 return
+  from durationcanvas_ref 137734
+  to durationcanvas_ref 133254
+  yz 140 3010 explicitmsg "aTimestamp"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 323 122
+msg 139910 found_synchronous
+  from lostfoundmsgsupport_ref 139782
+  to durationcanvas_ref 139654
+  yz 821 2030 unspecifiedmsg
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+msg 141574 synchronous
+  from durationcanvas_ref 139654
+  to durationcanvas_ref 141190
+  yz 836 2040 unspecifiedmsg
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+msg 142598 found_synchronous
+  from lostfoundmsgsupport_ref 142470
+  to durationcanvas_ref 142342
+  yz 66 2030 msg operation_ref 590214 // "handle(in episode : Tokens [*]) : bool [*]"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  args "ob1"
+  label_xy 28 48
+msg 142854 synchronous
+  from durationcanvas_ref 142342
+  to durationcanvas_ref 131974
+  yz 81 2030 msg operation_ref 590214 // "handle(in episode : Tokens [*]) : bool [*]"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  args "ob1"
+  label_xy 146 63
+end

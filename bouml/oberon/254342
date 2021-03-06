@@ -1,6 +1,6 @@
 format 224
-"File" // Application::Acquirer::File
-  revision 5
+"File" // App::Acquirer::File
+  revision 6
   modified_by 6 "petr"
   // class settings
   
@@ -145,7 +145,7 @@ ${inlines}
 
       class 1074438 "Reconstructor"
 	visibility public stereotype "typedef" base_type class_ref 174214 // ptree
-	cpp_decl "${comment}typedef std::function<bool(const ${type} &)> ${name};
+	cpp_decl "${comment}typedef std::function<void(const ${type} &)> ${name};
 "
 	java_decl ""
 	php_decl ""
@@ -175,6 +175,22 @@ ${inlines}
 	
 	
 	
+      end
+
+      classrelation 1335430 // <dependency>
+	relation 1325062 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1335430 // <dependency>
+	  b parent class_ref 486278 // Reconstructor
+      end
+
+      classrelation 1335942 // <dependency>
+	relation 1325574 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1335942 // <dependency>
+	  b parent class_ref 1108486 // processing_error
       end
     end
   end

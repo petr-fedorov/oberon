@@ -39,8 +39,8 @@ boost::asio::post(
       reset.put<std::string>("type", "reset");  // Coinbase
       reset.put<std::string>("event", "reset"); // Bitstamp
       try {
-        if (stm.d_->process(reset))
-          return;
+        stm.d_->process(reset);
+        return;
       } catch (...) {
       }
       stm.postEvent(&Receiver::failure);

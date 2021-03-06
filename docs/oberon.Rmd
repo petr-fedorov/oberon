@@ -95,14 +95,7 @@ It should be clear from the above that substantial effort is required to reconst
 
 # Methods
 
-## Overview
-
-Figure \@ref(fig:oberon-overview) shows UML2 Activity Diagram [@cook_omg_2017] of an application which implements the reconstruction algorithm.
-
-
-```{r oberon-overview, echo=FALSE, fig.cap="`Receive messages` activity collects avaialbe information in an exchange-specific way and pass the information in the form of [Boost.Property Tree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) to `Reconstruct Order Book` activity that, as its name implies, reconstructs order book events in an *universal* format described herein. Note that both activities run concurrently.", fig.align="center"}
-knitr::include_graphics("S.1 Standalone application.png", dpi=80)
-```
+## Object of reconstruction
 
 Surprisingly, an order, an order event, a limit order book,  the operations of a continuous double auction are rather complicated things if one attempts to define them rigorously. Consider, for example,  a definition given in the recent book [@bouchaud_trades_2018]:
 
@@ -129,9 +122,6 @@ The above definition and description are incomplete:
 * It is not stated what will happen if $v_x \leq v_y$, etc. 
 
 Below we propose stricter definitions that address these and the other similar issues while staying as close as possible to [@bouchaud_trades_2018].
-
-
-## Definitions
 
 ### Order as a function
 
@@ -449,40 +439,86 @@ It can bee seen from figure \@ref(fig:example-order-book) that:
 
 ## Reconstruction process{#reconstruction-process}
 
-Figure \@ref(fig:reconstruction-activity) shows UML2 Activity Diagram of `R.1 Reconstruct Order Book` activity which details `Reconstruct Order Book` activity on figure \@ref(fig:oberon-overview).
+### Architecture
+
+Figure \@ref(fig:oberon-overview) shows UML2 Activity Diagram [@cook_omg_2017] of `Standalone application - capture` activity that represents an implementation of `oberon capture` command. The activity node `Reconstruct Order Book` performs a reconstruction of order book events from exchange-specific messages that are passed by node `Receive messages`.
 
 
-```{r reconstruction-activity, echo=FALSE, fig.cap="UML2 Activity Diagram  of Reconstruction algorithm", fig.align="center"}
-knitr::include_graphics("R.1 Reconstruct Order Book.png", dpi=80)
+```{r oberon-overview, echo=FALSE, fig.cap="`Receive messages` activity node collects avaialbe information in an exchange-specific format and pass the information in the form of [Boost.Property Tree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) to `Reconstruct Order Book` activity node that, as its name implies, reconstructs order book events in an *universal* format described herein. Note that both activity nodes run concurrently.", fig.align="left"}
+knitr::include_graphics("Standalone application - capture.png", dpi=80)
 ```
 
-The activity `R.2 Extract` takes a [Boost.PropertyTree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) container with an exchange-specific data and produces one or more internal exchange-independent messages. Every produced message belongs to one of the 'green' classes shown on figure \@ref(fig:message-hierarchy). 
+Figure \@ref(fig:reconstruct-order-book) shows UML2 Activity Diagram of `Reconstruct Order Book` activity which is called by the activity node with the same name on figure \@ref(fig:oberon-overview).
 
 
-```{r message-hierarchy, echo=FALSE, fig.cap="UML2 Class Diagram of internal exchange-independent message types used by Order Book Reconstruction algorithm", fig.align="center"}
-knitr::include_graphics("Message Hierarchy.png", dpi=80)
+```{r reconstruct-order-book, echo=FALSE, fig.cap="`Reconstruct Order Book` activity is implemented by an indefinite loop that invokes `Process message` activity every time new instance is placed on its input pin `ptree`. The loop terminates if `Process message` throws `processing_error` exception.", fig.align="left"}
+knitr::include_graphics("Reconstruct Order Book.png", dpi=80)
+```
+The activity node `Process message` on figure \@ref(fig:reconstruct-order-book) is Call Action. It calls method `Reconstructor::process()` on `target` instance. UML2 Sequence diagram on figure \@ref(fig:sd-reconstructor-process) shows a "happy path" trace of the method.
+
+```{r sd-reconstructor-process, echo=FALSE, fig.cap="`Reconstructor::process()` first calls virtual abstract `extract()` method to create an instance of a class derived from `Message`. The `extract()` method is abstract and overriden by an exchange-specific implementation class, derived from `Reconstructor`. The returned instance is passed to a chain of `TokenHandler`'s through the call of `handle()`", fig.align="left"}
+knitr::include_graphics("sd Reconstructor - process.png", dpi=80)
 ```
 
-These messages are then taken by the activity `R.3 Cleanse` that performs so called *data cleansing*. According to [@rahm_data_2000]:
+The virtual method `Reconstructor::extract()` takes a [Boost.PropertyTree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) container with an exchange-specific data and creates an instance of one of internal exchange-independent message class shown in green on figure \@ref(fig:message-hierarchy-process). The message is returned in `Token` container.
+
+```{r message-hierarchy-process, echo=FALSE, fig.cap="\"Message\" hierarchy of classes used in implementation of \"Process message\" activity.", fig.align="center"}
+knitr::include_graphics("Message hierarchy for process.png", dpi=80)
+```
+
+As shown on figure \@ref(fig:reconstructor-hierarchy-process) `Reconstructor::extract()` method is *abstract*, so it is overriden by exchange-specific versions that able to process their respective containers properly. 
+
+```{r reconstructor-hierarchy-process, echo=FALSE, fig.cap="\"Reconstructor\" hierarchy of classes used in implementation of \"Process message\" activity.", fig.align="center"}
+knitr::include_graphics("Reconstructor hierarchy for process.png", dpi=80)
+```
+
+`Token` that carries an instance of a class derived from `Message` is then taken by the `TokenHandle::handle()` (`Reconstructor` is derived from `TokenHandler`) that is the first step of so called *data cleansing*. According to [@rahm_data_2000]:
 
 > *Data cleaning*, also called *data cleansing* or *scrubbing*, deals with detecting and removing errors and inconsistencies from data in order to improve the quality of data.
 
-UML2 Activity Diagram [@cook_omg_2017] of `R.3 Cleanse` is shown on figure \@ref(fig:cleanse-activity).
+Data cleansing is implemented using [Chain of Responsibility](https://en.wikipedia.org/wiki/Chain-of-responsibility_pattern) pattern. Each `TokenHandler` accepts, as a constructor parameter, the next `TokenHandler` which will receive messages as soon as `TokenHandler` being constructed has handled them.
 
-```{r  cleanse-activity, echo=FALSE,fig.cap="UML2 Activity Diagram  of cleansing", fig.align="center"}
-knitr::include_graphics("R.3 Cleanse.png", dpi=80)
+UML2 Sequence Diagram of `TokenHandler::handle()` is shown on figure \@ref(fig:sd-tokenhandler-handle). The number of `TokenHandler`s involved and their kinds depend on an exchange and described in details in their respective sections later.
+
+
+```{r sd-tokenhandler-handle, echo=FALSE, fig.cap="UML2 Sequence diagram showing a \"happy path\" trace of TokenHandler::handle() method", fig.align="center"}
+knitr::include_graphics("sd TokenHandler - handle.png", dpi=80)
 ```
 
-The output of `R.3 Cleanse` is a set of zero or more messages each of which is then converted into zero or one event as defined by \@ref(def:order-event) which together compose Limit Order Book as defined by \@ref(def:lob). These events are persisted by `R.4 Save` activity.
+Handling of messages by `TokenHandler` is denoted by interaction use `Message - accept` on figure \@ref(fig:sd-tokenhandler-handle). The result of handling is a set of zero or more messages that are stored in `output_` member variable that is an instance of `Tokens` class shown on figure \@ref(fig:tokens).
 
-`R.3 Cleanse` will not produce output for a message when subsequent messages are required for cleansing. In this case the message will be kept within `R.3 Cleanse` between runs until enough subsequent messages are received. Then all kept and cleansed messages are returned together.
+```{r tokens, echo=FALSE, fig.cap="Definition of \"Tokens\".", fig.align="center"}
+knitr::include_graphics("Tokens.png", dpi=80)
+```
+`TokenHandler` will not produce output for a message when subsequent messages are required for handling(cleansing). In this case the message will be kept within this particular `TokenHandler` instance between runs of `Reconstructor::process()` until enough subsequent messages are received. Then all kept and cleansed messages are returned together, saved into `output_` variable and passed one by one in FIFO order to the `this.next_` `TokenHandler`. After that `output_` variables is cleared, so if there is no next `TokenHandler` the messages are deleted after being accepted.
 
-### Extract
+Handling of meessage by `TokenHandler` is implemented using [Visitor](https://en.wikipedia.org/wiki/Visitor_pattern) pattern as shown by UML2 Sequence diagram on figure \@ref(fig:sd-message-accept).
+
+```{r sd-message-accept, echo=FALSE, fig.cap="UML2 Sequence diagram showing various alternatives of traces for Message::accept() method", fig.align="center"}
+knitr::include_graphics("sd Message - accept.png", dpi=80)
+```
+
+### Coinbase data cleansing
+
+  * Coinbase::Syncrhonizer
+  
+  * SizeDeducer
+  * EventCounter
+  * File
+
+### Bitstamp data cleansing
+
+  * Bitstamp::Synchronizer
+  * Bitstamp::TimeOrderEnforcer
+  * Bitstamp::Deduplicator
+  
+  * SizeDeducer
+  * EventCounter
+  * File
+
+### Bitfinex data cleansing
 
 TBD
-
-### Cleanse
-
 
 
 ```{r  redundant-base, echo=FALSE, fig.cap="States of an order while it being processed by an exchange", fig.align="center"}

@@ -18,13 +18,6 @@ class Wait_State
 static_cast<OrderEvent*>(stm.received_.get())->deleted(true);
 stm.output_.push_back(std::move(stm.received_));
   }
-!!!1372806.cpp!!!	elapsed(inout stm : SizeDeducer) : void
-  {
-#ifdef VERBOSE_STATE_MACHINE
-   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition elapsed";
-#endif
-stm.output_.push_back(std::move(stm.received_));
-  }
 !!!1373318.cpp!!!	filled(inout stm : SizeDeducer) : void
   {
     for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);

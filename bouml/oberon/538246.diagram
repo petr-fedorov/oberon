@@ -1,0 +1,125 @@
+format 224
+
+classinstance 128006 class_ref 486278 // Reconstructor
+  name ""   xyz 286 36 2010 life_line_z 2000
+classinstance 128134 class_ref 441222 // TokenHandler
+  name ""   xyz 558 35 2010 life_line_z 2000
+classinstance 128262 class_ref 441222 // TokenHandler
+  name "next"   xyz 678 35 2010 life_line_z 2000
+classinstance 128390 class_ref 712966 // Receiver
+  name ""   xyz 94 36 2010 life_line_z 2000
+classinstance 128902 class_ref 245766 // Message
+  name "aMessage"   xyz 431 33 2010 life_line_z 2000
+fragment 132358 "alt"
+  xyzwh 13 69 1986 783 490
+  separator 3711
+end
+fragment 135814 "alt"
+  xyzwh 57 308 2010 703 233
+  separator 4435
+end
+textcanvas 135942 "[ next is null || !current.result]"
+  xyzwh 143 319 2015 153 18
+textcanvas 136070 "[next is not null && current.result]"
+  xyzwh 142 438 2015 176 18
+fragment 136198 "sd Process message"
+  xyzwh 3 1 1985 830 578
+end
+durationcanvas 128518 classinstance_ref 128390 // :Receiver
+  xyzwh 120 125 2000 11 395
+end
+durationcanvas 128646 classinstance_ref 128006 // :Reconstructor
+  xyzwh 325 123 2000 11 397
+  overlappingdurationcanvas 136582
+    xyzwh 331 131 2010 11 42
+  end
+end
+durationcanvas 132742 classinstance_ref 128902 // aMessage:Message
+  xyzwh 484 130 2010 11 106
+end
+durationcanvas 133254 classinstance_ref 128134 // :TokenHandler
+  xyzwh 597 335 2000 11 197
+end
+durationcanvas 135174 classinstance_ref 128262 // next:TokenHandler
+  xyzwh 728 457 2015 11 32
+end
+msg 128774 synchronous
+  from durationcanvas_ref 128518
+  to durationcanvas_ref 128646
+  yz 138 2015 msg operation_ref 575878 // "process(in message : ptree [1]) : bool"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  args "aPropertyTree"
+  label_xy 133 120
+msg 132870 synchronous
+  from durationcanvas_ref 128646
+  to durationcanvas_ref 132742
+  yz 196 2015 msg operation_ref 1277446 // "timestamp() : Message::Timestamp"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 357 178
+msg 132998 return
+  from durationcanvas_ref 132742
+  to durationcanvas_ref 128646
+  yz 224 2020 explicitmsg "aTimestamp"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 378 206
+msg 133126 return
+  from durationcanvas_ref 128646
+  to durationcanvas_ref 128518
+  yz 234 2020 explicitmsg "true"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 217 216
+msg 133382 synchronous
+  from durationcanvas_ref 128646
+  to durationcanvas_ref 133254
+  yz 338 2030 msg operation_ref 590214 // "handle(in episode : Tokens [*]) : bool [*]"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  args "episode"
+  label_xy 405 320
+msg 134918 return
+  from durationcanvas_ref 133254
+  to durationcanvas_ref 128646
+  yz 371 2020 explicitmsg "current.result"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 437 353
+msg 135046 return
+  from durationcanvas_ref 128646
+  to durationcanvas_ref 128518
+  yz 392 2020 explicitmsg "current.result"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 192 374
+msg 135302 synchronous
+  from durationcanvas_ref 133254
+  to durationcanvas_ref 135174
+  yz 457 2020 msg operation_ref 590214 // "handle(in episode : Tokens [*]) : bool [*]"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  args "output"
+  label_xy 638 439
+msg 135430 return
+  from durationcanvas_ref 135174
+  to durationcanvas_ref 133254
+  yz 478 2020 explicitmsg "next.result"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 633 460
+msg 135558 return
+  from durationcanvas_ref 133254
+  to durationcanvas_ref 128646
+  yz 491 2020 explicitmsg "next.result"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 439 473
+msg 135686 return
+  from durationcanvas_ref 128646
+  to durationcanvas_ref 128518
+  yz 509 2020 explicitmsg "next.result"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 198 491
+reflexivemsg 136710 synchronous
+  to durationcanvas_ref 136582
+  yz 131 2015 msg operation_ref 576006 // "extract(in tree : ptree [1]) : Token [1..*]"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 329 113
+selfreflexivemsg 136966
+  to durationcanvas_ref 136582
+  yz 165 2020 explicitmsg "aMessage"
+  show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
+  label_xy 365 160
+end

@@ -1,58 +1,33 @@
 class TokenHandler
-!!!590214.cpp!!!	handle(in episode : Tokens [*]) : bool [*]
-if (!episode.empty())
-  episode_timestamp_ = episode.front()->timestamp();
-else
-  episode_timestamp_ = Message::Timestamp{};
-for (auto &msg : episode) {
-  assert( msg->timestamp() == episode_timestamp_);
-  if (msg) {
-    if (is_handles_deleted_ || !msg->deleted()) {
-      received_ = std::move(msg);
-      auto str = received_->toString();
-      if (!received_->accept(this)) {
-        BOOST_LOG_TRIVIAL(error)
-            << handler_name_ << " not accepted " << str;
-        return false;
-      }
+!!!590214.cpp!!!	handle(in msg : Token [1]) : void [*]
+assert(msg);
 
-    } else
-      output_.push_back(std::move(msg));
-  }
-}
-if (endOfEpisode()) {
-  bool result = true;
-  if (next_) {
-    if (!output_.empty()) {
-      auto start = output_.begin();
-      auto finish = output_.begin();
-      do {
-        for (; finish != output_.end() &&
-               (*start)->timestamp() == (*finish)->timestamp();
-             ++finish)
-          ;
-        if (start == output_.begin() && finish == output_.end()) {
-          if (!next_->handle(std::move(output_)))
-            return false;
-        } else {
-          Tokens episode;
-          std::move(start, finish, std::back_inserter(episode));
-          if (!next_->handle(std::move(episode)))
-            return false;
-        }
-        start = finish;
-      } while (start != output_.end());
+if (is_handles_deleted_ || !msg->deleted()) {
+  received_ = std::move(msg);
+  if (received_->timestamp() > exchange_time_) {
+    exchange_time_ = received_->timestamp();
+    if (!elapsed()) {
+      assert(received_);
+      BOOST_LOG_TRIVIAL(error)
+          << handler_name_ << " not accepted elapsed() at "
+          << date::format("%FT%TZ", received_->timestamp());
+      throw processing_error(std::move(received_));
     }
   }
-  output_.clear();
-  return result;
-} else {
-  BOOST_LOG_TRIVIAL(error) << handler_name_
-                           << "  endOfEpisode() returned false";
-  return false;
+  if (!received_->accept(this)) {
+    assert(received_); 
+    BOOST_LOG_TRIVIAL(error)
+        << handler_name_ << " not accepted " << received_->toString();
+    throw processing_error(std::move(received_));
+  }
+} else
+  output_.push_back(std::move(msg));
+if (next_) {
+  for (auto &out : output_)
+    next_->handle(std::move(out));
 }
-!!!1357958.cpp!!!	endOfEpisode() : bool
-return true;
+output_.clear();
+return;
 !!!1093254.cpp!!!	era() : bool
 return message();
 !!!692230.cpp!!!	create() : bool
@@ -61,7 +36,7 @@ return true;
 output_.push_back(std::move(received_));
 return true;
 !!!483590.cpp!!!	elapsed() : bool
-return message();
+return true;
 !!!1385094.cpp!!!	reset() : bool
 return message();
 !!!721798.cpp!!!	orderEvent() : bool

@@ -3,17 +3,6 @@ class SizeDeducer
   _current_state = 0;
 !!!1370630.cpp!!!	SizeDeducer(in next : TokenHandler::TokenHandler_SP)
   _current_state = 0;
-!!!687494.cpp!!!	elapsed() : bool
-  if (_current_state != 0) {
- #ifdef VERBOSE_STATE_MACHINE
-SizeDeducer & stm =*this;
- #endif
-#ifdef VERBOSE_STATE_MACHINE
-   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger elapsed";
-#endif
-_current_state->elapsed(*this);
-  }
-  return (_current_state != 0);
 !!!688262.cpp!!!	filled() : bool
   if (_current_state != 0) {
  #ifdef VERBOSE_STATE_MACHINE
