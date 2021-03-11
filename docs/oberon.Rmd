@@ -95,7 +95,6 @@ It should be clear from the above that substantial effort is required to reconst
 
 # Methods
 
-## Object of reconstruction
 
 Surprisingly, an order, an order event, a limit order book,  the operations of a continuous double auction are rather complicated things if one attempts to define them rigorously. Consider, for example,  a definition given in the recent book [@bouchaud_trades_2018]:
 
@@ -121,33 +120,36 @@ The above definition and description are incomplete:
 
 * It is not stated what will happen if $v_x \leq v_y$, etc. 
 
-Below we propose stricter definitions that address these and the other similar issues while staying as close as possible to [@bouchaud_trades_2018].
+Below we propose stricter definitions that address these and the other similar issues while staying as close as possible to [@bouchaud_trades_2018]. Afterwards we describe the reconstruction process.
 
-### Order as a function
+## Order
 
 
 ```{definition Order Function, name="Order Function", label="order" }
 
-A function $o : \mathbb{R}^2_{\geq 0} \mapsto \mathbb{R}$ is called a limit *order function* if it can be written as 
+A function $o : \mathbb{R} \times \mathbb{R}_{> 0} \mapsto \mathbb{R}$ is called a limit *order function* if it can be written as 
 $$ 
-  o(p,t) = \sum_{k=1}^K o_k \mathbf{1}_{P_k \times T_k}(p,t)
+  o(p,t) = \sum_{k=1}^K v_k \mathbf{1}_{P_k \times T_k}(p,t)
 $$
 where  
 
-   a. $\mathcal{T} = \{T_k\}_{k=1}^{K}$ is a set of proper intervals of $\mathbb{R}_{\geq 0}$ with endpoints $t_{k,1} \in \mathbb{R}_{\geq 0}$, $t_{k,2} \in \mathbb{R}_{\geq 0} \cup \{+\infty\}$, such that:
-      i. $t_{k,1} < t_{k,2}$
-      i. $t_{k,1},t_{k,2} \in \{n \tau : n \in \mathbb{N}\}$ where $\tau \in \mathbb{R}_{>0}$ is a constant called *sample interval* 
-      i. $\forall k_1 \neq k_2 : T_{k_1} \cap T_{k_2} = \emptyset$, 
+   a. $\mathcal{T} = \{T_k\}_{k=1}^{K}$ is a partition of left-open finite or right-unbounded interval of $\mathbb{R}$ into intervals with endpoints $t_{k,1} \in \mathbb{R}$, $t_{k,2} \in \mathbb{R} \cup \{+\infty\}$ such that:
+       1. $\forall k \leq K : t_{k,1},t_{k,2} \in \{n \tau : n \in \mathbb{Z}\}$, where $\tau \in \mathbb{R}_{>0}$ is a constant called *sampling interval* 
+       2. $\forall k < K : t_{k,1} \leq t_{k+1,1} \land t_{k,2} < t_{k+1,2}$
  
-a. $\mathcal{P} = \{P_k\}_{k=1}^{K}$ is a set of degenerate intervals $\{p_k\}$ with endpoints $p_k \in \mathbb{R}_{\geq 0}$, such that $\forall k: p_k \in \{ n \pi : n \in \mathbb{N} \}$ where $\pi \in \mathbb{R}_{>0}$ is a constant called *quote increment* or *tick size*,
  
- a. $\mathbf{1}_{P_k \times T_k}(\cdot,\cdot)$ is an indicator function of the set ${P_k \times T_k}$: 
+ a. $\mathcal{P} = \{P_k\}_{k=1}^{K}$ is a set of degenerate intervals $P_k = \{p_k\}$ with endpoints $p_k \in \mathbb{R}_{> 0}$, such that:
+     1. $\forall k: p_k \in \{ n \pi : n \in \mathbb{N} \}$ where $\pi \in \mathbb{R}_{>0}$ is a constant called *quote increment* or *tick size*,
+     2. $\forall k < K$ if $t_{k,2} \not \in T_k$ then $p_{k+1} = p_k$
+     
+ a. $\mathcal{V} = \{v_k \}_{k=1}^K$ is a set of constants $v_k \in \mathbb{R}_{\neq 0}$ called *order volumes* such that:
+     1. $\forall k$ either $v_k \in \mathbb{R}_{> 0}$ (buy order) or $v_k \in \mathbb{R}_{< 0}$ (sell order),
+     2. $|v_k| \in \{ n \phi : n \in \mathbb{N}\}$  where $\phi \in \mathbb{R}_{>0}$ is a constant called *base increment* or *lot size*, 
+ 
+ a. $\mathbf{1}_{P_k \times T_k}(p, t)$ is an indicator function of the set ${P_k \times T_k}$: 
 $$
 \mathbf{1}_{P_k \times T_k}(p,t) = \begin{cases} 1, & (p,t) \in P_k \times T_k \\ 0, & (p,t) \not \in P_k \times T_k  \end{cases}
 $$
- a. $o_k \in \mathbb{R}$ are constants called *order volume* such that either $o_k \in \mathbb{R}_{\geq 0}$ (buy order) or $o_k \in \mathbb{R}_{\leq 0}$ (sell order) for all $k$ and $|o_k| \in \{ n \phi : n \in \mathbb{N}\}$ where $\phi \in \mathbb{R}_{>0}$ is a constant called *base increment* or *lot size*, 
- a. $\forall p$ the function of time $o_p(t) \equiv o(p,t)$ is either càdlàg or càglàd at each point of discontinuity.
- 
 ```
 
 The sample interval $\tau$, quote increment $\pi$ and base increment $\phi$ are collectively called *resolution parameters*.
@@ -174,6 +176,7 @@ Suppose a volume function $v(t)$ as defined by \@ref(def:volume-function) is giv
 
 ```
 
+$f_{v}(t) \neq 0$ implies that there is a right-open interval $T_k$ such that its right endpoint equals to $t$. 
 
 ```{definition Amended Volume, name="Amended Volume", label=amended-volume}
 Suppose a volume function $v(t)$ as defined by \@ref(def:volume-function) is given. The function 
@@ -183,100 +186,110 @@ $$ is called an *amended* volume at time $t$.
 
 ```
 
-
-Note that we follow [@bouchaud_trades_2018] while modelling order amendments and, in particular, order placement, as càglàd (continue à gauche, limite à droite) process:
+It follows from definition \@ref(def:order) that $T_1$ is left-open, so $a_v(t_{1,1}) = v_1 \neq 0$. This is the only place where we follow [@bouchaud_trades_2018] by modelling order placement as càglàd (continue à gauche, limite à droite) process:
 
 > ... we will consider the evolution of an LOB $\mathcal{L}(t)$ as a so-called *càglàd process (continu à gauche, limite à droite)*. Informally, this means that when a new order $x$ is submitted at time $t_x$ , we regard it to be present in the LOB immediately after its arrival, but not immediately upon its arrival.
 
-In other words, definition \@ref(def:amended-volume) means that when order $v$ is cancelled at time $t$, we regard the cancellation visible in the LOB immediately after its arrival, but not immediately upon its arrival. 
+Then $a_v(t) \neq 0$ at some point $t_{1,1} < t < t_{K,2}$ implies that there is a left-open interval $T_k$ such that its left endpoint equals to $t$.
 
-Trades are modeled as *càdlàg (continue à droite, limite à gauche)* occurrences so they are visible immediately upon arrival. If an order is fully executed upon arrival, it will never be shown in order book.
-
-The consequence of the above is that $v(t)$ can be interpreted as a amount available in order book for trade at time $t$ as it should.
-
-### Order as a table
-
-**To be updated**
+Finally $a_{v}(t_{K,2}) \neq 0$ implies that $T_K$ is a right-closed, possibly degenerate, interval.
 
 An order can be conveniently represented in the form of a order table defined by \@ref(def:order-table).
 
-
 ```{definition Order Event, name="Order Event", label=order-event}
 
-An *order event* is a tuple $(i, n, t^i_n,s^i_n, p^i_n, v^i_n,f^i_n)$ where
+An *order event* is a tuple $(t,s,p,v,m)$ where
 
-a. $i \in \mathbb{N}$ is an *unique order identification* of the order,
-a. $n \in \{1, \ldots, N^i\}$ is an *order event number*, 
-b. $t^i_n \in \mathbb{R}_{>0}$ is an *event timestamp*
-b. $s^i_n \in \{0, 1\}$ is the *state* of the order after the event; $s^i_n = 1$ means *Active*, $s^i_n = 0$ means that order is done (finished) i.e. not active,
-b. $p_n^i \in \mathbb{R}_{>0}$ is the *order price*,
-b. $v_n^i \in \mathbb{R}$ is the *order volume*,
-b. $f^i_n \in \mathbb{Z}_{\geq 0}$ is a *trade identification number*; $f^i_n > 0$ indicates that the event is originated by a trade. $f^i_n = 0$ means that the event is not originated by a trade.
+a. $t \in \mathbb{R}$ is an *event timestamp*
+b. $s \in \{0, 1\}$ is the *state* of the order after the event; $s = 1$ means the order is active; $s = 0$ means that order is done (finished) i.e. removed from an order book,
+b. $p \in \mathbb{R}_{>0}$ is the *order price*,
+b. $v \in \mathbb{R}$ is the *order volume*,
+b. $m \in \{0,1\}$ is a *match indicator*; $m =1$ means that the order has been *matched* with another one and a trade has occurred between them so the event has been originated by the trade; $m = 0$ means that the event is an amendment and has not been originated by a trade.
 ```
-
 
 
 ```{definition Order Table, name="Order Table", label=order-table}
+Suppose an order function $o(p,t)$ as defined by \@ref(def:order) is given. A set $$\{(t_k',s_k',p_k',v_k', m_k')\}_k$$ of $K$ or $K+1$ order events 
 
-An *order table* is a set of *order events* as defined by \@ref(def:order-event) such that
+  a. $\forall k \in \{1, \ldots, K\}$ $k$'s order event is defined as follows:
+      1. $t_k' = t_{k,1}, s_k' = 1, p_k' = p_k, v_k' = v_k$,
+      2. if $t_{k,1} \in T_k$ then $m_k' = 1$, otherwise $m_k' = 0$,
+  a. if $T_K$ is a finite interval, then $K+1$'s order event is defined as follows:
+  
+      1. $t_{K+1}' = t_{K,2}, s_{K+1}' = 0, p_{K+1}'=p_K$,
+      2. if $t_{K,2} \not \in T_K$ then $m_{K+1} = 1$,$v_{K+1}' = 0$;  otherwise $m_{K+1}' = 0$, $v_{K+1}' = v_k$ 
+             
+is called *an order table*. The index $k$ is called *an event ordinal number*.
 
-b. $\forall i, \forall n: t^i_n < t^i_{n+1}$, 
-b. $\forall i : s^i_1 = 1$ and $\forall n \in \{2, \ldots, N^i\} : s^i_n = 0 \implies s^i_{n-1} = 1$,
-b. $\forall i$ and $\forall n \in \{2, \ldots, N^i\} : f^i_n = 1 \implies p^i_n = p^i_{n-1} \land |v^i_n| < |v^i_{n-1}|$,
-b. $\forall i, \forall n_1, n_2: \text{sgn}(v_{n_1}^i) = \text{sgn}(v_{n_2}^i)$,
 ```
-
 
 
 
 ```{theorem Order Table Equivalence,label=equivalence}
-There is one-to-one correspondance between orders as defined by \@ref(def:order) and order tables as defined by \@ref(def:order-table).
+An order function \@ref(def:order) can be unambiguously restored from its order table \@ref(def:order-table).
+```
+
+```{proof}
+Suppose the order table $\{(t_k',s_k',p_k',v_k', m_k')\}_{k=1}^{R}$ is given. To restore its order function as defined by \@ref(def:order) we need to restore $\mathcal{T}$, $\mathcal{P}$ and $\mathcal{V}$ sets.
+
+$\mathcal{T}$ is defined as follows:
+
+ a. For all $1 \leq k < R$ the interval $T_k$ has left endpoint $t_k'$ and right endpoint $t_{k+1}'$ and is:
+    * a left-open if $m_k'=0$ and left-closed if $m_k'=1$
+    * a right-open if $m_{k+1}'=1$ and right-closed if $m_{k+1}'=0$
+    
+ a. If $s_R' = 1$ then the interval $T_R$ is added to $\mathcal{T}$ which is either $(t_R', +\infty)$ if $m_R'=0$ or $[t_{R}', +\infty)$ if $m_R'=1$.
+
+Then $\mathcal{P} = \{ \{p_k'\}\}_{k=1}^{|\mathcal{T}|}$ and $\mathcal{V} = \{ v_k'\}_{k=1}^{|\mathcal{T}|}$
 
 ```
 
-TBD - more constraints to be added to the definition of Order Table. Otherwise the theorem can't be proved.
-
-### Limit Order Book (LOB)
+## Limit Order Book (LOB)
 
 Typically the term [order book](https://www.investopedia.com/terms/o/order-book.asp) refers to an electronic list of buy and sell orders for a specific security or financial instrument organized by price level. An order book lists the number of shares being bid on or offered at each price point, or market depth. Order books are used by almost every exchange to list the orders for different securities. 
 
 
-```{definition Order Book, name="Order Book", label=order-book}
-A set of orders with common resolution parameters $\tau$, $\pi$ and $\phi$ $$\mathcal{O} = \{o^i(\cdot)\}_i$$ where $o^i(\cdot)$ is defined by \@ref(def:order) is called an *order book*. 
+```{definition Order Set, name="Order Set", label=order-set}
+A set of orders with common resolution parameters $\tau$, $\pi$ and $\phi$ $$\mathcal{O} = \{o^i(\cdot, \cdot)\}_i$$ where $o^i(\cdot, \cdot)$ is defined by \@ref(def:order) is called an *order set*.
+```
 
-A (possibly empty) subset $\mathcal{B} =\{o^b(\cdot)\}_{v^b(\cdot) \geq 0} \subset \mathcal{O}$ of buy orders is called *bids*.  A (possibly empty) subset of *bids* $\mathcal{B}(t) =\{o^b(\cdot)\}_{v^b(\cdot) \geq 0 \land p^b(t) > 0} \subset \mathcal{B}$ of buy orders is called *bids* at time $t$.
 
-A (possibly empty) subset $\mathcal{A} =\{o^a(\cdot)\}_{v^a(\cdot) \leq 0} \subset \mathcal{O}$ of sell orders is called *asks*. A (possibly empty) subset of *asks* $\mathcal{A}(t) =\{o^a(\cdot)\}_{v^a(\cdot) \leq 0 \land p^a(t) > 0} \subset \mathcal{A}$ of buy orders is called *asks* at time $t$.
+```{definition Bids, name="Bids", label=bids}
+Suppose an order set $\mathcal{O}$ as defined by \@ref(def:order-set) is given. A (possibly empty) subset $\mathcal{B} =\{o^b(\cdot, \cdot)\}_{v^b(\cdot) \geq 0} \subset \mathcal{O}$ of buy orders is called *bids*.  A (possibly empty) subset of *bids* $\mathcal{B}(t) =\{o^b(\cdot,\cdot)\}_{v^b(t) \geq 0 \land p^b(t) > 0} \subset \mathcal{B}$ of buy orders is called *bids* at time $t$.
+```
+
+```{definition Asks, name="Asks", label=asks}
+Suppose an order set $\mathcal{O}$ as defined by \@ref(def:order-set) is given. A (possibly empty) subset $\mathcal{A} =\{o^a(\cdot, \cdot)\}_{v^a(\cdot) \leq 0} \subset \mathcal{O}$ of sell orders is called *asks*. A (possibly empty) subset of *asks* $\mathcal{A}(t) =\{o^a(\cdot,\cdot)\}_{v^a(t) \leq 0 \land p^a(t) > 0} \subset \mathcal{A}$ of sell orders is called *asks* at time $t$.
 ```
 
 From definition of an order \@ref(def:order) follows that $\mathcal{O} = \mathcal{A} \cup \mathcal{B}$ and $\mathcal{A} \cap \mathcal{B} = \emptyset$.
 
 
 ```{definition Best Bid Price, name="Best Bid Price", label=best-bid-price}
-Suppose an order book $\mathcal{O}$ is given.  The function $b(t)$ defined as:
+Suppose an order set $\mathcal{O}$ is given.  The function $b(t)$ defined as:
   $$
-  b_{\mathcal{O}}(t) = \begin{cases} \max_{o^b(\cdot) \in \mathcal{B}(t)} p^b(t), & \text{ if } \mathcal{B}(t) \neq \emptyset \\0, & \text{ otherwise }  \end{cases}
+  b_{\mathcal{O}}(t) = \begin{cases} \max_{o^b(\cdot,\cdot) \in \mathcal{B}(t)} p^b(t), & \text{ if } \mathcal{B}(t) \neq \emptyset \\0, & \text{ otherwise }  \end{cases}
   $$ is called *best bid price*.
 ```
 
 
 ```{definition Best Ask Price, name="Best Ask Price", label=best-ask-price}
-Suppose an order book $\mathcal{O}$ is given. The function $a(t)$ defined as:
+Suppose an order set $\mathcal{O}$ is given. The function $a(t)$ defined as:
   $$
-  a_{\mathcal{O}}(t) = \begin{cases} \min_{o^a(\cdot) \in \mathcal{A}(t)} p^a(t) & \text{ if } \mathcal{A}(t) \neq \emptyset \\ +\infty, & \text{ otherwise } \end{cases}
+  a_{\mathcal{O}}(t) = \begin{cases} \min_{o^a(\cdot,\cdot) \in \mathcal{A}(t)} p^a(t) & \text{ if } \mathcal{A}(t) \neq \emptyset \\ +\infty, & \text{ otherwise } \end{cases}
   $$ is called *best ask price*
 ```
 
 
 ```{definition Spread, name="Spread", label=spread}
-Suppose an order book $\mathcal{O}$ is given and $a_{\mathcal{O}}(t)$ and $b_{\mathcal{O}}(t)$ are its best ask price and best bid price functions as defined by \@ref(def:best-ask-price) and \@ref(def:best-bid-price) respectively. Then the function $$
+Suppose an order set $\mathcal{O}$ is given and $a_{\mathcal{O}}(t)$ and $b_{\mathcal{O}}(t)$ are its best ask price and best bid price functions as defined by \@ref(def:best-ask-price) and \@ref(def:best-bid-price) respectively. Then the function $$
   s_{\mathcal{O}}(t) = a_{\mathcal{O}}(t) -  b_{\mathcal{O}}(t) 
   $$ is called *spread*.
 ```
 
 
 ```{definition Limit Order Book, name="Limit Order Book", label=lob}
-Suppose an order book $\mathcal{L}$ as defined by \@ref(def:order-book) is given.  Then $\mathcal{L}$ is called a *Limit Order Book (LOB)* if its spread function as defined by \@ref(def:spread) is always positive:
+Suppose an order set $\mathcal{L}$ as defined by \@ref(def:order-set) is given.  Then $\mathcal{L}$ is called a *Limit Order Book (LOB)* if its spread function as defined by \@ref(def:spread) is always positive:
 $$ 
   \forall t: s_{\mathcal{L}}(t) > 0
 $$
@@ -288,13 +301,13 @@ A [market order](https://www.investopedia.com/terms/m/marketorder.asp) is a requ
 
 
 ```{definition Market Buy Order, name="Market Buy Order", label=market-buy-order}
-Suppose a Limit Order Book $\mathcal{L}$ is given as defined by \@ref(def:lob). Suppose that at time $t_j$ $$\sum_{o^a(\cdot) \in \mathcal{A(t_j)} } f_{v^a}(t_j) < 0 $$ Then it is said that a *market buy order* is placed and executed at time $t_j$ for $\sum_{o^a(\cdot) \in \mathcal{A}(t_j) } |f_{v^a}(t_j)p^a(t_j)|$ units of currency.  
+Suppose a Limit Order Book $\mathcal{L}$ is given as defined by \@ref(def:lob). Suppose that at time $t_j$ $$\sum_{o^a(\cdot, \cdot) \in \mathcal{A(t_j)} } f_{v^a}(t_j) < 0 $$ Then it is said that a *market buy order* is placed and executed at time $t_j$ for $\sum_{o^a(\cdot, \cdot) \in \mathcal{A}(t_j) } |f_{v^a}(t_j)p^a(t_j)|$ units of currency.  
 
 ```
 
 
 ```{definition Market Sell Order, name="Market Sell Order", label=market-sell-order}
-Suppose a Limit Order Book $\mathcal{L}$ is given as defined by \@ref(def:lob). Suppose that at time $t_j$ $$\sum_{o^b(\cdot) \in \mathcal{B}(t_j) } f_{v^b}(t_j) > 0 $$ Then it is said that a *market sell order* is placed and executed at time $t_j$ for $\sum_{o^b(\cdot) \in \mathcal{B}(t_j) } f_{v^b}(t_j)$ units of asset.  
+Suppose a Limit Order Book $\mathcal{L}$ is given as defined by \@ref(def:lob). Suppose that at time $t_j$ $$\sum_{o^b(\cdot, \cdot) \in \mathcal{B}(t_j) } f_{v^b}(t_j) > 0 $$ Then it is said that a *market sell order* is placed and executed at time $t_j$ for $\sum_{o^b(\cdot, \cdot) \in \mathcal{B}(t_j) } f_{v^b}(t_j)$ units of asset.  
 
 ```
 
@@ -358,14 +371,14 @@ as_hux(sot[order(t),
               `\\(s^i_n\\)`=e,
               `\\(p^i_n\\)`=p,
               `\\(v^i_n\\)`=v,
-              `\\(f^i_n\\)`=f,
+              `\\(m^i_n\\)`=f,
                `\\(\\Delta v^i_n \\)`=fifelse(v*volume.decrease > 0 & n > 1, volume.decrease, NA_real_)
                  )]) %>%
   add_colnames() %>%
   set_width(0.9) %>%
   set_align(everywhere, c(1:5), 'center') %>%
   set_align(1, c(6:9), 'right') %>%
-  set_right_border(everywhere,1, 1) %>%
+  set_right_border(everywhere,3, 1) %>%
   set_left_border(everywhere,9, 1) %>%
   set_caption('(#tab:example-order-table) The sample order table contains information about six limit orders, four market orders and six trades.') %>%
   set_caption_pos("topleft") %>%
@@ -428,7 +441,7 @@ It can bee seen from figure \@ref(fig:example-order-book) that:
   * At `r format(time_0 + sort(unique(sot$t))[2], "%H:%M:%OS1")` order 2 to sell 200 units of the asset at price no worse than 80 per unit has been placed,
   * At `r format(time_0 + sort(unique(sot$t))[3], "%H:%M:%OS1")` the volume of order 2 has been amended (reduced by half) by the trader who placed the order,
   * At `r format(time_0 + sort(unique(sot$t))[4], "%H:%M:%OS1")` order 3 to buy 500 units of the asset at price no worse than 25 per unit has been placed,
-  * At `r format(time_0 + sort(unique(sot$t))[5], "%H:%M:%OS1")` order 4 to sell 500 units of the asset at price no worse than 25 has been placed. Exactly at the same time, a market order has been placed to sell 700 units of the asset and two  *sell* trades has been  executed: $(\text{`r format(time_0 + sort(unique(sot$t))[4], "%H:%M:%OS1")`}, 1, 50, 200)$ and $(\text{`r format(time_0 + sort(unique(sot$t))[4], "%H:%M:%OS1")`}, 3, 25, 500)$. Since the market order and order 4 have been placed at exactly the same time, it is very likely that order 4 has actually been placed to sell 1200 units, partially executed and the reminder (i.e. 500 units) has landed in LOB and there were no market order. Nevertheless fundamentally it is still a combination of a market order and a limit order. 
+  * At `r format(time_0 + sort(unique(sot$t))[5], "%H:%M:%OS1")` order 4 to sell 500 units of the asset at price no worse than 25 has been placed. Exactly at the same time, a market order has been placed to sell 700 units of the asset and two  *sell* trades has been  executed: $(\text{`r format(time_0 + sort(unique(sot$tk))[4], "%H:%M:%OS1")`}, 1, 50, 200)$ and $(\text{`r format(time_0 + sort(unique(sot$t))[4], "%H:%M:%OS1")`}, 3, 25, 500)$. Since the market order and order 4 have been placed at exactly the same time, it is very likely that order 4 has actually been placed to sell 1200 units, partially executed and the reminder (i.e. 500 units) has landed in LOB and there were no market order. Nevertheless fundamentally it is still a combination of a market order and a limit order. 
 * At `r format(time_0 + sort(unique(sot$t))[6], "%H:%M:%OS1")` order 5 to sell 400 units of the asset at price no worse than 50 per unit has been placed,
 * At `r format(time_0 + sort(unique(sot$t))[7], "%H:%M:%OS1")` order 2 has been cancelled,  
 * At `r format(time_0 + sort(unique(sot$t))[8], "%H:%M:%OS1")` order 6 to buy 500 units of the asset at price no worse than 10 per unit has been placed,
@@ -439,7 +452,6 @@ It can bee seen from figure \@ref(fig:example-order-book) that:
 
 ## Reconstruction process{#reconstruction-process}
 
-### Architecture
 
 Figure \@ref(fig:oberon-overview) shows UML2 Activity Diagram [@cook_omg_2017] of `Standalone application - capture` activity that represents an implementation of `oberon capture` command. The activity node `Reconstruct Order Book` performs a reconstruction of order book events from exchange-specific messages that are passed by node `Receive messages`.
 
@@ -492,31 +504,38 @@ knitr::include_graphics("Tokens.png", dpi=80)
 ```
 `TokenHandler` will not produce output for a message when subsequent messages are required for handling(cleansing). In this case the message will be kept within this particular `TokenHandler` instance between runs of `Reconstructor::process()` until enough subsequent messages are received. Then all kept and cleansed messages are returned together, saved into `output_` variable and passed one by one in FIFO order to the `this.next_` `TokenHandler`. After that `output_` variables is cleared, so if there is no next `TokenHandler` the messages are deleted after being accepted.
 
-Handling of meessage by `TokenHandler` is implemented using [Visitor](https://en.wikipedia.org/wiki/Visitor_pattern) pattern as shown by UML2 Sequence diagram on figure \@ref(fig:sd-message-accept).
+Handling of messages by `TokenHandler` is implemented using [Visitor](https://en.wikipedia.org/wiki/Visitor_pattern) pattern as shown by UML2 Sequence diagram on figure \@ref(fig:sd-message-accept).
 
 ```{r sd-message-accept, echo=FALSE, fig.cap="UML2 Sequence diagram showing various alternatives of traces for Message::accept() method", fig.align="center"}
 knitr::include_graphics("sd Message - accept.png", dpi=80)
 ```
 
-### Coinbase data cleansing
+## Data cleansing
+
+
+It should be clear from the definition of order table \@ref(def:order-table) that not every set of order events as defined by \@ref(def:order-event) represents a valid order table. Similarly, not every set of orders represents valid LOB as defined by \@ref(def:lob).
+
+  Data cleansing process receives a stream of order events (possible extended and/or incomplete i.e. order events as defined by \@ref(def:order-event) but with some additional and/or missing attributes), restores order functions from them and then restores LOB from order functions.
+  
+Data cleansing is performed by a sequence of `TokenHandler`s as shown on figure \@ref(fig:sd-tokenhandler-handle). Below lists of `TokenHandler`s used for different exchange event streams are shown.
+
+### Coinbase 
 
   * Coinbase::Syncrhonizer
-  
   * SizeDeducer
   * EventCounter
   * File
 
-### Bitstamp data cleansing
+### Bitstamp 
 
   * Bitstamp::Synchronizer
   * Bitstamp::TimeOrderEnforcer
   * Bitstamp::Deduplicator
-  
   * SizeDeducer
   * EventCounter
   * File
 
-### Bitfinex data cleansing
+### Bitfinex 
 
 TBD
 
