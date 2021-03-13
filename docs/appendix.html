@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>5 Appendix | Order book events reconstruction from empirical data</title>
+  <meta name="description" content="5 Appendix | Order book events reconstruction from empirical data" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="5 Appendix | Order book events reconstruction from empirical data" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="5 Appendix | Order book events reconstruction from empirical data" />
+  
+  
+  
+
+<meta name="author" content="Petr Fedorov" />
+
+
+<meta name="date" content="2021-03-13" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="discussion.html"/>
+<link rel="next" href="references.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#continuous-time-double-auction-and-lob"><i class="fa fa-check"></i><b>1.1</b> Continuous-time double auction and LOB</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#available-data-sets"><i class="fa fa-check"></i><b>1.2</b> Available data sets</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="methods.html"><a href="methods.html"><i class="fa fa-check"></i><b>2</b> Methods</a><ul>
+<li class="chapter" data-level="2.1" data-path="methods.html"><a href="methods.html#order"><i class="fa fa-check"></i><b>2.1</b> Order</a></li>
+<li class="chapter" data-level="2.2" data-path="methods.html"><a href="methods.html#limit-order-book-lob"><i class="fa fa-check"></i><b>2.2</b> Limit Order Book (LOB)</a></li>
+<li class="chapter" data-level="2.3" data-path="methods.html"><a href="methods.html#reconstruction-process"><i class="fa fa-check"></i><b>2.3</b> Reconstruction process</a></li>
+<li class="chapter" data-level="2.4" data-path="methods.html"><a href="methods.html#data-cleansing"><i class="fa fa-check"></i><b>2.4</b> Data cleansing</a><ul>
+<li class="chapter" data-level="2.4.1" data-path="methods.html"><a href="methods.html#coinbase"><i class="fa fa-check"></i><b>2.4.1</b> Coinbase</a></li>
+<li class="chapter" data-level="2.4.2" data-path="methods.html"><a href="methods.html#bitstamp"><i class="fa fa-check"></i><b>2.4.2</b> Bitstamp</a></li>
+<li class="chapter" data-level="2.4.3" data-path="methods.html"><a href="methods.html#bitfinex"><i class="fa fa-check"></i><b>2.4.3</b> Bitfinex</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>3</b> Results</a><ul>
+<li class="chapter" data-level="3.1" data-path="results.html"><a href="results.html#fragments-of-extracted-events"><i class="fa fa-check"></i><b>3.1</b> Fragments of extracted events</a><ul>
+<li class="chapter" data-level="3.1.1" data-path="results.html"><a href="results.html#coinbase-1"><i class="fa fa-check"></i><b>3.1.1</b> Coinbase</a></li>
+<li class="chapter" data-level="3.1.2" data-path="results.html"><a href="results.html#bitstamp-1"><i class="fa fa-check"></i><b>3.1.2</b> Bitstamp</a></li>
+<li class="chapter" data-level="3.1.3" data-path="results.html"><a href="results.html#bitfinex-1"><i class="fa fa-check"></i><b>3.1.3</b> Bitfinex</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="results.html"><a href="results.html#fragments-of-cleansed-data"><i class="fa fa-check"></i><b>3.2</b> Fragments of cleansed data</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="results.html"><a href="results.html#bitstamp-2"><i class="fa fa-check"></i><b>3.2.1</b> Bitstamp</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="discussion.html"><a href="discussion.html"><i class="fa fa-check"></i><b>4</b> Discussion</a></li>
+<li class="chapter" data-level="5" data-path="appendix.html"><a href="appendix.html"><i class="fa fa-check"></i><b>5</b> Appendix</a><ul>
+<li class="chapter" data-level="5.1" data-path="appendix.html"><a href="appendix.html#examples-of-order-tables-and-restored-functions"><i class="fa fa-check"></i><b>5.1</b> Examples of order tables and restored functions</a></li>
+<li class="chapter" data-level="5.2" data-path="appendix.html"><a href="appendix.html#example-of-lob"><i class="fa fa-check"></i><b>5.2</b> Example of LOB</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Order book events reconstruction from empirical data</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="appendix" class="section level1">
+<h1><span class="header-section-number">5</span> Appendix</h1>
+<div id="examples-of-order-tables-and-restored-functions" class="section level2">
+<h2><span class="header-section-number">5.1</span> Examples of order tables and restored functions</h2>
+<table class="huxtable" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  " id="tab:e1-table">
+<caption style="caption-side: top; text-align: left;">
+<span id="tab:e1-table">Table 5.1: </span> If an order was open on the order book and nothing else has happened with the order since then (i.e. it has not been not matched, amended or cancelled), its order table will contain one order event. By looking at the sign of <span class="math inline">\(v_n\)</span> value one can say that it is a bid order.
+</caption>
+<col>
+<col>
+<col>
+<col>
+<col>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(t_k\)</span>
+</th>
+<th style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(s_k\)</span>
+</th>
+<th style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(p_k\)</span>
+</th>
+<th style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(v_k\)</span>
+</th>
+<th style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(m_k\)</span>
+</th>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+13:59:59.941999
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+1
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+43061.10
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+1.00000000
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+0
+</td>
+</tr>
+</table>
+<table class="huxtable" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  " id="tab:e1-function">
+<caption style="caption-side: top; text-align: left;">
+<span id="tab:e1-function">Table 5.2: </span> The order function restored from order table <a href="appendix.html#tab:e1-table">5.1</a> will have one left-open right-unbounded interval <span class="math inline">\(T_1\)</span>.
+</caption>
+<col>
+<col>
+<col>
+<tr>
+<th style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(T_k\)</span>
+</th>
+<th style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(p_k\)</span>
+</th>
+<th style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(v_k\)</span>
+</th>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+(13:59:59.941999 , <span class="math inline">\(+\infty\)</span>)
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+43061.10
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+1.00000000
+</td>
+</tr>
+</table>
+<p>The order function defined by <a href="appendix.html#tab:e1-function">5.2</a> may be written as: <span class="math inline">\(o(p,t) = v_1 \mathbf{1}_{P_1 \times T_1}(p,t)\)</span>.</p>
+<p>The corresponding filled volume function is identically zero: <span class="math display">\[f_v(t) \equiv 0\]</span></p>
+<p>The corresponding amended volume function is non-zero at just one point: <span class="math display">\[f_a(\text{13:59:59.941999}) = 1.0\]</span></p>
+<table class="huxtable" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  " id="tab:e2-table">
+<caption style="caption-side: top; text-align: left;">
+<span id="tab:e2-table">Table 5.3: </span> If an order was open on the order book and then cancelled, its order table will contain second event that corresponds to the removal of the order from the order book as indicated by <span class="math inline">\(s_k = 0\)</span> in the second row.
+</caption>
+<col>
+<col>
+<col>
+<col>
+<col>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(t_k\)</span>
+</th>
+<th style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(s_k\)</span>
+</th>
+<th style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(p_k\)</span>
+</th>
+<th style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(v_k\)</span>
+</th>
+<th style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(m_k\)</span>
+</th>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+13:59:59.940999
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+1
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+43063.64
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+-0.46396261
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+0
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+13:59:59.980000
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+0
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+43063.64
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+-0.46396261
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+0
+</td>
+</tr>
+</table>
+<table class="huxtable" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  " id="tab:e2-function">
+<caption style="caption-side: top; text-align: left;">
+<span id="tab:e2-function">Table 5.4: </span> Similar to the function <a href="appendix.html#tab:e1-function">5.2</a> the order function restored from table <a href="appendix.html#tab:e2-table">5.3</a> has one interval <span class="math inline">\(T_k\)</span>. But in this case it is left-open and right-closed for the order was removed from order book due to cancellation as shown by <span class="math inline">\(m_k = 0\)</span> in the second row of table <a href="appendix.html#tab:e2-table">5.3</a>.
+</caption>
+<col>
+<col>
+<col>
+<tr>
+<th style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(T_k\)</span>
+</th>
+<th style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(p_k\)</span>
+</th>
+<th style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(v_k\)</span>
+</th>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+(13:59:59.940999 , 13:59:59.980000]
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+43063.64
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+-0.46396261
+</td>
+</tr>
+</table>
+<table class="huxtable" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  " id="tab:e3-table">
+<caption style="caption-side: top; text-align: left;">
+<span id="tab:e3-table">Table 5.5: </span> The order was matched after it was open on the order book (<span class="math inline">\(m_2 = 1\)</span>) and afterwards its price and volume were simultaneously amended (<span class="math inline">\(m_3 = 0\)</span>, <span class="math inline">\(s_3=1\)</span>).
+</caption>
+<col>
+<col>
+<col>
+<col>
+<col>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(t_k\)</span>
+</th>
+<th style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(s_k\)</span>
+</th>
+<th style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(p_k\)</span>
+</th>
+<th style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(v_k\)</span>
+</th>
+<th style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(m_k\)</span>
+</th>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+13:59:59.943000
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+1
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+43063.64
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+-2.50000000
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+0
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+14:00:00.111999
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+1
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+43063.64
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+-2.10000000
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+1
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+14:00:01.115000
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+1
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+43065.00
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+-2.30000000
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+0
+</td>
+</tr>
+</table>
+<table class="huxtable" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  " id="tab:e3-function">
+<caption style="caption-side: top; text-align: left;">
+<span id="tab:e3-function">Table 5.6: </span> <span class="math inline">\(T_1\)</span> is right-open since its right bound is determined by a match (second row in table <a href="appendix.html#tab:e3-table">5.5</a> with <span class="math inline">\(m_2 = 1\)</span>). <span class="math inline">\(T_2\)</span> is a closed since it is started by a match and ended by an amendment (third row in table <a href="appendix.html#tab:e3-table">5.5</a>).
+</caption>
+<col>
+<col>
+<col>
+<tr>
+<th style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(T_k\)</span>
+</th>
+<th style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(p_k\)</span>
+</th>
+<th style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(v_k\)</span>
+</th>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+(13:59:59.943000 , 14:00:00.111999)
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+43063.64
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+-2.50000000
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+[14:00:00.111999 , 14:00:01.115000]
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+43063.64
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+-2.10000000
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+(14:00:01.115000 , <span class="math inline">\(+\infty\)</span>)
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+43065.00
+</td>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+-2.30000000
+</td>
+</tr>
+</table>
+</div>
+<div id="example-of-lob" class="section level2">
+<h2><span class="header-section-number">5.2</span> Example of LOB</h2>
+<p>Table <a href="appendix.html#tab:example-order-table">5.7</a> contains a consolidated order table for six limit orders</p>
+<table class="huxtable" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; width: 90%; margin-left: 0%; margin-right: auto;  " id="tab:example-order-table">
+<caption style="caption-side: top; text-align: left;"><span id="tab:example-order-table">Table 5.7: </span> The sample order table contains information about six limit orders, four market orders and six trades.</caption><col><col><col><col><col><col><col><col><col><tr>
+<th style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">#</th><th style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">\(i\)</th><th style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">\(n\)</th><th style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">\(t^i_n\)</th><th style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">\(s^i_n\)</th><th style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">\(p^i_n\)</th><th style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">\(v^i_n\)</th><th style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">\(m^i_n\)</th><th style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">\(\Delta v^i_n \)</th></tr>
+<tr>
+<td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">1</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0000000001</td><td style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">1</td><td style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">13:59:57.2</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">1</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">50</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">200</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;"></td></tr>
+<tr>
+<td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">2</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0000000002</td><td style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">1</td><td style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">13:59:58.0</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">1</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">80</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-200</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;"></td></tr>
+<tr>
+<td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">3</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0000000002</td><td style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">2</td><td style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">13:59:58.9</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">1</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">80</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-100</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-100</td></tr>
+<tr>
+<td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">4</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0000000003</td><td style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">1</td><td style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">13:59:59.5</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">1</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">25</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">500</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;"></td></tr>
+<tr>
+<td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">5</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0000000001</td><td style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">2</td><td style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">14:00:00.0</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">50</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">200</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">1</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">200</td></tr>
+<tr>
+<td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">6</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0000000003</td><td style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">2</td><td style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">14:00:00.0</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">25</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">500</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">2</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">500</td></tr>
+<tr>
+<td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">7</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0000000004</td><td style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">1</td><td style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">14:00:00.0</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">1</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">25</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-500</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;"></td></tr>
+<tr>
+<td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">8</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0000000005</td><td style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">1</td><td style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">14:00:00.7</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">1</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">50</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-400</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;"></td></tr>
+<tr>
+<td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">9</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0000000002</td><td style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">3</td><td style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">14:00:01.2</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">80</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-100</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;"></td></tr>
+<tr>
+<td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">10</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0000000006</td><td style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">1</td><td style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">14:00:01.7</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">1</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">10</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">500</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;"></td></tr>
+<tr>
+<td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">11</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0000000004</td><td style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">2</td><td style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">14:00:02.0</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">25</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-500</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">3</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-500</td></tr>
+<tr>
+<td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">12</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0000000005</td><td style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">2</td><td style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">14:00:02.0</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">1</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">50</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-100</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">4</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-300</td></tr>
+<tr>
+<td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">13</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0000000005</td><td style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">3</td><td style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">14:00:02.4</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">50</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-100</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">5</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-100</td></tr>
+<tr>
+<td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">14</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0000000006</td><td style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">2</td><td style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">14:00:02.4</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">1</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">60</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">400</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">100</td></tr>
+<tr>
+<td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">15</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0000000006</td><td style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">3</td><td style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">14:00:03.0</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">1</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">20</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">100</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">6</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">300</td></tr>
+</table>
+
+<p>Figure <a href="appendix.html#fig:example-order-book">5.1</a> shows price and volume functions for six limit orders in table <a href="appendix.html#tab:example-order-table">5.7</a>.</p>
+<div class="figure"><span id="fig:example-order-book"></span>
+<img src="oberon_files/figure-html/example-order-book-1.png" alt="Price and Volume functions for the limit orders in table \@ref(tab:example-order-table)" width="672" />
+<p class="caption">
+Figure 5.1: Price and Volume functions for the limit orders in table <a href="appendix.html#tab:example-order-table">5.7</a>
+</p>
+</div>
+<p>It can bee seen from figure <a href="appendix.html#fig:example-order-book">5.1</a> that:</p>
+<ul>
+<li>At 13:59:57.2 order 1 to buy 200 units of the asset at price no worse than 50 per unit has been placed,</li>
+<li>At 13:59:58.0 order 2 to sell 200 units of the asset at price no worse than 80 per unit has been placed,</li>
+<li>At 13:59:58.9 the volume of order 2 has been amended (reduced by half) by the trader who placed the order,</li>
+<li>At 13:59:59.5 order 3 to buy 500 units of the asset at price no worse than 25 per unit has been placed,</li>
+<li>At 14:00:00.0 order 4 to sell 500 units of the asset at price no worse than 25 has been placed. Exactly at the same time, a market order has been placed to sell 700 units of the asset and two <em>sell</em> trades has been executed: <span class="math inline">\((\text{}, 1, 50, 200)\)</span> and <span class="math inline">\((\text{13:59:59.5}, 3, 25, 500)\)</span>. Since the market order and order 4 have been placed at exactly the same time, it is very likely that order 4 has actually been placed to sell 1200 units, partially executed and the reminder (i.e. 500 units) has landed in LOB and there were no market order. Nevertheless fundamentally it is still a combination of a market order and a limit order.</li>
+<li>At 14:00:00.7 order 5 to sell 400 units of the asset at price no worse than 50 per unit has been placed,</li>
+<li>At 14:00:01.2 order 2 has been cancelled,<br />
+</li>
+<li>At 14:00:01.7 order 6 to buy 500 units of the asset at price no worse than 10 per unit has been placed,</li>
+<li>At 14:00:02.0 a market order to buy the asset for 27500 units of the currency has been placed and two buy trades have been executed: <span class="math inline">\((\text{14:00:02.0}, 4, 25, -500)\)</span> and <span class="math inline">\((\text{14:00:02.0}, 5, 50, -300)\)</span>. Alternatively, it could be a limit order to buy 800 units of the asset at price no worse than 50 that was fully executed.</li>
+<li>At 14:00:02.4 volume and price of order 6 have been amended. Its volume has been reduced by 100 units of the asset and its price increased to 60. At the same time a market buy order has been placed for 5000 units of the currency and single trade has been executed: <span class="math inline">\((\text{14:00:02.0}, 5, 50, -100)\)</span>. Most likely the change of price of order 6 has transformed it to a market limit order which was partially executed and the reminder was placed in the order book again.</li>
+<li>At 14:00:03.0 a sell market order has been placed, single trade was executed: <span class="math inline">\((\text{14:00:03.0}, 6, 60, 300)\)</span> and, simultaneously, probably as a consequence of the trade, the price of order 6 has been amended from 60 to 20. Note that trade has been executed at price 60.</li>
+</ul>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="discussion.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+},
+"search": false
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

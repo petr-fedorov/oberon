@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>2 Methods | Order book events reconstruction from empirical data</title>
   <meta name="description" content="2 Methods | Order book events reconstruction from empirical data" />
-  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
   <meta property="og:title" content="2 Methods | Order book events reconstruction from empirical data" />
   <meta property="og:type" content="book" />
@@ -24,7 +24,7 @@
 <meta name="author" content="Petr Fedorov" />
 
 
-<meta name="date" content="2021-03-11" />
+<meta name="date" content="2021-03-13" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -90,6 +90,10 @@
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="discussion.html"><a href="discussion.html"><i class="fa fa-check"></i><b>4</b> Discussion</a></li>
+<li class="chapter" data-level="5" data-path="appendix.html"><a href="appendix.html"><i class="fa fa-check"></i><b>5</b> Appendix</a><ul>
+<li class="chapter" data-level="5.1" data-path="appendix.html"><a href="appendix.html#examples-of-order-tables-and-restored-functions"><i class="fa fa-check"></i><b>5.1</b> Examples of order tables and restored functions</a></li>
+<li class="chapter" data-level="5.2" data-path="appendix.html"><a href="appendix.html#example-of-lob"><i class="fa fa-check"></i><b>5.2</b> Example of LOB</a></li>
+</ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 </ul>
 
@@ -137,7 +141,7 @@
 
 <div class="definition">
 <p><span id="def:order" class="definition"><strong>Definition 2.1  (Order Function)  </strong></span>
-A function <span class="math inline">\(o : \mathbb{R} \times \mathbb{R}_{&gt; 0} \mapsto \mathbb{R}\)</span> is called a limit <em>order function</em> if it can be written as
+A function <span class="math inline">\(o : \mathbb{R}_{&gt;0} \times \mathbb{R} \mapsto \mathbb{R}\)</span> is called a limit <em>order function</em> if it can be written as
 <span class="math display">\[ 
   o(p,t) = \sum_{k=1}^K v_k \mathbf{1}_{P_k \times T_k}(p,t)
 \]</span>
@@ -250,6 +254,7 @@ An <em>order event</em> is a tuple <span class="math inline">\((t,s,p,v,m)\)</sp
 <p>Then <span class="math inline">\(\mathcal{P} = \{ \{p_k&#39;\}\}_{k=1}^{|\mathcal{T}|}\)</span> and <span class="math inline">\(\mathcal{V} = \{ v_k&#39;\}_{k=1}^{|\mathcal{T}|}\)</span></p>
 </div>
 
+<p>See <a href="appendix.html#examples-of-order-tables-and-restored-functions">Appendix</a> for examples of order tables and order functions restored from them.</p>
 </div>
 <div id="limit-order-book-lob" class="section level2">
 <h2><span class="header-section-number">2.2</span> Limit Order Book (LOB)</h2>
@@ -312,244 +317,43 @@ An <em>order event</em> is a tuple <span class="math inline">\((t,s,p,v,m)\)</sp
 <p><span id="def:market-sell-order" class="definition"><strong>Definition 2.16  (Market Sell Order)  </strong></span>Suppose a Limit Order Book <span class="math inline">\(\mathcal{L}\)</span> is given as defined by <a href="methods.html#def:lob">2.14</a>. Suppose that at time <span class="math inline">\(t_j\)</span> <span class="math display">\[\sum_{o^b(\cdot, \cdot) \in \mathcal{B}(t_j) } f_{v^b}(t_j) &gt; 0 \]</span> Then it is said that a <em>market sell order</em> is placed and executed at time <span class="math inline">\(t_j\)</span> for <span class="math inline">\(\sum_{o^b(\cdot, \cdot) \in \mathcal{B}(t_j) } f_{v^b}(t_j)\)</span> units of asset.</p>
 </div>
 
-<p>To make the above definitions intuitively clear, let’s consider an example. Table <a href="methods.html#tab:example-order-table">2.1</a> contains a consolidated order table for six limit orders</p>
-<table class="huxtable" style="border-collapse: collapse; margin-bottom: 2em; margin-top: 2em; width: 90%; margin-left: 0%; margin-right: auto;  ">
-<caption style="caption-side: top; text-align: left;"><span id="tab:example-order-table">Table 2.1: </span> The sample order table contains information about six limit orders, four market orders and six trades.</caption><col><col><col><col><col><col><col><col><col><tr>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">#</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">\(i\)</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">\(n\)</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">\(t^i_n\)</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">\(s^i_n\)</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">\(p^i_n\)</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">\(v^i_n\)</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">\(m^i_n\)</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;">\(\Delta v^i_n \)</td>
-</tr>
-<tr>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">1</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0000000001</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">1</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">13:59:57.2</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">1</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">50</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">200</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;"></td>
-</tr>
-<tr>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">2</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0000000002</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">1</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">13:59:58.0</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">1</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">80</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">-200</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;"></td>
-</tr>
-<tr>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">3</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0000000002</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">2</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">13:59:58.9</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">1</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">80</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">-100</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;">-100</td>
-</tr>
-<tr>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">4</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0000000003</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">1</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">13:59:59.5</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">1</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">25</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">500</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;"></td>
-</tr>
-<tr>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">5</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0000000001</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">2</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">14:00:00.0</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">50</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">200</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">1</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;">200</td>
-</tr>
-<tr>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">6</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0000000003</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">2</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">14:00:00.0</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">25</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">500</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">2</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;">500</td>
-</tr>
-<tr>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">7</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0000000004</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">1</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">14:00:00.0</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">1</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">25</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">-500</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;"></td>
-</tr>
-<tr>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">8</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0000000005</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">1</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">14:00:00.7</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">1</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">50</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">-400</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;"></td>
-</tr>
-<tr>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">9</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0000000002</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">3</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">14:00:01.2</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">80</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">-100</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;"></td>
-</tr>
-<tr>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">10</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0000000006</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">1</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">14:00:01.7</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">1</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">10</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">500</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;"></td>
-</tr>
-<tr>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">11</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0000000004</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">2</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">14:00:02.0</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">25</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">-500</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">3</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;">-500</td>
-</tr>
-<tr>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">12</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0000000005</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">2</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">14:00:02.0</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">1</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">50</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">-100</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">4</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;">-300</td>
-</tr>
-<tr>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">13</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0000000005</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">3</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">14:00:02.4</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">50</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">-100</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">5</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;">-100</td>
-</tr>
-<tr>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">14</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0000000006</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">2</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">14:00:02.4</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">1</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">60</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">400</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;">100</td>
-</tr>
-<tr>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">15</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0000000006</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 1pt 0pt 0pt; padding: 4pt 4pt 4pt 4pt;">3</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">14:00:03.0</td>
-<td style="vertical-align: top; text-align: center; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">1</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">20</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">100</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">6</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 1pt; padding: 4pt 4pt 4pt 4pt;">300</td>
-</tr>
-</table>
-
-<p>Figure <a href="methods.html#fig:example-order-book">2.1</a> shows price and volume functions for six limit orders in table <a href="methods.html#tab:example-order-table">2.1</a>.</p>
-<div class="figure"><span id="fig:example-order-book"></span>
-<img src="oberon_files/figure-html/example-order-book-1.png" alt="Price and Volume functions for the limit orders in table \@ref(tab:example-order-table)" width="672" />
-<p class="caption">
-Figure 2.1: Price and Volume functions for the limit orders in table <a href="methods.html#tab:example-order-table">2.1</a>
-</p>
-</div>
-<p>It can bee seen from figure <a href="methods.html#fig:example-order-book">2.1</a> that:</p>
-<ul>
-<li>At 13:59:57.2 order 1 to buy 200 units of the asset at price no worse than 50 per unit has been placed,</li>
-<li>At 13:59:58.0 order 2 to sell 200 units of the asset at price no worse than 80 per unit has been placed,</li>
-<li>At 13:59:58.9 the volume of order 2 has been amended (reduced by half) by the trader who placed the order,</li>
-<li>At 13:59:59.5 order 3 to buy 500 units of the asset at price no worse than 25 per unit has been placed,</li>
-<li>At 14:00:00.0 order 4 to sell 500 units of the asset at price no worse than 25 has been placed. Exactly at the same time, a market order has been placed to sell 700 units of the asset and two <em>sell</em> trades has been executed: <span class="math inline">\((\text{}, 1, 50, 200)\)</span> and <span class="math inline">\((\text{13:59:59.5}, 3, 25, 500)\)</span>. Since the market order and order 4 have been placed at exactly the same time, it is very likely that order 4 has actually been placed to sell 1200 units, partially executed and the reminder (i.e. 500 units) has landed in LOB and there were no market order. Nevertheless fundamentally it is still a combination of a market order and a limit order.</li>
-<li>At 14:00:00.7 order 5 to sell 400 units of the asset at price no worse than 50 per unit has been placed,</li>
-<li>At 14:00:01.2 order 2 has been cancelled,<br />
-</li>
-<li>At 14:00:01.7 order 6 to buy 500 units of the asset at price no worse than 10 per unit has been placed,</li>
-<li>At 14:00:02.0 a market order to buy the asset for 27500 units of the currency has been placed and two buy trades have been executed: <span class="math inline">\((\text{14:00:02.0}, 4, 25, -500)\)</span> and <span class="math inline">\((\text{14:00:02.0}, 5, 50, -300)\)</span>. Alternatively, it could be a limit order to buy 800 units of the asset at price no worse than 50 that was fully executed.</li>
-<li>At 14:00:02.4 volume and price of order 6 have been amended. Its volume has been reduced by 100 units of the asset and its price increased to 60. At the same time a market buy order has been placed for 5000 units of the currency and single trade has been executed: <span class="math inline">\((\text{14:00:02.0}, 5, 50, -100)\)</span>. Most likely the change of price of order 6 has transformed it to a market limit order which was partially executed and the reminder was placed in the order book again.</li>
-<li>At 14:00:03.0 a sell market order has been placed, single trade was executed: <span class="math inline">\((\text{14:00:03.0}, 6, 60, 300)\)</span> and, simultaneously, probably as a consequence of the trade, the price of order 6 has been amended from 60 to 20. Note that trade has been executed at price 60.</li>
-</ul>
+<p>To make the above definitions intuitively clear, consider an example in <a href="appendix.html#example-of-lob">Appendix</a>.</p>
 </div>
 <div id="reconstruction-process" class="section level2">
 <h2><span class="header-section-number">2.3</span> Reconstruction process</h2>
-<p>Figure <a href="methods.html#fig:oberon-overview">2.2</a> shows UML2 Activity Diagram <span class="citation">(Cook et al. 2017)</span> of <code>Standalone application - capture</code> activity that represents an implementation of <code>oberon capture</code> command. The activity node <code>Reconstruct Order Book</code> performs a reconstruction of order book events from exchange-specific messages that are passed by node <code>Receive messages</code>.</p>
+<p>Figure <a href="methods.html#fig:oberon-overview">2.1</a> shows UML2 Activity Diagram <span class="citation">(Cook et al. 2017)</span> of <code>Standalone application - capture</code> activity that represents an implementation of <code>oberon capture</code> command. The activity node <code>Reconstruct Order Book</code> performs a reconstruction of order book events from exchange-specific messages that are passed by node <code>Receive messages</code>.</p>
 <div class="figure" style="text-align: left"><span id="fig:oberon-overview"></span>
 <img src="Standalone%20application%20-%20capture.png" alt="`Receive messages` activity node collects avaialbe information in an exchange-specific format and pass the information in the form of [Boost.Property Tree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) to `Reconstruct Order Book` activity node that, as its name implies, reconstructs order book events in an *universal* format described herein. Note that both activity nodes run concurrently."  />
 <p class="caption">
-Figure 2.2: <code>Receive messages</code> activity node collects avaialbe information in an exchange-specific format and pass the information in the form of <a href="https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html">Boost.Property Tree</a> to <code>Reconstruct Order Book</code> activity node that, as its name implies, reconstructs order book events in an <em>universal</em> format described herein. Note that both activity nodes run concurrently.
+Figure 2.1: <code>Receive messages</code> activity node collects avaialbe information in an exchange-specific format and pass the information in the form of <a href="https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html">Boost.Property Tree</a> to <code>Reconstruct Order Book</code> activity node that, as its name implies, reconstructs order book events in an <em>universal</em> format described herein. Note that both activity nodes run concurrently.
 </p>
 </div>
-<p>Figure <a href="methods.html#fig:reconstruct-order-book">2.3</a> shows UML2 Activity Diagram of <code>Reconstruct Order Book</code> activity which is called by the activity node with the same name on figure <a href="methods.html#fig:oberon-overview">2.2</a>.</p>
+<p>Figure <a href="methods.html#fig:reconstruct-order-book">2.2</a> shows UML2 Activity Diagram of <code>Reconstruct Order Book</code> activity which is called by the activity node with the same name on figure <a href="methods.html#fig:oberon-overview">2.1</a>.</p>
 <div class="figure" style="text-align: left"><span id="fig:reconstruct-order-book"></span>
 <img src="Reconstruct%20Order%20Book.png" alt="`Reconstruct Order Book` activity is implemented by an indefinite loop that invokes `Process message` activity every time new instance is placed on its input pin `ptree`. The loop terminates if `Process message` throws `processing_error` exception."  />
 <p class="caption">
-Figure 2.3: <code>Reconstruct Order Book</code> activity is implemented by an indefinite loop that invokes <code>Process message</code> activity every time new instance is placed on its input pin <code>ptree</code>. The loop terminates if <code>Process message</code> throws <code>processing_error</code> exception.
+Figure 2.2: <code>Reconstruct Order Book</code> activity is implemented by an indefinite loop that invokes <code>Process message</code> activity every time new instance is placed on its input pin <code>ptree</code>. The loop terminates if <code>Process message</code> throws <code>processing_error</code> exception.
 </p>
 </div>
-<p>The activity node <code>Process message</code> on figure <a href="methods.html#fig:reconstruct-order-book">2.3</a> is Call Action. It calls method <code>Reconstructor::process()</code> on <code>target</code> instance. UML2 Sequence diagram on figure <a href="methods.html#fig:sd-reconstructor-process">2.4</a> shows a “happy path” trace of the method.</p>
+<p>The activity node <code>Process message</code> on figure <a href="methods.html#fig:reconstruct-order-book">2.2</a> is Call Action. It calls method <code>Reconstructor::process()</code> on <code>target</code> instance. UML2 Sequence diagram on figure <a href="methods.html#fig:sd-reconstructor-process">2.3</a> shows a “happy path” trace of the method.</p>
 <div class="figure" style="text-align: left"><span id="fig:sd-reconstructor-process"></span>
 <img src="sd%20Reconstructor%20-%20process.png" alt="`Reconstructor::process()` first calls virtual abstract `extract()` method to create an instance of a class derived from `Message`. The `extract()` method is abstract and overriden by an exchange-specific implementation class, derived from `Reconstructor`. The returned instance is passed to a chain of `TokenHandler`'s through the call of `handle()`"  />
 <p class="caption">
-Figure 2.4: <code>Reconstructor::process()</code> first calls virtual abstract <code>extract()</code> method to create an instance of a class derived from <code>Message</code>. The <code>extract()</code> method is abstract and overriden by an exchange-specific implementation class, derived from <code>Reconstructor</code>. The returned instance is passed to a chain of <code>TokenHandler</code>’s through the call of <code>handle()</code>
+Figure 2.3: <code>Reconstructor::process()</code> first calls virtual abstract <code>extract()</code> method to create an instance of a class derived from <code>Message</code>. The <code>extract()</code> method is abstract and overriden by an exchange-specific implementation class, derived from <code>Reconstructor</code>. The returned instance is passed to a chain of <code>TokenHandler</code>’s through the call of <code>handle()</code>
 </p>
 </div>
-<p>The virtual method <code>Reconstructor::extract()</code> takes a <a href="https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html">Boost.PropertyTree</a> container with an exchange-specific data and creates an instance of one of internal exchange-independent message class shown in green on figure <a href="methods.html#fig:message-hierarchy-process">2.5</a>. The message is returned in <code>Token</code> container.</p>
+<p>The virtual method <code>Reconstructor::extract()</code> takes a <a href="https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html">Boost.PropertyTree</a> container with an exchange-specific data and creates an instance of one of internal exchange-independent message class shown in green on figure <a href="methods.html#fig:message-hierarchy-process">2.4</a>. The message is returned in <code>Token</code> container.</p>
 <div class="figure" style="text-align: center"><span id="fig:message-hierarchy-process"></span>
 <img src="Message%20hierarchy%20for%20process.png" alt="&quot;Message&quot; hierarchy of classes used in implementation of &quot;Process message&quot; activity."  />
 <p class="caption">
-Figure 2.5: “Message” hierarchy of classes used in implementation of “Process message” activity.
+Figure 2.4: “Message” hierarchy of classes used in implementation of “Process message” activity.
 </p>
 </div>
-<p>As shown on figure <a href="methods.html#fig:reconstructor-hierarchy-process">2.6</a> <code>Reconstructor::extract()</code> method is <em>abstract</em>, so it is overriden by exchange-specific versions that able to process their respective containers properly.</p>
+<p>As shown on figure <a href="methods.html#fig:reconstructor-hierarchy-process">2.5</a> <code>Reconstructor::extract()</code> method is <em>abstract</em>, so it is overriden by exchange-specific versions that able to process their respective containers properly.</p>
 <div class="figure" style="text-align: center"><span id="fig:reconstructor-hierarchy-process"></span>
 <img src="Reconstructor%20hierarchy%20for%20process.png" alt="&quot;Reconstructor&quot; hierarchy of classes used in implementation of &quot;Process message&quot; activity."  />
 <p class="caption">
-Figure 2.6: “Reconstructor” hierarchy of classes used in implementation of “Process message” activity.
+Figure 2.5: “Reconstructor” hierarchy of classes used in implementation of “Process message” activity.
 </p>
 </div>
 <p><code>Token</code> that carries an instance of a class derived from <code>Message</code> is then taken by the <code>TokenHandle::handle()</code> (<code>Reconstructor</code> is derived from <code>TokenHandler</code>) that is the first step of so called <em>data cleansing</em>. According to <span class="citation">(Rahm and Do 2000)</span>:</p>
@@ -557,26 +361,26 @@ Figure 2.6: “Reconstructor” hierarchy of classes used in implementation of �
 <p><em>Data cleaning</em>, also called <em>data cleansing</em> or <em>scrubbing</em>, deals with detecting and removing errors and inconsistencies from data in order to improve the quality of data.</p>
 </blockquote>
 <p>Data cleansing is implemented using <a href="https://en.wikipedia.org/wiki/Chain-of-responsibility_pattern">Chain of Responsibility</a> pattern. Each <code>TokenHandler</code> accepts, as a constructor parameter, the next <code>TokenHandler</code> which will receive messages as soon as <code>TokenHandler</code> being constructed has handled them.</p>
-<p>UML2 Sequence Diagram of <code>TokenHandler::handle()</code> is shown on figure <a href="methods.html#fig:sd-tokenhandler-handle">2.7</a>. The number of <code>TokenHandler</code>s involved and their kinds depend on an exchange and described in details in their respective sections later.</p>
+<p>UML2 Sequence Diagram of <code>TokenHandler::handle()</code> is shown on figure <a href="methods.html#fig:sd-tokenhandler-handle">2.6</a>. The number of <code>TokenHandler</code>s involved and their kinds depend on an exchange and described in details in their respective sections later.</p>
 <div class="figure" style="text-align: center"><span id="fig:sd-tokenhandler-handle"></span>
 <img src="sd%20TokenHandler%20-%20handle.png" alt="UML2 Sequence diagram showing a &quot;happy path&quot; trace of TokenHandler::handle() method"  />
 <p class="caption">
-Figure 2.7: UML2 Sequence diagram showing a “happy path” trace of TokenHandler::handle() method
+Figure 2.6: UML2 Sequence diagram showing a “happy path” trace of TokenHandler::handle() method
 </p>
 </div>
-<p>Handling of messages by <code>TokenHandler</code> is denoted by interaction use <code>Message - accept</code> on figure <a href="methods.html#fig:sd-tokenhandler-handle">2.7</a>. The result of handling is a set of zero or more messages that are stored in <code>output_</code> member variable that is an instance of <code>Tokens</code> class shown on figure <a href="methods.html#fig:tokens">2.8</a>.</p>
+<p>Handling of messages by <code>TokenHandler</code> is denoted by interaction use <code>Message - accept</code> on figure <a href="methods.html#fig:sd-tokenhandler-handle">2.6</a>. The result of handling is a set of zero or more messages that are stored in <code>output_</code> member variable that is an instance of <code>Tokens</code> class shown on figure <a href="methods.html#fig:tokens">2.7</a>.</p>
 <div class="figure" style="text-align: center"><span id="fig:tokens"></span>
 <img src="Tokens.png" alt="Definition of &quot;Tokens&quot;."  />
 <p class="caption">
-Figure 2.8: Definition of “Tokens”.
+Figure 2.7: Definition of “Tokens”.
 </p>
 </div>
 <p><code>TokenHandler</code> will not produce output for a message when subsequent messages are required for handling(cleansing). In this case the message will be kept within this particular <code>TokenHandler</code> instance between runs of <code>Reconstructor::process()</code> until enough subsequent messages are received. Then all kept and cleansed messages are returned together, saved into <code>output_</code> variable and passed one by one in FIFO order to the <code>this.next_</code> <code>TokenHandler</code>. After that <code>output_</code> variables is cleared, so if there is no next <code>TokenHandler</code> the messages are deleted after being accepted.</p>
-<p>Handling of messages by <code>TokenHandler</code> is implemented using <a href="https://en.wikipedia.org/wiki/Visitor_pattern">Visitor</a> pattern as shown by UML2 Sequence diagram on figure <a href="methods.html#fig:sd-message-accept">2.9</a>.</p>
+<p>Handling of messages by <code>TokenHandler</code> is implemented using <a href="https://en.wikipedia.org/wiki/Visitor_pattern">Visitor</a> pattern as shown by UML2 Sequence diagram on figure <a href="methods.html#fig:sd-message-accept">2.8</a>.</p>
 <div class="figure" style="text-align: center"><span id="fig:sd-message-accept"></span>
 <img src="sd%20Message%20-%20accept.png" alt="UML2 Sequence diagram showing various alternatives of traces for Message::accept() method"  />
 <p class="caption">
-Figure 2.9: UML2 Sequence diagram showing various alternatives of traces for <a href="Message::accept" class="uri">Message::accept</a>() method
+Figure 2.8: UML2 Sequence diagram showing various alternatives of traces for <a href="Message::accept" class="uri">Message::accept</a>() method
 </p>
 </div>
 </div>
@@ -584,7 +388,7 @@ Figure 2.9: UML2 Sequence diagram showing various alternatives of traces for <a 
 <h2><span class="header-section-number">2.4</span> Data cleansing</h2>
 <p>It should be clear from the definition of order table <a href="methods.html#def:order-table">2.7</a> that not every set of order events as defined by <a href="methods.html#def:order-event">2.6</a> represents a valid order table. Similarly, not every set of orders represents valid LOB as defined by <a href="methods.html#def:lob">2.14</a>.</p>
 <p>Data cleansing process receives a stream of order events (possible extended and/or incomplete i.e. order events as defined by <a href="methods.html#def:order-event">2.6</a> but with some additional and/or missing attributes), restores order functions from them and then restores LOB from order functions.</p>
-<p>Data cleansing is performed by a sequence of <code>TokenHandler</code>s as shown on figure <a href="methods.html#fig:sd-tokenhandler-handle">2.7</a>. Below lists of <code>TokenHandler</code>s used for different exchange event streams are shown.</p>
+<p>Data cleansing is performed by a sequence of <code>TokenHandler</code>s as shown on figure <a href="methods.html#fig:sd-tokenhandler-handle">2.6</a>. Below lists of <code>TokenHandler</code>s used for different exchange event streams are shown.</p>
 <div id="coinbase" class="section level3">
 <h3><span class="header-section-number">2.4.1</span> Coinbase</h3>
 <ul>
@@ -611,19 +415,19 @@ Figure 2.9: UML2 Sequence diagram showing various alternatives of traces for <a 
 <div class="figure" style="text-align: center"><span id="fig:redundant-base"></span>
 <img src="redundant0.png" alt="States of an order while it being processed by an exchange"  />
 <p class="caption">
-Figure 2.10: States of an order while it being processed by an exchange
+Figure 2.9: States of an order while it being processed by an exchange
 </p>
 </div>
 <div class="figure" style="text-align: center"><span id="fig:redundant-variant1"></span>
 <img src="redundant1.png" alt="States of an order while it being processed by an exchange"  />
 <p class="caption">
-Figure 2.11: States of an order while it being processed by an exchange
+Figure 2.10: States of an order while it being processed by an exchange
 </p>
 </div>
 <div class="figure" style="text-align: center"><span id="fig:redundant-variant2"></span>
 <img src="redundant2.png" alt="States of an order while it being processed by an exchange"  />
 <p class="caption">
-Figure 2.12: States of an order while it being processed by an exchange
+Figure 2.11: States of an order while it being processed by an exchange
 </p>
 </div>
 </div>
