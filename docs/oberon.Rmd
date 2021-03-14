@@ -689,7 +689,7 @@ events <- fread(text =
 ```
 
 ```{r e3-table, echo=FALSE, results='asis'}
-print_html(format_table(events, "The order was matched after it was open on the order book ($m_2 = 1$) and afterwards its price and volume were simultaneously amended ($m_3 = 0$, $s_3=1$)."))
+print_html(format_table(events, "The ask order was matched after it was open on the order book ($m_2 = 1$) and afterwards its price and volume were simultaneously amended ($m_3 = 0$, $s_3=1$)."))
 ```
 
 ```{r e3-function, echo=FALSE, results='asis'}
@@ -706,6 +706,29 @@ The corresponding amended volume function as defined by \@ref(def:amended-volume
 $$a_v({\small \text{`r events$t[1]`}}) = `r events$v[1]` \\a_v({\small \text{`r events$t[3]`}}) = `r events$v[3]` - (`r events$v[2]`) = `r events$v[3]-events$v[2]`$$
 
 Note that $p_1 = p_2$ since $t_{1,2} = {\small \text{`r events$t[2]`}} \not \in T_1$ as required by definition of order function \@ref(def:order) but $p_2 \neq p_3$. The latter is acceptable since $t_{2,2} = {\small \text{`r events$t[3]`}} \in T_2$.
+
+```{r e4-data, include=FALSE}
+events <- fread(text =
+"t, s, p, v, m
+2021-02-08T14:02:02Z,1,43060,5,0
+2021-02-08T14:02:03,1,43060,2,1
+2021-02-08T14:00:03,0,43060,2,0
+")
+```
+
+```{r e4-table, echo=FALSE, results='asis'}
+print_html(format_table(events, "The bid order was matched after it was open on the order book ($m_2 = 1$) and the remaining amount was cancelled ($m_3 = 0$, $s_3=0$) at the same time."))
+```
+
+```{r e4-function, echo=FALSE, results='asis'}
+print_html(format_function(table2function(events), "$T_2$ is a degenerate interval since it is started by a match (second row in table \\@ref(tab:e4-table)) and ended by a cancellation (third row in table \\@ref(tab:e4-table)) that happened at the same time."))
+
+```
+
+The order function defined by \@ref(tab:e4-function) has the form: $o(p,t) = \sum_{k=1}^2 v_k \mathbb{1}_{P_k\times T_k}(p,t)$.
+
+Note that *both* filled volume function $f_v(t)$ as defined by \@ref(def:filled-volume) and amended volume function $a_v(t)$ as defined by \@ref(def:amended-volume) are non-zero at $t = t_{1,2} = t_{2,1} = t_{2,2} = {\small \text{`r events$t[2]`}}$:
+$$f_v({\small \text{`r events$t[2]`}}) = -3.0 \\a_v({\small \text{`r events$t[2]`}}) = -2.0$$
 
 ## Example of LOB
 
