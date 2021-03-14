@@ -168,7 +168,7 @@ Suppose an order function $o(p,t)$ as defined by \@ref(def:order) and related pr
 ```
 
 
-```{definition Filled Volume, name="Filled Volume", label=fill-volume}
+```{definition Filled Volume, name="Filled Volume", label=filled-volume}
 Suppose a volume function $v(t)$ as defined by \@ref(def:volume-function) is given. The function 
   $$
   f_{v}(t) = v(t) - \lim_{t^{'} \uparrow t} v(t^{'}) 
@@ -631,6 +631,7 @@ format_function <- function(table, caption) {
     set_caption_pos("topleft")
 }
 ```
+Let's start from the simplest case possible.
 
 ```{r e1-data, include=FALSE}
 events <- fread(text =
@@ -650,9 +651,9 @@ print_html(format_function(table2function(events), "The order function restored 
 
 The order function defined by \@ref(tab:e1-function) may be written as: $o(p,t) = v_1 \mathbf{1}_{P_1 \times T_1}(p,t)$.
 
-The corresponding filled volume function is identically zero: $$f_v(t) \equiv 0$$
+The corresponding filled volume function as defined by \@ref(def:filled-volume) is identically zero: $$f_v(t) \equiv 0$$
 
-The corresponding amended volume function is non-zero at just one point: $$f_a(\text{`r events$t[1]`}) = 1.0$$
+The corresponding amended volume function is defined by \@ref(def:amended-volume) is non-zero at just one point: $$a_v({\small \text{`r events$t[1]`}}) = 1.0$$
 
 ```{r e2-data, include=FALSE}
 events <- fread(text =
@@ -671,7 +672,12 @@ print_html(format_function(table2function(events), "Similar to the function \\@r
 
 ```
 
+As in the case of table \@ref(tab:e1-function), the order function defined by \@ref(tab:e2-function) may be written as: $o(p,t) = v_1 \mathbf{1}_{P_1 \times T_1}(p,t)$ and the corresponding filled volume as defined by \@ref(def:filled-volume) function is identically zero: $$f_v(t) \equiv 0$$
 
+But the corresponding amended volume function as defined by \@ref(def:amended-volume) is non-zero at two points: 
+$$a_v({\small \text{`r events$t[1]`}}) = `r events$v[1]` \\a_v({\small \text{`r events$t[2]`}}) = `r -events$v[2]`$$
+
+Note that since the order is an ask order, the amendment function is negative at `r events$t[1]` and positive at `r events$t[2]`. It would be the other way around for a bid order.
 
 ```{r e3-data, include=FALSE}
 events <- fread(text =
@@ -690,6 +696,17 @@ print_html(format_table(events, "The order was matched after it was open on the 
 print_html(format_function(table2function(events), "$T_1$ is right-open since its right bound is determined by a match (second row in table \\@ref(tab:e3-table) with $m_2 = 1$). $T_2$ is a closed since it is started by a match and ended by an amendment (third row in table \\@ref(tab:e3-table))."))
 
 ```
+
+The order function defined by \@ref(tab:e3-function) has the form: $o(p,t) = \sum_{k=1}^3 v_k \mathbb{1}_{P_k\times T_k}(p,t)$.
+
+The corresponding filled volume as defined by \@ref(def:filled-volume) is not identically zero in this case:
+$$f_v({\small \text{`r events$t[2]`}}) \equiv v({\small \text{`r events$t[2]`}}) - \lim_{t' \uparrow `r events$t[2]`} v(t') = `r events$v[1]` - (`r events$v[2]`) = `r events$v[1] - events$v[2]`$$
+
+The corresponding amended volume function as defined by \@ref(def:amended-volume) is again non-zero at two points: 
+$$a_v({\small \text{`r events$t[1]`}}) = `r events$v[1]` \\a_v({\small \text{`r events$t[3]`}}) = `r events$v[3]` - (`r events$v[2]`) = `r events$v[3]-events$v[2]`$$
+
+Note that $p_1 = p_2$ since $t_{1,2} = {\small \text{`r events$t[2]`}} \not \in T_1$ as required by definition of order function \@ref(def:order) but $p_2 \neq p_3$. The latter is acceptable since $t_{2,2} = {\small \text{`r events$t[3]`}} \in T_2$.
+
 ## Example of LOB
 
 

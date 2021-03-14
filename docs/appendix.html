@@ -24,7 +24,7 @@
 <meta name="author" content="Petr Fedorov" />
 
 
-<meta name="date" content="2021-03-13" />
+<meta name="date" content="2021-03-14" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -116,6 +116,7 @@
 <h1><span class="header-section-number">5</span> Appendix</h1>
 <div id="examples-of-order-tables-and-restored-functions" class="section level2">
 <h2><span class="header-section-number">5.1</span> Examples of order tables and restored functions</h2>
+<p>Let’s start from the simplest case possible.</p>
 <table class="huxtable" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  " id="tab:e1-table">
 <caption style="caption-side: top; text-align: left;">
 <span id="tab:e1-table">Table 5.1: </span> If an order was open on the order book and nothing else has happened with the order since then (i.e. it has not been not matched, amended or cancelled), its order table will contain one order event. By looking at the sign of <span class="math inline">\(v_n\)</span> value one can say that it is a bid order.
@@ -191,8 +192,8 @@
 </tr>
 </table>
 <p>The order function defined by <a href="appendix.html#tab:e1-function">5.2</a> may be written as: <span class="math inline">\(o(p,t) = v_1 \mathbf{1}_{P_1 \times T_1}(p,t)\)</span>.</p>
-<p>The corresponding filled volume function is identically zero: <span class="math display">\[f_v(t) \equiv 0\]</span></p>
-<p>The corresponding amended volume function is non-zero at just one point: <span class="math display">\[f_a(\text{13:59:59.941999}) = 1.0\]</span></p>
+<p>The corresponding filled volume function as defined by <a href="methods.html#def:filled-volume">2.4</a> is identically zero: <span class="math display">\[f_v(t) \equiv 0\]</span></p>
+<p>The corresponding amended volume function is defined by <a href="methods.html#def:amended-volume">2.5</a> is non-zero at just one point: <span class="math display">\[a_v({\small \text{13:59:59.941999}}) = 1.0\]</span></p>
 <table class="huxtable" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  " id="tab:e2-table">
 <caption style="caption-side: top; text-align: left;">
 <span id="tab:e2-table">Table 5.3: </span> If an order was open on the order book and then cancelled, its order table will contain second event that corresponds to the removal of the order from the order book as indicated by <span class="math inline">\(s_k = 0\)</span> in the second row.
@@ -284,6 +285,10 @@
 </td>
 </tr>
 </table>
+<p>As in the case of table <a href="appendix.html#tab:e1-function">5.2</a>, the order function defined by <a href="appendix.html#tab:e2-function">5.4</a> may be written as: <span class="math inline">\(o(p,t) = v_1 \mathbf{1}_{P_1 \times T_1}(p,t)\)</span> and the corresponding filled volume as defined by <a href="methods.html#def:filled-volume">2.4</a> function is identically zero: <span class="math display">\[f_v(t) \equiv 0\]</span></p>
+<p>But the corresponding amended volume function as defined by <a href="methods.html#def:amended-volume">2.5</a> is non-zero at two points:
+<span class="math display">\[a_v({\small \text{13:59:59.940999}}) = -0.463963 \\a_v({\small \text{13:59:59.980000}}) = 0.463963\]</span></p>
+<p>Note that since the order is an ask order, the amendment function is negative at 13:59:59.940999 and positive at 13:59:59.980000. It would be the other way around for a bid order.</p>
 <table class="huxtable" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  " id="tab:e3-table">
 <caption style="caption-side: top; text-align: left;">
 <span id="tab:e3-table">Table 5.5: </span> The order was matched after it was open on the order book (<span class="math inline">\(m_2 = 1\)</span>) and afterwards its price and volume were simultaneously amended (<span class="math inline">\(m_3 = 0\)</span>, <span class="math inline">\(s_3=1\)</span>).
@@ -414,6 +419,12 @@
 </td>
 </tr>
 </table>
+<p>The order function defined by <a href="appendix.html#tab:e3-function">5.6</a> has the form: <span class="math inline">\(o(p,t) = \sum_{k=1}^3 v_k \mathbb{1}_{P_k\times T_k}(p,t)\)</span>.</p>
+<p>The corresponding filled volume as defined by <a href="methods.html#def:filled-volume">2.4</a> is not identically zero in this case:
+<span class="math display">\[f_v({\small \text{14:00:00.111999}}) \equiv v({\small \text{14:00:00.111999}}) - \lim_{t&#39; \uparrow 14:00:00.111999} v(t&#39;) = -2.5 - (-2.1) = -0.4\]</span></p>
+<p>The corresponding amended volume function as defined by <a href="methods.html#def:amended-volume">2.5</a> is again non-zero at two points:
+<span class="math display">\[a_v({\small \text{13:59:59.943000}}) = -2.5 \\a_v({\small \text{14:00:01.115000}}) = -2.3 - (-2.1) = -0.2\]</span></p>
+<p>Note that <span class="math inline">\(p_1 = p_2\)</span> since <span class="math inline">\(t_{1,2} = {\small \text{14:00:00.111999}} \not \in T_1\)</span> as required by definition of order function <a href="methods.html#def:order">2.1</a> but <span class="math inline">\(p_2 \neq p_3\)</span>. The latter is acceptable since <span class="math inline">\(t_{2,2} = {\small \text{14:00:01.115000}} \in T_2\)</span>.</p>
 </div>
 <div id="example-of-lob" class="section level2">
 <h2><span class="header-section-number">5.2</span> Example of LOB</h2>
