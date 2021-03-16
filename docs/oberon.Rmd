@@ -6,6 +6,7 @@ date: "`r Sys.Date()`"
 header-includes: 
 output: 
   bookdown::gitbook:
+    toc_depth: 4
     number_sections: TRUE
     figure_captions: TRUE
 
@@ -95,8 +96,9 @@ It should be clear from the above that substantial effort is required to reconst
 
 # Methods
 
+We defined the terms "order event and "reconstruction" strictly, developed a software that reconstructs order events in accordance with these definitions from data provided by several cryptocurrency exchanges and analysed whether the exchanges provide enough information for the comprehensive reconstruction of their order book evolution.
 
-Surprisingly, an order, an order event, a limit order book,  the operations of a continuous double auction are rather complicated things if one attempts to define them rigorously. Consider, for example,  a definition given in the recent book [@bouchaud_trades_2018]:
+Surprisingly, an order, an order event, a limit order book,  the operations of a continuous double auction are rather complicated things if one attempts to define them rigorously. Consider, for example,  a definition given in the book [@bouchaud_trades_2018]:
 
 
 > An order is a commitment, declared at a given submission time, to buy or sell a given volume of an asset at no worse than a given price. An order $x$ is thus described by four attributes:
@@ -120,9 +122,9 @@ The above definition and description are incomplete:
 
 * It is not stated what will happen if $v_x \leq v_y$, etc. 
 
-Below we propose stricter definitions that address these and the other similar issues while staying as close as possible to [@bouchaud_trades_2018]. Afterwards we describe the reconstruction process.
+Below we propose stricter definitions that address these and the other similar issues trying to stay close to [@bouchaud_trades_2018]. Afterwards we describe the reconstruction process.
 
-## Order
+## Definitions 
 
 
 ```{definition Order Function, name="Order Function", label="order" }
@@ -246,8 +248,6 @@ Then $\mathcal{P} = \{ \{p_k'\}\}_{k=1}^{|\mathcal{T}|}$ and $\mathcal{V} = \{ v
 See [Appendix][Examples of order tables and restored functions] for examples of order tables and order functions restored from them.
 
 
-## Limit Order Book (LOB)
-
 Typically the term [order book](https://www.investopedia.com/terms/o/order-book.asp) refers to an electronic list of buy and sell orders for a specific security or financial instrument organized by price level. An order book lists the number of shares being bid on or offered at each price point, or market depth. Order books are used by almost every exchange to list the orders for different securities. 
 
 
@@ -315,17 +315,57 @@ Suppose a Limit Order Book $\mathcal{L}$ is given as defined by \@ref(def:lob). 
 
 To make the above definitions intuitively clear, consider an example in [Appendix][Example of LOB].
 
-## Reconstruction process{#reconstruction-process}
+
+```{definition Order Set Table, name="Order Set Table", label=order-set-table}
+Suppose an order set $\mathcal{O} = \{ o^i(\cdot, \cdot)_i \}$ as defined by \@ref(def:order-set) is given. A union of set of tuples:
+$$\bigcup_i \big\{(i, t_k^i, s_k^i,p_k^i, v_k^i, m_k^i)\big\}_{k=1}^{K^i}$$ where $i$ is *a unique order identification number* and $\{(t_k^i, s_k^i,p_k^i, v_k^i, m_k^i)\}_{k=1}^{K^i}$ is the order table as defined by \@ref(def:order-table) of order $o^i(\cdot, \cdot)$ is called *an order set table*.
+```
 
 
-Figure \@ref(fig:oberon-overview) shows UML2 Activity Diagram [@cook_omg_2017] of `Standalone application - capture` activity that represents an implementation of `oberon capture` command. The activity node `Reconstruct Order Book` performs a reconstruction of order book events from exchange-specific messages that are passed by node `Receive messages`.
+## Software 
 
 
-```{r oberon-overview, echo=FALSE, fig.cap="`Receive messages` activity node collects avaialbe information in an exchange-specific format and pass the information in the form of [Boost.Property Tree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) to `Reconstruct Order Book` activity node that, as its name implies, reconstructs order book events in an *universal* format described herein. Note that both activity nodes run concurrently.", fig.align="left"}
+
+### Capture
+
+
+Figure \@ref(fig:capture-overview) shows UML2 Activity Diagram [@cook_omg_2017] of `S.1 Capture` activity that represents an implementation of `oberon capture` command. The activity node `Reconstruct Order Book` performs a reconstruction of order book events from exchange-specific messages that are passed by node `Receive messages`.
+
+
+```{r capture-overview, echo=FALSE, fig.cap="`Receive messages` activity node collects avaialbe information in an exchange-specific format and pass the information in the form of [Boost.Property Tree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) to `Reconstruct Order Book` activity node that, as its name implies, reconstructs order book events in an *universal* format described herein. Note that both activity nodes run concurrently.", fig.align="left"}
 knitr::include_graphics("Standalone application - capture.png", dpi=80)
 ```
 
-Figure \@ref(fig:reconstruct-order-book) shows UML2 Activity Diagram of `Reconstruct Order Book` activity which is called by the activity node with the same name on figure \@ref(fig:oberon-overview).
+#### Receive messages
+
+Activity `Receive messages` on figure \@ref(fig:capture-overview) is UML2 `StartObjectBehaviourAction` that starts execution of `Receiver` StateMachine shown on figure \@ref(fig:receiver). The call is synchronous, so the execution of the `Receive messages` does not complete until the execution of `Receiver` StateMachine completes.
+
+(ref:receiver-caption) `Processing snapshot` and `Processing messages` states pass received portions of data to `Reconstruct Order Book` (by calling method `Reconstructor::process()` shown on figure \@ref(fig:sd-reconstructor-process)) thereby the streaming of data between `Receive messages` and `Reconstruct Order Book` on figure \@ref(fig:capture-overview) is implemented.
+
+```{r receiver, echo=FALSE, fig.cap="(ref:receiver-caption)", fig.align="left"}
+knitr::include_graphics("Receiver state machine.png", dpi=80)
+```
+
+Almost all exchanges  provide two separate channels for receiving (i) a list of orders currently open on order book and (ii) order updates. In order to capture a dynamics of an order book one need to receive information from both channels and combine it. `Feeder` StateMachine shown on figure \@ref(fig:feeder) deals with receiving order updates while `Snapshot` StateMachine shown on figure \@ref(fig:snapshot) is responsible for getting a list of orders currently open on order book.
+
+Now look at figure \@ref(fig:receiver) again. An entry behaviour of `Engage.Engaging Feeder` state launches `Feeder` StateMachine asynchronously. The latter sends "success" event as soon as it successfully subscribed for order updates and `Receiver` transitions to `Engage.Feeder Engaged.Making Snapshot.Obtaining` state. The state's entry behaviour asynchronously launches `Snapshot` StateMachine shown on figure \@ref(fig:snapshot). 
+
+While `Receiver` remains in `Engaged.Feeder Engaged.Making Snapshot` state messages sent by `Feeder` are queued by internal transition activity on `Receiver.Feeder Engaged` state.  As soon as `Snapshot` has received the snapshot, it sends `Receiver` "success" event and `Receiver` checks whether the snapshot and messages from `Feeder` cover the intersecting time periods or the snapshot is stale. In the latter case the snapshot is re-queried. Otherwise `Receiver` transitions to `Processing snapshot` state which asynchronously passes the snapshot to `Reconstruct Order Book` activity and upon receiveing "success" event transitions to `Processing messages` which asynchronously passes  messages received from an exchange to `Reconstruct Order Book`. It is assumed that `Receiver` spends most of the time in this state.
+
+(ref:feeder-caption) Transition `success` between `Subscribe` and `Receive` states sends "success" event to `Receiver` StateMachine. An entry behaviour of `Receive` state launches asynchronous read operation, whose successfull completion triggers  `success` transition from `Receive`. If some service message (i.e. heartbeat, subscription) has arrived, it is processed locally. Otherwise "message" event is sent to `Receiver`.
+
+```{r feeder, echo=FALSE, fig.cap="(ref:feeder-caption)", fig.align="left"}
+knitr::include_graphics("Feeder state machine.png", dpi=80)
+```
+
+(ref:snapshot-caption) Snapshot StateMachine diagram.
+
+```{r snapshot, echo=FALSE, fig.cap="(ref:snapshot-caption)", fig.align="left"}
+knitr::include_graphics("Snapshot state machine.png", dpi=80)
+```
+#### Reconstruct Order Book
+
+Figure \@ref(fig:reconstruct-order-book) shows UML2 Activity Diagram of `Reconstruct Order Book` activity which is called by the activity node with the same name on figure \@ref(fig:capture-overview).
 
 
 ```{r reconstruct-order-book, echo=FALSE, fig.cap="`Reconstruct Order Book` activity is implemented by an indefinite loop that invokes `Process message` activity every time new instance is placed on its input pin `ptree`. The loop terminates if `Process message` throws `processing_error` exception.", fig.align="left"}
@@ -375,50 +415,30 @@ Handling of messages by `TokenHandler` is implemented using [Visitor](https://en
 knitr::include_graphics("sd Message - accept.png", dpi=80)
 ```
 
-## Data cleansing
-
-
 It should be clear from the definition of order table \@ref(def:order-table) that not every set of order events as defined by \@ref(def:order-event) represents a valid order table. Similarly, not every set of orders represents valid LOB as defined by \@ref(def:lob).
 
   Data cleansing process receives a stream of order events (possible extended and/or incomplete i.e. order events as defined by \@ref(def:order-event) but with some additional and/or missing attributes), restores order functions from them and then restores LOB from order functions.
   
-Data cleansing is performed by a sequence of `TokenHandler`s as shown on figure \@ref(fig:sd-tokenhandler-handle). Below lists of `TokenHandler`s used for different exchange event streams are shown.
+Data cleansing is performed by a sequence of `TokenHandler`s as shown on figure \@ref(fig:sd-tokenhandler-handle). Table \@ref(tab:tokenhandler-chains) below lists `TokenHandler`s used for different exchange event streams.
 
-### Coinbase 
+```{r tokenhandler-chains, echo=FALSE}
+hux(TokenHandler=c("Synchronizer", "TimeOrderEnforcer", "Deduplicator", "SizeDeducer", "EventCounter", "File"),
+    Coinbase=c("C", "N", "N", "Y", "Y", "Y"),
+    Bitstamp=c("C", "C", "C", "Y", "Y", "Y"),
+    Bitfinex=c("N", "C","C", "Y", "Y","Y")) %>%
+  set_text_color(1,1, "white") %>%
+  set_align(everywhere, 2:4, "center") %>%
+  set_caption("Y means that TokenHandler (left) is used by the exchange chain (top), N - is not used and C means that a customized version is used.") %>%
+  set_caption_pos("topleft")
+```
 
-  * Coinbase::Syncrhonizer
-  * SizeDeducer
-  * EventCounter
-  * File
-
-### Bitstamp 
-
-  * Bitstamp::Synchronizer
-  * Bitstamp::TimeOrderEnforcer
-  * Bitstamp::Deduplicator
-  * SizeDeducer
-  * EventCounter
-  * File
-
-### Bitfinex 
+### Slice and merge
 
 TBD
 
+### Transmute
 
-```{r  redundant-base, echo=FALSE, fig.cap="States of an order while it being processed by an exchange", fig.align="center"}
-knitr::include_graphics("redundant0.png", dpi=80)
-```
-
-```{r  redundant-variant1, echo=FALSE, fig.cap="States of an order while it being processed by an exchange", fig.align="center"}
-knitr::include_graphics("redundant1.png", dpi=80)
-```
-
-
-```{r  redundant-variant2, echo=FALSE, fig.cap="States of an order while it being processed by an exchange", fig.align="center"}
-knitr::include_graphics("redundant2.png", dpi=80)
-```
-
-
+TBD
 
 # Results
 
@@ -866,6 +886,32 @@ It can bee seen from figure \@ref(fig:example-order-book) that:
 * At `r format(time_0 + sort(unique(sot$t))[10], "%H:%M:%OS1")` volume and price of order 6 have been amended. Its volume has been reduced by 100 units of the asset and its price increased to 60. At the same time a market buy order has been placed for 5000 units of the currency and single trade has been executed: $(\text{`r format(time_0 + sort(unique(sot$t))[9], "%H:%M:%OS1")`}, 5, 50, -100)$. Most likely the change of price of order 6 has transformed it to a market limit order which was partially executed and the reminder was placed in the order book again. 
 * At `r format(time_0 + sort(unique(sot$t))[11], "%H:%M:%OS1")` a sell market order has been placed, single trade was executed: $(\text{`r format(time_0 + sort(unique(sot$t))[11], "%H:%M:%OS1")`}, 6, 60, 300)$ and, simultaneously, probably as a consequence of the trade, the price of order 6 has been amended from 60 to 20. Note that trade has been executed at price 60.
 
+## Token handlers
+
+### Synchronizer
+
+TBD
+
+### TimeOrderEnforcer
+
+TBD
+
+### Deduplicator
+
+TBD
+
+```{r  redundant-base, echo=FALSE, fig.cap="States of an order while it being processed by an exchange", fig.align="center"}
+knitr::include_graphics("redundant0.png", dpi=80)
+```
+
+```{r  redundant-variant1, echo=FALSE, fig.cap="States of an order while it being processed by an exchange", fig.align="center"}
+knitr::include_graphics("redundant1.png", dpi=80)
+```
+
+
+```{r  redundant-variant2, echo=FALSE, fig.cap="States of an order while it being processed by an exchange", fig.align="center"}
+knitr::include_graphics("redundant2.png", dpi=80)
+```
 
 
 # References

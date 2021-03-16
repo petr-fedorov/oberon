@@ -1,6 +1,6 @@
 format 224
 "App" // App
-  revision 153
+  revision 154
   modified_by 6 "petr"
   // class settings
   
@@ -54,7 +54,7 @@ format 224
     
     activitydiagramsettings
      end
-    activity 148230 "Standalone application - capture"
+    activity 148230 "S.1 Capture"
       activitydiagram 181766 "Standalone application - capture"
 	activitydiagramsettings
 	 end
@@ -79,20 +79,21 @@ format 224
       end
 
       activityaction 192390 "Receive messages"
-	opaque_action
+	start_object_behavior_action
+	synchronous
 	flow 415622 "S.1.10"
 	  on activitynode_ref 190086 // activity_final
 	end
 
-	pin 357382 "target" explicit_type "Receiver"
+	pin 378502 "target" type class_ref 712966 // Receiver
 	   multiplicity "1" unordered 
 	  in
 	end
 
-	pin 357510 "ptree" type class_ref 174214 // ptree
-	   multiplicity "*" fifo 
+	pin 378630 "ptree" type class_ref 174214 // ptree
+	   multiplicity "*" unordered 
 	  out stream
-	  flow 415750 "S.1.5"
+	  flow 437126 "<flow>"
 	    on pin_ref 348678 // ptree
 	  end
 	end
@@ -136,8 +137,8 @@ format 224
 	  pin 349830 "receiver" explicit_type ""
 	     multiplicity "1" unordered 
 	    out
-	    flow 415878 "S.1.4"
-	      on pin_ref 357382 // target
+	    flow 437254 "S.1.4"
+	      on pin_ref 378502 // target
 	    end
 	  end
 	end

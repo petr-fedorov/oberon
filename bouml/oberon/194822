@@ -1,6 +1,6 @@
 format 224
 "Acquirer" // App::Acquirer
-  revision 59
+  revision 60
   modified_by 6 "petr"
   // class settings
   
@@ -58,6 +58,7 @@ format 224
       statediagram 406150 "Feeder state machine diagram"
 	statediagramsettings show_trans_definition yes
 	 end
+	state_color transparent 
 	size A4
       end
 
@@ -344,7 +345,8 @@ boost::asio::async_connect(
 	  transition 524678 "success"
 	    on state_ref 275078 // Receive
 	      uml_trigger "success"
-	      uml_expr "report subscribed, start check timer"
+	      uml_expr "send \"success\" event, start check timer
+"
 	      cpp_trigger "success"
 	      cpp_expr "if (stm.d_->sh_)
   stm.d_->sh_();
@@ -427,7 +429,8 @@ stm.d_->timer_->async_wait(boost::asio::bind_executor(
 	  transition 533638 "report data received"
 	    on state_ref 275078 // Receive
 	      uml_guard "else"
-	      uml_expr "report received"
+	      uml_expr "send \"message\" event 
+"
 	      cpp_expr "stm.reportReceived();
 "
 	    external 
@@ -474,7 +477,7 @@ stm.d_->timer_->async_wait(boost::asio::bind_executor(
       pseudostate 348806 junction ""
 	transition 549894 "stopped"
 	  on pseudostate_ref 369670 // final 
-	    uml_expr "report success"
+	    uml_expr "send \"failure\" event"
 	    cpp_expr "BOOST_LOG_TRIVIAL(debug) << stm._machine_name << \" success\";
 if(stm.d_->sh_) stm.d_->sh_();
 
@@ -486,7 +489,7 @@ if(stm.d_->sh_) stm.d_->sh_();
       pseudostate 355462 junction ""
 	transition 550022 "failed"
 	  on pseudostate_ref 369670 // final 
-	    uml_expr "report failure"
+	    uml_expr "send \"failure\" event"
 	    cpp_expr "BOOST_LOG_TRIVIAL(debug) << stm._machine_name << \" failure\";
 if(stm.d_->fh_) stm.d_->fh_();
 "
@@ -3204,6 +3207,7 @@ ${members}};
       statediagram 406534 "Snapshot state machine"
 	statediagramsettings show_trans_definition yes
 	 end
+	state_color white 
 	size A4
       end
 
@@ -3281,7 +3285,7 @@ stm.d_->resolver_->async_resolve(
 
 	transition 499974 "completion"
 	  on pseudostate_ref 334598 // final 
-	    uml_expr "report success"
+	    uml_expr "send success event"
 	    cpp_expr "BOOST_LOG_TRIVIAL(debug) << stm._machine_name << \" success\";
 if(stm.d_->rh_) stm.d_->rh_(std::move(stm.d_->snapshot_tree_));
 
@@ -3483,7 +3487,7 @@ boost::asio::post(*stm.d_->ioc_, [&stm]() {
       pseudostate 335110 junction ""
 	transition 502150 "<transition>"
 	  on pseudostate_ref 334598 // final 
-	    uml_expr "report failure"
+	    uml_expr "send failure event"
 	    cpp_expr "BOOST_LOG_TRIVIAL(debug) << stm._machine_name << \" failure\";
 if(stm.d_->fh_) stm.d_->fh_();
 
@@ -5687,6 +5691,7 @@ ${members}};
       statediagram 399494 "Receiver state machine"
 	statediagramsettings show_trans_definition yes draw_all_relations yes
 	 end
+	state_color transparent 
 	size A4
       end
 
@@ -5754,7 +5759,7 @@ stm.exit_code_ = EXIT_FAILURE;
 
 "
 	  state 219782 "Processing messages"
-	      uml_on_entry "pass to reconstructor"
+	      uml_on_entry "pass to reconstructor async"
 	      cpp_on_entry "boost::asio::post(boost::asio::bind_executor(
     *stm.d_->processing_strand_,
     [messages = std::move(stm.d_->messages_), &stm]() {
@@ -5863,8 +5868,8 @@ else
 	    end
 
 	    state 233350 "Processing snapshot"
-		uml_on_entry "launch"
-		uml_on_exit "stop saving job"
+		uml_on_entry "pass to reconstructor async"
+		uml_on_exit "stop processing thread"
 		cpp_on_entry "stm.saveSnapshot();"
 		cpp_on_exit "stm.d_->stop_thread_.store(true);
 

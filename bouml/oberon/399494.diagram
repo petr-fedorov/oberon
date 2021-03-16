@@ -1,206 +1,211 @@
 format 224
 
 pseudostatecanvas 128006 pseudostate_ref 274182 // initial 
-   xyz 393.309 10.8554 2000
+   xyz 392.309 70.8554 2026
 end
 statecanvas 131974 state_ref 219526 // Engaging Feeder
   
-  xyzwh 230.629 167.811 2060 227 91
+  xyzwh 229.629 227.811 3028 227 91
 end
 statecanvas 133638 state_ref 219782 // Processing messages
   
-  color gold xyzwh 393.924 729.045 2059 199 77
+  color green xyzwh 385.924 793.045 3033 237 77
 end
 statecanvas 139014 state_ref 226694 // Feeder Engaged
   
-  xyzwh 43.9377 310.776 2054 745 603
+  xyzwh 42.9377 370.776 3017 745 603
 end
 pseudostatecanvas 139782 pseudostate_ref 281350 // initial 
-   xyz 138.185 610.562 2087
+   xyz 139.185 670.562 3033
 end
 statecanvas 141318 state_ref 233222 // Engage
   
-  xyzwh 26.9127 78.1484 2016 793 921
+  xyzwh 20.9127 138.148 3012 793 921
 end
 pseudostatecanvas 141446 pseudostate_ref 287878 // initial 
-   xyz 104.731 198.879 2021
+   xyz 103.731 258.879 3017
 end
 statecanvas 141958 state_ref 233350 // Processing snapshot
   
-  xyzwh 508.742 569.519 2084 155 93
+  color green xyzwh 496.742 629.519 3027 237 93
 end
 pseudostatecanvas 151814 pseudostate_ref 314502 // final 
-   xyz 614.647 6.92077 2021
+   xyz 609.647 66.9208 2066
 end
 statecanvas 165766 state_ref 253190 // Waiting
   
-  xyzwh 64.6178 743.256 2059 89 53
+  xyzwh 63.6178 803.256 3022 89 53
 end
 pseudostatecanvas 165894 pseudostate_ref 327558 // choice 
-   xyz 237.541 752.023 2059
+   xyz 236.541 812.023 3039
 end
 statecanvas 167302 state_ref 261638 // Obtaining
   
-  xyzwh 180.664 578.796 2081 173 93
+  xyzwh 179.664 638.796 3027 173 93
 end
 pseudostatecanvas 168198 pseudostate_ref 335238 // choice 
-   xyz 423.788 592.695 2090
+   xyz 422.788 652.695 3033
 end
 statecanvas 170374 state_ref 288774 // Making Snapshot
   
-  xyzwh 122.552 495.727 2076 579 199
+  xyzwh 123.552 555.727 3022 625 197
 end
 pseudostatecanvas 179718 pseudostate_ref 369798 // initial 
-   xyz 65 568 2059
+   xyz 64 628 3028
 end
 statecanvas 180230 state_ref 322438 // Failing
   
-  xyzwh 375 401 2059 145 77
+  xyzwh 374 461 3028 145 77
 end
 pseudostatecanvas 180486 pseudostate_ref 396422 // exit_point failure
-   xyz 546 302 3005 label_xy 558 284
+   xyz 545 362 3022 label_xy 557 344
+end
+statecanvas 181766 state_ref 218374 // Receiver
+  
+  xyzwh 8 12 2021 821 1091
 end
 transitioncanvas 150150 transition_ref 441990 // success
   decenter_begin 559
-  decenter_end 425
+  decenter_end 421
   
-  from ref 131974 z 2061 label "success" xyz 297 273 2061 to ref 139014
+  from ref 131974 z 3029 label "success" xyz 294.5 333 3029 to ref 139014
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 151942 transition_ref 455814 // failure
   decenter_begin 944
   
-  from ref 131974 z 2061 label "failure" xyz 512 88 2061 to ref 151814
+  from ref 131974 z 3029 label "failure" xyz 509 148 3029 to ref 151814
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 152198 transition_ref 455942 // stop
   decenter_begin 760
   
-  from ref 141318 z 2022 label "stop" xyz 616 45 2022 to ref 151814
+  from ref 141318 z 3013 label "stop" xyz 610.5 105 3013 to ref 151814
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 162822 transition_ref 485126 // <transition>
   
-  from ref 128006 z 2017 to ref 141318
+  from ref 128006 z 3013 to ref 141318
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 163334 transition_ref 485382 // <transition>
   
-  from ref 141446 z 2061 to ref 131974
+  from ref 141446 z 3029 to ref 131974
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 166022 transition_ref 492294 // success
   decenter_end 513
   
-  from ref 133638 z 2060 label "success" xyz 304 760 2060 to ref 165894
+  from ref 133638 z 3040 label "success" xyz 292.5 825.5 3040 to ref 165894
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 166662 transition_ref 492550 // queue is empty
   
-  from ref 165894 z 2060 label "/ else" xyz 180 760 2060 to ref 165766
+  from ref 165894 z 3040 label "/ else" xyz 179 820 3040 to ref 165766
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 167430 transition_ref 502662 // <transition>
   
-  from ref 139782 z 2088 to ref 167302
+  from ref 139782 z 3034 to ref 167302
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 168326 transition_ref 503046 // success
   decenter_begin 365
   decenter_end 540
   
-  from ref 167302 z 2091 label "success" xyz 363 620 2091 to ref 168198
+  from ref 167302 z 3034 label "success" xyz 362 680 3034 to ref 168198
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 168454 transition_ref 503174 // <transition>
   decenter_end 323
   
-  from ref 168198 z 2091 to point 431 556
-  line 172934 z 2091 label "[stale]" xyz 317 547 2091 to point 234 555
-  line 175878 z 2091 to ref 167302
+  from ref 168198 z 3034 to point 430 616
+  line 172934 z 3034 label "[stale]" xyz 316 607 3034 to point 233 615
+  line 175878 z 3034 to ref 167302
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 168710 transition_ref 503302 // <transition>
   decenter_begin 648
   
-  from ref 168198 z 2091 label "[else]" xyz 459 606 2091 to ref 141958
+  from ref 168198 z 3034 label "[else]" xyz 456 666 3034 to ref 141958
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 169350 transition_ref 503686 // success
-  decenter_begin 367
-  decenter_end 869
+  decenter_begin 392
+  decenter_end 864
   
-  from ref 141958 z 2085 label "success" xyz 565 688 2085 to ref 133638
+  from ref 141958 z 3034 label "success" xyz 559.5 751 3034 to ref 133638
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 171142 transition_ref 491910 // message
   decenter_begin 307
   decenter_end 100
   
-  from ref 139014 z 2055 to point 269 275
-  line 171270 z 2055 label "message / queue message" xyz 122 268 2055 to point 115 275
-  line 171398 z 2055 to ref 139014
+  from ref 139014 z 3018 to point 268 335
+  line 171270 z 3018 label "message / queue message" xyz 121 328 3018 to point 114 335
+  line 171398 z 3018 to ref 139014
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 172422 transition_ref 492678 // message
   decenter_begin 662
   decenter_end 225
   
-  from ref 165766 z 2060 to point 118 832
-  line 176390 z 2060 label "message / queue message" xyz 207 824 2060 to point 436 830
-  line 172678 z 2060 to ref 133638
+  from ref 165766 z 3034 to point 117 892
+  line 176390 z 3034 label "message / queue message" xyz 206.5 884.5 3034 to point 436 891
+  line 172678 z 3034 to ref 133638
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 172550 transition_ref 492422 // queue not empty
   decenter_end 194
   
-  from ref 165894 z 2060 to point 245 710
-  line 172806 z 2060 label "[queue not empty]" xyz 290 702 2060 to point 429 709
-  line 176262 z 2060 to ref 133638
+  from ref 165894 z 3040 to point 244 770
+  line 172806 z 3040 label "[queue not empty]" xyz 289 762 3040 to point 428 769
+  line 176262 z 3040 to ref 133638
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 179846 transition_ref 550918 // <transition>
   
-  from ref 179718 z 2077 to ref 170374
+  from ref 179718 z 3029 to ref 170374
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 179974 transition_ref 551046 // failure
   decenter_begin 809
   
-  from ref 139014 z 2061 to point 640 206
-  line 180102 z 2061 label "failure" xyz 495 197 2061 to ref 131974
+  from ref 139014 z 3029 to point 639 266
+  line 180102 z 3029 label "failure" xyz 494 257 3029 to ref 131974
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 180358 transition_ref 584710 // failure
   decenter_begin 295
   
-  from ref 170374 z 2077 label "failure" xyz 274 455 2077 to point 287 432
-  line 181638 z 2077 to ref 180230
+  from ref 170374 z 3029 label "failure" xyz 290.5 517 3029 to point 305 496
+  line 181638 z 3029 to ref 180230
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 180614 transition_ref 584838 // success
+  decenter_begin 311
   
-  from ref 180230 z 3006 label "success" xyz 515 412 3006 to point 556 424
-  line 180742 z 3006 to ref 180486
+  from ref 180230 z 3029 label "success" xyz 531 469 3029 to point 589 483
+  line 180742 z 3029 to ref 180486
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 180870 transition_ref 584966 // failure
+  decenter_begin 727
   
-  from ref 180230 z 3006 label "failure" xyz 533 442 3006 to point 583 465
-  line 181126 z 3006 to point 670 386
-  line 180998 z 3006 to ref 180486
+  from ref 180230 z 3029 label "failure" xyz 572 498.5 3029 to point 662 515
+  line 181126 z 3029 to ref 180486
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 181254 transition_ref 585094 // message
   
-  from ref 180230 z 3006 label "message" xyz 483 343 3006 to ref 180486
+  from ref 180230 z 3029 label "message" xyz 482 403 3029 to ref 180486
   write_horizontally default show_definition default drawing_language default
 end
 transitioncanvas 181382 transition_ref 585222 // <transition>
   decenter_end 835
   
-  from ref 180486 z 3006 to point 551 239
-  line 181510 z 3006 to ref 131974
+  from ref 180486 z 3029 to point 550 299
+  line 181510 z 3029 to ref 131974
   write_horizontally default show_definition default drawing_language default
 end
 end

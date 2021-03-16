@@ -1,6 +1,6 @@
 format 224
 
-activitycanvas 142854 activity_ref 148230 // Standalone application - capture
+activitycanvas 142854 activity_ref 148230 // S.1 Capture
   
   xyzwh 54 31 0 723 551
   params
@@ -15,13 +15,14 @@ end
 activityactioncanvas 143750 activityaction_ref 192390 // activity action Receive messages
   
   show_opaque_action_definition default
+  color green
   xyzwh 512 122 3038 100 60
   pins
-    pincanvas 175750 pin_ref 357382 // target
-      xyzwh 502 143 3040 11 11 label_xy 459 131
+    pincanvas 177158 pin_ref 378502 // target
+      xyzwh 502 146 3040 11 11 label_xy 465 128
     end
-    pincanvas 175878 pin_ref 357510 // ptree
-      xyzwh 556 181 3040 11 11 label_xy 581 183
+    pincanvas 177286 pin_ref 378630 // ptree
+      xyzwh 554 177 3040 11 11 label_xy 569 182
     end
   end
 end
@@ -126,16 +127,6 @@ flowcanvas 175494 flow_ref 415622 // S.1.10
   from ref 143750 z 3039 label "S.1.10" xyz 544 84 3039 to ref 148870
    write_horizontally default
 end
-flowcanvas 176006 flow_ref 415750 // S.1.5
-  
-  from ref 175878 z 3041 label "S.1.5" xyz 546 287 3041 to ref 170374
-   write_horizontally default
-end
-flowcanvas 176134 flow_ref 415878 // S.1.4
-  
-  from ref 171782 z 4016 label "S.1.4" xyz 424 203 4016 to ref 175750
-   write_horizontally default
-end
 flowcanvas 176390 flow_ref 416006 // S.1.11
   
   from ref 166534 z 2006 label "S.1.11" xyz 543 502 2006 to ref 176262
@@ -145,6 +136,16 @@ flowcanvas 176646 flow_ref 430598 // <flow>
   
   from ref 176518 z 2006 to point 213 553
   line 176774 z 2006 to ref 176262
+   write_horizontally default
+end
+flowcanvas 177414 flow_ref 437126 // <flow>
+  
+  from ref 177286 z 3041 to ref 170374
+   write_horizontally default
+end
+flowcanvas 177542 flow_ref 437254 // S.1.4
+  
+  from ref 171782 z 4016 label "S.1.4" xyz 424 205 3000 to ref 177158
    write_horizontally default
 end
 end
