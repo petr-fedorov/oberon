@@ -1,6 +1,6 @@
 format 224
 "Reconstr" // App::Reconstr
-  revision 257
+  revision 258
   modified_by 6 "petr"
   // class settings
   
@@ -812,7 +812,7 @@ ${inlines}
 	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
 "
 	    classrelation_ref 1252102 // security_ (<directional aggregation>)
-	  b parent class_ref 1067398 // Security
+	  b multiplicity "*" parent class_ref 1067398 // Security
       end
 
       operation 1579782 "security"
@@ -3189,7 +3189,6 @@ ${inlines}
 	    key "STM generated" value ""
 	    comment " returns the state containing the current"
 	  end
-
 	end
 
 	operation 1484038 "~EraMerger_State"

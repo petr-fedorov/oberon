@@ -318,7 +318,7 @@ To make the above definitions intuitively clear, consider an example in [Appendi
 
 ```{definition Order Set Table, name="Order Set Table", label=order-set-table}
 Suppose an order set $\mathcal{O} = \{ o^i(\cdot, \cdot)_i \}$ as defined by \@ref(def:order-set) is given. A union of set of tuples:
-$$\bigcup_i \big\{(i, t_k^i, s_k^i,p_k^i, v_k^i, m_k^i)\big\}_{k=1}^{K^i}$$ where $i$ is *a unique order identification number* and $\{(t_k^i, s_k^i,p_k^i, v_k^i, m_k^i)\}_{k=1}^{K^i}$ is the order table as defined by \@ref(def:order-table) of order $o^i(\cdot, \cdot)$ is called *an order set table*.
+$$\bigcup_i \big\{(i, t_k^i, s_k^i,p_k^i, v_k^i, m_k^i)\big\}_{k=1}^{K^i}$$ where $i$ is *a unique order identification number* and $\{(t_k^i, s_k^i,p_k^i, v_k^i, m_k^i)\}_{k=1}^{K^i}$ is the order table as defined by \@ref(def:order-table) of order $o^i(\cdot, \cdot)$ is called *an order set table*. Each tuple in the order set table is called *an order event with order id*.
 ```
 
 
@@ -379,7 +379,7 @@ knitr::include_graphics("sd Reconstructor - process.png", dpi=80)
 
 The virtual method `Reconstructor::extract()` takes a [Boost.PropertyTree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) container with an exchange-specific data and creates an instance of one of internal exchange-independent message class shown in green on figure \@ref(fig:message-hierarchy-process). The message is returned in `Token` container.
 
-```{r message-hierarchy-process, echo=FALSE, fig.cap="\"Message\" hierarchy of classes used in implementation of \"Process message\" activity.", fig.align="center"}
+```{r message-hierarchy-process, echo=FALSE, fig.cap="`Message`-based hierarchy of classes used in implementation of `Process message` activity. A message of class `Era` carries information about exchange and product being processed.", fig.align="center"}
 knitr::include_graphics("Message hierarchy for process.png", dpi=80)
 ```
 
@@ -431,6 +431,38 @@ hux(TokenHandler=c("Synchronizer", "TimeOrderEnforcer", "Deduplicator", "SizeDed
   set_caption("Y means that TokenHandler (left) is used by the exchange chain (top), N - is not used and C means that a customized version is used.") %>%
   set_caption_pos("topleft")
 ```
+
+#### Save output
+
+The last TokenHandler in every chain is `File` that outputs the cleansed events. Upon receving a message of class `Era` (see figure \@ref(fig:message-hierarchy-process)) `File` opens a new file called *Era file* and saves the subsequent `OrderEvent` messages there until obtaining `Reset` message when the handler closes Era file. `File` drops `Elapsed` messages silently.
+
+  Era file is [CSV-file](https://en.wikipedia.org/wiki/Comma-separated_values) with one row per `OrderEvent` and name constructed from  exchange, product and timestamp values carried by `Era` message. Row fields are described in the table \@ref(tab:order-record) below.
+
+```{r order-record, echo=FALSE, results='asis'}
+ht <- hux(`#`=seq(1:12),
+    Field=c("maker", "ordinal","timestamp", "mks", "state", "price", "volume", "change", "trade","taker","heard", "deleted" ),
+    Type=c("UUID", "long", "string", "int", "bool", "double", "double", "double", "long long", "UUID", "int", "bool" ),
+    Description=c("UUID of the order open on the order book",
+                  "A sequential number of the event for this order",
+                  "Time the event occurred on the exchange in ISO 8601 format, up to a second. Empty field means that the value is the same as in the previous event (previous row)",
+                  "Microseconds part of the time the event occurred on the exchange",
+                  "1, if the order is open on the order book after the event; otherwise empty",
+                  "Price of the order", 
+                  "Volume of the order",
+                  "Change of the order's volume since the previous event, i.e. $v_k^i - v_{k-1}^i$ if $k$ is greater than 1 and $v_k^i \\neq v_{k-1}^i$; otherwise empty",
+                  "If the event is originated by a trade it is an exchange-generated unique trade identification number; otherwise emtpy. Thus $m_k^i \\equiv$ trade isn't empty",
+                  "If the event is originated by a trade, it is an UUID of the matched taker order; otherwise empty",
+                  "Microseconds passed since the event occurred on the exchange till receving by application",
+                  "1, if the event's been deleted (for example, it is a duplicate event); otherwise empty."
+            ),
+    Element=c("$i$", "$k$", "$t_k^i$", "$t_k^i$", "$s_k^i$", "$p_k^i$", "$v_k^i$","", "$m_k^i$", "", "", "")
+    ) %>%
+  set_bold(2:13, 2) %>%
+  set_caption("Era file fields and their corresponding elements of order event with order id tuple as defined by \\@ref(def:order-set-table). If the value of a field can not be determined, it is reported as NA.") %>%
+  set_caption_pos("topleft")
+print_html(ht)
+```
+
 
 ### Slice and merge
 

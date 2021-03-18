@@ -24,7 +24,7 @@
 <meta name="author" content="Petr Fedorov" />
 
 
-<meta name="date" content="2021-03-16" />
+<meta name="date" content="2021-03-18" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -75,6 +75,7 @@
 <li class="chapter" data-level="2.2.1" data-path="methods.html"><a href="methods.html#capture"><i class="fa fa-check"></i><b>2.2.1</b> Capture</a><ul>
 <li class="chapter" data-level="2.2.1.1" data-path="methods.html"><a href="methods.html#receive-messages"><i class="fa fa-check"></i><b>2.2.1.1</b> Receive messages</a></li>
 <li class="chapter" data-level="2.2.1.2" data-path="methods.html"><a href="methods.html#reconstruct-order-book"><i class="fa fa-check"></i><b>2.2.1.2</b> Reconstruct Order Book</a></li>
+<li class="chapter" data-level="2.2.1.3" data-path="methods.html"><a href="methods.html#save-output"><i class="fa fa-check"></i><b>2.2.1.3</b> Save output</a></li>
 </ul></li>
 <li class="chapter" data-level="2.2.2" data-path="methods.html"><a href="methods.html#slice-and-merge"><i class="fa fa-check"></i><b>2.2.2</b> Slice and merge</a></li>
 <li class="chapter" data-level="2.2.3" data-path="methods.html"><a href="methods.html#transmute"><i class="fa fa-check"></i><b>2.2.3</b> Transmute</a></li>
@@ -325,7 +326,7 @@ An <em>order event</em> is a tuple <span class="math inline">\((t,s,p,v,m)\)</sp
 
 <div class="definition">
 <span id="def:order-set-table" class="definition"><strong>Definition 2.17  (Order Set Table)  </strong></span>Suppose an order set <span class="math inline">\(\mathcal{O} = \{ o^i(\cdot, \cdot)_i \}\)</span> as defined by <a href="methods.html#def:order-set">2.8</a> is given. A union of set of tuples:
-<span class="math display">\[\bigcup_i \big\{(i, t_k^i, s_k^i,p_k^i, v_k^i, m_k^i)\big\}_{k=1}^{K^i}\]</span> where <span class="math inline">\(i\)</span> is <em>a unique order identification number</em> and <span class="math inline">\(\{(t_k^i, s_k^i,p_k^i, v_k^i, m_k^i)\}_{k=1}^{K^i}\)</span> is the order table as defined by <a href="methods.html#def:order-table">2.7</a> of order <span class="math inline">\(o^i(\cdot, \cdot)\)</span> is called <em>an order set table</em>.
+<span class="math display">\[\bigcup_i \big\{(i, t_k^i, s_k^i,p_k^i, v_k^i, m_k^i)\big\}_{k=1}^{K^i}\]</span> where <span class="math inline">\(i\)</span> is <em>a unique order identification number</em> and <span class="math inline">\(\{(t_k^i, s_k^i,p_k^i, v_k^i, m_k^i)\}_{k=1}^{K^i}\)</span> is the order table as defined by <a href="methods.html#def:order-table">2.7</a> of order <span class="math inline">\(o^i(\cdot, \cdot)\)</span> is called <em>an order set table</em>. Each tuple in the order set table is called <em>an order event with order id</em>.
 </div>
 
 </div>
@@ -386,9 +387,9 @@ Figure 2.6: <code>Reconstructor::process()</code> first calls virtual abstract <
 </div>
 <p>The virtual method <code>Reconstructor::extract()</code> takes a <a href="https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html">Boost.PropertyTree</a> container with an exchange-specific data and creates an instance of one of internal exchange-independent message class shown in green on figure <a href="methods.html#fig:message-hierarchy-process">2.7</a>. The message is returned in <code>Token</code> container.</p>
 <div class="figure" style="text-align: center"><span id="fig:message-hierarchy-process"></span>
-<img src="Message%20hierarchy%20for%20process.png" alt="&quot;Message&quot; hierarchy of classes used in implementation of &quot;Process message&quot; activity."  />
+<img src="Message%20hierarchy%20for%20process.png" alt="`Message`-based hierarchy of classes used in implementation of `Process message` activity. A message of class `Era` carries information about exchange and product being processed."  />
 <p class="caption">
-Figure 2.7: “Message” hierarchy of classes used in implementation of “Process message” activity.
+Figure 2.7: <code>Message</code>-based hierarchy of classes used in implementation of <code>Process message</code> activity. A message of class <code>Era</code> carries information about exchange and product being processed.
 </p>
 </div>
 <p>As shown on figure <a href="methods.html#fig:reconstructor-hierarchy-process">2.8</a> <code>Reconstructor::extract()</code> method is <em>abstract</em>, so it is overriden by exchange-specific versions that able to process their respective containers properly.</p>
@@ -445,6 +446,238 @@ Figure 2.11: UML2 Sequence diagram showing various alternatives of traces for <a
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">File</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Y</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Y</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Y</td></tr>
 </table>
 
+</div>
+<div id="save-output" class="section level4">
+<h4><span class="header-section-number">2.2.1.3</span> Save output</h4>
+<p>The last TokenHandler in every chain is <code>File</code> that outputs the cleansed events. Upon receving a message of class <code>Era</code> (see figure <a href="methods.html#fig:message-hierarchy-process">2.7</a>) <code>File</code> opens a new file called <em>Era file</em> and saves the subsequent <code>OrderEvent</code> messages there until obtaining <code>Reset</code> message when the handler closes Era file. <code>File</code> drops <code>Elapsed</code> messages silently.</p>
+<p>Era file is <a href="https://en.wikipedia.org/wiki/Comma-separated_values">CSV-file</a> with one row per <code>OrderEvent</code> and name constructed from exchange, product and timestamp values carried by <code>Era</code> message. Row fields are described in the table <a href="methods.html#tab:order-record">2.2</a> below.</p>
+<table class="huxtable" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  " id="tab:order-record">
+<caption style="caption-side: top; text-align: left;">
+<span id="tab:order-record">Table 2.2: </span> Era file fields and their corresponding elements of order event with order id tuple as defined by <a href="methods.html#def:order-set-table">2.17</a>. If the value of a field can not be determined, it is reported as NA.
+</caption>
+<col>
+<col>
+<col>
+<col>
+<col>
+<tr>
+<th style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+#
+</th>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+Field
+</th>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+Type
+</th>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+Description
+</th>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+Element
+</th>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+1
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: bold;">
+maker
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+UUID
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+UUID of the order open on the order book
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(i\)</span>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+2
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: bold;">
+ordinal
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+long
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+A sequential number of the event for this order
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(k\)</span>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+3
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: bold;">
+timestamp
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+string
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+Time the event occurred on the exchange in ISO 8601 format, up to a second. Empty field means that the value is the same as in the previous event (previous row)
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(t_k^i\)</span>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+4
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: bold;">
+mks
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+int
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+Microseconds part of the time the event occurred on the exchange
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(t_k^i\)</span>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+5
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: bold;">
+state
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+bool
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+1, if the order is open on the order book after the event; otherwise empty
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(s_k^i\)</span>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+6
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: bold;">
+price
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+double
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+Price of the order
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(p_k^i\)</span>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+7
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: bold;">
+volume
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+double
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+Volume of the order
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(v_k^i\)</span>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+8
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: bold;">
+change
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+double
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+Change of the order’s volume since the previous event, i.e. <span class="math inline">\(v_k^i - v_{k-1}^i\)</span> if <span class="math inline">\(k\)</span> is greater than 1 and <span class="math inline">\(v_k^i \neq v_{k-1}^i\)</span>; otherwise empty
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+9
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: bold;">
+trade
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+long long
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+If the event is originated by a trade it is an exchange-generated unique trade identification number; otherwise emtpy. Thus <span class="math inline">\(m_k^i \equiv\)</span> trade isn’t empty
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+<span class="math inline">\(m_k^i\)</span>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+10
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: bold;">
+taker
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+UUID
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+If the event is originated by a trade, it is an UUID of the matched taker order; otherwise empty
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+11
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: bold;">
+heard
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+int
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+Microseconds passed since the event occurred on the exchange till receving by application
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+12
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: bold;">
+deleted
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+bool
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+1, if the event’s been deleted (for example, it is a duplicate event); otherwise empty.
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div id="slice-and-merge" class="section level3">
