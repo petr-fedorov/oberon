@@ -1,26 +1,13 @@
 # Order Book Events ReconstructiON (OBERON)
-A stand-alone application for collection of data that allows re-construction of a crypto currency exchange order book dynamics. Connects to an API of the specified exchange and produces `.csv` files called *eras* containing reconstructed [order events]((https://petr-fedorov.github.io/oberon/methods.html#order-and-trade)) in the **exchange-independent** format described below:
+A stand-alone application for collection of data that allows re-construction of a crypto currency exchange order book dynamics. Connects to an API of the specified exchange and produces `.csv` files called *eras* containing reconstructed [order events]((https://petr-fedorov.github.io/oberon/methods.html#order-and-trade)) in the **exchange-independent** format described [here](https://petr-fedorov.github.io/oberon/methods.html#save-output).
 
-|maker|ordinal|timestamp|mks|state|price|volume|change|trade|taker|heard|deleted|
-| --- | ---| --- | ---| --- |---| ---| --- | ---| --- | ---| ---|
-|[UUID](https://www.boost.org/doc/libs/1_67_0/libs/uuid/doc/index.html)|long| [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)|int| bool|double|double|double|long long|UUID|int|bool|
+The collected data can be visualized and analyzed easily. Here is the visualization of the market reaction to Tesla, Inc. Form 10-K saying that the company ["invested an aggregate $1.50 billion in bitcoin ... may acquire and hold digital assets from time to time or long-term. Moreover, Tesla expects to begin accepting bitcoin as a form of payment for Tesla's products in the near future, subject to applicable laws and initially on a limited basis ..."](https://www.sec.gov/Archives/edgar/data/1318605/000156459021004599/tsla-10k_20201231.htm):
 
-The columns contain the following data:
+![](tesla.png)
 
-   * `maker` - UUID of the open order on the order book,
-   * `ordinal` - a sequential number of the event (by `maker`). When an order opens on the order book, the related event has `ordinal` equals to 1; next event for `maker` will have 'ordinal' equals to 2 etc.; empty if it couldn't be determined,
-   * `timestamp` - time the event occurred on an exchange, up to a second; empty, if it is not changed since the previously received event,
-   * `mks` - microseconds part of the time the event occurred on an exchange
-   * `state` - 1, if the order is open on the order book after the event, otherwise empty,
-   * `price` - price of the order
-   * `volume` - volume of the order; it is a negative value for asks and positive for bids,
-   * `change` - a increase or decrease of the order volume relative to the previous event; it is an exchange-provided trade volume when the event is originated from a trade or a calculated value (the difference between `volume` of this and the previous event),
-   * `trade` - an exchange-generated trade identification number; empty, if the event is not originated from a trade,
-   * `taker` - UUID of the taker order in a trade when the event is originated from the trade, otherwise - empty,
-   * `heard` - microseconds passed since the event occurred on the exchange till it was received by OBERON,
-   * `deleted` - 1, if the event was deleted by cleansing (for example, it was a duplicate event), otherwise - empty.
+... and the visualization of an attempt at ~13:11:01 to reverse the growth:
 
-The unknown value of the field is shown by `NA`.
+![](tesla_zoom.png)
 
 See [here](https://petr-fedorov.github.io/oberon/) to understand how to re-construct the order book dynamics from these events.
 
@@ -150,21 +137,12 @@ This command tells OBERON to transmute each era files into five output files: fo
 
 To visualize all five files run `gnuplot` and enter the following command:
 
-      call "/tmp/oberon/cpp/depth.gp" "<era file name>" <min-price> <max-price> "<start-time>" "<end-time>"
+    call "/tmp/oberon/cpp/depth.gp" "<era file name>" <min-price> <max-price> "<start-time>" "<end-time>"
 
-Here is the visualization of the market reaction to Tesla, Inc. Form 10-K saying that the company ["invested an aggregate $1.50 billion in bitcoin ... may acquire and hold digital assets from time to time or long-term. Moreover, Tesla expects to begin accepting bitcoin as a form of payment for Tesla's products in the near future, subject to applicable laws and initially on a limited basis ..."](https://www.sec.gov/Archives/edgar/data/1318605/000156459021004599/tsla-10k_20201231.htm):  
+For example, two visualizations shown above where produced by the following commands:
 
     call "/tmp/oberon/cpp/depth.gp" "Bitstamp_btcusd_2021-02-08T12-00-00.000000Z" 39000 45000 "2021-02-08T12:30:00.000000Z" "2021-02-08T14:00:00.000000Z"
-
-
-![](tesla.png)
-
-... and the visualization of an attempt at ~13:11:01 to reverse the growth:
-
     call "/tmp/oberon/cpp/depth.gp" "Bitstamp_btcusd_2021-02-08T12-00-00.000000Z" 40600 42300 "2021-02-08T13:10:55.000000Z" "2021-02-08T13:11:30.000000Z"
-
-![](tesla_zoom.png)
-
 
 Stripes represent commitments to buy or sell certain volumes of base currency at given quote prices from the moment commitments appeared on an exchange order book until they ceased or changed. Red stripes are bids and blue stripes are asks. Saturation of colors represent absolute value of a commitment volume.
 
