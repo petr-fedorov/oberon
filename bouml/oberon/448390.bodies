@@ -2,55 +2,131 @@ class OrderEvent
 !!!1475078.cpp!!!	clone() : OrderEvent::OrderEvent_UP
 return boost::make_unique<OrderEvent>(*this);
 
-!!!650374.cpp!!!	toString() : string
-std::stringstream buf;
-buf << Message::toString();
-buf << " ";
-if (order_id_ == kNaOrderId)
-  buf << "NA";
+!!!1646470.cpp!!!	toString() : string
+return toCsv(4,4,nullptr);
+!!!650374.cpp!!!	toCsv(in quote_precision : int, in base_precision : int, inout latest_seconds : seconds) : string
+std::stringstream buffer;
+
+// maker
+if (maker() != OrderEvent::kNaOrderId)
+  if (maker() != boost::uuids::nil_uuid())
+    buffer << to_string(maker()) << ",";
+  else
+    buffer << ",";
 else
-  buf << order_id_;
-buf << " ";
-if (!ordinal_)
-  buf << "NA";
+  buffer << "NA,";
+
+// ordinal
+if (ordinal())
+  buffer << ordinal() << ",";
 else
-  buf << ordinal_;
-buf << " ";
-if (side() == kBid)
-  buf << "B";
-else if (side() == kAsk)
-  buf << "A";
-else
-  buf << "NA";
-buf << " ";
-if (std::isnan(price()))
-  buf << "NA";
-else
-  buf << price();
-buf << " ";
-if (std::isnan(remaining()))
-  buf << "NA";
-else
-  buf << remaining();
-buf << " ";
-if (std::isnan(change_size_))
-  buf << "NA";
-else
-  buf << change_size_;
-buf << " ";
-if (state_ == OrderState::kActive) {
-  buf << "act";
-} else if (state_ == OrderState::kFinished) {
-  buf << "fin";
+  buffer << ",";
+
+// timestamp, seconds
+auto s = toSeconds(timestamp().time_since_epoch());
+if (latest_seconds) {
+  if (s != *latest_seconds) {
+    using namespace std::chrono;
+    *latest_seconds = s;
+    date::to_stream(buffer, "%FT%TZ,", time_point<system_clock, seconds>{s});
+  } else
+    buffer << ",";
 } else {
-  buf << "na";
+  using namespace std::chrono;
+  date::to_stream(buffer, "%FT%TZ,", time_point<system_clock, seconds>{s});
 }
-buf << " ";
-if(trade_id_) {
-  buf << trade_id_ << " " << taker_order_id_ << " ";
+
+// timestamp, microseconds
+auto mks = (timestamp().time_since_epoch() - s).count();
+if(mks)
+  buffer << mks;
+buffer << ",";
+
+// timestamp_change
+if( change_timestamp().count() >= 0) {
+  if(change_timestamp().count())
+    buffer << change_timestamp().count();
+  buffer << ",";
 }
-buf << (deleted() ? " DELETED " : "");
-return buf.str();
+else
+  buffer << "NA,";
+
+// state
+if (state() != OrderEvent::OrderState::kNA) {
+  if (state())
+    buffer << state();
+  buffer << ",";
+} else
+  buffer << "NA,";
+
+// price
+if (!std::isnan(price())) {
+  std::ostringstream ss;
+  ss << std::fixed << std::setprecision(quote_precision) << price();
+  buffer << removeTrailingZeros(ss.str()) << ",";
+} else
+  buffer << "NA,";
+
+// price_change
+if (!std::isnan(change_price())) { 
+  std::ostringstream ss;
+  if (change_price()) {
+    ss << std::fixed << std::setprecision(quote_precision) << change_price();
+    buffer << removeTrailingZeros(ss.str());
+  }
+  buffer << ",";
+} else
+  buffer << "NA,";
+
+// volume
+if (!std::isnan(remaining())) {
+  int sign = side() == BookSide::kAsk ? -1 : 1;
+  if (remaining()) {
+    std::ostringstream ss;
+    ss << std::fixed << std::setprecision(base_precision) << sign * remaining();
+    buffer << removeTrailingZeros(ss.str());
+  }
+  buffer << ",";
+} else
+  buffer << "NA,";
+
+// volume_change
+if (!std::isnan(change())) {
+  int sign = side() == BookSide::kBid ? -1 : 1;
+  if (change()) {
+    std::ostringstream ss;
+    ss << std::fixed << std::setprecision(base_precision) << sign * change();
+    buffer << removeTrailingZeros(ss.str());
+  }
+  buffer << ",";
+} else
+  buffer << "NA,";
+
+// trade_id
+if (trade())
+  buffer << trade();
+buffer << ",";
+
+// taker
+if (taker() != OrderEvent::kNaOrderId) {
+  if (taker() != boost::uuids::nil_uuid())
+    buffer << to_string(taker());
+  buffer << ",";
+} else
+  buffer << "NA,";
+
+// heard
+if (heard() > timestamp()) 
+  buffer << (heard() - timestamp()).count();
+buffer << ",";
+
+// deleted
+if (deleted())
+  buffer << "1\n";
+else
+  buffer << "\n";
+
+return buffer.str();
 !!!1285510.cpp!!!	accept(in mh : TokenHandler [1]) : bool
 if(isOrderCreated())
   return mh->created();
@@ -112,7 +188,14 @@ if (!field.empty()) {
   return reconstructor::OrderEvent::kNaVolume;
 } else
   return 0.0;
-!!!1598598.cpp!!!	OrderEvent(in csv : string, inout anchor : Message::Timestamp)
+!!!1598598.cpp!!!	OrderEvent(in csv : string, inout anchor : Message::Timestamp, in version : int = 2)
+if (version == 2)
+  parseCsvVer2(csv, anchor);
+else if (version == 3)
+  parseCsvVer3(csv, anchor);
+assert(isOrderCreated() || isOrderCancelled() || isOrderChanged() ||
+       isOrderFilled());
+!!!1646086.cpp!!!	parseCsvVer2(in csv : string, inout anchor : Message::Timestamp) : void
 // std::ostringstream ss;
 // boost::property_tree::write_json(ss, tree, false);
 using namespace oberon::reconstructor;
@@ -271,5 +354,216 @@ if (is && !field.empty()) {
   deleted(true);
 }
 
-assert(isOrderCreated() || isOrderCancelled() || isOrderChanged() ||
-       isOrderFilled());
+!!!1646342.cpp!!!	parseCsvVer3(in csv : string, inout anchor : Message::Timestamp) : void
+// std::ostringstream ss;
+// boost::property_tree::write_json(ss, tree, false);
+using namespace oberon::reconstructor;
+std::istringstream is{csv};
+std::string field;
+boost::uuids::string_generator gen;
+
+// maker
+std::getline(is, field, ',');
+if (is.good()) {
+  maker(gen(field));
+}
+else
+  BOOST_LOG_TRIVIAL(warning) << "Couldn't read maker from " << csv;
+
+// ordinal
+std::getline(is, field, ',');
+if (is.good()) {
+  if (!(field.empty() || field == "NA"))
+    ordinal(std::stol(field));
+  else
+    ordinal(0L);
+}
+else
+  BOOST_LOG_TRIVIAL(warning) << "Couldn't read ordinal from " << csv;
+
+// timestamp
+std::getline(is, field, ',');
+if (is.good()) {
+  if (!field.empty()) {
+    std::istringstream ss{field};
+    ss >> date::parse("%FT%TZ", anchor);
+    if (ss.fail()) {
+      BOOST_LOG_TRIVIAL(warning)
+          << "Couldn't parse a timestamp: " << field << ", ignored ...";
+    }
+  }
+}
+else
+  BOOST_LOG_TRIVIAL(warning) << "Couldn't read timestamp from " << csv;
+
+//mks
+std::getline(is, field, ',');
+if (is.good()) {
+  timestamp(anchor +
+                    std::chrono::microseconds{std::stoi(field)});
+}
+else
+  BOOST_LOG_TRIVIAL(warning) << "Couldn't read mks from " << csv;
+
+// timestamp_change 
+std::getline(is, field, ',');
+if (is.good()) {
+  if (!field.empty()) {
+    if (field != "NA")
+      change_timestamp(std::chrono::microseconds{std::stoll(field)});
+  }
+  else
+    change_timestamp(std::chrono::microseconds{0});
+}
+else
+  BOOST_LOG_TRIVIAL(warning) << "Couldn't read timestamp_change from " << csv;
+
+// state
+std::getline(is, field, ',');
+if (is.good()) {
+  using OrderState = reconstructor::OrderEvent::OrderState;
+  if (!field.empty()) {
+    if (field == "NA")
+      state(OrderState::kNA);
+    else
+      state(OrderState::kActive);
+  } else
+    state(OrderState::kFinished);
+}
+else
+  BOOST_LOG_TRIVIAL(warning) << "Couldn't read state from " << csv;
+
+//price 
+std::getline(is, field, ',');
+if (is.good()) {
+  price(std::stod(field));
+}
+else
+  BOOST_LOG_TRIVIAL(warning) << "Couldn't read price from " << csv;
+
+//price_change
+std::getline(is, field, ',');
+if (is.good()) {
+  if(!field.empty()) {
+    if(field != "NA")
+      change_price(std::stod(field));
+  }
+  else
+    change_price(0.0);
+}
+else
+  BOOST_LOG_TRIVIAL(warning) << "Couldn't read price_change from " << csv;
+
+Volume r = PriceLevelAttached::kNaVolume;
+Volume c = PriceLevelAttached::kNaVolume;
+
+// remaining
+std::getline(is, field, ',');
+if (is.good()) {
+  r = convertVolume(field);
+}
+else
+  BOOST_LOG_TRIVIAL(warning) << "Couldn't read volume from " << csv;
+
+// change
+std::getline(is, field, ',');
+if (is.good()) {
+  c = convertVolume(field); 
+}
+else
+  BOOST_LOG_TRIVIAL(warning) << "Couldn't read change from " << csv;
+
+if (std::isnan(r)) {
+  this->remaining(r);
+  this->change(c);
+  this->side(BookSide::kBookSideNA);
+} else if (r == 0) {
+  if (c > 0) {
+    this->remaining(r);
+    this->change(c);
+    this->side(BookSide::kAsk);
+  } else {
+    if (c < 0) {
+      this->remaining(r);
+      this->change(-c);
+      this->side(BookSide::kBid);
+    } else { // c == 0 or std::isnan(c)
+      this->remaining(r);
+      this->change(c);
+      this->side(BookSide::kBookSideNA);
+    }
+  }
+} else { // r != 0
+  if (r > 0) {
+    this->remaining(r);
+    this->change(-c);
+    this->side(BookSide::kBid);
+  } else { // r < 0
+    this->remaining(-r);
+    this->change(c);
+    this->side(BookSide::kAsk);
+  }
+}
+
+//trade 
+std::getline(is, field, ',');
+if (is.good()) {
+  if (!field.empty()) {
+    trade(std::stoll(field));
+  } 
+}
+else
+  BOOST_LOG_TRIVIAL(warning) << "Couldn't read trade from " << csv;
+
+// taker
+std::getline(is, field, ',');
+if (is.good()) {
+ if(!field.empty())
+  taker(gen(field));
+}
+else
+  BOOST_LOG_TRIVIAL(warning) << "Couldn't read taker from " << csv;
+
+// heard
+std::getline(is, field, ',');
+if (is) { // We accept that empty deleted column is even without comma
+  heard(timestamp() + std::chrono::microseconds{std::stoi(field)});
+}
+else
+  BOOST_LOG_TRIVIAL(warning) << "Couldn't read heard from " << csv;
+  
+// deleted
+std::getline(is, field, ',');
+if (is && !field.empty()) {
+  deleted(true);
+}
+
+!!!1646214.cpp!!!	detectCsvVersion(in csv_header : string) : int
+using namespace std;
+istringstream ss{csv_header};
+for(string column; getline(ss, column, ',');) {
+  if(column == "change")
+    return 2;
+  if(column == "volume_change")
+    return 3;
+}
+return 0;
+!!!1432838.cpp!!!	toSeconds(in d : microseconds) : seconds
+using namespace std::chrono;
+seconds t = duration_cast<seconds>(d);
+if( t > d)
+  return t - seconds{1};
+else
+  return t;
+!!!1596806.cpp!!!	removeTrailingZeros(in str : string) : string
+str.erase(str.find_last_not_of('0') + 1);
+str.erase(str.find_last_not_of('.') + 1);
+return std::move(str);
+!!!1646726.cpp!!!	change_timestamp(in time_passed : microseconds) : void
+change_timestamp_ = time_passed;
+!!!1646854.cpp!!!	change_timestamp() : microseconds
+return change_timestamp_;
+!!!1646982.cpp!!!	change_price() : Price
+return change_price_;
+!!!1647110.cpp!!!	change_price(in price_change : Price) : void
+change_price_ = price_change;

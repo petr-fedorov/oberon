@@ -6,28 +6,39 @@ using namespace oberon::reconstructor;
 // std::cout << date::format("%FT%TZ", timestamp_ +
 // std::chrono::microseconds{tree.get<int>("mks")}) << "\n";
 if (tree.get<std::string>("type") == "event") {
-  return boost::make_unique<OrderEvent>(tree.get<std::string>("data"), timestamp_);
+  return boost::make_unique<OrderEvent>(tree.get<std::string>("data"),
+                                        timestamp_, csv_version_);
 } else if (tree.get<std::string>("type") == "era") {
   std::string field;
   if (!(field = tree.get<std::string>("timestamp")).empty()) {
     std::istringstream ss{field};
     ss >> date::parse("%FT%TZ", timestamp_);
     if (ss.good()) {
-      return boost::make_unique<Era>(timestamp_ +
-                 std::chrono::microseconds{tree.get<int>("mks")},
-             boost::make_shared<Security>(tree.get<std::string>("exchange"),
-                                          tree.get<std::string>("product"),
-                                          tree.get<double>("quote_increment"),
-                                          tree.get<double>("base_increment")));
-    }
-    else 
+      auto output = boost::make_unique<Era>(
+          timestamp_ + std::chrono::microseconds{tree.get<int>("mks")},
+          boost::make_shared<Security>(tree.get<std::string>("exchange"),
+                                       tree.get<std::string>("product"),
+                                       tree.get<double>("quote_increment"),
+                                       tree.get<double>("base_increment")));
+      csv_version_ =
+          OrderEvent::detectCsvVersion(tree.get<std::string>("header"));
+      if (csv_version_) {
+        BOOST_LOG_TRIVIAL(info) << "Format version: " << csv_version_;
+        return std::move(output);
+      }
+      else {
+        BOOST_LOG_TRIVIAL(error) << "Couldn't determine CSV format from this header: "
+                                 << tree.get<std::string>("header");
+        throw processing_error(std::move(output));
+      }
+    } else
       BOOST_LOG_TRIVIAL(error) << "Couldn't parse era timestamp: " << field;
-  }
-  else 
-      BOOST_LOG_TRIVIAL(error) << "Era message with an empty timestamp "; 
-  
+  } else
+    BOOST_LOG_TRIVIAL(error) << "Era message with an empty timestamp ";
+
 } else if (tree.get<std::string>("type") == "reset")
   return boost::make_unique<Reset>(exchange_time_);
-  else
-      BOOST_LOG_TRIVIAL(error) << "Unknown message type: " << tree.get<std::string>("type");
+else
+  BOOST_LOG_TRIVIAL(error) << "Unknown message type: "
+                           << tree.get<std::string>("type");
 return Token{};

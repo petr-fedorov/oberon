@@ -1,5 +1,5 @@
 class File
-!!!1596806.cpp!!!	removeTrailingZeros(in str : string) : string
+!!!1646598.cpp!!!	removeTrailingZeros(in str : string) : string
 str.erase(str.find_last_not_of('0') + 1);
 str.erase(str.find_last_not_of('.') + 1);
 return std::move(str);
@@ -24,109 +24,9 @@ std::stringstream buffer;
 OrderEvent *event = static_cast<OrderEvent *>(received_.get());
 
 if (event) {
-
-  // maker
-  if (event->maker() != OrderEvent::kNaOrderId)
-    if (event->maker() != boost::uuids::nil_uuid())
-      buffer << to_string(event->maker()) << ",";
-    else
-      buffer << ",";
-  else
-    buffer << "NA,";
-
-  // ordinal
-  if (event->ordinal())
-    buffer << event->ordinal() << ",";
-  else
-    buffer << ",";
-
-  // timestamp, seconds
-  auto s = toSeconds(event->timestamp().time_since_epoch());
-  if(s != latest_seconds_) {
-    using namespace std::chrono;
-    latest_seconds_ = s;
-    date::to_stream(buffer, "%FT%TZ,", time_point<system_clock,seconds>{s});
-  }
-  else
-    buffer << ",";
-
-  // timestamp, microseconds
-  buffer << (event->timestamp().time_since_epoch() - s).count() << ",";
-
-  // state
-  if (event->state() != OrderEvent::OrderState::kNA) {
-    if (event->state())
-      buffer << event->state() << ",";
-    else
-      buffer << ",";
-  } else
-    buffer << "NA,";
-
-  // price
-  if (!std::isnan(event->price())) {
-    std::ostringstream ss;
-    ss << std::fixed << std::setprecision(quote_precision_) << event->price();
-    buffer << removeTrailingZeros(ss.str()) << ",";
-  } else
-    buffer << "NA,";
-
-  // volume
-  if (!std::isnan(event->remaining())) {
-    int sign = event->side() == BookSide::kAsk ? -1 : 1;
-    if (event->remaining()) {
-      std::ostringstream ss;
-      ss << std::fixed << std::setprecision(base_precision_) 
-             << sign * event->remaining(); 
-      buffer << removeTrailingZeros(ss.str()) << ",";
-    }
-    else
-      buffer << ",";
-  } else
-    buffer << "NA,";
-
-  // change
-  if( !std::isnan(event->change())) {
-    int sign = event->side() == BookSide::kBid ? -1 : 1;
-    if (event->change()) {
-      std::ostringstream ss;
-      ss << std::fixed << std::setprecision(base_precision_)
-         << sign * event->change(); 
-      buffer << removeTrailingZeros(ss.str()) << ",";
-    } else
-      buffer << ",";
-  } else
-    buffer << "NA,";
-
-  // trade_id
-  if (event->trade())
-    buffer << event->trade() << ",";
-  else
-    buffer << ",";
-
-  // taker
-  if (event->taker() != OrderEvent::kNaOrderId)
-    if (event->taker() != boost::uuids::nil_uuid())
-      buffer << to_string(event->taker()) << ",";
-    else
-      buffer << ",";
-  else
-    buffer << "NA,";
-
-  // heard
-  if(event->heard() > event->timestamp())
-    buffer << (event->heard() - event->timestamp()).count() << ",";
-  else
-    buffer << "0,";
-
-  // deleted
-  if(event->deleted())
-    buffer << "1\n";
-  else
-    buffer << "\n";
-
   if(source_)
     source_stream_ << event->source() << "\n";
-  return (events_stream_ << buffer.str()).good();
+  return (events_stream_ << event->toCsv(quote_precision_, base_precision_, &latest_seconds_)).good();
 }
 else 
  BOOST_LOG_TRIVIAL(error) << "Couldn't save " << event->toString();
@@ -153,7 +53,7 @@ if (events_) {
     BOOST_LOG_TRIVIAL(info) << "Era file:    " << base_name
                             << " quote_precision=" << quote_precision_
                             << " base_precision=" << base_precision_;
-  events_stream_ << "maker,ordinal,timestamp,mks,state,price,volume,change,trade,taker,"
+  events_stream_ << "maker,ordinal,timestamp,mks,timestamp_change,state,price,price_change,volume,volume_change,trade,taker,"
         "heard,deleted\n";
   if (source_) {
     if (source_stream_.is_open())
@@ -249,13 +149,6 @@ trades_stream_.close();
 latest_seconds_ = std::chrono::seconds{};
 security_.reset();
 return true;
-!!!1432838.cpp!!!	toSeconds(in d : microseconds) : seconds
-using namespace std::chrono;
-seconds t = duration_cast<seconds>(d);
-if( t > d)
-  return t - seconds{1};
-else
-  return t;
 !!!1596294.cpp!!!	stripe() : bool
 auto stripe = boost::static_pointer_cast<Stripe>(std::move(received_));
 if (check(stripe->price())) {

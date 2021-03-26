@@ -62,6 +62,7 @@ for (auto file = files.begin(); file != files.end(); ++file) {
     control_message.put("product", product);
     control_message.put("quote_increment", quote_increment);
     control_message.put("base_increment", base_increment);
+    control_message.put("header", header);
     process(control_message);
     for (std::string line; std::getline(input, line);) {
       boost::property_tree::ptree event;

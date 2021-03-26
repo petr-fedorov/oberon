@@ -1,15 +1,23 @@
 class EventCounter
 !!!722566.cpp!!!	created() : bool
 OrderEvent *em = dynamic_cast<OrderEvent *>(received_.get());
-eventNumbers_[em->maker()] = 1;
+auto &previous = eventNumbers_[em->maker()];
+previous.o = 1;
+previous.p = em->price();
+previous.t = em->timestamp();
 em->ordinal(1);
+em->change_timestamp(std::chrono::microseconds{0});
+em->change_price(0.0);
 output_.push_back(std::move(received_));
 return true;
 !!!722694.cpp!!!	cancelled() : bool
 OrderEvent *em = dynamic_cast<OrderEvent *>(received_.get());
 
 try {
-  em->ordinal(eventNumbers_.at(em->maker()) + 1);
+  auto &previous = eventNumbers_.at(em->maker());
+  em->ordinal(previous.o + 1);
+  em->change_price(em->price() - previous.p);
+  em->change_timestamp(em->timestamp() - previous.t);
   eventNumbers_.erase(em->maker());
 } catch (const std::out_of_range &) {
   em->deleted(true);
@@ -19,13 +27,19 @@ return true;
 !!!722822.cpp!!!	filled() : bool
 OrderEvent *em = dynamic_cast<OrderEvent *>(received_.get());
 try {
-  em->ordinal(eventNumbers_.at(em->maker()) + 1);
-  if (em->state() == OrderEvent::OrderState::kActive)
-    eventNumbers_[em->maker()] = em->ordinal();
+  auto &previous = eventNumbers_.at(em->maker()); 
+  em->ordinal(previous.o + 1);
+  em->change_price(em->price() - previous.p);
+  em->change_timestamp( em->timestamp() - previous.t);
+  if (em->state() == OrderEvent::OrderState::kActive) {
+    previous.o = em->ordinal();
+    previous.p = em->price();
+    previous.t = em->timestamp();
+  }
   else
     eventNumbers_.erase(em->maker());
 } catch (const std::out_of_range &) {
-  BOOST_LOG_TRIVIAL(warning) << "Couldn't get ordinal for " << em->toString();
+  BOOST_LOG_TRIVIAL(warning) << "Couldn't find previous event for " << em->toString();
   em->deleted(true);
 }
 output_.push_back(std::move(received_));
@@ -33,8 +47,13 @@ return true;
 !!!1382918.cpp!!!	changed() : bool
 OrderEvent *em = dynamic_cast<OrderEvent *>(received_.get());
 try {
-  em->ordinal(eventNumbers_.at(em->maker()) + 1);
-  eventNumbers_[em->maker()] = em->ordinal();
+  auto & previous = eventNumbers_.at(em->maker());
+  em->ordinal(previous.o+1);
+  em->change_timestamp(em->timestamp() - previous.t);
+  em->change_price(em->price() - previous.p);
+  previous.o = em->ordinal();
+  previous.p = em->price();
+  previous.t = em->timestamp();
 } catch (const std::out_of_range &) {
   em->deleted(true);
 }

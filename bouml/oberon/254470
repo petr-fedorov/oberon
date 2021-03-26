@@ -1,6 +1,6 @@
 format 224
 "File" // App::Reconstr::File
-  revision 6
+  revision 8
   modified_by 6 "petr"
   // class settings
   
@@ -145,6 +145,27 @@ ${inlines}
 	    cpp default "#include in source"
 	    classrelation_ref 1175942 // <dependency>
 	  b parent class_ref 966278 // Reset
+      end
+
+      attribute 1028230 "csv_version_"
+	private explicit_type "int"
+	init_value "2"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      classrelation 1343110 // <dependency>
+	relation 1332742 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1343110 // <dependency>
+	  b parent class_ref 1108486 // processing_error
       end
     end
   end

@@ -126,6 +126,7 @@ Below we propose stricter definitions that address these and the other similar i
 
 ## Definitions 
 
+### Order event
 
 ```{definition Order Function, name="Order Function", label="order" }
 
@@ -321,12 +322,15 @@ Suppose an order set $\mathcal{O} = \{ o^i(\cdot, \cdot)_i \}$ as defined by \@r
 $$\bigcup_i \big\{(i, t_k^i, s_k^i,p_k^i, v_k^i, m_k^i)\big\}_{k=1}^{K^i}$$ where $i$ is *a unique order identification number* and $\{(t_k^i, s_k^i,p_k^i, v_k^i, m_k^i)\}_{k=1}^{K^i}$ is the order table as defined by \@ref(def:order-table) of order $o^i(\cdot, \cdot)$ is called *an order set table*. Each tuple in the order set table is called *an order event with order id*.
 ```
 
+### Stripe and Dot
+
+TBD
 
 ## Software 
 
 
 
-### Capture
+### Capture order events
 
 
 Figure \@ref(fig:capture-overview) shows UML2 Activity Diagram [@cook_omg_2017] of `S.1 Capture` activity that represents an implementation of `oberon capture` command. The activity node `Reconstruct Order Book` performs a reconstruction of order book events from exchange-specific messages that are passed by node `Receive messages`.
@@ -439,36 +443,38 @@ The last TokenHandler in every chain is `File` that outputs the cleansed events.
   Era file is [CSV-file](https://en.wikipedia.org/wiki/Comma-separated_values) with one row per `OrderEvent` and name constructed from  exchange, product and timestamp values carried by `Era` message. Row fields are described in the table \@ref(tab:order-record) below.
 
 ```{r order-record, echo=FALSE, results='asis'}
-ht <- hux(`#`=seq(1:12),
-    Field=c("maker", "ordinal","timestamp", "mks", "state", "price", "volume", "change", "trade","taker","heard", "deleted" ),
-    Type=c("UUID", "long", "string", "int", "bool", "double", "double", "double", "long long", "UUID", "int", "bool" ),
-    Description=c("UUID of the order open on the order book",
+ht <- hux(`#`=seq(1:14),
+    Field=c("maker", "ordinal","timestamp", "mks", "timestamp_change", "state", "price", "price_change", "volume", "volume_change", "trade","taker","heard", "deleted" ),
+    Type=c("[UUID](https://www.boost.org/doc/libs/1_67_0/libs/uuid/doc/uuid.html#boost/uuid/string_generator.hpp)", "long", "string", "int", "long long", "bool", "double", "double","double", "double", "long long", "UUID", "int", "bool" ),
+    Description=c("an unique identification number of the order open on the order book",
                   "A sequential number of the event for this order",
-                  "Time the event occurred on the exchange in ISO 8601 format, up to a second. Empty field means that the value is the same as in the previous event (previous row)",
-                  "Microseconds part of the time the event occurred on the exchange",
+                  "Time the event occurred, in [ISO 8601](https://tools.ietf.org/html/rfc3339#page-10) format, up to a second. Empty field means that the value is the same as in the previous event (previous row)",
+                  "Microseconds part of the time the event occurred, if different from zero; otherwise empty",
+                  "Microseconds passed since the previous event, i.e. $t_k^i - t_{k-1}^i$ if $k$ is greater than 1 and $t_k^i \\neq t_{k-1}^i$; otherwise empty",
                   "1, if the order is open on the order book after the event; otherwise empty",
                   "Price of the order", 
-                  "Volume of the order",
+                  "Price change since the previous event, i.e. $p_k^i - p_{k-1}^i$ if $k$ is greater than 1 and $p_k^i \\neq p_{k-1}^i$; otherwise empty",
+                  "Volume of the order if different from zero; otherwise empty",
                   "Change of the order's volume since the previous event, i.e. $v_k^i - v_{k-1}^i$ if $k$ is greater than 1 and $v_k^i \\neq v_{k-1}^i$; otherwise empty",
-                  "If the event is originated by a trade it is an exchange-generated unique trade identification number; otherwise emtpy. Thus $m_k^i \\equiv$ trade isn't empty",
-                  "If the event is originated by a trade, it is an UUID of the matched taker order; otherwise empty",
-                  "Microseconds passed since the event occurred on the exchange till receving by application",
-                  "1, if the event's been deleted (for example, it is a duplicate event); otherwise empty."
+                  "If the event is originated by a trade it is an unique trade identification number; otherwise emtpy. Thus $m_k^i \\equiv$ trade isn't empty",
+                  "If the event is originated by a trade, it is an unique identification number of the matched taker order; otherwise empty",
+                  "Microseconds passed since the event occurred on the exchange till the application heard about it, if the event occured on the exchange; otherwise empty",
+                  "1, if the event's been deleted (for example, it is a duplicate event); otherwise empty"
             ),
-    Element=c("$i$", "$k$", "$t_k^i$", "$t_k^i$", "$s_k^i$", "$p_k^i$", "$v_k^i$","", "$m_k^i$", "", "", "")
+    Element=c("$i$", "$k$", "$t_k^i$", "$t_k^i$", "", "$s_k^i$", "$p_k^i$","",  "$v_k^i$","", "$m_k^i$", "", "", "")
     ) %>%
-  set_bold(2:13, 2) %>%
-  set_caption("Era file fields and their corresponding elements of order event with order id tuple as defined by \\@ref(def:order-set-table). If the value of a field can not be determined, it is reported as NA.") %>%
+  set_bold(2:15, 2) %>%
+  set_caption("Era file fields and their corresponding elements of order event with order id tuple as defined by \\@ref(def:order-set-table). If the value of a field can not be determined, it is reported as NA. UUIDs may be shorter than 32 hexadecimal digits; in this case it is assumed to be padded by zeros from the left.") %>%
   set_caption_pos("topleft")
 print_html(ht)
 ```
 
 
-### Slice and merge
+### Slice and merge era files
 
 TBD
 
-### Transmute
+### Transmute 
 
 TBD
 

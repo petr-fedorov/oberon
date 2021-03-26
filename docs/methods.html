@@ -24,7 +24,7 @@
 <meta name="author" content="Petr Fedorov" />
 
 
-<meta name="date" content="2021-03-18" />
+<meta name="date" content="2021-03-26" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -70,14 +70,17 @@
 <li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#available-data-sets"><i class="fa fa-check"></i><b>1.2</b> Available data sets</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="methods.html"><a href="methods.html"><i class="fa fa-check"></i><b>2</b> Methods</a><ul>
-<li class="chapter" data-level="2.1" data-path="methods.html"><a href="methods.html#definitions"><i class="fa fa-check"></i><b>2.1</b> Definitions</a></li>
+<li class="chapter" data-level="2.1" data-path="methods.html"><a href="methods.html#definitions"><i class="fa fa-check"></i><b>2.1</b> Definitions</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="methods.html"><a href="methods.html#order-event"><i class="fa fa-check"></i><b>2.1.1</b> Order event</a></li>
+<li class="chapter" data-level="2.1.2" data-path="methods.html"><a href="methods.html#stripe-and-dot"><i class="fa fa-check"></i><b>2.1.2</b> Stripe and Dot</a></li>
+</ul></li>
 <li class="chapter" data-level="2.2" data-path="methods.html"><a href="methods.html#software"><i class="fa fa-check"></i><b>2.2</b> Software</a><ul>
-<li class="chapter" data-level="2.2.1" data-path="methods.html"><a href="methods.html#capture"><i class="fa fa-check"></i><b>2.2.1</b> Capture</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="methods.html"><a href="methods.html#capture-order-events"><i class="fa fa-check"></i><b>2.2.1</b> Capture order events</a><ul>
 <li class="chapter" data-level="2.2.1.1" data-path="methods.html"><a href="methods.html#receive-messages"><i class="fa fa-check"></i><b>2.2.1.1</b> Receive messages</a></li>
 <li class="chapter" data-level="2.2.1.2" data-path="methods.html"><a href="methods.html#reconstruct-order-book"><i class="fa fa-check"></i><b>2.2.1.2</b> Reconstruct Order Book</a></li>
 <li class="chapter" data-level="2.2.1.3" data-path="methods.html"><a href="methods.html#save-output"><i class="fa fa-check"></i><b>2.2.1.3</b> Save output</a></li>
 </ul></li>
-<li class="chapter" data-level="2.2.2" data-path="methods.html"><a href="methods.html#slice-and-merge"><i class="fa fa-check"></i><b>2.2.2</b> Slice and merge</a></li>
+<li class="chapter" data-level="2.2.2" data-path="methods.html"><a href="methods.html#slice-and-merge-era-files"><i class="fa fa-check"></i><b>2.2.2</b> Slice and merge era files</a></li>
 <li class="chapter" data-level="2.2.3" data-path="methods.html"><a href="methods.html#transmute"><i class="fa fa-check"></i><b>2.2.3</b> Transmute</a></li>
 </ul></li>
 </ul></li>
@@ -146,6 +149,8 @@
 <p>Below we propose stricter definitions that address these and the other similar issues trying to stay close to <span class="citation">(Bouchaud and Bonart 2018)</span>. Afterwards we describe the reconstruction process.</p>
 <div id="definitions" class="section level2">
 <h2><span class="header-section-number">2.1</span> Definitions</h2>
+<div id="order-event" class="section level3">
+<h3><span class="header-section-number">2.1.1</span> Order event</h3>
 
 <div class="definition">
 <p><span id="def:order" class="definition"><strong>Definition 2.1  (Order Function)  </strong></span>
@@ -330,10 +335,15 @@ An <em>order event</em> is a tuple <span class="math inline">\((t,s,p,v,m)\)</sp
 </div>
 
 </div>
+<div id="stripe-and-dot" class="section level3">
+<h3><span class="header-section-number">2.1.2</span> Stripe and Dot</h3>
+<p>TBD</p>
+</div>
+</div>
 <div id="software" class="section level2">
 <h2><span class="header-section-number">2.2</span> Software</h2>
-<div id="capture" class="section level3">
-<h3><span class="header-section-number">2.2.1</span> Capture</h3>
+<div id="capture-order-events" class="section level3">
+<h3><span class="header-section-number">2.2.1</span> Capture order events</h3>
 <p>Figure <a href="methods.html#fig:capture-overview">2.1</a> shows UML2 Activity Diagram <span class="citation">(Cook et al. 2017)</span> of <code>S.1 Capture</code> activity that represents an implementation of <code>oberon capture</code> command. The activity node <code>Reconstruct Order Book</code> performs a reconstruction of order book events from exchange-specific messages that are passed by node <code>Receive messages</code>.</p>
 <div class="figure" style="text-align: left"><span id="fig:capture-overview"></span>
 <img src="Standalone%20application%20-%20capture.png" alt="`Receive messages` activity node collects avaialbe information in an exchange-specific format and pass the information in the form of [Boost.Property Tree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) to `Reconstruct Order Book` activity node that, as its name implies, reconstructs order book events in an *universal* format described herein. Note that both activity nodes run concurrently."  />
@@ -453,7 +463,7 @@ Figure 2.11: UML2 Sequence diagram showing various alternatives of traces for <a
 <p>Era file is <a href="https://en.wikipedia.org/wiki/Comma-separated_values">CSV-file</a> with one row per <code>OrderEvent</code> and name constructed from exchange, product and timestamp values carried by <code>Era</code> message. Row fields are described in the table <a href="methods.html#tab:order-record">2.2</a> below.</p>
 <table class="huxtable" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  " id="tab:order-record">
 <caption style="caption-side: top; text-align: left;">
-<span id="tab:order-record">Table 2.2: </span> Era file fields and their corresponding elements of order event with order id tuple as defined by <a href="methods.html#def:order-set-table">2.17</a>. If the value of a field can not be determined, it is reported as NA.
+<span id="tab:order-record">Table 2.2: </span> Era file fields and their corresponding elements of order event with order id tuple as defined by <a href="methods.html#def:order-set-table">2.17</a>. If the value of a field can not be determined, it is reported as NA. UUIDs may be shorter than 32 hexadecimal digits; in this case it is assumed to be padded by zeros from the left.
 </caption>
 <col>
 <col>
@@ -485,10 +495,10 @@ Element
 maker
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-UUID
+<a href="https://www.boost.org/doc/libs/1_67_0/libs/uuid/doc/uuid.html#boost/uuid/string_generator.hpp">UUID</a>
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-UUID of the order open on the order book
+an unique identification number of the order open on the order book
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
 <span class="math inline">\(i\)</span>
@@ -522,7 +532,7 @@ timestamp
 string
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-Time the event occurred on the exchange in ISO 8601 format, up to a second. Empty field means that the value is the same as in the previous event (previous row)
+Time the event occurred, in <a href="https://tools.ietf.org/html/rfc3339#page-10">ISO 8601</a> format, up to a second. Empty field means that the value is the same as in the previous event (previous row)
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
 <span class="math inline">\(t_k^i\)</span>
@@ -539,7 +549,7 @@ mks
 int
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-Microseconds part of the time the event occurred on the exchange
+Microseconds part of the time the event occurred, if different from zero; otherwise empty
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
 <span class="math inline">\(t_k^i\)</span>
@@ -548,6 +558,22 @@ Microseconds part of the time the event occurred on the exchange
 <tr>
 <td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
 5
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: bold;">
+timestamp_change
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+long long
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+Microseconds passed since the previous event, i.e. <span class="math inline">\(t_k^i - t_{k-1}^i\)</span> if <span class="math inline">\(k\)</span> is greater than 1 and <span class="math inline">\(t_k^i \neq t_{k-1}^i\)</span>; otherwise empty
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+6
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: bold;">
 state
@@ -564,7 +590,7 @@ bool
 </tr>
 <tr>
 <td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-6
+7
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: bold;">
 price
@@ -581,7 +607,23 @@ Price of the order
 </tr>
 <tr>
 <td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-7
+8
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: bold;">
+price_change
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+double
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+Price change since the previous event, i.e. <span class="math inline">\(p_k^i - p_{k-1}^i\)</span> if <span class="math inline">\(k\)</span> is greater than 1 and <span class="math inline">\(p_k^i \neq p_{k-1}^i\)</span>; otherwise empty
+</td>
+<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
+9
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: bold;">
 volume
@@ -590,7 +632,7 @@ volume
 double
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-Volume of the order
+Volume of the order if different from zero; otherwise empty
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
 <span class="math inline">\(v_k^i\)</span>
@@ -598,10 +640,10 @@ Volume of the order
 </tr>
 <tr>
 <td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-8
+10
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: bold;">
-change
+volume_change
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
 double
@@ -614,7 +656,7 @@ Change of the order’s volume since the previous event, i.e. <span class="math 
 </tr>
 <tr>
 <td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-9
+11
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: bold;">
 trade
@@ -623,7 +665,7 @@ trade
 long long
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-If the event is originated by a trade it is an exchange-generated unique trade identification number; otherwise emtpy. Thus <span class="math inline">\(m_k^i \equiv\)</span> trade isn’t empty
+If the event is originated by a trade it is an unique trade identification number; otherwise emtpy. Thus <span class="math inline">\(m_k^i \equiv\)</span> trade isn’t empty
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
 <span class="math inline">\(m_k^i\)</span>
@@ -631,7 +673,7 @@ If the event is originated by a trade it is an exchange-generated unique trade i
 </tr>
 <tr>
 <td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-10
+12
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: bold;">
 taker
@@ -640,14 +682,14 @@ taker
 UUID
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-If the event is originated by a trade, it is an UUID of the matched taker order; otherwise empty
+If the event is originated by a trade, it is an unique identification number of the matched taker order; otherwise empty
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
 </td>
 </tr>
 <tr>
 <td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-11
+13
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: bold;">
 heard
@@ -656,14 +698,14 @@ heard
 int
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-Microseconds passed since the event occurred on the exchange till receving by application
+Microseconds passed since the event occurred on the exchange till the application heard about it, if the event occured on the exchange; otherwise empty
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
 </td>
 </tr>
 <tr>
 <td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-12
+14
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: bold;">
 deleted
@@ -672,7 +714,7 @@ deleted
 bool
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-1, if the event’s been deleted (for example, it is a duplicate event); otherwise empty.
+1, if the event’s been deleted (for example, it is a duplicate event); otherwise empty
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
 </td>
@@ -680,8 +722,8 @@ bool
 </table>
 </div>
 </div>
-<div id="slice-and-merge" class="section level3">
-<h3><span class="header-section-number">2.2.2</span> Slice and merge</h3>
+<div id="slice-and-merge-era-files" class="section level3">
+<h3><span class="header-section-number">2.2.2</span> Slice and merge era files</h3>
 <p>TBD</p>
 </div>
 <div id="transmute" class="section level3">
