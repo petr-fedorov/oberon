@@ -212,7 +212,7 @@ b. $m \in \{0,1\}$ is a *match indicator*; $m =1$ means that the order has been 
 
 
 ```{definition Order Table, name="Order Table", label=order-table}
-Suppose an order function $o(p,t)$ as defined by \@ref(def:order) is given. A set $$\{(t_k',s_k',p_k',v_k', m_k')\}_k$$ of $K$ or $K+1$ order events 
+Suppose an order function $o(p,t)$ as defined by \@ref(def:order) is given. A set $$\mathcal{E} = \{(t_k',s_k',p_k',v_k', m_k')\}_k$$ of $K$ or $K+1$ order events 
 
   a. $\forall k \in \{1, \ldots, K\}$ $k$'s order event is defined as follows:
       1. $t_k' = t_{k,1}, s_k' = 1, p_k' = p_k, v_k' = v_k$,
@@ -233,19 +233,30 @@ An order function \@ref(def:order) can be unambiguously restored from its order 
 ```
 
 ```{proof}
-Suppose the order table $\{(t_k',s_k',p_k',v_k', m_k')\}_{k=1}^{R}$ is given. To restore its order function as defined by \@ref(def:order) we need to restore $\mathcal{T}$, $\mathcal{P}$ and $\mathcal{V}$ sets.
+Suppose the order table $\mathcal{E} = \{(t_k',s_k',p_k',v_k', m_k')\}_{k=1}^{R}$ is given. To restore the corresponding order function $o(p,t)$ as defined by \@ref(def:order) we need to restore $\mathcal{T}$, $\mathcal{P}$ and $\mathcal{V}$ sets. It can be done as follows:
 
-$\mathcal{T}$ is defined as follows:
+1. For all $1 \leq k < R$ 
 
- a. For all $1 \leq k < R$ the interval $T_k$ has left endpoint $t_k'$ and right endpoint $t_{k+1}'$ and is:
-    * a left-open if $m_k'=0$ and left-closed if $m_k'=1$
-    * a right-open if $m_{k+1}'=1$ and right-closed if $m_{k+1}'=0$
+    a. The interval $T_k$ with left endpoint $t_k'$ and right endpoint $t_{k+1}'$ which is:
+  
+        * a left-open if $m_k'=0$ and left-closed if $m_k'=1$
+        * a right-open if $m_{k+1}'=1$ and right-closed if $m_{k+1}'=0$
+      
+       is added to $\mathcal{T}$
+      
+    a. The interval $P_k = \{p_k'\}$ is added to $\mathcal{P}$
+    a. The constant $v_k'$ is added to $\mathcal{V}$
+
     
- a. If $s_R' = 1$ then the interval $T_R$ is added to $\mathcal{T}$ which is either $(t_R', +\infty)$ if $m_R'=0$ or $[t_{R}', +\infty)$ if $m_R'=1$.
-
-Then $\mathcal{P} = \{ \{p_k'\}\}_{k=1}^{|\mathcal{T}|}$ and $\mathcal{V} = \{ v_k'\}_{k=1}^{|\mathcal{T}|}$
+2. If $s_R' = 1$:
+    a. The interval $T_R$ which is either $(t_R', +\infty)$ if $m_R'=0$ or $[t_{R}', +\infty)$ if $m_R'=1$ is added to $\mathcal{T}$,
+    a. The interval $P_R = \{p_R\}$ is added to $\mathcal{P}$,
+    a. The constant $v_R'$ is added to $\mathcal{V}$; note that $v_R' \neq 0$.
 
 ```
+
+Note that $|\mathcal{E}| = |\mathcal{T}| + 1$ if the last interval $T_k$ is finite and $|\mathcal{E}| = |\mathcal{T}|$ otherwise, as in definition \@ref(def:order-table).
+
 See [Appendix][Examples of order tables and restored functions] for examples of order tables and order functions restored from them.
 
 
@@ -318,14 +329,105 @@ To make the above definitions intuitively clear, consider an example in [Appendi
 
 
 ```{definition Order Set Table, name="Order Set Table", label=order-set-table}
-Suppose an order set $\mathcal{O} = \{ o^i(\cdot, \cdot)_i \}$ as defined by \@ref(def:order-set) is given. A union of set of tuples:
-$$\bigcup_i \big\{(i, t_k^i, s_k^i,p_k^i, v_k^i, m_k^i)\big\}_{k=1}^{K^i}$$ where $i$ is *a unique order identification number* and $\{(t_k^i, s_k^i,p_k^i, v_k^i, m_k^i)\}_{k=1}^{K^i}$ is the order table as defined by \@ref(def:order-table) of order $o^i(\cdot, \cdot)$ is called *an order set table*. Each tuple in the order set table is called *an order event with order id*.
+Suppose an order set $\mathcal{O} = \{ o^i(\cdot, \cdot) \}_i$ as defined by \@ref(def:order-set) is given. A union of set of tuples:
+$$\mathcal{S} = \bigcup_i \big\{(i, k, t_k^i, s_k^i,p_k^i, v_k^i, m_k^i)\big\}_{k=1}^{K^i}$$ where $i$ is *a unique order identification number* and $\{(t_k^i, s_k^i,p_k^i, v_k^i, m_k^i)\}_{k=1}^{K^i}$ is the order table as defined by \@ref(def:order-table) of order $o^i(\cdot, \cdot)$ is called *an order set table*. Each tuple in the order set table is called *an order event with order id*.
 ```
 
 ### Stripe and Dot
 
-TBD
+```{r transmute-example-1, echo=FALSE}
+dt <- fread(file = "transmute_example_1.csv")[,c("maker","ordinal","timestamp","mks","state","price","volume","trade")]
+setnafill(dt, type="locf", cols=3)
+setnafill(dt, type="const", fill=0, cols=c(4, 5,7,8))
+as_hux(dt[ , .(`\\(i\\)`=maker, `\\(k\\)`=ordinal, `\\(t^i_k\\)`=timestamp+mks/1000000.0,
+               `\\(s^i_k\\)`=state, `\\(p^i_k\\)`=price, `\\(v^i_k\\)`=volume, `\\(m^i_k\\)`=as.integer(trade != 0) )]) %>%  set_caption("In spite of being very short Order Set Table shown is hard to understand")
+```
 
+
+```{bash gnuplot-code-1, echo=FALSE}
+gnuplot -p <<-EOF
+  set xdata time
+  set timefmt "%Y-%m-%dT%H:%M:%SZ"
+  set xtics format "%M:%.1S" rotate by 45
+  set xrange ["2021-03-26T13:59:05.9Z":"2021-03-26T13:59:07.3Z"]
+  set yrange [525:545]
+  set datafile separator comma
+  set palette defined (-1 "blue", 0 'white', 1 'red')
+  set cbrange [-1:1]
+  set term png
+  set output "transmute_example_1.png"
+  set grid
+  set pointsize 2
+  val(name) = stringcolumn(name) ne "" ? column(name) : 0
+  tval(t)=stringcolumn("timestamp") ne ""? strptime("%Y-%m-%dT%H:%M:%SZ",stringcolumn("timestamp")):t
+  t=""
+  plot \
+    "transmute_example_1.csv" using \
+      ((t=tval(t),t+val("mks")/1000000.0)):\
+      (column("price")):\
+      (-val("timestamp_change")/1000000.0):\
+      (0):\
+      (val("volume") - val("volume_change")) with vectors lc palette z nohead notitle,\
+    '' using\
+      ((t=tval(t),t+val("mks")/1000000.0)):\
+      (column("trade") > 0 ? column("price"): 1/0):(column("volume_change")) with points lc palette z pointtype 7 notitle
+EOF
+
+```
+
+
+
+```{r transmute-example-1-picture, echo=FALSE, fig.cap="It is easier to comprehend a visual representation of Order Set Table \\@ref(tab:transmute-example-1)", fig.align="center"}
+knitr::include_graphics("transmute_example_1.png", dpi=80)
+```
+
+
+```{r transmute-example-2, echo=FALSE}
+dt <- fread(file = "transmute_example_2.csv")[,c("maker","ordinal","timestamp","mks","state","price","volume","trade")]
+setnafill(dt, type="locf", cols=3)
+setnafill(dt, type="const", fill=0, cols=c(4, 5,7,8))
+as_hux(dt[ , .(`\\(i\\)`=maker, `\\(k\\)`=ordinal, `\\(t^i_k\\)`=timestamp+mks/1000000.0,
+               `\\(s^i_k\\)`=state, `\\(p^i_k\\)`=price, `\\(v^i_k\\)`=volume, `\\(m^i_k\\)`=as.integer(trade != 0) )]) %>%
+  set_background_color(c(5,10), everywhere, "grey") %>%
+  set_caption("Order 4 with two events has been added to Order Set Table")
+
+```
+
+
+```{bash gnuplot-code-2, echo=FALSE}
+gnuplot -p <<-EOF
+  set xdata time
+  set timefmt "%Y-%m-%dT%H:%M:%SZ"
+  set xtics format "%M:%.1S" rotate by 45
+  set xrange ["2021-03-26T13:59:05.9Z":"2021-03-26T13:59:07.3Z"]
+  set yrange [525:545]
+  set datafile separator comma
+  set palette defined (-1 "blue", 0 'white', 1 'red')
+  set cbrange [-1:1]
+  set term png
+  set output "transmute_example_2.png"
+  set grid
+  set pointsize 2
+  val(name) = stringcolumn(name) ne "" ? column(name) : 0
+  tval(t)=stringcolumn("timestamp") ne ""? strptime("%Y-%m-%dT%H:%M:%SZ",stringcolumn("timestamp")):t
+  t=""
+  plot \
+    "transmute_example_2.csv" using \
+      ((t=tval(t),t+val("mks")/1000000.0)):\
+      (column("price")):\
+      (-val("timestamp_change")/1000000.0):\
+      (0):\
+      (val("volume") - val("volume_change")) with vectors lc palette z nohead notitle,\
+    '' using\
+      ((t=tval(t),t+val("mks")/1000000.0)):\
+      (column("trade") > 0 ? column("price"): 1/0):(column("volume_change")) with points lc palette z pointtype 7 notitle
+EOF
+
+```
+
+```{r transmute-example-2-picture, echo=FALSE, fig.cap="A visual representation of Order Book Set \\@ref(tab:transmute-example-2) is distorted since orders 3 and 4 overlaps", fig.align="center"}
+knitr::include_graphics("transmute_example_2.png", dpi=80)
+```
 ## Software 
 
 
