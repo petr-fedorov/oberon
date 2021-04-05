@@ -24,7 +24,7 @@
 <meta name="author" content="Petr Fedorov" />
 
 
-<meta name="date" content="2021-03-30" />
+<meta name="date" content="2021-04-05" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -71,8 +71,10 @@
 </ul></li>
 <li class="chapter" data-level="2" data-path="methods.html"><a href="methods.html"><i class="fa fa-check"></i><b>2</b> Methods</a><ul>
 <li class="chapter" data-level="2.1" data-path="methods.html"><a href="methods.html#definitions"><i class="fa fa-check"></i><b>2.1</b> Definitions</a><ul>
-<li class="chapter" data-level="2.1.1" data-path="methods.html"><a href="methods.html#order-event"><i class="fa fa-check"></i><b>2.1.1</b> Order event</a></li>
-<li class="chapter" data-level="2.1.2" data-path="methods.html"><a href="methods.html#stripe-and-dot"><i class="fa fa-check"></i><b>2.1.2</b> Stripe and Dot</a></li>
+<li class="chapter" data-level="2.1.1" data-path="methods.html"><a href="methods.html#order-function"><i class="fa fa-check"></i><b>2.1.1</b> Order function</a></li>
+<li class="chapter" data-level="2.1.2" data-path="methods.html"><a href="methods.html#order-book"><i class="fa fa-check"></i><b>2.1.2</b> Order book</a></li>
+<li class="chapter" data-level="2.1.3" data-path="methods.html"><a href="methods.html#market-orders"><i class="fa fa-check"></i><b>2.1.3</b> Market orders</a></li>
+<li class="chapter" data-level="2.1.4" data-path="methods.html"><a href="methods.html#level2-order-function"><i class="fa fa-check"></i><b>2.1.4</b> Level2 order function</a></li>
 </ul></li>
 <li class="chapter" data-level="2.2" data-path="methods.html"><a href="methods.html#software"><i class="fa fa-check"></i><b>2.2</b> Software</a><ul>
 <li class="chapter" data-level="2.2.1" data-path="methods.html"><a href="methods.html#capture-order-events"><i class="fa fa-check"></i><b>2.2.1</b> Capture order events</a><ul>
@@ -155,7 +157,7 @@
 </tr>
 <tr>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-13:59:59.941999
+13:59:59.941
 </td>
 <td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
 1
@@ -191,7 +193,7 @@
 </tr>
 <tr>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-(13:59:59.941999 , <span class="math inline">\(+\infty\)</span>)
+(13:59:59.941 , <span class="math inline">\(+\infty\)</span>)
 </td>
 <td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
 43061.10
@@ -203,7 +205,7 @@
 </table>
 <p>The order function defined by <a href="appendix.html#tab:e1-function">5.2</a> may be written as: <span class="math inline">\(o(p,t) = v_1 \mathbf{1}_{P_1 \times T_1}(p,t)\)</span>.</p>
 <p>The corresponding filled volume function as defined by <a href="methods.html#def:filled-volume">2.4</a> is identically zero: <span class="math display">\[f_v(t) \equiv 0\]</span></p>
-<p>The corresponding amended volume function is defined by <a href="methods.html#def:amended-volume">2.5</a> is non-zero at just one point: <span class="math display">\[a_v({\small \text{13:59:59.941999}}) = 1.0\]</span></p>
+<p>The corresponding amended volume function is defined by <a href="methods.html#def:amended-volume">2.5</a> is non-zero at just one point: <span class="math display">\[a_v({\small \text{13:59:59.941}}) = 1.0\]</span></p>
 <table class="huxtable" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  " id="tab:e2-table">
 <caption style="caption-side: top; text-align: left;">
 <span id="tab:e2-table">Table 5.3: </span> If an order was open on the order book and then cancelled, its order table will contain second event that corresponds to the removal of the order from the order book as indicated by <span class="math inline">\(s_k = 0\)</span> in the second row.
@@ -232,7 +234,7 @@
 </tr>
 <tr>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-13:59:59.940999
+13:59:59.940
 </td>
 <td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
 1
@@ -249,7 +251,7 @@
 </tr>
 <tr>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-13:59:59.980000
+13:59:59.980
 </td>
 <td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
 0
@@ -285,7 +287,7 @@
 </tr>
 <tr>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-(13:59:59.940999 , 13:59:59.980000]
+(13:59:59.940 , 13:59:59.980]
 </td>
 <td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
 43063.64
@@ -297,8 +299,8 @@
 </table>
 <p>As in the case of table <a href="appendix.html#tab:e1-function">5.2</a>, the order function defined by <a href="appendix.html#tab:e2-function">5.4</a> may be written as: <span class="math inline">\(o(p,t) = v_1 \mathbf{1}_{P_1 \times T_1}(p,t)\)</span> and the corresponding filled volume as defined by <a href="methods.html#def:filled-volume">2.4</a> function is identically zero: <span class="math display">\[f_v(t) \equiv 0\]</span></p>
 <p>But the corresponding amended volume function as defined by <a href="methods.html#def:amended-volume">2.5</a> is non-zero at two points:
-<span class="math display">\[a_v({\small \text{13:59:59.940999}}) = -0.463963 \\a_v({\small \text{13:59:59.980000}}) = 0.463963\]</span></p>
-<p>Note that since the order is an ask order, the amendment function is negative at 13:59:59.940999 and positive at 13:59:59.980000. It would be the other way around for a bid order.</p>
+<span class="math display">\[a_v({\small \text{13:59:59.940}}) = -0.463963 \\a_v({\small \text{13:59:59.980}}) = 0.463963\]</span></p>
+<p>Note that since the order is an ask order, the amendment function is negative at 13:59:59.940 and positive at 13:59:59.980. It would be the other way around for a bid order.</p>
 <table class="huxtable" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  " id="tab:e3-table">
 <caption style="caption-side: top; text-align: left;">
 <span id="tab:e3-table">Table 5.5: </span> The ask order was matched after it was open on the order book (<span class="math inline">\(m_2 = 1\)</span>) and afterwards its price and volume were simultaneously amended (<span class="math inline">\(m_3 = 0\)</span>, <span class="math inline">\(s_3=1\)</span>).
@@ -327,7 +329,7 @@
 </tr>
 <tr>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-13:59:59.943000
+13:59:59.943
 </td>
 <td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
 1
@@ -344,7 +346,7 @@
 </tr>
 <tr>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-14:00:00.111999
+14:00:00.111
 </td>
 <td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
 1
@@ -361,7 +363,7 @@
 </tr>
 <tr>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-14:00:01.115000
+14:00:01.115
 </td>
 <td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
 1
@@ -397,7 +399,7 @@
 </tr>
 <tr>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-(13:59:59.943000 , 14:00:00.111999)
+(13:59:59.943 , 14:00:00.111)
 </td>
 <td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
 43063.64
@@ -408,7 +410,7 @@
 </tr>
 <tr>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-[14:00:00.111999 , 14:00:01.115000]
+[14:00:00.111 , 14:00:01.115]
 </td>
 <td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
 43063.64
@@ -419,7 +421,7 @@
 </tr>
 <tr>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-(14:00:01.115000 , <span class="math inline">\(+\infty\)</span>)
+(14:00:01.115 , <span class="math inline">\(+\infty\)</span>)
 </td>
 <td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
 43065.00
@@ -431,10 +433,10 @@
 </table>
 <p>The order function defined by <a href="appendix.html#tab:e3-function">5.6</a> has the form: <span class="math inline">\(o(p,t) = \sum_{k=1}^3 v_k \mathbb{1}_{P_k\times T_k}(p,t)\)</span>.</p>
 <p>The corresponding filled volume as defined by <a href="methods.html#def:filled-volume">2.4</a> is not identically zero in this case:
-<span class="math display">\[f_v({\small \text{14:00:00.111999}}) \equiv v({\small \text{14:00:00.111999}}) - \lim_{t&#39; \uparrow 14:00:00.111999} v(t&#39;) = -2.5 - (-2.1) = -0.4\]</span></p>
+<span class="math display">\[f_v({\small \text{14:00:00.111}}) \equiv v({\small \text{14:00:00.111}}) - \lim_{t&#39; \uparrow 14:00:00.111} v(t&#39;) = -2.5 - (-2.1) = -0.4\]</span></p>
 <p>The corresponding amended volume function as defined by <a href="methods.html#def:amended-volume">2.5</a> is again non-zero at two points:
-<span class="math display">\[a_v({\small \text{13:59:59.943000}}) = -2.5 \\a_v({\small \text{14:00:01.115000}}) = -2.3 - (-2.1) = -0.2\]</span></p>
-<p>Note that <span class="math inline">\(p_1 = p_2\)</span> since <span class="math inline">\(t_{1,2} = {\small \text{14:00:00.111999}} \not \in T_1\)</span> as required by definition of order function <a href="methods.html#def:order">2.1</a> but <span class="math inline">\(p_2 \neq p_3\)</span>. The latter is acceptable since <span class="math inline">\(t_{2,2} = {\small \text{14:00:01.115000}} \in T_2\)</span>.</p>
+<span class="math display">\[a_v({\small \text{13:59:59.943}}) = -2.5 \\a_v({\small \text{14:00:01.115}}) = -2.3 - (-2.1) = -0.2\]</span></p>
+<p>Note that <span class="math inline">\(p_1 = p_2\)</span> since <span class="math inline">\(t_{1,2} = {\small \text{14:00:00.111}} \not \in T_1\)</span> as required by definition of order function <a href="methods.html#def:order">2.1</a> but <span class="math inline">\(p_2 \neq p_3\)</span>. The latter is acceptable since <span class="math inline">\(t_{2,2} = {\small \text{14:00:01.115}} \in T_2\)</span>.</p>
 <table class="huxtable" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  " id="tab:e4-table">
 <caption style="caption-side: top; text-align: left;">
 <span id="tab:e4-table">Table 5.7: </span> The bid order was matched after it was open on the order book (<span class="math inline">\(m_2 = 1\)</span>) and the remaining amount was cancelled (<span class="math inline">\(m_3 = 0\)</span>, <span class="math inline">\(s_3=0\)</span>) at the same time.
@@ -463,7 +465,7 @@
 </tr>
 <tr>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-14:02:02.000000
+14:02:02.000
 </td>
 <td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
 1
@@ -480,7 +482,7 @@
 </tr>
 <tr>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-14:02:03.000000
+14:02:03.000
 </td>
 <td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
 1
@@ -497,7 +499,7 @@
 </tr>
 <tr>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-14:00:03.000000
+14:00:03.000
 </td>
 <td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
 0
@@ -533,7 +535,7 @@
 </tr>
 <tr>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-(14:02:02.000000 , 14:02:03.000000)
+(14:02:02.000 , 14:02:03.000)
 </td>
 <td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
 43060.00
@@ -544,7 +546,7 @@
 </tr>
 <tr>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-[14:02:03.000000 , 14:00:03.000000]
+[14:02:03.000 , 14:00:03.000]
 </td>
 <td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
 43060.00
@@ -555,8 +557,8 @@
 </tr>
 </table>
 <p>The order function defined by <a href="appendix.html#tab:e4-function">5.8</a> has the form: <span class="math inline">\(o(p,t) = \sum_{k=1}^2 v_k \mathbb{1}_{P_k\times T_k}(p,t)\)</span>.</p>
-<p>Note that <em>both</em> filled volume function <span class="math inline">\(f_v(t)\)</span> as defined by <a href="methods.html#def:filled-volume">2.4</a> and amended volume function <span class="math inline">\(a_v(t)\)</span> as defined by <a href="methods.html#def:amended-volume">2.5</a> are non-zero at <span class="math inline">\(t = t_{1,2} = t_{2,1} = t_{2,2} = {\small \text{14:02:03.000000}}\)</span>:
-<span class="math display">\[f_v({\small \text{14:02:03.000000}}) = -3.0 \\a_v({\small \text{14:02:03.000000}}) = -2.0\]</span></p>
+<p>Note that <em>both</em> filled volume function <span class="math inline">\(f_v(t)\)</span> as defined by <a href="methods.html#def:filled-volume">2.4</a> and amended volume function <span class="math inline">\(a_v(t)\)</span> as defined by <a href="methods.html#def:amended-volume">2.5</a> are non-zero at <span class="math inline">\(t = t_{1,2} = t_{2,1} = t_{2,2} = {\small \text{14:02:03.000}}\)</span>:
+<span class="math display">\[f_v({\small \text{14:02:03.000}}) = -3.0 \\a_v({\small \text{14:02:03.000}}) = -2.0\]</span></p>
 </div>
 <div id="example-of-lob" class="section level2">
 <h2><span class="header-section-number">5.2</span> Example of LOB</h2>

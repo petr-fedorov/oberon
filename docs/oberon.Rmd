@@ -22,7 +22,7 @@ library(tibble)
 library(ggplot2)
 library(gridExtra)
 library(latex2exp)
-options(scipen = 999, digits = 6, digits.secs=6)
+options(scipen = 999, digits = 6, digits.secs=3)
 #options(huxtable.add_colnames = FALSE)
 
 #futile.logger::flog.threshold(futile.logger::WARN, 'obadiah')
@@ -126,7 +126,7 @@ Below we propose stricter definitions that address these and the other similar i
 
 ## Definitions 
 
-### Order event
+### Order function
 
 ```{definition Order Function, name="Order Function", label="order" }
 
@@ -259,12 +259,18 @@ Note that $|\mathcal{E}| = |\mathcal{T}| + 1$ if the last interval $T_k$ is fini
 
 See [Appendix][Examples of order tables and restored functions] for examples of order tables and order functions restored from them.
 
+### Order book
 
 Typically the term [order book](https://www.investopedia.com/terms/o/order-book.asp) refers to an electronic list of buy and sell orders for a specific security or financial instrument organized by price level. An order book lists the number of shares being bid on or offered at each price point, or market depth. Order books are used by almost every exchange to list the orders for different securities. 
 
 
 ```{definition Order Set, name="Order Set", label=order-set}
 A set of orders with common resolution parameters $\tau$, $\pi$ and $\phi$ $$\mathcal{O} = \{o^i(\cdot, \cdot)\}_i$$ where $o^i(\cdot, \cdot)$ is defined by \@ref(def:order) is called an *order set*.
+```
+
+```{definition Order Set Table, name="Order Set Table", label=order-set-table}
+Suppose an order set $\mathcal{O} = \{ o^i(\cdot, \cdot) \}_i$ as defined by \@ref(def:order-set) is given. A union of set of tuples:
+$$\mathcal{S} = \bigcup_i \big\{(i, k, t_k^i, s_k^i,p_k^i, v_k^i, m_k^i)\big\}_{k=1}^{K^i}$$ where $i$ is *a unique order identification number* and $\{(t_k^i, s_k^i,p_k^i, v_k^i, m_k^i)\}_{k=1}^{K^i}$ is the order table as defined by \@ref(def:order-table) of order $o^i(\cdot, \cdot)$ is called *an order set table*. Each tuple in the order set table is called *an order event with order id*.
 ```
 
 
@@ -309,7 +315,23 @@ $$
 $$
 ```
 
+To make the above definitions intuitively clear, consider an example in [Appendix][Example of LOB].
 
+```{definition LOB function, name="LOB functions", label="lob-functions"}
+Suppose Limit Order Book $\mathcal{L}$ as defined by \@ref(def:lob) is given, $\mathcal{B}$ is an associated *bids* set as defined by \@ref(def:bids) and $\mathcal{A}$ is an associated *asks* set as defined by \@ref(def:asks). The function
+$$
+  o^{\mathcal{B}}(p,t) = \sum_{o^i(p,t) \in \mathcal{B}} o^i(p,t) \\
+  o^{\mathcal{A}}(p,t) = \sum_{o^i(p,t) \in \mathcal{A}} o^i(p,t) \\
+  o^{\mathcal{L}}(p,t) = o^{\mathcal{A}}(p,t) + o^{\mathcal{B}}(p,t)
+$$
+is called *LOB bid function* , *LOB ask function* and *LOB function* respectively. 
+```
+
+Note that $$\text{supp}(o^{\mathcal{A}}(p,t)) \cap \text{supp}(o^{\mathcal{B}}(p,t)) = \emptyset$$.
+
+
+
+### Market orders
 
 A [market order](https://www.investopedia.com/terms/m/marketorder.asp) is a request by an investor to buy or sell a security at the best available price at the time of order placement. The request is usually made through a broker or brokerage service and is ultimately executed by an exchange that maintains an order book.  Clearly, a market order cause an exchange's order book to be updated so market orders are modeled as *changes* of an order book. 
 
@@ -325,22 +347,17 @@ Suppose a Limit Order Book $\mathcal{L}$ is given as defined by \@ref(def:lob). 
 
 ```
 
-To make the above definitions intuitively clear, consider an example in [Appendix][Example of LOB].
+### Level2 order function
 
 
-```{definition Order Set Table, name="Order Set Table", label=order-set-table}
-Suppose an order set $\mathcal{O} = \{ o^i(\cdot, \cdot) \}_i$ as defined by \@ref(def:order-set) is given. A union of set of tuples:
-$$\mathcal{S} = \bigcup_i \big\{(i, k, t_k^i, s_k^i,p_k^i, v_k^i, m_k^i)\big\}_{k=1}^{K^i}$$ where $i$ is *a unique order identification number* and $\{(t_k^i, s_k^i,p_k^i, v_k^i, m_k^i)\}_{k=1}^{K^i}$ is the order table as defined by \@ref(def:order-table) of order $o^i(\cdot, \cdot)$ is called *an order set table*. Each tuple in the order set table is called *an order event with order id*.
-```
-
-### Stripe and Dot
+The Order Set Table is a precise representation of Order Functions but it is not a good tool for analysis. Consider for example the really short table \@ref(tab:transmute-example-1). Even in this simple case, it is rather hard to see how LOB was evolving. The visual representation of the same Order Set Tableshown on figure \@ref(fig:transmute-example-1-picture) is much more expressive.
 
 ```{r transmute-example-1, echo=FALSE}
 dt <- fread(file = "transmute_example_1.csv")[,c("maker","ordinal","timestamp","mks","state","price","volume","trade")]
 setnafill(dt, type="locf", cols=3)
 setnafill(dt, type="const", fill=0, cols=c(4, 5,7,8))
-as_hux(dt[ , .(`\\(i\\)`=maker, `\\(k\\)`=ordinal, `\\(t^i_k\\)`=timestamp+mks/1000000.0,
-               `\\(s^i_k\\)`=state, `\\(p^i_k\\)`=price, `\\(v^i_k\\)`=volume, `\\(m^i_k\\)`=as.integer(trade != 0) )]) %>%  set_caption("In spite of being very short Order Set Table shown is hard to understand")
+as_hux(dt[ , .(`\\(i\\)`=maker, `\\(k\\)`=ordinal, `\\(t^i_k\\)`=timestamp+mks/1000000.0+0.0000005,
+               `\\(s^i_k\\)`=state, `\\(p^i_k\\)`=price, `\\(v^i_k\\)`=volume, `\\(m^i_k\\)`=as.integer(trade != 0) )]) %>%  set_caption("Despite being short, the Order Set Table is not comprehensible; it is difficult to figure out from the table how the order book was evolving.")
 ```
 
 
@@ -367,7 +384,7 @@ gnuplot -p <<-EOF
       (column("price")):\
       (-val("timestamp_change")/1000000.0):\
       (0):\
-      (val("volume") - val("volume_change")) with vectors lc palette z nohead notitle,\
+      (val("volume") - val("volume_change")) with vectors lc palette z lw 4 nohead notitle,\
     '' using\
       ((t=tval(t),t+val("mks")/1000000.0)):\
       (column("trade") > 0 ? column("price"): 1/0):(column("volume_change")) with points lc palette z pointtype 7 notitle
@@ -377,19 +394,20 @@ EOF
 
 
 
-```{r transmute-example-1-picture, echo=FALSE, fig.cap="It is easier to comprehend a visual representation of Order Set Table \\@ref(tab:transmute-example-1)", fig.align="center"}
+```{r transmute-example-1-picture, echo=FALSE, fig.cap="It is easier to grasp the evolution of an order book from the visual representation of Order Set Table \\@ref(tab:transmute-example-1) shown above", fig.align="center"}
 knitr::include_graphics("transmute_example_1.png", dpi=80)
 ```
 
+Unfortunately, not every Order Set Table can be visualised 'as-is'. Suppose that one more order function is added to LOB as shown in table \@ref(tab:transmute-example-2). Its visualisation shown on figure \@ref(fig:transmute-example-2-picture) is distorted since the lines corresponding to orders 3 and 4 overlaps. These orders have the same price and their time intervals intersects.
 
 ```{r transmute-example-2, echo=FALSE}
 dt <- fread(file = "transmute_example_2.csv")[,c("maker","ordinal","timestamp","mks","state","price","volume","trade")]
 setnafill(dt, type="locf", cols=3)
 setnafill(dt, type="const", fill=0, cols=c(4, 5,7,8))
-as_hux(dt[ , .(`\\(i\\)`=maker, `\\(k\\)`=ordinal, `\\(t^i_k\\)`=timestamp+mks/1000000.0,
+as_hux(dt[ , .(`\\(i\\)`=maker, `\\(k\\)`=ordinal, `\\(t^i_k\\)`=timestamp+mks/1000000.0+0.0000005,
                `\\(s^i_k\\)`=state, `\\(p^i_k\\)`=price, `\\(v^i_k\\)`=volume, `\\(m^i_k\\)`=as.integer(trade != 0) )]) %>%
   set_background_color(c(5,10), everywhere, "grey") %>%
-  set_caption("Order 4 with two events has been added to Order Set Table")
+  set_caption("Order 4 with two events and the same price as order 3 (540) has been added to Order Set Table.")
 
 ```
 
@@ -403,7 +421,7 @@ gnuplot -p <<-EOF
   set yrange [525:545]
   set datafile separator comma
   set palette defined (-1 "blue", 0 'white', 1 'red')
-  set cbrange [-1:1]
+  set cbrange [-2:2]
   set term png
   set output "transmute_example_2.png"
   set grid
@@ -417,7 +435,7 @@ gnuplot -p <<-EOF
       (column("price")):\
       (-val("timestamp_change")/1000000.0):\
       (0):\
-      (val("volume") - val("volume_change")) with vectors lc palette z nohead notitle,\
+      (val("volume") - val("volume_change")) with vectors lc palette z lw 4 nohead notitle,\
     '' using\
       ((t=tval(t),t+val("mks")/1000000.0)):\
       (column("trade") > 0 ? column("price"): 1/0):(column("volume_change")) with points lc palette z pointtype 7 notitle
@@ -425,9 +443,70 @@ EOF
 
 ```
 
-```{r transmute-example-2-picture, echo=FALSE, fig.cap="A visual representation of Order Book Set \\@ref(tab:transmute-example-2) is distorted since orders 3 and 4 overlaps", fig.align="center"}
+```{r transmute-example-2-picture, echo=FALSE, fig.cap="A visual representation of Order Book Set \\@ref(tab:transmute-example-2) is distorted since the lines representing orders 3 and 4 overlap", fig.align="center"}
 knitr::include_graphics("transmute_example_2.png", dpi=80)
 ```
+This example is a motivation for theorem \@ref(thm:l2of). The theorem guarantees that we may transmute Order Set Table into another one, which at every moment and for every price contains only one non-zero order function.
+
+```{theorem Level2 order, name="Level2 Order Function", label=l2of}
+    Suppose Limit Order Book $\mathcal{L}$ as defined by \@ref(def:lob) is given,  $o^{\mathcal{L}}(p,t)$ is LOB function as defined by \@ref(def:lob-functions) and for some constant $p_0 \in \mathbb{R}_{>0}$:  $$\emptyset \neq \text{supp}(o^{\mathcal{L}}(p_0,t)) = \bigcup_{m=1}^M I_m$$ where each $I_m$ is an interval.
+
+Then $\forall m: m \in [1, \ldots, M]$ *Level2 Order Function* $o^{p_0, m}(p,t)$ defined as:
+   
+$$ o^{p_0, m}(p,t) = \begin{cases}o^{\mathcal{L}}(p_0,t), & (p,t) \in \{p_0\} \times I_m \\ 0, & \text{otherwise} \end{cases}
+  $$ is Order Function as defined by \@ref(def:order). 
+```
+
+Table \@ref(tab:transmute-example-3) is a transmuted table \@ref(tab:transmute-example-2). Its visual representation shown on figure \@ref(fig:transmute-example-3-picture) is not distorted since order 5, which is Level2 Order Function, properly aggregates volumes of orders 3 and 4.
+
+```{r transmute-example-3, echo=FALSE}
+dt <- fread(file = "transmute_example_3.csv")[,c("maker","ordinal","timestamp","mks","state","price","volume","trade")]
+setnafill(dt, type="locf", cols=3)
+setnafill(dt, type="const", fill=0, cols=c(4, 5,7,8))
+as_hux(dt[ , .(`\\(i\\)`=maker, `\\(k\\)`=ordinal, `\\(t^i_k\\)`=timestamp+mks/1000000.0+0.0000005,
+               `\\(s^i_k\\)`=state, `\\(p^i_k\\)`=price, `\\(v^i_k\\)`=volume, `\\(m^i_k\\)`=as.integer(trade != 0) )]) %>%
+  set_background_color(c(4,5,7,10), everywhere, "grey") %>%
+  set_caption("Order 5 is now Level2 Order Function created from orders 3 and 4 in the previous table")
+
+```
+
+
+```{bash gnuplot-code-3, echo=FALSE}
+gnuplot -p <<-EOF
+  set xdata time
+  set timefmt "%Y-%m-%dT%H:%M:%SZ"
+  set xtics format "%M:%.1S" rotate by 45
+  set xrange ["2021-03-26T13:59:05.9Z":"2021-03-26T13:59:07.3Z"]
+  set yrange [525:545]
+  set datafile separator comma
+  set palette defined (-1 "blue", 0 'white', 1 'red')
+  set cbrange [-2:2]
+  set term png
+  set output "transmute_example_3.png"
+  set grid
+  set pointsize 2
+  val(name) = stringcolumn(name) ne "" ? column(name) : 0
+  tval(t)=stringcolumn("timestamp") ne ""? strptime("%Y-%m-%dT%H:%M:%SZ",stringcolumn("timestamp")):t
+  t=""
+  plot \
+    "transmute_example_3.csv" using \
+      ((t=tval(t),t+val("mks")/1000000.0)):\
+      (column("price")):\
+      (-val("timestamp_change")/1000000.0):\
+      (0):\
+      (val("volume") - val("volume_change")) with vectors lc palette z lw 4 nohead notitle,\
+    '' using\
+      ((t=tval(t),t+val("mks")/1000000.0)):\
+      (column("trade") > 0 ? column("price"): 1/0):(column("volume_change")) with points lc palette z pointtype 7 notitle
+EOF
+
+```
+
+```{r transmute-example-3-picture, echo=FALSE, fig.cap="A visual representation of Order Book Set \\@ref(tab:transmute-example-3) contains Level2 Order Function created from orders 3 and 4 from table \\@ref(tab:transmute-example-2)", fig.align="center"}
+knitr::include_graphics("transmute_example_3.png", dpi=80)
+```
+
+
 ## Software 
 
 
