@@ -348,7 +348,7 @@ An <em>order event</em> is a tuple <span class="math inline">\((t,s,p,v,m)\)</sp
 are called <em>LOB bid function</em> and <em>LOB ask function</em> respectively. Collectively they are called <em>LOB functions</em>.
 </div>
 
-<p>Note that <span class="math display">\[\text{supp}(o^{\mathcal{A}}(p,t)) \cap \text{supp}(o^{\mathcal{B}}(p,t)) = \emptyset\]</span> but <span class="math inline">\(\overline{\text{supp}(o^{\mathcal{A}}(p,t))} \cap \overline{\text{supp}(o^{\mathcal{B}}(p,t))}\)</span> may be non-empty and in this case it will be a countable set of points.</p>
+<p>Note that <span class="math display">\[\text{supp}(o^{\mathcal{A}}(p,t)) \cap \text{supp}(o^{\mathcal{B}}(p,t)) = \emptyset\]</span> but <span class="math inline">\(\overline{\text{supp}(o^{\mathcal{A}}(p,t))} \cap \overline{\text{supp}(o^{\mathcal{B}}(p,t))}\)</span> may be non-empty and in this case it will be a finite set of points.</p>
 </div>
 <div id="market-orders" class="section level3">
 <h3><span class="header-section-number">2.1.3</span> Market orders</h3>
@@ -442,7 +442,8 @@ Figure 2.2: A visual representation of Order Book Set <a href="methods.html#tab:
 <li><span class="math inline">\(v_r = o^{p_0, m}(p_0, \frac{t_r+t_{r+1}}{2})\)</span>,</li>
 <li><span class="math inline">\(T_r\)</span> is an interval with left endpoint <span class="math inline">\(t_r\)</span> and right-endpoint <span class="math inline">\(t_{r+1}\)</span>; it is left-closed if <span class="math inline">\(o^{p_0,m}(p_0, t_r) = v_r\)</span> and left-open otherwise; it is right-closed if <span class="math inline">\(o^{p_0,m}(p_0, t_{r+1}) = v_r\)</span> and right-open otherwise,</li>
 </ol>
-If <span class="math inline">\(I_m\)</span> is right-unbounded then <span class="math inline">\(T_{R+1}\)</span> with <span class="math inline">\(t_R\)</span> as its left-endpoint and <span class="math inline">\(+\infty\)</span> as its right-endpoint is added to <span class="math inline">\(\mathcal{T}\)</span>, <span class="math inline">\(P_{R+1} = \{p_0\}\)</span>, <span class="math inline">\(v_{R+1} = o^{p_0, m}(p_0, t_R+1)\)</span>; <span class="math inline">\(T_{R+1}\)</span> is left-closed if <span class="math inline">\(o^{p_0,m}(p_0, t_R) = v_{R+1}\)</span> and left-open otherwise.
+<p>If <span class="math inline">\(I_m\)</span> is right-unbounded then <span class="math inline">\(T_{R+1}\)</span> with <span class="math inline">\(t_R\)</span> as its left-endpoint and <span class="math inline">\(+\infty\)</span> as its right-endpoint is added to <span class="math inline">\(\mathcal{T}\)</span>, <span class="math inline">\(P_{R+1} = \{p_0\}\)</span>, <span class="math inline">\(v_{R+1} = o^{p_0, m}(p_0, t_R+1)\)</span>; <span class="math inline">\(T_{R+1}\)</span> is left-closed if <span class="math inline">\(o^{p_0,m}(p_0, t_R) = v_{R+1}\)</span> and left-open otherwise.</p>
+<p>Finally, <span class="math inline">\(\forall t^m_r : r &gt; 1 \land t^m_r \not \in T_{r-1} \land t^m_r \not \in T_r\)</span> a degenerate interval <span class="math inline">\(\{t^m_r\}\)</span> is added to <span class="math inline">\(\mathcal{T}\)</span>, corresponding interval <span class="math inline">\(\{p_0\}\)</span> is added to <span class="math inline">\(\mathcal{P}\)</span> and corresponding value <span class="math inline">\(o^{p_0, m}(p_0, t^m_r)\)</span> is added to <span class="math inline">\(\mathcal{V}\)</span>.</p>
 </div>
 
 <p>Table <a href="methods.html#tab:transmute-example-3">2.3</a> is a transmuted table <a href="methods.html#tab:transmute-example-2">2.2</a>. Its visual representation shown on figure <a href="methods.html#fig:transmute-example-3-picture">2.3</a> is not distorted since order 5, which is Level2 Order Function, properly aggregates volumes of orders 3 and 4.</p>

@@ -326,7 +326,7 @@ $$
 are called *LOB bid function* and *LOB ask function* respectively. Collectively they are called *LOB functions*. 
 ```
 
-Note that $$\text{supp}(o^{\mathcal{A}}(p,t)) \cap \text{supp}(o^{\mathcal{B}}(p,t)) = \emptyset$$ but $\overline{\text{supp}(o^{\mathcal{A}}(p,t))} \cap \overline{\text{supp}(o^{\mathcal{B}}(p,t))}$ may be non-empty and in this case it will be a countable set of points.
+Note that $$\text{supp}(o^{\mathcal{A}}(p,t)) \cap \text{supp}(o^{\mathcal{B}}(p,t)) = \emptyset$$ but $\overline{\text{supp}(o^{\mathcal{A}}(p,t))} \cap \overline{\text{supp}(o^{\mathcal{B}}(p,t))}$ may be non-empty and in this case it will be a finite set of points.
 
 
 
@@ -470,7 +470,9 @@ Now suppose that $R >1$. We may assume without loss of generality that $t^m_i < 
   a. $T_r$ is an interval with left endpoint $t_r$ and right-endpoint $t_{r+1}$; it is left-closed if $o^{p_0,m}(p_0, t_r) = v_r$ and left-open otherwise; it is right-closed if  $o^{p_0,m}(p_0, t_{r+1}) = v_r$ and right-open otherwise,
   
 If $I_m$ is right-unbounded then $T_{R+1}$ with $t_R$ as its left-endpoint and $+\infty$ as its right-endpoint is added to $\mathcal{T}$, $P_{R+1} = \{p_0\}$, $v_{R+1} = o^{p_0, m}(p_0, t_R+1)$; $T_{R+1}$ is left-closed if $o^{p_0,m}(p_0, t_R) = v_{R+1}$ and left-open otherwise.
-  
+
+Finally, $\forall t^m_r : r > 1 \land t^m_r \not \in T_{r-1} \land t^m_r \not \in T_r$ a degenerate interval $\{t^m_r\}$ is added to $\mathcal{T}$, corresponding interval $\{p_0\}$ is added to $\mathcal{P}$ and corresponding value $o^{p_0, m}(p_0, t^m_r)$ is added to $\mathcal{V}$.
+
 ```
 
 Table \@ref(tab:transmute-example-3) is a transmuted table \@ref(tab:transmute-example-2). Its visual representation shown on figure \@ref(fig:transmute-example-3-picture) is not distorted since order 5, which is Level2 Order Function, properly aggregates volumes of orders 3 and 4.
