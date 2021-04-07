@@ -24,7 +24,7 @@
 <meta name="author" content="Petr Fedorov" />
 
 
-<meta name="date" content="2021-04-05" />
+<meta name="date" content="2021-04-07" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -286,7 +286,7 @@ An <em>order event</em> is a tuple <span class="math inline">\((t,s,p,v,m)\)</sp
 <p>Typically the term <a href="https://www.investopedia.com/terms/o/order-book.asp">order book</a> refers to an electronic list of buy and sell orders for a specific security or financial instrument organized by price level. An order book lists the number of shares being bid on or offered at each price point, or market depth. Order books are used by almost every exchange to list the orders for different securities.</p>
 
 <div class="definition">
-<span id="def:order-set" class="definition"><strong>Definition 2.8  (Order Set)  </strong></span>A set of orders with common resolution parameters <span class="math inline">\(\tau\)</span>, <span class="math inline">\(\pi\)</span> and <span class="math inline">\(\phi\)</span> <span class="math display">\[\mathcal{O} = \{o^i(\cdot, \cdot)\}_i\]</span> where <span class="math inline">\(o^i(\cdot, \cdot)\)</span> is defined by <a href="methods.html#def:order">2.1</a> is called an <em>order set</em>.
+<span id="def:order-set" class="definition"><strong>Definition 2.8  (Order Set)  </strong></span>A finite set of orders with common resolution parameters <span class="math inline">\(\tau\)</span>, <span class="math inline">\(\pi\)</span> and <span class="math inline">\(\phi\)</span> <span class="math display">\[\mathcal{O} = \{o^i(\cdot, \cdot)\}_i\]</span> where <span class="math inline">\(o^i(\cdot, \cdot)\)</span> is defined by <a href="methods.html#def:order">2.1</a> is called an <em>order set</em>.
 </div>
 
 
@@ -340,16 +340,15 @@ An <em>order event</em> is a tuple <span class="math inline">\((t,s,p,v,m)\)</sp
 <p>To make the above definitions intuitively clear, consider an example in <a href="appendix.html#example-of-lob">Appendix</a>.</p>
 
 <div class="definition">
-<span id="def:lob-functions" class="definition"><strong>Definition 2.16  (LOB functions)  </strong></span>Suppose Limit Order Book <span class="math inline">\(\mathcal{L}\)</span> as defined by <a href="methods.html#def:lob">2.15</a> is given, <span class="math inline">\(\mathcal{B}\)</span> is an associated <em>bids</em> set as defined by <a href="methods.html#def:bids">2.10</a> and <span class="math inline">\(\mathcal{A}\)</span> is an associated <em>asks</em> set as defined by <a href="methods.html#def:asks">2.11</a>. The function
+<span id="def:lob-function" class="definition"><strong>Definition 2.16  (LOB function)  </strong></span>Suppose Limit Order Book <span class="math inline">\(\mathcal{L}\)</span> as defined by <a href="methods.html#def:lob">2.15</a> is given, <span class="math inline">\(\mathcal{B}\)</span> is an associated <em>bids</em> set as defined by <a href="methods.html#def:bids">2.10</a> and <span class="math inline">\(\mathcal{A}\)</span> is an associated <em>asks</em> set as defined by <a href="methods.html#def:asks">2.11</a>. The functions
 <span class="math display">\[
   o^{\mathcal{B}}(p,t) = \sum_{o^i(p,t) \in \mathcal{B}} o^i(p,t) \\
-  o^{\mathcal{A}}(p,t) = \sum_{o^i(p,t) \in \mathcal{A}} o^i(p,t) \\
-  o^{\mathcal{L}}(p,t) = o^{\mathcal{A}}(p,t) + o^{\mathcal{B}}(p,t)
+  o^{\mathcal{A}}(p,t) = \sum_{o^i(p,t) \in \mathcal{A}} o^i(p,t) 
 \]</span>
-is called <em>LOB bid function</em> , <em>LOB ask function</em> and <em>LOB function</em> respectively.
+are called <em>LOB bid function</em> and <em>LOB ask function</em> respectively. Collectively they are called <em>LOB functions</em>.
 </div>
 
-<p>Note that <span class="math display">\[\text{supp}(o^{\mathcal{A}}(p,t)) \cap \text{supp}(o^{\mathcal{B}}(p,t)) = \emptyset\]</span>.</p>
+<p>Note that <span class="math display">\[\text{supp}(o^{\mathcal{A}}(p,t)) \cap \text{supp}(o^{\mathcal{B}}(p,t)) = \emptyset\]</span> but <span class="math inline">\(\overline{\text{supp}(o^{\mathcal{A}}(p,t))} \cap \overline{\text{supp}(o^{\mathcal{B}}(p,t))}\)</span> may be non-empty and in this case it will be a countable set of points.</p>
 </div>
 <div id="market-orders" class="section level3">
 <h3><span class="header-section-number">2.1.3</span> Market orders</h3>
@@ -426,10 +425,24 @@ Figure 2.2: A visual representation of Order Book Set <a href="methods.html#tab:
 <p>This example is a motivation for theorem <a href="methods.html#thm:l2of">2.2</a>. The theorem guarantees that we may transmute Order Set Table into another one, which at every moment and for every price contains only one non-zero order function.</p>
 
 <div class="theorem">
-<p><span id="thm:l2of" class="theorem"><strong>Theorem 2.2  (Level2 Order Function)  </strong></span> Suppose Limit Order Book <span class="math inline">\(\mathcal{L}\)</span> as defined by <a href="methods.html#def:lob">2.15</a> is given, <span class="math inline">\(o^{\mathcal{L}}(p,t)\)</span> is LOB function as defined by <a href="methods.html#def:lob-functions">2.16</a> and for some constant <span class="math inline">\(p_0 \in \mathbb{R}_{&gt;0}\)</span>: <span class="math display">\[\emptyset \neq \text{supp}(o^{\mathcal{L}}(p_0,t)) = \bigcup_{m=1}^M I_m\]</span> where each <span class="math inline">\(I_m\)</span> is an interval.</p>
+<p><span id="thm:l2of" class="theorem"><strong>Theorem 2.2  (Level2 Order Function)  </strong></span> Suppose Limit Order Book <span class="math inline">\(\mathcal{L}\)</span> as defined by <a href="methods.html#def:lob">2.15</a> is given, <span class="math inline">\(o^{\mathcal{L}}(p,t)\)</span> is LOB function as defined by <a href="methods.html#def:lob-function">2.16</a> (either LOB bid function or LOB ask function) and for some constant <span class="math inline">\(p_0 \in \mathbb{R}_{&gt;0}\)</span>: <span class="math display">\[\emptyset \neq \text{supp}(o^{\mathcal{L}}(p_0,t)) = \bigcup_{m=1}^M I_m\]</span> where all <span class="math inline">\(I_m\)</span> are intervals such that <span class="math inline">\(\forall i,j: \overline{I_i} \cap \overline{I_j} = \emptyset\)</span>.</p>
 <p>Then <span class="math inline">\(\forall m: m \in [1, \ldots, M]\)</span> <em>Level2 Order Function</em> <span class="math inline">\(o^{p_0, m}(p,t)\)</span> defined as:</p>
 <span class="math display">\[ o^{p_0, m}(p,t) = \begin{cases}o^{\mathcal{L}}(p_0,t), &amp; (p,t) \in \{p_0\} \times I_m \\ 0, &amp; \text{otherwise} \end{cases}
   \]</span> is Order Function as defined by <a href="methods.html#def:order">2.1</a>.
+</div>
+
+
+<div class="proof">
+<p> <span class="proof"><em>Proof. </em></span> To prove the theorem we need to construct <span class="math inline">\(\mathcal{T}\)</span>, <span class="math inline">\(\mathcal{P}\)</span> and <span class="math inline">\(\mathcal{V}\)</span> sets which are used in definition <a href="methods.html#def:order">2.1</a>.</p>
+<p>Suppose that <span class="math inline">\(\{t_r^m\}_{r=1}^R \in I_m\)</span> are points of dicontinuity of <span class="math inline">\(o^{p_0,m}(p_0,t)\)</span>.</p>
+<p>If <span class="math inline">\(R=1\)</span> then <span class="math inline">\(\mathcal{T} = \{(t^m_1, +\infty)\}\)</span>, <span class="math inline">\(\mathcal{P} = \{\{p_0\}\}\)</span>, <span class="math inline">\(\mathcal{V} = \{o^{p_0,m}(p_0,t^m_1)\}\)</span>.</p>
+<p>Now suppose that <span class="math inline">\(R &gt;1\)</span>. We may assume without loss of generality that <span class="math inline">\(t^m_i &lt; t^m_j\)</span> if <span class="math inline">\(i &lt; j\)</span>. Then <span class="math inline">\(\forall r \in \{1, \ldots, R\}\)</span> we’ll construct <span class="math inline">\(T_r \in \mathcal{T}\)</span>, <span class="math inline">\(P_r \in \mathcal{P}\)</span>, <span class="math inline">\(v_r \in \mathcal{V}\)</span> as follows:</p>
+<ol style="list-style-type: lower-alpha">
+<li><span class="math inline">\(P_r = \{p_0\}\)</span>,</li>
+<li><span class="math inline">\(v_r = o^{p_0, m}(p_0, \frac{t_r+t_{r+1}}{2})\)</span>,</li>
+<li><span class="math inline">\(T_r\)</span> is an interval with left endpoint <span class="math inline">\(t_r\)</span> and right-endpoint <span class="math inline">\(t_{r+1}\)</span>; it is left-closed if <span class="math inline">\(o^{p_0,m}(p_0, t_r) = v_r\)</span> and left-open otherwise; it is right-closed if <span class="math inline">\(o^{p_0,m}(p_0, t_{r+1}) = v_r\)</span> and right-open otherwise,</li>
+</ol>
+If <span class="math inline">\(I_m\)</span> is right-unbounded then <span class="math inline">\(T_{R+1}\)</span> with <span class="math inline">\(t_R\)</span> as its left-endpoint and <span class="math inline">\(+\infty\)</span> as its right-endpoint is added to <span class="math inline">\(\mathcal{T}\)</span>, <span class="math inline">\(P_{R+1} = \{p_0\}\)</span>, <span class="math inline">\(v_{R+1} = o^{p_0, m}(p_0, t_R+1)\)</span>; <span class="math inline">\(T_{R+1}\)</span> is left-closed if <span class="math inline">\(o^{p_0,m}(p_0, t_R) = v_{R+1}\)</span> and left-open otherwise.
 </div>
 
 <p>Table <a href="methods.html#tab:transmute-example-3">2.3</a> is a transmuted table <a href="methods.html#tab:transmute-example-2">2.2</a>. Its visual representation shown on figure <a href="methods.html#fig:transmute-example-3-picture">2.3</a> is not distorted since order 5, which is Level2 Order Function, properly aggregates volumes of orders 3 and 4.</p>

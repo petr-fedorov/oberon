@@ -232,7 +232,7 @@ is called *an order table*. The index $k$ is called *an event ordinal number*.
 An order function \@ref(def:order) can be unambiguously restored from its order table \@ref(def:order-table).
 ```
 
-```{proof}
+```{proof Order Table Equivalence proof}
 Suppose the order table $\mathcal{E} = \{(t_k',s_k',p_k',v_k', m_k')\}_{k=1}^{R}$ is given. To restore the corresponding order function $o(p,t)$ as defined by \@ref(def:order) we need to restore $\mathcal{T}$, $\mathcal{P}$ and $\mathcal{V}$ sets. It can be done as follows:
 
 1. For all $1 \leq k < R$ 
@@ -265,7 +265,7 @@ Typically the term [order book](https://www.investopedia.com/terms/o/order-book.
 
 
 ```{definition Order Set, name="Order Set", label=order-set}
-A set of orders with common resolution parameters $\tau$, $\pi$ and $\phi$ $$\mathcal{O} = \{o^i(\cdot, \cdot)\}_i$$ where $o^i(\cdot, \cdot)$ is defined by \@ref(def:order) is called an *order set*.
+A finite set of orders with common resolution parameters $\tau$, $\pi$ and $\phi$ $$\mathcal{O} = \{o^i(\cdot, \cdot)\}_i$$ where $o^i(\cdot, \cdot)$ is defined by \@ref(def:order) is called an *order set*.
 ```
 
 ```{definition Order Set Table, name="Order Set Table", label=order-set-table}
@@ -317,17 +317,16 @@ $$
 
 To make the above definitions intuitively clear, consider an example in [Appendix][Example of LOB].
 
-```{definition LOB function, name="LOB functions", label="lob-functions"}
-Suppose Limit Order Book $\mathcal{L}$ as defined by \@ref(def:lob) is given, $\mathcal{B}$ is an associated *bids* set as defined by \@ref(def:bids) and $\mathcal{A}$ is an associated *asks* set as defined by \@ref(def:asks). The function
+```{definition LOB function, name="LOB function", label="lob-function"}
+Suppose Limit Order Book $\mathcal{L}$ as defined by \@ref(def:lob) is given, $\mathcal{B}$ is an associated *bids* set as defined by \@ref(def:bids) and $\mathcal{A}$ is an associated *asks* set as defined by \@ref(def:asks). The functions
 $$
   o^{\mathcal{B}}(p,t) = \sum_{o^i(p,t) \in \mathcal{B}} o^i(p,t) \\
-  o^{\mathcal{A}}(p,t) = \sum_{o^i(p,t) \in \mathcal{A}} o^i(p,t) \\
-  o^{\mathcal{L}}(p,t) = o^{\mathcal{A}}(p,t) + o^{\mathcal{B}}(p,t)
+  o^{\mathcal{A}}(p,t) = \sum_{o^i(p,t) \in \mathcal{A}} o^i(p,t) 
 $$
-is called *LOB bid function* , *LOB ask function* and *LOB function* respectively. 
+are called *LOB bid function* and *LOB ask function* respectively. Collectively they are called *LOB functions*. 
 ```
 
-Note that $$\text{supp}(o^{\mathcal{A}}(p,t)) \cap \text{supp}(o^{\mathcal{B}}(p,t)) = \emptyset$$.
+Note that $$\text{supp}(o^{\mathcal{A}}(p,t)) \cap \text{supp}(o^{\mathcal{B}}(p,t)) = \emptyset$$ but $\overline{\text{supp}(o^{\mathcal{A}}(p,t))} \cap \overline{\text{supp}(o^{\mathcal{B}}(p,t))}$ may be non-empty and in this case it will be a countable set of points.
 
 
 
@@ -449,12 +448,29 @@ knitr::include_graphics("transmute_example_2.png", dpi=80)
 This example is a motivation for theorem \@ref(thm:l2of). The theorem guarantees that we may transmute Order Set Table into another one, which at every moment and for every price contains only one non-zero order function.
 
 ```{theorem Level2 order, name="Level2 Order Function", label=l2of}
-    Suppose Limit Order Book $\mathcal{L}$ as defined by \@ref(def:lob) is given,  $o^{\mathcal{L}}(p,t)$ is LOB function as defined by \@ref(def:lob-functions) and for some constant $p_0 \in \mathbb{R}_{>0}$:  $$\emptyset \neq \text{supp}(o^{\mathcal{L}}(p_0,t)) = \bigcup_{m=1}^M I_m$$ where each $I_m$ is an interval.
+    Suppose Limit Order Book $\mathcal{L}$ as defined by \@ref(def:lob) is given,  $o^{\mathcal{L}}(p,t)$ is LOB function as defined by \@ref(def:lob-function) (either LOB bid function or LOB ask function) and for some constant $p_0 \in \mathbb{R}_{>0}$:  $$\emptyset \neq \text{supp}(o^{\mathcal{L}}(p_0,t)) = \bigcup_{m=1}^M I_m$$ where all $I_m$ are intervals such that $\forall i,j: \overline{I_i} \cap \overline{I_j} = \emptyset$.
 
 Then $\forall m: m \in [1, \ldots, M]$ *Level2 Order Function* $o^{p_0, m}(p,t)$ defined as:
    
 $$ o^{p_0, m}(p,t) = \begin{cases}o^{\mathcal{L}}(p_0,t), & (p,t) \in \{p_0\} \times I_m \\ 0, & \text{otherwise} \end{cases}
   $$ is Order Function as defined by \@ref(def:order). 
+```
+
+```{proof Level2 order proof}
+To prove the theorem we need to construct $\mathcal{T}$, $\mathcal{P}$ and $\mathcal{V}$ sets which are used in definition \@ref(def:order).
+
+Suppose that $\{t_r^m\}_{r=1}^R \in I_m$ are points of dicontinuity of $o^{p_0,m}(p_0,t)$. 
+
+If $R=1$ then $\mathcal{T} = \{(t^m_1, +\infty)\}$, $\mathcal{P} = \{\{p_0\}\}$, $\mathcal{V} = \{o^{p_0,m}(p_0,t^m_1)\}$.
+
+Now suppose that $R >1$. We may assume without loss of generality that $t^m_i < t^m_j$ if $i < j$. Then $\forall r \in \{1, \ldots, R\}$ we'll construct $T_r \in \mathcal{T}$, $P_r \in \mathcal{P}$, $v_r \in \mathcal{V}$ as follows:
+
+  a. $P_r = \{p_0\}$,
+  a. $v_r = o^{p_0, m}(p_0, \frac{t_r+t_{r+1}}{2})$,
+  a. $T_r$ is an interval with left endpoint $t_r$ and right-endpoint $t_{r+1}$; it is left-closed if $o^{p_0,m}(p_0, t_r) = v_r$ and left-open otherwise; it is right-closed if  $o^{p_0,m}(p_0, t_{r+1}) = v_r$ and right-open otherwise,
+  
+If $I_m$ is right-unbounded then $T_{R+1}$ with $t_R$ as its left-endpoint and $+\infty$ as its right-endpoint is added to $\mathcal{T}$, $P_{R+1} = \{p_0\}$, $v_{R+1} = o^{p_0, m}(p_0, t_R+1)$; $T_{R+1}$ is left-closed if $o^{p_0,m}(p_0, t_R) = v_{R+1}$ and left-open otherwise.
+  
 ```
 
 Table \@ref(tab:transmute-example-3) is a transmuted table \@ref(tab:transmute-example-2). Its visual representation shown on figure \@ref(fig:transmute-example-3-picture) is not distorted since order 5, which is Level2 Order Function, properly aggregates volumes of orders 3 and 4.
