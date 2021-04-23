@@ -1,6 +1,6 @@
 format 224
 "Reconstr" // App::Reconstr
-  revision 259
+  revision 267
   modified_by 6 "petr"
   // class settings
   
@@ -828,7 +828,6 @@ ${inlines}
 	
 	
       end
-
     end
 
     class 1087494 "PriceLevelAttached"
@@ -1178,6 +1177,30 @@ ${items}};
 	      cpp default "${type}"
 	      classrelation_ref 1182598 // <realization>
 	    b parent class_ref 889478 // unique_ptr
+	end
+      end
+
+      class 1136134 "OrderEvent_SP"
+	visibility public stereotype "template_typedef"
+	nactuals 1
+	actual class class_ref 852614 // shared_ptr
+	  rank 0 value class_ref 448390 // OrderEvent
+	cpp_decl "${comment}${template}using ${name} = ${inherit};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 1352198 // <realization>
+	  relation 1341830 -_-|>
+	    stereotype "bind"
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 1352198 // <realization>
+	    b parent class_ref 852614 // shared_ptr
 	end
       end
 
@@ -5647,6 +5670,8 @@ ${inlines}
 	idl_decl ""
 	mysql_decl ""
 	MysqlColumn
+	comment "the most recent timestamp that has been seen in received messages
+"
       end
 
       attribute 806918 "output_"
@@ -5689,7 +5714,7 @@ ${inlines}
       classrelation 1078406 // next_ (<directional aggregation>)
 	relation 1068038 o-->
 	  stereotype "shared_ptr"
-	  a role_name "next_" protected
+	  a role_name "next_" multiplicity "0..1" protected
 	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${stereotype}<${const}${type}> ${name}${value};
 "
 	    classrelation_ref 1078406 // next_ (<directional aggregation>)
@@ -5938,6 +5963,21 @@ ${inlines}
 	    cpp default "#include in source"
 	    classrelation_ref 1335814 // <dependency>
 	  b parent class_ref 1108486 // processing_error
+      end
+
+      operation 1668358 "exchange_time"
+	const cpp_inline public return_type class_ref 230278 // Timestamp
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "returns the most recent timestamp that has been seen in received messages"
       end
     end
 
@@ -7048,6 +7088,7 @@ ${inlines}
 	MysqlColumn
       end
     end
+
   end
 
   classview 280710 "Reconstructor"
@@ -7191,20 +7232,6 @@ ${inlines}
 	
       end
 
-      attribute 841094 "episode_"
-	private type class_ref 902918 // Token
-	multiplicity "*"
-	stereotype "vector"
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-      end
-
       operation 576006 "extract"
 	abstract cpp_virtual protected return_type class_ref 902918 // Token
 	multiplicity "1..*"
@@ -7243,7 +7270,7 @@ ${inlines}
 	  param in name "handler" type class_ref 950918 // TokenHandler_SP
 	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} ${p0}${v0}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${throw} : TokenHandler{handler,\"Reconstructor - \",true} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${throw} : next_{handler} {
   ${body}}
 "
 	
@@ -7252,40 +7279,14 @@ ${inlines}
 	
       end
 
-      classrelation 1302150 // <generalisation>
-	relation 1291782 ---|>
-	  a protected
-	    cpp default "${type}"
-	    classrelation_ref 1302150 // <generalisation>
+      classrelation 1359494 // next_ (<directional aggregation>)
+	relation 1349126 o-->
+	  stereotype "shared_ptr"
+	  a role_name "next_" multiplicity "1" protected
+	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	    classrelation_ref 1359494 // next_ (<directional aggregation>)
 	  b parent class_ref 441222 // TokenHandler
-      end
-
-      operation 1612422 "message"
-	cpp_virtual public explicit_return_type "bool"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 1612550 "reset"
-	cpp_virtual public explicit_return_type "bool"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
       end
     end
   end
@@ -7908,5 +7909,28 @@ ${namespace_end}"
 	class_ref 1108486 // processing_error
       end
     end
+
+    artifact 427654 "Test"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+      end
+    end
+
   end
 end

@@ -536,17 +536,17 @@ Figure \@ref(fig:capture-overview) shows UML2 Activity Diagram [@cook_omg_2017] 
 
 
 ```{r capture-overview, echo=FALSE, fig.cap="`Receive messages` activity node collects avaialbe information in an exchange-specific format and pass the information in the form of [Boost.Property Tree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) to `Reconstruct Order Book` activity node that, as its name implies, reconstructs order book events in an *universal* format described herein. Note that both activity nodes run concurrently.", fig.align="left"}
-knitr::include_graphics("Standalone application - capture.png", dpi=80)
+knitr::include_graphics("html_docs/fig181766.png", dpi=80)
 ```
 
 #### Receive messages
 
 Activity `Receive messages` on figure \@ref(fig:capture-overview) is UML2 `StartObjectBehaviourAction` that starts execution of `Receiver` StateMachine shown on figure \@ref(fig:receiver). The call is synchronous, so the execution of the `Receive messages` does not complete until the execution of `Receiver` StateMachine completes.
 
-(ref:receiver-caption) `Processing snapshot` and `Processing messages` states pass received portions of data to `Reconstruct Order Book` (by calling method `Reconstructor::process()` shown on figure \@ref(fig:sd-reconstructor-process)) thereby the streaming of data between `Receive messages` and `Reconstruct Order Book` on figure \@ref(fig:capture-overview) is implemented.
+(ref:receiver-caption) `Processing snapshot` and `Processing messages` states pass received portions of data to `Reconstruct Order Book` (by calling method `Reconstructor::process()` shown on figure \@ref(fig:ad-reconstructor-process)) thereby the streaming of data between `Receive messages` and `Reconstruct Order Book` on figure \@ref(fig:capture-overview) is implemented.
 
 ```{r receiver, echo=FALSE, fig.cap="(ref:receiver-caption)", fig.align="left"}
-knitr::include_graphics("Receiver state machine.png", dpi=80)
+knitr::include_graphics("html_docs/fig399494.png", dpi=80)
 ```
 
 Almost all exchanges  provide two separate channels for receiving (i) a list of orders currently open on order book and (ii) order updates. In order to capture a dynamics of an order book one need to receive information from both channels and combine it. `Feeder` StateMachine shown on figure \@ref(fig:feeder) deals with receiving order updates while `Snapshot` StateMachine shown on figure \@ref(fig:snapshot) is responsible for getting a list of orders currently open on order book.
@@ -558,13 +558,13 @@ While `Receiver` remains in `Engaged.Feeder Engaged.Making Snapshot` state messa
 (ref:feeder-caption) Transition `success` between `Subscribe` and `Receive` states sends "success" event to `Receiver` StateMachine. An entry behaviour of `Receive` state launches asynchronous read operation, whose successfull completion triggers  `success` transition from `Receive`. If some service message (i.e. heartbeat, subscription) has arrived, it is processed locally. Otherwise "message" event is sent to `Receiver`.
 
 ```{r feeder, echo=FALSE, fig.cap="(ref:feeder-caption)", fig.align="left"}
-knitr::include_graphics("Feeder state machine.png", dpi=80)
+knitr::include_graphics("html_docs/fig406150.png", dpi=80)
 ```
 
 (ref:snapshot-caption) Snapshot StateMachine diagram.
 
 ```{r snapshot, echo=FALSE, fig.cap="(ref:snapshot-caption)", fig.align="left"}
-knitr::include_graphics("Snapshot state machine.png", dpi=80)
+knitr::include_graphics("html_docs/fig406534.png", dpi=80)
 ```
 #### Reconstruct Order Book
 
@@ -572,27 +572,28 @@ Figure \@ref(fig:reconstruct-order-book) shows UML2 Activity Diagram of `Reconst
 
 
 ```{r reconstruct-order-book, echo=FALSE, fig.cap="`Reconstruct Order Book` activity is implemented by an indefinite loop that invokes `Process message` activity every time new instance is placed on its input pin `ptree`. The loop terminates if `Process message` throws `processing_error` exception.", fig.align="left"}
-knitr::include_graphics("Reconstruct Order Book.png", dpi=80)
+knitr::include_graphics("html_docs/fig274822.png", dpi=80)
 ```
-The activity node `Process message` on figure \@ref(fig:reconstruct-order-book) is Call Action. It calls method `Reconstructor::process()` on `target` instance. UML2 Sequence diagram on figure \@ref(fig:sd-reconstructor-process) shows a "happy path" trace of the method.
-
-```{r sd-reconstructor-process, echo=FALSE, fig.cap="`Reconstructor::process()` first calls virtual abstract `extract()` method to create an instance of a class derived from `Message`. The `extract()` method is abstract and overriden by an exchange-specific implementation class, derived from `Reconstructor`. The returned instance is passed to a chain of `TokenHandler`'s through the call of `handle()`", fig.align="left"}
-knitr::include_graphics("sd Reconstructor - process.png", dpi=80)
-```
-
-The virtual method `Reconstructor::extract()` takes a [Boost.PropertyTree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) container with an exchange-specific data and creates an instance of one of internal exchange-independent message class shown in green on figure \@ref(fig:message-hierarchy-process). The message is returned in `Token` container.
-
-```{r message-hierarchy-process, echo=FALSE, fig.cap="`Message`-based hierarchy of classes used in implementation of `Process message` activity. A message of class `Era` carries information about exchange and product being processed.", fig.align="center"}
-knitr::include_graphics("Message hierarchy for process.png", dpi=80)
-```
-
-As shown on figure \@ref(fig:reconstructor-hierarchy-process) `Reconstructor::extract()` method is *abstract*, so it is overriden by exchange-specific versions that able to process their respective containers properly. 
+The activity node `Process message` on figure \@ref(fig:reconstruct-order-book) is CallAction. It calls method `process()` on `target` instance of class `Reconstructor` as shown on figure \@ref(fig:reconstructor-hierarchy-process).  
 
 ```{r reconstructor-hierarchy-process, echo=FALSE, fig.cap="\"Reconstructor\" hierarchy of classes used in implementation of \"Process message\" activity.", fig.align="center"}
-knitr::include_graphics("Reconstructor hierarchy for process.png", dpi=80)
+knitr::include_graphics("html_docs/fig551942.png", dpi=80)
 ```
 
-`Token` that carries an instance of a class derived from `Message` is then taken by the `TokenHandle::handle()` (`Reconstructor` is derived from `TokenHandler`) that is the first step of so called *data cleansing*. According to [@rahm_data_2000]:
+UML2 Activity Diagram on figure \@ref(fig:ad-reconstructor-process) shows a generic `Process message` activity.
+
+```{r ad-reconstructor-process, echo=FALSE, fig.cap="`Reconstructor::process()` first calls `extract()` method to create an instance of a class derived from `Message`. The `extract()` is a virtual abstract method so it is overriden in an exchange-specific implementation class, derived from `Reconstructor`. The returned instance is passed to a chain of `TokenHandler`'s through the call of `handle()`. In this example the chain consists of four `TokenHandler`s shown in green, but there can be any number of `TokenHandler`s in the chain.", fig.align="left"}
+knitr::include_graphics("html_docs/fig572166.png", dpi=120)
+```
+
+The virtual method `Reconstructor::extract()` takes a [Boost.PropertyTree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) container with an exchange-specific data and creates an instance of one of internal exchange-independent message class shown in green on figure \@ref(fig:message-hierarchy-process). The message is returned in `Token` container and multiple messages are returned in `Tokens` container.
+
+```{r message-hierarchy-process, echo=FALSE, fig.cap="`Message`-based hierarchy of classes used in implementation of `Process message` activity. A message of class `Era` carries information about exchange and product being processed.", fig.align="center"}
+knitr::include_graphics("html_docs/fig552070.png", dpi=80)
+```
+
+
+`Token` that carries an instance of a class derived from `Message` is then taken by the `TokenHandle::handle()`  that is the first step of so called *data cleansing*. According to [@rahm_data_2000]:
 
 > *Data cleaning*, also called *data cleansing* or *scrubbing*, deals with detecting and removing errors and inconsistencies from data in order to improve the quality of data.
 
@@ -601,21 +602,18 @@ Data cleansing is implemented using [Chain of Responsibility](https://en.wikiped
 UML2 Sequence Diagram of `TokenHandler::handle()` is shown on figure \@ref(fig:sd-tokenhandler-handle). The number of `TokenHandler`s involved and their kinds depend on an exchange and described in details in their respective sections later.
 
 
-```{r sd-tokenhandler-handle, echo=FALSE, fig.cap="UML2 Sequence diagram showing a \"happy path\" trace of TokenHandler::handle() method", fig.align="center"}
-knitr::include_graphics("sd TokenHandler - handle.png", dpi=80)
+```{r sd-tokenhandler-handle, echo=FALSE, fig.cap="UML2 Sequence diagram showing a \"happy path\" trace of TokenHandler::handle() method. The loop implements \"iterative\" ExpansionRegion from figure \\@ref(fig:ad-reconstructor-process)", fig.align="left"}
+knitr::include_graphics("html_docs/fig551814.png", dpi=80)
 ```
 
-Handling of messages by `TokenHandler` is denoted by interaction use `Message - accept` on figure \@ref(fig:sd-tokenhandler-handle). The result of handling is a set of zero or more messages that are stored in `output_` member variable that is an instance of `Tokens` class shown on figure \@ref(fig:tokens).
+Handling of messages by `TokenHandler` is denoted by interaction use `Message - accept` on figure \@ref(fig:sd-tokenhandler-handle). The result of handling is a set of zero or more messages that are stored in `output_` member variable that is an instance of `Tokens` class shown on figure \@ref(fig:message-hierarchy-process).
 
-```{r tokens, echo=FALSE, fig.cap="Definition of \"Tokens\".", fig.align="center"}
-knitr::include_graphics("Tokens.png", dpi=80)
-```
 `TokenHandler` will not produce output for a message when subsequent messages are required for handling(cleansing). In this case the message will be kept within this particular `TokenHandler` instance between runs of `Reconstructor::process()` until enough subsequent messages are received. Then all kept and cleansed messages are returned together, saved into `output_` variable and passed one by one in FIFO order to the `this.next_` `TokenHandler`. After that `output_` variables is cleared, so if there is no next `TokenHandler` the messages are deleted after being accepted.
 
 Handling of messages by `TokenHandler` is implemented using [Visitor](https://en.wikipedia.org/wiki/Visitor_pattern) pattern as shown by UML2 Sequence diagram on figure \@ref(fig:sd-message-accept).
 
-```{r sd-message-accept, echo=FALSE, fig.cap="UML2 Sequence diagram showing various alternatives of traces for Message::accept() method", fig.align="center"}
-knitr::include_graphics("sd Message - accept.png", dpi=80)
+```{r sd-message-accept, echo=FALSE, fig.cap="UML2 Sequence diagram showing various alternatives of traces for Message::accept() method. By default all `TokenHandler`s callback (i.e. `era`, `message` etc) just pass the message to `output_` and it is expected that derived classes override the callbacks in order to do something useful. The message can be saved by `TokenHandler` instance in order to be processed later together with messages that follows.", fig.align="left"}
+knitr::include_graphics("html_docs/fig545286.png", dpi=80)
 ```
 
 It should be clear from the definition of order table \@ref(def:order-table) that not every set of order events as defined by \@ref(def:order-event) represents a valid order table. Similarly, not every set of orders represents valid LOB as defined by \@ref(def:lob).

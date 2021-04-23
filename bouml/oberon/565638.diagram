@@ -1,0 +1,203 @@
+format 224
+
+activitycanvas 128006 activity_ref 181766 // Transmute
+  
+  xyzwh 77 30 2000 519 941
+  params
+    parametercanvas 129286 parameter_ref 239110 // tree
+        xyzwh 275 15 2002 63 31
+    end
+    parametercanvas 131206 parameter_ref 239238 // error
+        xyzwh 439 18 2002 39 25 label_xy 453 -4
+    end
+  end
+end
+activityactioncanvas 128262 activityaction_ref 280326 // activity action extract
+  
+  show_opaque_action_definition default
+  xyzwh 262 112 3005 100 60
+  pins
+    pincanvas 128518 pin_ref 385286 // 
+      xyzwh 303 171 3006 11 11 label_xy 322 173
+    end
+    pincanvas 128646 pin_ref 385414 // tree
+      xyzwh 300 102 3006 11 11 label_xy 265 90
+    end
+    pincanvas 136070 pin_ref 387078 // error
+      xyzwh 345 102 3006 11 11 label_xy 368 102
+    end
+  end
+end
+activityactioncanvas 128774 activityaction_ref 280454 // activity action handle
+  
+  show_opaque_action_definition default
+  xyzwh 262 215 3005 100 60
+  pins
+    pincanvas 129030 pin_ref 385670 // msg
+      xyzwh 301 205 3006 11 11 label_xy 332 193
+    end
+    pincanvas 129798 pin_ref 385798 // msg
+      xyzwh 308 274 3006 11 11 label_xy 315 287
+    end
+    pincanvas 131078 pin_ref 386182 // error
+      xyzwh 361 238 3006 11 11 label_xy 367 255
+    end
+  end
+end
+activitypartitioncanvas 129542 activitypartition_ref 134790 // ByPriceMerger
+  horiz 
+  xyzwh 106 342 2005 302 148
+end
+activityactioncanvas 129670 activityaction_ref 280582 // activity action handle
+  
+  show_opaque_action_definition default
+  xyzwh 262 386 2010 100 60
+  pins
+    pincanvas 130054 pin_ref 386054 // msg
+      xyzwh 310 376 2012 11 11 label_xy 323 363
+    end
+    pincanvas 132998 pin_ref 386310 // error
+      xyzwh 361 415 2012 11 11 label_xy 366 428
+    end
+    pincanvas 134022 pin_ref 386438 // output
+      xyzwh 312 445 2012 11 11 label_xy 321 459
+    end
+  end
+end
+activityactioncanvas 130310 activityaction_ref 280710 // activity action handle
+  
+  show_opaque_action_definition default
+  xyzwh 262 584 2014 100 60
+  pins
+    pincanvas 134278 pin_ref 386694 // msg
+      xyzwh 313 574 2015 11 11 label_xy 340 565
+    end
+    pincanvas 135174 pin_ref 386822 // error
+      xyzwh 361 603 2015 11 11 label_xy 366 619
+    end
+    pincanvas 135558 pin_ref 386950 // output
+      xyzwh 316 643 2015 11 11 label_xy 333 649
+    end
+  end
+end
+activitypartitioncanvas 133894 activitypartition_ref 134918 // ByTimeMerger
+  horiz 
+  xyzwh 109 505 2005 302 221
+end
+activitypartitioncanvas 135686 activitypartition_ref 135046 // File
+  horiz 
+  xyzwh 108 743 2005 309 193
+end
+activityactioncanvas 136454 activityaction_ref 280838 // activity action handle
+  
+  show_opaque_action_definition default
+  xyzwh 260 830 2020 100 60
+  pins
+    pincanvas 136710 pin_ref 387334 // msg
+      xyzwh 319 820 2021 11 11 label_xy 339 810
+    end
+    pincanvas 137606 pin_ref 387462 // error
+      xyzwh 359 850 2021 11 11 label_xy 360 872
+    end
+  end
+end
+expansionregioncanvas 138246 expansionregion_ref 134534 // file_region
+  xyzwh 178 782 2010 215 136
+  nodes
+    expansionnodecanvas 138374 expansionnode_ref 134534 // input
+        xyzwh 308 777 2011 33 11 label_xy 351 759
+    end
+  end
+end
+expansionregioncanvas 138758 expansionregion_ref 134662 // by_time_region
+  xyzwh 174 524 2010 218 166
+  nodes
+    expansionnodecanvas 138886 expansionnode_ref 134662 // input
+        xyzwh 294 519 2011 33 11 label_xy 333 531
+    end
+    expansionnodecanvas 139014 expansionnode_ref 134790 // output
+        xyzwh 305 684 2011 33 11 label_xy 345 689
+    end
+  end
+end
+activitypartitioncanvas 141958 activitypartition_ref 134662 // Reconstructor
+  horiz 
+  xyzwh 106 83 2010 302 244
+end
+flowcanvas 129158 flow_ref 443782 // <flow>
+  
+  from ref 128518 z 2013 to ref 129030
+   write_horizontally default
+end
+flowcanvas 129414 flow_ref 443910 // <flow>
+  
+  from ref 129286 z 2013 to ref 128646
+   write_horizontally default
+end
+flowcanvas 132870 flow_ref 445318 // <flow>
+  
+  from ref 129798 z 2013 to ref 130054
+   write_horizontally default
+end
+flowcanvas 133382 flow_ref 445574 // <flow>
+  decenter_end 230
+  
+  from ref 131078 z 2013 to point 446 242
+  line 133766 z 2013 to ref 131206
+   write_horizontally default
+end
+flowcanvas 133510 flow_ref 445702 // <flow>
+  
+  from ref 132998 z 2013 to point 458 417
+  line 133638 z 2013 to ref 131206
+   write_horizontally default
+end
+flowcanvas 135302 flow_ref 446342 // <flow>
+  decenter_end 769
+  
+  from ref 135174 z 2013 to point 470 607
+  line 135430 z 2013 to ref 131206
+   write_horizontally default
+end
+flowcanvas 136198 flow_ref 446598 // <flow>
+  
+  from ref 136070 z 2013 to ref 131206
+   write_horizontally default
+end
+flowcanvas 137734 flow_ref 447238 // <flow>
+  
+  from ref 137606 z 2013 to point 498 854
+  line 137862 z 2013 to point 496 51
+  line 138118 z 2013 to ref 131206
+   write_horizontally default
+end
+flowcanvas 138630 flow_ref 447494 // <flow>
+  decenter_begin 515
+  
+  from ref 138374 z 2022 to ref 136710
+   write_horizontally default
+end
+flowcanvas 139142 flow_ref 447622 // <flow>
+  decenter_end 515
+  
+  from ref 135558 z 2016 to ref 139014
+   write_horizontally default
+end
+flowcanvas 139270 flow_ref 447750 // <flow>
+  decenter_end 727
+  
+  from ref 134022 z 2013 to ref 138886
+   write_horizontally default
+end
+flowcanvas 139398 flow_ref 447878 // <flow>
+  decenter_begin 727
+  
+  from ref 138886 z 2016 to ref 134278
+   write_horizontally default
+end
+flowcanvas 139910 flow_ref 448006 // <flow>
+  
+  from ref 139014 z 2012 to ref 138374
+   write_horizontally default
+end
+end

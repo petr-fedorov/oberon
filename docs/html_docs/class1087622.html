@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Documentation produced by the Html generator of Bouml (http://www.bouml.fr) -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>Class Transmuter</title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body bgcolor="#ffffff">
+
+<div class = "title">Class Transmuter</div>
+<p></p>
+
+<!-- ============================================================= -->
+
+<a name="ref4_1087622"></a>
+<p>Declaration :</p><ul>
+<li>C++ : class Transmuter : public <a href="class441222.html#ref4_441222"><b>TokenHandler</b></a> </li></ul><p>Artifact : <a href="index.html#ref8_394630"><b>Transmuter</b></a></p>
+<div class="sub">
+<a name="ref2_1605638"></a>
+<table><tr><td><div class="element">Operation <b>Transmuter</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : + Transmuter(in next : <a href="class950918.html#ref4_950918"><b>TokenHandler_SP</b></a>) : </li><li>C++ : public: Transmuter(<a href="class950918.html#ref4_950918"><b>TokenHandler_SP</b></a> next)</li></ul><table><tr><td><div class="element">Class <b><a href="class1087750.html#ref4_1087750"><b>PriceLevel</b></a></b></div></td></tr></table>
+<a name="ref0_1273606"></a>
+<table><tr><td><div class="element">Relation <b>previous_ (&lt;directional composition&gt;)</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : - previous_ : <a href="class1087878.html#ref4_1087878"><b>PriceLevel_SP</b></a>, multiplicity : *</li><li>C++ : private: std::map&lt;OrderEvent::OrderId, <a href="class1087878.html#ref4_1087878"><b>PriceLevel_SP</b></a>&gt; previous_</li></ul><p>Stereotype: map</p>
+<a name="ref0_1273734"></a>
+<table><tr><td><div class="element">Relation <b>bids_ (&lt;directional composition&gt;)</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : - bids_ : <a href="class1087878.html#ref4_1087878"><b>PriceLevel_SP</b></a>, multiplicity : *</li><li>C++ : private: std::map&lt;Price, <a href="class1087878.html#ref4_1087878"><b>PriceLevel_SP</b></a>&gt; bids_</li></ul><p>Stereotype: map</p>
+<a name="ref0_1273862"></a>
+<table><tr><td><div class="element">Relation <b>asks_ (&lt;directional composition&gt;)</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : - asks_ : <a href="class1087878.html#ref4_1087878"><b>PriceLevel_SP</b></a>, multiplicity : *</li><li>C++ : private: std::map&lt;Price, <a href="class1087878.html#ref4_1087878"><b>PriceLevel_SP</b></a>&gt; asks_</li></ul><p>Stereotype: map</p>
+<a name="ref2_1586822"></a>
+<table><tr><td><div class="element">Operation <b>orderEvent</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : + orderEvent() : bool</li><li>C++ : public: bool orderEvent() override</li></ul><a name="ref2_1587078"></a>
+<table><tr><td><div class="element">Operation <b>reset</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : + reset() : bool</li><li>C++ : public: bool reset() override</li></ul><a name="ref2_1625862"></a>
+<table><tr><td><div class="element">Operation <b>era</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : + era() : bool</li><li>C++ : public: bool era() override</li></ul><a name="ref0_1280646"></a>
+<table><tr><td><div class="element">Relation <b>best_bid_ (&lt;directional aggregation&gt;)</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : - best_bid_ : <a href="class1087750.html#ref4_1087750"><b>PriceLevel</b></a>, multiplicity : 0..1</li><li>C++ : private: boost::shared_ptr&lt;<a href="class1087750.html#ref4_1087750"><b>PriceLevel</b></a>&gt; best_bid_</li></ul><p>Stereotype: shared_ptr</p>
+<a name="ref0_1280774"></a>
+<table><tr><td><div class="element">Relation <b>best_ask_ (&lt;directional aggregation&gt;)</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : - best_ask_ : <a href="class1087750.html#ref4_1087750"><b>PriceLevel</b></a>, multiplicity : 0..1</li><li>C++ : private: boost::shared_ptr&lt;<a href="class1087750.html#ref4_1087750"><b>PriceLevel</b></a>&gt; best_ask_</li></ul><p>Stereotype: shared_ptr</p>
+<a name="ref2_1587590"></a>
+<table><tr><td><div class="element">Operation <b>elapsed</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : + elapsed() : bool</li><li>C++ : public: bool elapsed() override</li></ul><a name="ref1_1008134"></a>
+<table><tr><td><div class="element">Attribute <b>buys_</b></div></td></tr></table>
+<p>Declaration :</p><ul><li>Uml : - buys_ : <a href="class305798.html#ref4_305798"><b>Volume</b></a>, multiplicity : *</li><li>C++ : private: std::map&lt;Price, <a href="class305798.html#ref4_305798"><b>Volume</b></a>&gt; buys_</li></ul><p>Stereotype: map</p>
+<a name="ref1_1008262"></a>
+<table><tr><td><div class="element">Attribute <b>sells_</b></div></td></tr></table>
+<p>Declaration :</p><ul><li>Uml : - sells_ : <a href="class305798.html#ref4_305798"><b>Volume</b></a>, multiplicity : *</li><li>C++ : private: std::map&lt;Price, <a href="class305798.html#ref4_305798"><b>Volume</b></a>&gt; sells_</li></ul><p>Stereotype: map</p>
+<a name="ref1_1014918"></a>
+<table><tr><td><div class="element">Attribute <b>passed_era_</b></div></td></tr></table>
+<p>Declaration :</p><ul><li>Uml : - passed_era_ : bool = false</li><li>C++ : private: bool passed_era_</li></ul></div>
+<p>All public operations : <a href="class441222.html#ref2_485382"><b>cancelled</b></a> , <a href="class441222.html#ref2_730118"><b>changed</b></a> , <a href="class441222.html#ref2_692230"><b>create</b></a> , <a href="class441222.html#ref2_752646"><b>created</b></a> , <a href="class441222.html#ref2_1595910"><b>dot</b></a> , <a href="class441222.html#ref2_483590"><b>elapsed</b></a> , <a href="class1087622.html#ref2_1587590"><b>elapsed</b></a> , <a href="class441222.html#ref2_1093254"><b>era</b></a> , <a href="class1087622.html#ref2_1625862"><b>era</b></a> , <a href="class441222.html#ref2_1668358"><b>exchange_time</b></a> , <a href="class441222.html#ref2_485126"><b>filled</b></a> , <a href="class441222.html#ref2_590214"><b>handle</b></a> , <a href="class441222.html#ref2_721926"><b>message</b></a> , <a href="class441222.html#ref2_721798"><b>orderEvent</b></a> , <a href="class1087622.html#ref2_1586822"><b>orderEvent</b></a> , <a href="class441222.html#ref2_1385094"><b>reset</b></a> , <a href="class1087622.html#ref2_1587078"><b>reset</b></a> , <a href="class441222.html#ref2_1588486"><b>stripe</b></a> </p>
+</body>
+</html>

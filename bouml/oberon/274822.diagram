@@ -1,10 +1,10 @@
 format 224
 
-activitycanvas 128006 activity_ref 175238 // Reconstruct Order Book
+activitycanvas 128006 activity_ref 175238 // R.1 Reconstruct Order Book
   
   xyzwh 124 32 2000 585 259
   params
-    parametercanvas 128134 parameter_ref 178694 // ptree
+    parametercanvas 128134 parameter_ref 178694 // tree
         xyzwh 66 204 2002 117 25 label_xy 104 228
     end
     parametercanvas 155910 parameter_ref 232582 // target
@@ -12,12 +12,12 @@ activitycanvas 128006 activity_ref 175238 // Reconstruct Order Book
     end
   end
 end
-activityobjectcanvas 132998 activityobject_ref 154502 // activity object this
+activityobjectcanvas 132998 activityobject_ref 154502 // activity object target
   
-  xyzwh 255 126 2005 95 69
+  xyzwh 255 126 2005 95 69 label_xy 276 191
 end
 activitynodecanvas 151046 activitynode_ref 310662 // initial_node
-  xyz 370 87 2005
+  xyz 503 62 2005
 end
 activityactioncanvas 154758 activityaction_ref 273670 // activity action Process message
   
@@ -28,60 +28,62 @@ activityactioncanvas 154758 activityaction_ref 273670 // activity action Process
     pincanvas 154886 pin_ref 371462 // target
       xyzwh 453 174 2007 11 11 label_xy 414 150
     end
-    pincanvas 155014 pin_ref 371590 // message
+    pincanvas 155014 pin_ref 371590 // tree
       xyzwh 453 208 2007 11 11 label_xy 411 225
     end
-    pincanvas 155142 pin_ref 371718 // 
-      xyzwh 558 206 2007 11 11 label_xy 561 166
+    pincanvas 155142 pin_ref 371718 // error
+      xyzwh 558 190 2007 11 11 label_xy 565 203
     end
   end
 end
 activitynodecanvas 155654 activitynode_ref 324102 // activity_final
-  xyz 653 199 2005
+  xyz 653 183 2005
 end
 activitynodecanvas 156422 activitynode_ref 324230 // merge
-  xyz 464 76 2005
+  xyz 499 103 2005
 end
-flowcanvas 155782 flow_ref 429702 // <flow>
+flowcanvas 155782 flow_ref 429702 // R.1.6
   
-  from ref 155142 z 2008 to ref 155654
+  from ref 155142 z 2008 label "R.1.6" xyz 596 186 3000 to ref 155654
    write_horizontally default
 end
-flowcanvas 156038 flow_ref 429830 // <flow>
+flowcanvas 156038 flow_ref 429830 // R.1.1
   
-  from ref 155910 z 2006 to ref 132998
+  from ref 155910 z 2006 label "R.1.1" xyz 202 150 3000 to ref 132998
    write_horizontally default
 end
-flowcanvas 156166 flow_ref 429958 // <flow>
+flowcanvas 156166 flow_ref 429958 // R.1.3
   decenter_begin 782
   
-  from ref 132998 z 2008 to ref 154886
+  from ref 132998 z 2008 label "R.1.3" xyz 386 170 3000 to ref 154886
    write_horizontally default
 end
-flowcanvas 156294 flow_ref 430086 // <flow>
+flowcanvas 156294 flow_ref 430086 // R1.2
   
-  from ref 128134 z 2008 to ref 155014
+  from ref 128134 z 2008 label "R1.2" xyz 304 205 3000 to ref 155014
    write_horizontally default
 end
-flowcanvas 156550 flow_ref 430214 // <flow>
-  decenter_end 567
+flowcanvas 156550 flow_ref 430214 // R.1.0
+  decenter_begin 526
+  decenter_end 520
   
-  from ref 151046 z 2006 to ref 156422
+  from ref 151046 z 2006 label "R.1.0" xyz 498 82 3000 to ref 156422
    write_horizontally default
 end
-flowcanvas 156678 flow_ref 430342 // <flow>
-  decenter_begin 440
-  decenter_end 120
+flowcanvas 156678 flow_ref 430342 // R.1.4
+  decenter_begin 486
+  decenter_end 230
   
-  from ref 156422 z 2006 to ref 154758
+  from ref 156422 z 2006 label "R.1.4" xyz 477 111 3000 to point 482 118
+  line 157062 z 2006 to ref 154758
    write_horizontally default
 end
-flowcanvas 156806 flow_ref 430470 // <flow>
-  decenter_begin 640
-  decenter_end 486
+flowcanvas 156806 flow_ref 430470 // R.1.5
+  decenter_begin 800
+  decenter_end 513
   
-  from ref 154758 z 2006 to point 525 91
-  line 156934 z 2006 to ref 156422
+  from ref 154758 z 2006 label "R.1.5" xyz 528 134 3000 to point 539 118
+  line 157190 z 2006 to ref 156422
    write_horizontally default
 end
 end

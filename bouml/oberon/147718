@@ -1,6 +1,6 @@
 format 224
 "App" // App
-  revision 156
+  revision 164
   modified_by 6 "petr"
   // class settings
   
@@ -55,7 +55,7 @@ format 224
     activitydiagramsettings
      end
     activity 148230 "S.1 Capture"
-      activitydiagram 181766 "Standalone application - capture"
+      activitydiagram 181766 "S.1 Capture"
 	activitydiagramsettings
 	 end
 	size A4
@@ -90,11 +90,11 @@ format 224
 	  in
 	end
 
-	pin 378630 "ptree" type class_ref 174214 // ptree
+	pin 378630 "tree" type class_ref 174214 // ptree
 	   multiplicity "*" unordered 
 	  out stream
 	  flow 437126 "<flow>"
-	    on pin_ref 348678 // ptree
+	    on pin_ref 348678 // tree
 	  end
 	end
       end
@@ -155,8 +155,8 @@ format 224
 
 	activityaction 247302 "Reconstruct Order Book"
 	  call_behavior_action
-	  synchronous activity_ref 175238 // Reconstruct Order Book
-	  pin 348678 "ptree" type class_ref 174214 // ptree
+	  synchronous activity_ref 175238 // R.1 Reconstruct Order Book
+	  pin 348678 "tree" type class_ref 174214 // ptree
 	     multiplicity "*" fifo 
 	    in stream
 	  end
@@ -351,32 +351,32 @@ format 224
       end
     end
 
-    activity 175238 "Reconstruct Order Book"
+    activity 175238 "R.1 Reconstruct Order Book"
       specification operation_ref 575878 // process
-      activitydiagram 274822 "Reconstruct Order Book"
+      activitydiagram 274822 "R.1 Reconstruct Order Book"
 	activitydiagramsettings
 	 end
 	size A4
       end
 
-      parameter 178694 "ptree" type class_ref 174214 // ptree
+      parameter 178694 "tree" type class_ref 174214 // ptree
 	 multiplicity "1" unordered 
 	in stream
-	flow 430086 "<flow>"
-	  on pin_ref 371590 // message
+	flow 430086 "R1.2"
+	  on pin_ref 371590 // tree
 	end
       end
 
-      activityobject 154502 "this"
+      activityobject 154502 "target"
 	stereotype "datastore"
 	 type class_ref 486278 // Reconstructor
-	unordered 
+	 multiplicity "1" unordered 
 	flow 305414 "<flow>"
 	  on pin_ref 289414 // target
 	      uml_transformation "To be defined"
 	end
 
-	flow 429958 "<flow>"
+	flow 429958 "R.1.3"
 	  on pin_ref 371462 // target
 	end
       end
@@ -401,7 +401,7 @@ format 224
       end
 
       activitynode 310662 initial_node ""
-	flow 430214 "<flow>"
+	flow 430214 "R.1.0"
 	  on activitynode_ref 324230 // merge
 	end
       end
@@ -414,20 +414,20 @@ format 224
 	  in
 	end
 
-	pin 371590 "message" type class_ref 174214 // ptree
+	pin 371590 "tree" type class_ref 174214 // ptree
 	   multiplicity "1" unordered 
 	  in
 	end
 
-	pin 371718 "" type class_ref 1108486 // processing_error
-	  unordered is_control
+	pin 371718 "error" type class_ref 1108486 // processing_error
+	   multiplicity "1" unordered is_control
 	  out exception
-	  flow 429702 "<flow>"
+	  flow 429702 "R.1.6"
 	    on activitynode_ref 324102 // activity_final
 	  end
 	end
 
-	flow 430470 "<flow>"
+	flow 430470 "R.1.5"
 	  on activitynode_ref 324230 // merge
 	end
       end
@@ -444,15 +444,269 @@ format 224
       parameter 232582 "target" type class_ref 486278 // Reconstructor
 	 multiplicity "1" unordered 
 	in
-	flow 429830 "<flow>"
-	  on activityobject_ref 154502 // activity object this
+	flow 429830 "R.1.1"
+	  on activityobject_ref 154502 // activity object target
 	end
       end
 
       activitynode 324230 merge ""
-	flow 430342 "<flow>"
+	flow 430342 "R.1.4"
 	  on activityaction_ref 273670 // activity action Process message
 	end
+      end
+    end
+
+    activity 188294 "P.1 Process message - generic"
+      specification operation_ref 575878 // process
+      activitydiagram 572166 "P.1 Process message - generic"
+	activitydiagramsettings
+	 end
+	size A4
+      end
+
+      parameter 245766 "tree" type class_ref 174214 // ptree
+	 multiplicity "1" unordered 
+	in
+	flow 455046 "P.1.2"
+	  on pin_ref 394246 // tree
+	end
+      end
+
+      parameter 246022 "target" type class_ref 486278 // Reconstructor
+	 multiplicity "1" unordered 
+	in
+	flow 457606 "P.1.1"
+	  on pin_ref 396806 // target
+	end
+      end
+
+      activitynode 331014 initial_node ""
+	flow 457734 "P.1.0"
+	  on activityaction_ref 287366 // activity action extract
+	end
+      end
+
+      activityaction 287366 "extract"
+	call_operation_action
+	synchronous operation_ref 576006 // extract
+	pin 394246 "tree" type class_ref 174214 // ptree
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 396806 "target" type class_ref 486278 // Reconstructor
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 394118 "out" type class_ref 902918 // Token
+	   multiplicity "1" unordered is_control
+	  return
+	  flow 454790 "P.1.3"
+	    on pin_ref 394502 // in
+	  end
+	end
+
+	pin 396294 "next" type class_ref 441222 // TokenHandler
+	  unordered 
+	  out
+	  flow 456454 "P.1.4"
+	    on pin_ref 396422 // target
+	  end
+	end
+
+	pin 397702 "error" type class_ref 1108486 // processing_error
+	   multiplicity "1" unordered 
+	  out exception
+	  flow 457862 "P.1.19"
+	    on parameter_ref 245894 // error
+	  end
+	end
+      end
+
+      activityaction 287622 "handle"
+	call_operation_action
+	synchronous operation_ref 590214 // handle
+	pin 394502 "in" type class_ref 902918 // Token
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 396422 "target" type class_ref 441222 // TokenHandler
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 394630 "out" type class_ref 902918 // Token
+	   multiplicity "*" fifo is_control
+	  out
+	  flow 454662 "P.1.6"
+	    on expansionnode_ref 141318 // input
+	  end
+	end
+
+	pin 394758 "error" explicit_type ""
+	  unordered 
+	  out exception
+	  flow 455430 "P.1.5"
+	    on parameter_ref 245894 // error
+	  end
+	end
+
+	pin 396550 "next" type class_ref 441222 // TokenHandler
+	   multiplicity "1" unordered 
+	  out
+	  flow 456582 "P.1.7"
+	    on pin_ref 396166 // target
+	  end
+	end
+      end
+
+      expansionregion 141318 ""
+	iterative
+	expansionnode 141318 "input"
+	   type class_ref 902918 // Token
+	   multiplicity "*" fifo is_control
+	  flow 455558 "P.1.8"
+	    on pin_ref 395398 // in
+	  end
+	end
+
+	activityaction 287494 "handle"
+	  call_operation_action
+	  synchronous operation_ref 590214 // handle
+	  pin 395398 "in" type class_ref 902918 // Token
+	     multiplicity "1" unordered is_control
+	    in
+	  end
+
+	  pin 396166 "target" type class_ref 441222 // TokenHandler
+	     multiplicity "1" unordered 
+	    in
+	  end
+
+	  pin 395526 "out" explicit_type ""
+	     multiplicity "*" unordered is_control
+	    out
+	    flow 456070 "P.1.11"
+	      on expansionnode_ref 141830 // input
+	    end
+	  end
+
+	  pin 395654 "error" type class_ref 1108486 // processing_error
+	     multiplicity "1" unordered 
+	    out exception
+	    flow 455814 "P.1.9"
+	      on parameter_ref 245894 // error
+	    end
+	  end
+
+	  pin 396934 "next" explicit_type ""
+	     multiplicity "1" unordered 
+	    out
+	    flow 457094 "P.1.10"
+	      on pin_ref 397062 // target
+	    end
+	  end
+	end
+
+	expansionregion 141574 ""
+	  iterative
+	  expansionnode 141830 "input"
+	     type class_ref 902918 // Token
+	     multiplicity "*" fifo is_control
+	    flow 456198 "P.1.17"
+	      on pin_ref 396038 // in
+	    end
+	  end
+
+	  activityaction 287878 "handle"
+	    call_operation_action
+	    synchronous operation_ref 590214 // handle
+	    pin 396038 "in" type class_ref 902918 // Token
+	       multiplicity "1" unordered is_control
+	      in
+	    end
+
+	    pin 397062 "target" type class_ref 441222 // TokenHandler
+	       multiplicity "1" unordered 
+	      in
+	    end
+
+	    pin 397190 "out" explicit_type ""
+	       multiplicity "*" unordered is_control
+	      out
+	      flow 457222 "P.1.14"
+		on expansionnode_ref 141574 // input
+	      end
+	    end
+
+	    pin 397318 "next" explicit_type ""
+	       multiplicity "1" unordered 
+	      out
+	      flow 457350 "P.1.13"
+		on pin_ref 397446 // target
+	      end
+	    end
+
+	    pin 397574 "error" type class_ref 1108486 // processing_error
+	       multiplicity "1" unordered 
+	      out exception
+	      flow 457478 "P.1.12"
+		on parameter_ref 245894 // error
+	      end
+	    end
+	  end
+
+	  expansionregion 141446 ""
+	    iterative
+	    expansionnode 141574 "input"
+	       type class_ref 902918 // Token
+	       multiplicity "*" unordered is_control
+	      flow 455174 "P.1.18"
+		on pin_ref 395014 // in
+	      end
+	    end
+
+	    activityaction 287750 "handle"
+	      call_operation_action
+	      synchronous operation_ref 590214 // handle
+	      pin 395014 "in" type class_ref 902918 // Token
+		 multiplicity "1" unordered is_control
+		in
+	      end
+
+	      pin 397446 "target" type class_ref 441222 // TokenHandler
+		 multiplicity "1" unordered 
+		in
+	      end
+
+	      pin 395142 "error" type class_ref 1108486 // processing_error
+		 multiplicity "1" unordered 
+		out exception
+		flow 455302 "P.1.15"
+		  on parameter_ref 245894 // error
+		end
+	      end
+
+	      pin 395782 "out" type class_ref 902918 // Token
+		 multiplicity "*" unordered is_control
+		out
+		flow 456966 "P.1.16"
+		  on activitynode_ref 331142 // flow_final
+		end
+	      end
+	    end
+
+	    activitynode 331142 flow_final ""
+	    end
+	  end
+	end
+      end
+
+      parameter 245894 "error" type class_ref 1108486 // processing_error
+	 multiplicity "1" unordered 
+	out exception
       end
     end
 
@@ -591,11 +845,6 @@ format 224
       end
     end
 
-    sequencediagram 545030 "Reconstructor  - process"
-      sequencediagramsettings end
-      overlapping_bars size A4
-    end
-
     sequencediagram 545286 "Message - accept"
       sequencediagramsettings end
       overlapping_bars size A4
@@ -607,16 +856,11 @@ format 224
     end
 
     classdiagram 551942 "Reconstructor hierarchy for process"
-      classdiagramsettings draw_all_relations no hide_attributes yes hide_operations no show_members_full_definition yes member_max_width 0 show_context_mode uml end
+      classdiagramsettings draw_all_relations yes hide_operations no show_members_full_definition yes member_max_width 0 show_context_mode uml end
       size A-Landscape
     end
 
     classdiagram 552070 "Message hierarchy for process"
-      classdiagramsettings hide_attributes yes hide_operations yes member_max_width 0 end
-      size A4
-    end
-
-    classdiagram 552198 "Tokens"
       classdiagramsettings hide_attributes yes hide_operations yes member_max_width 0 end
       size A4
     end

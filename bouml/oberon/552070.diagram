@@ -40,12 +40,11 @@ classcanvas 128902 class_ref 966278 // Reset
 end
 classcanvas 130950 class_ref 889478 // unique_ptr
   classdiagramsettings member_max_width 0 end
-  xyz 451 68 2005
+  xyz 196 273 2005
 end
 classcanvas 131078 class_ref 902918 // Token
   classdiagramsettings member_max_width 0 end
-  color green
-  xyz 422 167 2011
+  xyz 165 398 2011
 end
 classcanvas 131334 class_ref 1067398 // Security
   classdiagramsettings hide_operations no member_max_width 0 end
@@ -53,7 +52,15 @@ classcanvas 131334 class_ref 1067398 // Security
     operation_ref 1579142 // Security
     operation_ref 1579526 // quote
     operation_ref 1579654 // base
-  xyz 33.5 331 2012
+  xyz 34.5 388 2012
+end
+classcanvas 132102 class_ref 903046 // Tokens
+  classdiagramsettings member_max_width 0 end
+  xyz 361 398 2000
+end
+classcanvas 132230 class_ref 1115142 // list
+  classdiagramsettings member_max_width 0 end
+  xyz 403 272 2006
 end
 relationcanvas 128262 relation_ref 558214 // <generalisation>
   from ref 128134 z 2007 to point 65 143
@@ -87,13 +94,18 @@ relationcanvas 129030 relation_ref 1085702 // <generalisation>
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 131206 relation_ref 1016966 // <realization>
-  from ref 131078 z 2012 label "<T->Message>" max_width 255 xyz 447 128 2012 stereotype "<<bind>>" xyz 462 146 2012 to ref 130950
+  from ref 131078 z 2012 label "<T->Message>" max_width 255 xyz 190.5 346 2012 stereotype "<<bind>>" xyz 205.5 364 2012 to ref 130950
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 131462 relation_ref 1241734 // <directional aggregation>
-  from ref 128134 z 2013 stereotype "<<shared_ptr>>" xyz 27 294 2013 to ref 131334
-  role_a_pos 79 306 3000 no_role_b
-  multiplicity_a_pos 52 306 3000 multiplicity_b_pos 54 268 3000
+  from ref 128134 z 2013 stereotype "<<shared_ptr>>" xyz 27 322.5 2013 to ref 131334
+  role_a_pos 79 363 3000 no_role_b
+  multiplicity_a_pos 52 363 3000 multiplicity_b_pos 54 248 3000
+end
+relationcanvas 132358 relation_ref 1325318 // <realization>
+  from ref 132102 z 2007 label "<T->Token>" max_width 255 xyz 393 346 2007 stereotype "<<bind>>" xyz 400 364 2007 to ref 132230
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
 end
 end

@@ -399,8 +399,11 @@ else
 //mks
 std::getline(is, field, ',');
 if (is.good()) {
-  timestamp(anchor +
-                    std::chrono::microseconds{std::stoi(field)});
+  if (!field.empty()) {
+    timestamp(anchor + std::chrono::microseconds{std::stoi(field)});
+  } else {
+    timestamp(anchor);
+  }
 }
 else
   BOOST_LOG_TRIVIAL(warning) << "Couldn't read mks from " << csv;
@@ -527,7 +530,11 @@ else
 // heard
 std::getline(is, field, ',');
 if (is) { // We accept that empty deleted column is even without comma
-  heard(timestamp() + std::chrono::microseconds{std::stoi(field)});
+  if (!field.empty()) {
+    heard(timestamp() + std::chrono::microseconds{std::stoi(field)});
+  } else {
+    heard(timestamp());
+  }
 }
 else
   BOOST_LOG_TRIVIAL(warning) << "Couldn't read heard from " << csv;

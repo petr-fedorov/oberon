@@ -1,0 +1,2142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Documentation produced by the Html generator of Bouml (http://www.bouml.fr) -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>oberon
+Documentation</title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body bgcolor="#ffffff">
+
+<div class = "title">oberon<br />Documentation</div>
+<p></p>
+
+<!-- ============================================================= -->
+
+<a name="ref22_129"></a>
+<p>A top-level package for OBERON (Order Book Events ReconstructiON)<br /></p>
+<p>Properties:</p><ul>
+<li>html dir:<br /><div class="sub">/home/petr/repos/oberon/docs/html_docs/</div></li>
+</ul>
+<a name="ref22_147718"></a>
+<h1 class ="package">1 Package App</h1>
+<p></p><ul>
+<li>C++ namespace : oberon</li>
+</ul>
+<div class="sub">
+<a name="ref19_134534"></a>
+<h2 class ="view">1.1 Use Case View Diagrams</h2>
+<div class="sub">
+<a name="ref39_148230"></a>
+<h3 class ="activity">1.1.1 Activity S.1 Capture</h3>
+<div class="sub">
+<a name="ref17_181766"></a>
+<p align="center"><img src="fig181766.png" alt="" /></p>
+ <p align="center"><b>S.1 Capture</b></p><p><br /></p><p><br /></p>
+<a name="ref41_148998"></a>
+<table><tr><td><div class="element">Activity action pin <b>exchange_name</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : std::string</p><p>Multiplicity : 1</p><div class="sub">
+<table><tr><td><div class="element">Flow  <b>S.1.2</b></div></td></tr></table><p>From <a href="index.html#ref41_148998"><b>exchange_name</b></a> To <a href="index.html#ref69_349318"><b>exchange_name</b></a></p></div>
+<a name="ref41_149126"></a>
+<table><tr><td><div class="element">Activity action pin <b>pair_name</b></div></td></tr></table>
+<p>Direction : input</p><p>S.1 Standalone Application<br /></p>
+<p>Type : std::string</p><p>Multiplicity : 1</p><div class="sub">
+<table><tr><td><div class="element">Flow  <b>S.1.3</b></div></td></tr></table><p>From <a href="index.html#ref41_149126"><b>pair_name</b></a> To <a href="index.html#ref69_349446"><b>pair_name</b></a></p></div>
+<a name="ref70_189958"></a>
+<a name="ref70_189958"></a>
+<table><tr><td><div class="element">Initial activity node <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref39_148230"><b>S.1 Capture</b></a></p><div class="sub">
+<table><tr><td><div class="element">Flow  <b>S.1.1</b></div></td></tr></table><p>From <a href="index.html#ref70_189958"><b>initial activity node</b></a> To <a href="index.html#ref53_213638"><b>Initialize</b></a></p></div>
+<a name="ref72_190086"></a>
+<a name="ref72_190086"></a>
+<table><tr><td><div class="element">Activity final <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref39_148230"><b>S.1 Capture</b></a></p><a name="ref45_141062"></a>
+<h4 class ="interruptibleactivityregion">1.1.1.1 Interruptible activity region </h4>
+<div class="sub">
+<a name="ref53_213638"></a>
+<table><tr><td><div class="element">Call behavior activity action <b>Initialize</b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref45_141062"><b>interruptible activity region</b></a></p><p>Is synchronous</p><p>Behavior : <a href="index.html#ref39_168710"><b>S.2 Initialize</b></a></p><div class="sub">
+<table><tr><td><div class="element">Flow  <b>S.1.6</b></div></td></tr></table><p>From <a href="index.html#ref53_213638"><b>Initialize</b></a> To <a href="index.html#ref75_229382"><b>fork activity node</b></a></p><a name="ref69_349318"></a>
+<table><tr><td><div class="element">Activity action pin <b>exchange_name</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : std::string</p><p>Multiplicity : 1</p><a name="ref69_349446"></a>
+<table><tr><td><div class="element">Activity action pin <b>pair_name</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : std::string</p><p>Multiplicity : 1</p><a name="ref69_349702"></a>
+<table><tr><td><div class="element">Activity action pin <b>reconstructor</b></div></td></tr></table>
+<p>Direction : output</p><p>Type : Reconstructor</p><p>Multiplicity : 1</p><div class="sub">
+<table><tr><td><div class="element">Flow  <b>S.1.7</b></div></td></tr></table><p>From <a href="index.html#ref69_349702"><b>reconstructor</b></a> To <a href="index.html#ref69_349062"><b>target</b></a></p></div>
+<a name="ref69_349830"></a>
+<table><tr><td><div class="element">Activity action pin <b>receiver</b></div></td></tr></table>
+<p>Direction : output</p><p>Type : </p><p>Multiplicity : 1</p><div class="sub">
+<table><tr><td><div class="element">Flow  <b>S.1.4</b></div></td></tr></table><p>From <a href="index.html#ref69_349830"><b>receiver</b></a> To target</p></div>
+</div>
+<a name="ref75_229382"></a>
+<a name="ref75_229382"></a>
+<table><tr><td><div class="element">Fork activity node <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref45_141062"><b>interruptible activity region</b></a></p><div class="sub">
+<table><tr><td><div class="element">Flow  <b>S.1.8</b></div></td></tr></table><p>From <a href="index.html#ref75_229382"><b>fork activity node</b></a> To <a href="index.html#ref53_247302"><b>Reconstruct Order Book</b></a></p></div>
+<a name="ref53_247302"></a>
+<table><tr><td><div class="element">Call behavior activity action <b>Reconstruct Order Book</b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref45_141062"><b>interruptible activity region</b></a></p><p>Is synchronous</p><p>Behavior : <a href="index.html#ref39_175238"><b>R.1 Reconstruct Order Book</b></a></p><div class="sub">
+<a name="ref69_348678"></a>
+<table><tr><td><div class="element">Activity action pin <b>tree</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : <a href="class174214.html#ref4_174214"><b>ptree</b></a></p><p>Multiplicity : *</p><p>Ordering : fifo</p><a name="ref69_349062"></a>
+<table><tr><td><div class="element">Activity action pin <b>target</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : <a href="class486278.html#ref4_486278"><b>Reconstructor</b></a></p><p>Multiplicity : 1</p><table><tr><td><div class="element">Flow  <b>S.1.11</b></div></td></tr></table><p>From <a href="index.html#ref53_247302"><b>Reconstruct Order Book</b></a> To <a href="index.html#ref72_317190"><b>activity final</b></a></p></div>
+<a name="ref47_273798"></a>
+<table><tr><td><div class="element">Accept event activity action <b>Interrupt</b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref45_141062"><b>interruptible activity region</b></a></p><div class="sub">
+<table><tr><td><div class="element">Flow  <b>&lt;flow&gt;</b></div></td></tr></table><p>From <a href="index.html#ref47_273798"><b>Interrupt</b></a> To <a href="index.html#ref72_317190"><b>activity final</b></a></p></div>
+</div>
+<a name="ref43_128006"></a>
+<h4 class ="activitypartition">1.1.1.2 Activity partition Reconstructor</h4>
+<a name="ref43_128134"></a>
+<h4 class ="activitypartition">1.1.1.3 Activity partition Application</h4>
+<a name="ref72_317190"></a>
+<a name="ref72_317190"></a>
+<table><tr><td><div class="element">Activity final <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref39_148230"><b>S.1 Capture</b></a></p></div>
+<a name="ref39_168710"></a>
+<h3 class ="activity">1.1.2 Activity S.2 Initialize</h3>
+<div class="sub">
+<a name="ref17_221830"></a>
+<p align="center"><img src="fig221830.png" alt="" /></p>
+ <p align="center"><b>S.2 Initialize</b></p><p><br /></p><p><br /></p>
+<a name="ref41_164742"></a>
+<table><tr><td><div class="element">Activity action pin <b>exchange_name</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : std::string</p><p>Multiplicity : 1</p><div class="sub">
+<table><tr><td><div class="element">Flow  <b>S.7.3</b></div></td></tr></table><p>From <a href="index.html#ref41_164742"><b>exchange_name</b></a> To <a href="index.html#ref67_141190"><b>exchange_name</b></a></p></div>
+<a name="ref41_164870"></a>
+<table><tr><td><div class="element">Activity action pin <b>pair_name</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : std::string</p><p>Multiplicity : 1</p><div class="sub">
+<table><tr><td><div class="element">Flow  <b>S.7.4</b></div></td></tr></table><p>From <a href="index.html#ref41_164870"><b>pair_name</b></a> To <a href="index.html#ref67_141318"><b>pair_name</b></a></p></div>
+<a name="ref41_165126"></a>
+<table><tr><td><div class="element">Activity action pin <b>reconstructor</b></div></td></tr></table>
+<p>Direction : output</p><p>Type : </p><p>Multiplicity : 1</p><a name="ref41_165254"></a>
+<table><tr><td><div class="element">Activity action pin <b>receiver</b></div></td></tr></table>
+<p>Direction : output</p><p>Type : </p><p>Multiplicity : 1</p><a name="ref41_165382"></a>
+<table><tr><td><div class="element">Activity action pin <b>destination</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : </p><div class="sub">
+<table><tr><td><div class="element">Flow  <b>S.7.2</b></div></td></tr></table><p>From <a href="index.html#ref41_165382"><b>destination</b></a> To <a href="index.html#ref69_236294"><b>destination</b></a></p></div>
+<a name="ref67_141190"></a>
+<table><tr><td><div class="element">Activity object <b>exchange_name</b></div></td></tr></table>
+<p>Type : std::string</p><p>Multiplicity : 1</p><p>Stereotype: datastore</p>
+<div class="sub">
+<table><tr><td><div class="element">Flow  <b>S.7.6</b></div></td></tr></table><p>From <a href="index.html#ref67_141190"><b>exchange_name</b></a> To <a href="index.html#ref69_236550"><b>exchange_name</b></a></p><table><tr><td><div class="element">Flow  <b>S.7.7</b></div></td></tr></table><p>From <a href="index.html#ref67_141190"><b>exchange_name</b></a> To <a href="index.html#ref69_237574"><b>exchange_name</b></a></p><table><tr><td><div class="element">Flow  <b>S.7.8</b></div></td></tr></table><p>From <a href="index.html#ref67_141190"><b>exchange_name</b></a> To <a href="index.html#ref69_238854"><b>exchange_name</b></a></p></div>
+<a name="ref67_141318"></a>
+<table><tr><td><div class="element">Activity object <b>pair_name</b></div></td></tr></table>
+<p>Type : std::string</p><p>Multiplicity : 1</p><p>Stereotype: datastore</p>
+<div class="sub">
+<table><tr><td><div class="element">Flow  <b>S.7.10</b></div></td></tr></table><p>From <a href="index.html#ref67_141318"><b>pair_name</b></a> To <a href="index.html#ref69_236422"><b>pair_name</b></a></p><table><tr><td><div class="element">Flow  <b>S.7.9</b></div></td></tr></table><p>From <a href="index.html#ref67_141318"><b>pair_name</b></a> To <a href="index.html#ref69_237446"><b>pair_name</b></a></p><table><tr><td><div class="element">Flow  <b>S.7.14</b></div></td></tr></table><p>From <a href="index.html#ref67_141318"><b>pair_name</b></a> To <a href="index.html#ref69_238982"><b>pair_name</b></a></p></div>
+<a name="ref53_213254"></a>
+<table><tr><td><div class="element">Call behavior activity action <b>S.7 Create a store for Limit Order Book</b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref39_168710"><b>S.2 Initialize</b></a></p><div class="sub">
+<a name="ref69_236294"></a>
+<table><tr><td><div class="element">Activity action pin <b>destination</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : std::string</p><p>Multiplicity : 1</p><a name="ref69_236422"></a>
+<table><tr><td><div class="element">Activity action pin <b>pair_name</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : std::string</p><p>Multiplicity : 1</p><a name="ref69_236550"></a>
+<table><tr><td><div class="element">Activity action pin <b>exchange_name</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : std::string</p><p>Multiplicity : 1</p><a name="ref69_236678"></a>
+<table><tr><td><div class="element">Activity action pin <b>store</b></div></td></tr></table>
+<p>Direction : output</p><p>Type : Store1</p><p>Multiplicity : 1</p><p>Is control type</p>
+<div class="sub">
+<table><tr><td><div class="element">Flow  <b>S.7.11</b></div></td></tr></table><p>From <a href="index.html#ref69_236678"><b>store</b></a> To <a href="index.html#ref69_239110"><b>store</b></a></p></div>
+</div>
+<a name="ref54_213382"></a>
+<table><tr><td><div class="element">Call operation activity action <b>S.7 Create Order Book Reconstructor</b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref39_168710"><b>S.2 Initialize</b></a></p><p>Is synchronous</p><div class="sub">
+<a name="ref69_238726"></a>
+<table><tr><td><div class="element">Activity action pin <b></b></div></td></tr></table>
+<p>Direction : return</p><p>Type : Reconstructor</p><p>Multiplicity : 1</p><div class="sub">
+<table><tr><td><div class="element">Flow  <b>S.7.13</b></div></td></tr></table><p>From <a href="index.html#ref69_238726"><b>activity action pin</b></a> To <a href="index.html#ref41_165126"><b>reconstructor</b></a></p></div>
+<a name="ref69_238854"></a>
+<table><tr><td><div class="element">Activity action pin <b>exchange_name</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : std::string</p><p>Multiplicity : 1</p><a name="ref69_238982"></a>
+<table><tr><td><div class="element">Activity action pin <b>pair_name</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : std::string</p><p>Multiplicity : 1</p><a name="ref69_239110"></a>
+<table><tr><td><div class="element">Activity action pin <b>store</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : Store1</p><p>Multiplicity : 1</p><p>Is control type</p>
+<table><tr><td><div class="element">Flow  <b>S.7.15</b></div></td></tr></table><p>From <a href="index.html#ref54_213382"><b>S.7 Create Order Book Reconstructor</b></a> To <a href="index.html#ref53_213510"><b>S.7 Subscribe</b></a></p></div>
+<a name="ref53_213510"></a>
+<table><tr><td><div class="element">Call behavior activity action <b>S.7 Subscribe</b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref39_168710"><b>S.2 Initialize</b></a></p><div class="sub">
+<a name="ref69_237446"></a>
+<table><tr><td><div class="element">Activity action pin <b>pair_name</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : std::string</p><p>Multiplicity : 1</p><a name="ref69_237574"></a>
+<table><tr><td><div class="element">Activity action pin <b>exchange_name</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : std::string</p><p>Multiplicity : 1</p><a name="ref69_237702"></a>
+<table><tr><td><div class="element">Activity action pin <b>receiver</b></div></td></tr></table>
+<p>Direction : output</p><p>Type : Websocket</p><p>Multiplicity : 1</p><div class="sub">
+<table><tr><td><div class="element">Flow  <b>S.7.12</b></div></td></tr></table><p>From <a href="index.html#ref69_237702"><b>receiver</b></a> To <a href="index.html#ref41_165254"><b>receiver</b></a></p></div>
+</div>
+<a name="ref70_203142"></a>
+<a name="ref70_203142"></a>
+<table><tr><td><div class="element">Initial activity node <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref39_168710"><b>S.2 Initialize</b></a></p><div class="sub">
+<table><tr><td><div class="element">Flow  <b>S.7.1</b></div></td></tr></table><p>From <a href="index.html#ref70_203142"><b>initial activity node</b></a> To <a href="index.html#ref53_213254"><b>S.7 Create a store for Limit Order Book</b></a></p></div>
+</div>
+<a name="ref39_175238"></a>
+<h3 class ="activity">1.1.3 Activity R.1 Reconstruct Order Book</h3>
+<p>Implements <a href="class486278.html#ref2_575878"><b>process</b></a></p><div class="sub">
+<a name="ref17_274822"></a>
+<p align="center"><img src="fig274822.png" alt="" /></p>
+ <p align="center"><b>R.1 Reconstruct Order Book</b></p><p><br /></p><p><br /></p>
+<a name="ref41_178694"></a>
+<table><tr><td><div class="element">Activity action pin <b>tree</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : <a href="class174214.html#ref4_174214"><b>ptree</b></a></p><p>Multiplicity : 1</p><div class="sub">
+<table><tr><td><div class="element">Flow  <b>R1.2</b></div></td></tr></table><p>From <a href="index.html#ref41_178694"><b>tree</b></a> To <a href="index.html#ref69_371590"><b>tree</b></a></p></div>
+<a name="ref67_154502"></a>
+<table><tr><td><div class="element">Activity object <b>target</b></div></td></tr></table>
+<p>Type : <a href="class486278.html#ref4_486278"><b>Reconstructor</b></a></p><p>Multiplicity : 1</p><p>Stereotype: datastore</p>
+<div class="sub">
+<table><tr><td><div class="element">Flow  <b>&lt;flow&gt;</b></div></td></tr></table><p>From <a href="index.html#ref67_154502"><b>target</b></a> To <a href="index.html#ref69_289414"><b>target</b></a></p><p>Transformation :</p><ul><li>OCL : <pre>
+To be defined</pre></li></ul><table><tr><td><div class="element">Flow  <b>R.1.3</b></div></td></tr></table><p>From <a href="index.html#ref67_154502"><b>target</b></a> To <a href="index.html#ref69_371462"><b>target</b></a></p></div>
+<a name="ref54_240006"></a>
+<table><tr><td><div class="element">Call operation activity action <b>To be defined</b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref39_175238"><b>R.1 Reconstruct Order Book</b></a></p><p>Is synchronous</p><p>Operation : <a href="class441222.html#ref2_590214"><b>handle</b></a></p><div class="sub">
+<a name="ref69_289414"></a>
+<table><tr><td><div class="element">Activity action pin <b>target</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : <a href="class441222.html#ref4_441222"><b>TokenHandler</b></a></p><a name="ref69_289542"></a>
+<table><tr><td><div class="element">Activity action pin <b>output</b></div></td></tr></table>
+<p>Direction : return</p><p>Type : <a href="class245766.html#ref4_245766"><b>Message</b></a></p><p>Multiplicity : *</p><a name="ref69_289670"></a>
+<table><tr><td><div class="element">Activity action pin <b>messages</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : <a href="class245766.html#ref4_245766"><b>Message</b></a></p><p>Is control type</p>
+</div>
+<a name="ref70_310662"></a>
+<a name="ref70_310662"></a>
+<table><tr><td><div class="element">Initial activity node <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref39_175238"><b>R.1 Reconstruct Order Book</b></a></p><div class="sub">
+<table><tr><td><div class="element">Flow  <b>R.1.0</b></div></td></tr></table><p>From <a href="index.html#ref70_310662"><b>initial activity node</b></a> To <a href="index.html#ref74_324230"><b>merge activity node</b></a></p></div>
+<a name="ref54_273670"></a>
+<table><tr><td><div class="element">Call operation activity action <b>Process message</b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref39_175238"><b>R.1 Reconstruct Order Book</b></a></p><p>Is synchronous</p><p>Operation : <a href="class486278.html#ref2_575878"><b>process</b></a></p><div class="sub">
+<a name="ref69_371462"></a>
+<table><tr><td><div class="element">Activity action pin <b>target</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : <a href="class486278.html#ref4_486278"><b>Reconstructor</b></a></p><p>Multiplicity : 1</p><a name="ref69_371590"></a>
+<table><tr><td><div class="element">Activity action pin <b>tree</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : <a href="class174214.html#ref4_174214"><b>ptree</b></a></p><p>Multiplicity : 1</p><a name="ref69_371718"></a>
+<table><tr><td><div class="element">Activity action pin <b>error</b></div></td></tr></table>
+<p>Exception</p><p>Direction : output</p><p>Type : <a href="class1108486.html#ref4_1108486"><b>processing_error</b></a></p><p>Multiplicity : 1</p><p>Is control type</p>
+<div class="sub">
+<table><tr><td><div class="element">Flow  <b>R.1.6</b></div></td></tr></table><p>From <a href="index.html#ref69_371718"><b>error</b></a> To <a href="index.html#ref72_324102"><b>activity final</b></a></p></div>
+<table><tr><td><div class="element">Flow  <b>R.1.5</b></div></td></tr></table><p>From <a href="index.html#ref54_273670"><b>Process message</b></a> To <a href="index.html#ref74_324230"><b>merge activity node</b></a></p></div>
+<a name="ref72_323846"></a>
+<a name="ref72_323846"></a>
+<table><tr><td><div class="element">Activity final <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref39_175238"><b>R.1 Reconstruct Order Book</b></a></p><a name="ref71_323974"></a>
+<a name="ref71_323974"></a>
+<table><tr><td><div class="element">Flow final <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref39_175238"><b>R.1 Reconstruct Order Book</b></a></p><a name="ref72_324102"></a>
+<a name="ref72_324102"></a>
+<table><tr><td><div class="element">Activity final <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref39_175238"><b>R.1 Reconstruct Order Book</b></a></p><a name="ref41_232582"></a>
+<table><tr><td><div class="element">Activity action pin <b>target</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : <a href="class486278.html#ref4_486278"><b>Reconstructor</b></a></p><p>Multiplicity : 1</p><div class="sub">
+<table><tr><td><div class="element">Flow  <b>R.1.1</b></div></td></tr></table><p>From <a href="index.html#ref41_232582"><b>target</b></a> To <a href="index.html#ref67_154502"><b>target</b></a></p></div>
+<a name="ref74_324230"></a>
+<a name="ref74_324230"></a>
+<table><tr><td><div class="element">Merge activity node <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref39_175238"><b>R.1 Reconstruct Order Book</b></a></p><div class="sub">
+<table><tr><td><div class="element">Flow  <b>R.1.4</b></div></td></tr></table><p>From <a href="index.html#ref74_324230"><b>merge activity node</b></a> To <a href="index.html#ref54_273670"><b>Process message</b></a></p></div>
+</div>
+<a name="ref39_188294"></a>
+<h3 class ="activity">1.1.4 Activity P.1 Process message - generic</h3>
+<p>Implements <a href="class486278.html#ref2_575878"><b>process</b></a></p><div class="sub">
+<a name="ref17_572166"></a>
+<p align="center"><img src="fig572166.png" alt="" /></p>
+ <p align="center"><b>P.1 Process message - generic</b></p><p><br /></p><p><br /></p>
+<a name="ref41_245766"></a>
+<table><tr><td><div class="element">Activity action pin <b>tree</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : <a href="class174214.html#ref4_174214"><b>ptree</b></a></p><p>Multiplicity : 1</p><div class="sub">
+<table><tr><td><div class="element">Flow  <b>P.1.2</b></div></td></tr></table><p>From <a href="index.html#ref41_245766"><b>tree</b></a> To <a href="index.html#ref69_394246"><b>tree</b></a></p></div>
+<a name="ref41_246022"></a>
+<table><tr><td><div class="element">Activity action pin <b>target</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : <a href="class486278.html#ref4_486278"><b>Reconstructor</b></a></p><p>Multiplicity : 1</p><div class="sub">
+<table><tr><td><div class="element">Flow  <b>P.1.1</b></div></td></tr></table><p>From <a href="index.html#ref41_246022"><b>target</b></a> To <a href="index.html#ref69_396806"><b>target</b></a></p></div>
+<a name="ref70_331014"></a>
+<a name="ref70_331014"></a>
+<table><tr><td><div class="element">Initial activity node <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref39_188294"><b>P.1 Process message - generic</b></a></p><div class="sub">
+<table><tr><td><div class="element">Flow  <b>P.1.0</b></div></td></tr></table><p>From <a href="index.html#ref70_331014"><b>initial activity node</b></a> To <a href="index.html#ref54_287366"><b>extract</b></a></p></div>
+<a name="ref54_287366"></a>
+<table><tr><td><div class="element">Call operation activity action <b>extract</b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref39_188294"><b>P.1 Process message - generic</b></a></p><p>Is synchronous</p><p>Operation : <a href="class486278.html#ref2_576006"><b>extract</b></a></p><div class="sub">
+<a name="ref69_394246"></a>
+<table><tr><td><div class="element">Activity action pin <b>tree</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : <a href="class174214.html#ref4_174214"><b>ptree</b></a></p><p>Multiplicity : 1</p><a name="ref69_396806"></a>
+<table><tr><td><div class="element">Activity action pin <b>target</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : <a href="class486278.html#ref4_486278"><b>Reconstructor</b></a></p><p>Multiplicity : 1</p><a name="ref69_394118"></a>
+<table><tr><td><div class="element">Activity action pin <b>out</b></div></td></tr></table>
+<p>Direction : return</p><p>Type : <a href="class902918.html#ref4_902918"><b>Token</b></a></p><p>Multiplicity : 1</p><p>Is control type</p>
+<div class="sub">
+<table><tr><td><div class="element">Flow  <b>P.1.3</b></div></td></tr></table><p>From <a href="index.html#ref69_394118"><b>out</b></a> To <a href="index.html#ref69_394502"><b>in</b></a></p></div>
+<a name="ref69_396294"></a>
+<table><tr><td><div class="element">Activity action pin <b>next</b></div></td></tr></table>
+<p>Direction : output</p><p>Type : <a href="class441222.html#ref4_441222"><b>TokenHandler</b></a></p><div class="sub">
+<table><tr><td><div class="element">Flow  <b>P.1.4</b></div></td></tr></table><p>From <a href="index.html#ref69_396294"><b>next</b></a> To <a href="index.html#ref69_396422"><b>target</b></a></p></div>
+<a name="ref69_397702"></a>
+<table><tr><td><div class="element">Activity action pin <b>error</b></div></td></tr></table>
+<p>Exception</p><p>Direction : output</p><p>Type : <a href="class1108486.html#ref4_1108486"><b>processing_error</b></a></p><p>Multiplicity : 1</p><div class="sub">
+<table><tr><td><div class="element">Flow  <b>P.1.19</b></div></td></tr></table><p>From <a href="index.html#ref69_397702"><b>error</b></a> To <a href="index.html#ref41_245894"><b>error</b></a></p></div>
+</div>
+<a name="ref54_287622"></a>
+<table><tr><td><div class="element">Call operation activity action <b>handle</b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref39_188294"><b>P.1 Process message - generic</b></a></p><p>Is synchronous</p><p>Operation : <a href="class441222.html#ref2_590214"><b>handle</b></a></p><div class="sub">
+<a name="ref69_394502"></a>
+<table><tr><td><div class="element">Activity action pin <b>in</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : <a href="class902918.html#ref4_902918"><b>Token</b></a></p><p>Multiplicity : 1</p><p>Is control type</p>
+<a name="ref69_396422"></a>
+<table><tr><td><div class="element">Activity action pin <b>target</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : <a href="class441222.html#ref4_441222"><b>TokenHandler</b></a></p><p>Multiplicity : 1</p><a name="ref69_394630"></a>
+<table><tr><td><div class="element">Activity action pin <b>out</b></div></td></tr></table>
+<p>Direction : output</p><p>Type : <a href="class902918.html#ref4_902918"><b>Token</b></a></p><p>Multiplicity : *</p><p>Ordering : fifo</p><p>Is control type</p>
+<div class="sub">
+<table><tr><td><div class="element">Flow  <b>P.1.6</b></div></td></tr></table><p>From <a href="index.html#ref69_394630"><b>out</b></a> To <a href="index.html#ref68_141318"><b>input</b></a></p></div>
+<a name="ref69_394758"></a>
+<table><tr><td><div class="element">Activity action pin <b>error</b></div></td></tr></table>
+<p>Exception</p><p>Direction : output</p><p>Type : </p><div class="sub">
+<table><tr><td><div class="element">Flow  <b>P.1.5</b></div></td></tr></table><p>From <a href="index.html#ref69_394758"><b>error</b></a> To <a href="index.html#ref41_245894"><b>error</b></a></p></div>
+<a name="ref69_396550"></a>
+<table><tr><td><div class="element">Activity action pin <b>next</b></div></td></tr></table>
+<p>Direction : output</p><p>Type : <a href="class441222.html#ref4_441222"><b>TokenHandler</b></a></p><p>Multiplicity : 1</p><div class="sub">
+<table><tr><td><div class="element">Flow  <b>P.1.7</b></div></td></tr></table><p>From <a href="index.html#ref69_396550"><b>next</b></a> To <a href="index.html#ref69_396166"><b>target</b></a></p></div>
+</div>
+<a name="ref44_141318"></a>
+<h4 class ="expansionregion">1.1.4.1 Expansion region </h4>
+<div class="sub">
+<a name="ref68_141318"></a>
+<table><tr><td><div class="element">Activity object <b>input</b></div></td></tr></table>
+<p>Type : <a href="class902918.html#ref4_902918"><b>Token</b></a></p><p>Multiplicity : *</p><p>Ordering : fifo</p><p>Is control type</p>
+<div class="sub">
+<table><tr><td><div class="element">Flow  <b>P.1.8</b></div></td></tr></table><p>From <a href="index.html#ref68_141318"><b>input</b></a> To <a href="index.html#ref69_395398"><b>in</b></a></p></div>
+<a name="ref54_287494"></a>
+<table><tr><td><div class="element">Call operation activity action <b>handle</b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref44_141318"><b>expansion region</b></a></p><p>Is synchronous</p><p>Operation : <a href="class441222.html#ref2_590214"><b>handle</b></a></p><div class="sub">
+<a name="ref69_395398"></a>
+<table><tr><td><div class="element">Activity action pin <b>in</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : <a href="class902918.html#ref4_902918"><b>Token</b></a></p><p>Multiplicity : 1</p><p>Is control type</p>
+<a name="ref69_396166"></a>
+<table><tr><td><div class="element">Activity action pin <b>target</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : <a href="class441222.html#ref4_441222"><b>TokenHandler</b></a></p><p>Multiplicity : 1</p><a name="ref69_395526"></a>
+<table><tr><td><div class="element">Activity action pin <b>out</b></div></td></tr></table>
+<p>Direction : output</p><p>Type : </p><p>Multiplicity : *</p><p>Is control type</p>
+<div class="sub">
+<table><tr><td><div class="element">Flow  <b>P.1.11</b></div></td></tr></table><p>From <a href="index.html#ref69_395526"><b>out</b></a> To <a href="index.html#ref68_141830"><b>input</b></a></p></div>
+<a name="ref69_395654"></a>
+<table><tr><td><div class="element">Activity action pin <b>error</b></div></td></tr></table>
+<p>Exception</p><p>Direction : output</p><p>Type : <a href="class1108486.html#ref4_1108486"><b>processing_error</b></a></p><p>Multiplicity : 1</p><div class="sub">
+<table><tr><td><div class="element">Flow  <b>P.1.9</b></div></td></tr></table><p>From <a href="index.html#ref69_395654"><b>error</b></a> To <a href="index.html#ref41_245894"><b>error</b></a></p></div>
+<a name="ref69_396934"></a>
+<table><tr><td><div class="element">Activity action pin <b>next</b></div></td></tr></table>
+<p>Direction : output</p><p>Type : </p><p>Multiplicity : 1</p><div class="sub">
+<table><tr><td><div class="element">Flow  <b>P.1.10</b></div></td></tr></table><p>From <a href="index.html#ref69_396934"><b>next</b></a> To <a href="index.html#ref69_397062"><b>target</b></a></p></div>
+</div>
+<a name="ref44_141574"></a>
+<h4 class ="expansionregion">1.1.4.1.1 Expansion region </h4>
+<div class="sub">
+<a name="ref68_141830"></a>
+<table><tr><td><div class="element">Activity object <b>input</b></div></td></tr></table>
+<p>Type : <a href="class902918.html#ref4_902918"><b>Token</b></a></p><p>Multiplicity : *</p><p>Ordering : fifo</p><p>Is control type</p>
+<div class="sub">
+<table><tr><td><div class="element">Flow  <b>P.1.17</b></div></td></tr></table><p>From <a href="index.html#ref68_141830"><b>input</b></a> To <a href="index.html#ref69_396038"><b>in</b></a></p></div>
+<a name="ref54_287878"></a>
+<table><tr><td><div class="element">Call operation activity action <b>handle</b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref44_141574"><b>expansion region</b></a></p><p>Is synchronous</p><p>Operation : <a href="class441222.html#ref2_590214"><b>handle</b></a></p><div class="sub">
+<a name="ref69_396038"></a>
+<table><tr><td><div class="element">Activity action pin <b>in</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : <a href="class902918.html#ref4_902918"><b>Token</b></a></p><p>Multiplicity : 1</p><p>Is control type</p>
+<a name="ref69_397062"></a>
+<table><tr><td><div class="element">Activity action pin <b>target</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : <a href="class441222.html#ref4_441222"><b>TokenHandler</b></a></p><p>Multiplicity : 1</p><a name="ref69_397190"></a>
+<table><tr><td><div class="element">Activity action pin <b>out</b></div></td></tr></table>
+<p>Direction : output</p><p>Type : </p><p>Multiplicity : *</p><p>Is control type</p>
+<div class="sub">
+<table><tr><td><div class="element">Flow  <b>P.1.14</b></div></td></tr></table><p>From <a href="index.html#ref69_397190"><b>out</b></a> To <a href="index.html#ref68_141574"><b>input</b></a></p></div>
+<a name="ref69_397318"></a>
+<table><tr><td><div class="element">Activity action pin <b>next</b></div></td></tr></table>
+<p>Direction : output</p><p>Type : </p><p>Multiplicity : 1</p><div class="sub">
+<table><tr><td><div class="element">Flow  <b>P.1.13</b></div></td></tr></table><p>From <a href="index.html#ref69_397318"><b>next</b></a> To <a href="index.html#ref69_397446"><b>target</b></a></p></div>
+<a name="ref69_397574"></a>
+<table><tr><td><div class="element">Activity action pin <b>error</b></div></td></tr></table>
+<p>Exception</p><p>Direction : output</p><p>Type : <a href="class1108486.html#ref4_1108486"><b>processing_error</b></a></p><p>Multiplicity : 1</p><div class="sub">
+<table><tr><td><div class="element">Flow  <b>P.1.12</b></div></td></tr></table><p>From <a href="index.html#ref69_397574"><b>error</b></a> To <a href="index.html#ref41_245894"><b>error</b></a></p></div>
+</div>
+<a name="ref44_141446"></a>
+<h4 class ="expansionregion">1.1.4.1.1.1 Expansion region </h4>
+<div class="sub">
+<a name="ref68_141574"></a>
+<table><tr><td><div class="element">Activity object <b>input</b></div></td></tr></table>
+<p>Type : <a href="class902918.html#ref4_902918"><b>Token</b></a></p><p>Multiplicity : *</p><p>Is control type</p>
+<div class="sub">
+<table><tr><td><div class="element">Flow  <b>P.1.18</b></div></td></tr></table><p>From <a href="index.html#ref68_141574"><b>input</b></a> To <a href="index.html#ref69_395014"><b>in</b></a></p></div>
+<a name="ref54_287750"></a>
+<table><tr><td><div class="element">Call operation activity action <b>handle</b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref44_141446"><b>expansion region</b></a></p><p>Is synchronous</p><p>Operation : <a href="class441222.html#ref2_590214"><b>handle</b></a></p><div class="sub">
+<a name="ref69_395014"></a>
+<table><tr><td><div class="element">Activity action pin <b>in</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : <a href="class902918.html#ref4_902918"><b>Token</b></a></p><p>Multiplicity : 1</p><p>Is control type</p>
+<a name="ref69_397446"></a>
+<table><tr><td><div class="element">Activity action pin <b>target</b></div></td></tr></table>
+<p>Direction : input</p><p>Type : <a href="class441222.html#ref4_441222"><b>TokenHandler</b></a></p><p>Multiplicity : 1</p><a name="ref69_395142"></a>
+<table><tr><td><div class="element">Activity action pin <b>error</b></div></td></tr></table>
+<p>Exception</p><p>Direction : output</p><p>Type : <a href="class1108486.html#ref4_1108486"><b>processing_error</b></a></p><p>Multiplicity : 1</p><div class="sub">
+<table><tr><td><div class="element">Flow  <b>P.1.15</b></div></td></tr></table><p>From <a href="index.html#ref69_395142"><b>error</b></a> To <a href="index.html#ref41_245894"><b>error</b></a></p></div>
+<a name="ref69_395782"></a>
+<table><tr><td><div class="element">Activity action pin <b>out</b></div></td></tr></table>
+<p>Direction : output</p><p>Type : <a href="class902918.html#ref4_902918"><b>Token</b></a></p><p>Multiplicity : *</p><p>Is control type</p>
+<div class="sub">
+<table><tr><td><div class="element">Flow  <b>P.1.16</b></div></td></tr></table><p>From <a href="index.html#ref69_395782"><b>out</b></a> To <a href="index.html#ref71_331142"><b>flow final</b></a></p></div>
+</div>
+<a name="ref71_331142"></a>
+<a name="ref71_331142"></a>
+<table><tr><td><div class="element">Flow final <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref44_141446"><b>expansion region</b></a></p></div>
+</div>
+</div>
+<a name="ref41_245894"></a>
+<table><tr><td><div class="element">Activity action pin <b>error</b></div></td></tr></table>
+<p>Exception</p><p>Direction : output</p><p>Type : <a href="class1108486.html#ref4_1108486"><b>processing_error</b></a></p><p>Multiplicity : 1</p></div>
+<a name="ref23_134662"></a>
+<h3 class ="state">1.1.5 State Order</h3>
+<p>Stereotype: machine</p>
+<div class="sub">
+<a name="ref26_215302"></a>
+<p align="center"><img src="fig215302.png" alt="" /></p>
+ <p align="center"><b>Order Implementation</b></p><p><br /></p><p><br /></p>
+<a name="ref26_254854"></a>
+<p align="center"><img src="fig254854.png" alt="" /></p>
+ <p align="center"><b>Order Life Cycle Overview</b></p><p><br /></p><p><br /></p>
+<a name="ref28_134534"></a>
+<a name="ref28_134534"></a>
+<table><tr><td><div class="element">Initial pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_134662"><b>Order</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref28_134534"><b>initial pseudo state</b></a> To <a href="index.html#ref23_170886"><b>Active</b></a></p></div>
+<a name="ref30_134662"></a>
+<a name="ref30_134662"></a>
+<table><tr><td><div class="element">Final state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_134662"><b>Order</b></a></p><a name="ref36_176646"></a>
+<a name="ref36_176646"></a>
+<table><tr><td><div class="element">Choice pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_134662"><b>Order</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref36_176646"><b>choice pseudo state</b></a> To <a href="index.html#ref23_134918"><b>Maker</b></a></p><p>Guard :</p><ul><li>OCL : <pre>
+is maker</pre></li><li>C++ : <pre>
+stm.isMaker()</pre></li></ul><table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref36_176646"><b>choice pseudo state</b></a> To <a href="index.html#ref23_134790"><b>Taker</b></a></p><p>Guard :</p><ul><li>OCL : <pre>
+is taker</pre></li><li>C++ : <pre>
+!stm.isMaker()</pre></li></ul></div>
+<a name="ref36_176774"></a>
+<a name="ref36_176774"></a>
+<table><tr><td><div class="element">Choice pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_134662"><b>Order</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref36_176774"><b>choice pseudo state</b></a> To <a href="index.html#ref36_176646"><b>choice pseudo state</b></a></p><p>Guard :</p><ul><li>OCL : <pre>
+remaining.size &gt; 0</pre></li><li>C++ : <pre>
+stm.getRemainingSize() &gt; 0</pre></li></ul><table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref36_176774"><b>choice pseudo state</b></a> To <a href="index.html#ref30_134662"><b>final state</b></a></p><p>Guard :</p><ul><li>OCL : <pre>
+remaining.size = 0</pre></li><li>C++ : <pre>
+stm.getRemainingSize() &lt;= 0</pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+done filled</pre></li><li>C++ : <pre>
+doneFilled();</pre></li></ul></div>
+<a name="ref23_170886"></a>
+<h4 class ="state">1.1.5.1 State Active</h4>
+<div class="sub">
+<a name="ref23_134918"></a>
+<h4 class ="state">1.1.5.1.1 State Maker</h4>
+<p>Entry Behavior :</p><ul><li>C++ : <pre>
+enterMaker();</pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref23_134918"><b>Maker</b></a> To <a href="index.html#ref36_176646"><b>choice pseudo state</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+price advanced</pre></li><li>C++ : <pre>
+priceAdvanced</pre></li></ul><table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>Self relation of <a href="index.html#ref23_134918"><b>Maker</b></a>, internal</p><p>Trigger :</p><ul><li>OCL : <pre>
+opened</pre></li></ul></div>
+<a name="ref23_134790"></a>
+<h4 class ="state">1.1.5.1.2 State Taker</h4>
+<p>Entry Behavior :</p><ul><li>C++ : <pre>
+enterTaker();</pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>opened</b></div></td></tr></table><p>From <a href="index.html#ref23_134790"><b>Taker</b></a> To <a href="index.html#ref23_134918"><b>Maker</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+opened</pre></li><li>C++ : <pre>
+opened</pre></li></ul></div>
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref23_170886"><b>Active</b></a> To <a href="index.html#ref36_176774"><b>choice pseudo state</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+filled</pre></li><li>C++ : <pre>
+filled</pre></li></ul><a name="ref35_176902"></a>
+<a name="ref35_176902"></a>
+<table><tr><td><div class="element">Junction pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_170886"><b>Active</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref35_176902"><b>junction pseudo state</b></a> To <a href="index.html#ref36_176646"><b>choice pseudo state</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+received</pre></li></ul></div>
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref23_170886"><b>Active</b></a> To <a href="index.html#ref30_134662"><b>final state</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+fully canceled</pre></li><li>C++ : <pre>
+fullyCanceled</pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+done canceled</pre></li><li>C++ : <pre>
+doneCanceled();</pre></li></ul><a name="ref34_241286"></a>
+<a name="ref34_241286"></a>
+<table><tr><td><div class="element">Shallow history pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_170886"><b>Active</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref34_241286"><b>shallow history pseudo state</b></a> To <a href="index.html#ref36_176646"><b>choice pseudo state</b></a></p></div>
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref23_170886"><b>Active</b></a> To <a href="index.html#ref34_241286"><b>shallow history pseudo state</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+price receded</pre></li></ul><table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref23_170886"><b>Active</b></a> To <a href="index.html#ref34_241286"><b>shallow history pseudo state</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+volume incremented</pre></li></ul><table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref23_170886"><b>Active</b></a> To <a href="index.html#ref34_241286"><b>shallow history pseudo state</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+partially canceled</pre></li></ul></div>
+</div>
+<a name="ref12_545286"></a>
+<p align="center"><img src="fig545286.png" alt="" /></p>
+ <p align="center"><b>Message - accept</b></p><p><br /></p><p><br /></p>
+<a name="ref12_551814"></a>
+<p align="center"><img src="fig551814.png" alt="" /></p>
+ <p align="center"><b>TokenHandler - handle</b></p><p><br /></p><p><br /></p>
+<a name="ref10_551942"></a>
+<p align="center"><img src="fig551942.png" alt="" /></p>
+ <p align="center"><b>Reconstructor hierarchy for process</b></p><p><br /></p><p><br /></p>
+<a name="ref10_552070"></a>
+<p align="center"><img src="fig552070.png" alt="" /></p>
+ <p align="center"><b>Message hierarchy for process</b></p><p><br /></p><p><br /></p>
+</div>
+<a name="ref22_194822"></a>
+<h2 class ="package">1.2 Package Acquirer</h2>
+<p></p><ul>
+<li>C++ namespace : oberon::acquirer</li>
+</ul>
+<div class="sub">
+<a name="ref18_339974"></a>
+<h3 class ="view">1.2.1 Class View Feeder</h3>
+<div class="sub">
+<a name="ref23_259718"></a>
+<h4 class ="state">1.2.1.1 StateMachine Feeder</h4>
+<p>Stereotype: machine</p>
+<div class="sub">
+<a name="ref26_406150"></a>
+<p align="center"><img src="fig406150.png" alt="" /></p>
+ <p align="center"><b>Feeder state machine diagram</b></p><p><br /></p><p><br /></p>
+<a name="ref23_259846"></a>
+<h4 class ="state">1.2.1.1.1 State Busy</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+create websocket</pre></li><li>C++ : <pre>
+stm.d_-&gt;ctx_ = boost::make_unique&lt;boost::asio::ssl::context&gt;(<br />    boost::asio::ssl::context::sslv23_client);<br />stm.d_-&gt;resolver_ = boost::make_unique&lt;boost::asio::ip::tcp::resolver&gt;(*stm.d_-&gt;ioc_);<br />stm.d_-&gt;ws_ = boost::make_unique&lt;FeederData::WebsocketStream&gt;(*stm.d_-&gt;ioc_, *stm.d_-&gt;ctx_);<br /><br />if (!SSL_set_tlsext_host_name(stm.d_-&gt;ws_-&gt;next_layer().native_handle(),<br />                              stm.d_-&gt;host_.c_str())) {<br />  boost::system::error_code ec{static_cast&lt;int&gt;(::ERR_get_error()),<br />                               boost::asio::error::get_ssl_category()};<br />  std::cerr &lt;&lt; ec.message() &lt;&lt; "\n";<br />}<br />/*<br />SSL_CTX_set_keylog_callback(stm.d_-&gt;ctx_-&gt;native_handle(),<br />      [](const SSL *ssl, const char *line) {<br />  ofstream f{"./key.txt", ios_base::app };<br />  f &lt;&lt; line &lt;&lt; "\n";<br />  f.close();<br />      });<br />*/<br /></pre></li></ul><p>Exit Behavior :</p><ul><li>OCL : <pre>
+cleanup</pre></li><li>C++ : <pre>
+stm.d_-&gt;timer_-&gt;cancel();<br />boost::system::error_code ec;<br /><br />stm.d_-&gt;ws_-&gt;next_layer().next_layer().shutdown(<br />    boost::asio::ip::tcp::socket::shutdown_both, ec);<br />if (ec) BOOST_LOG_TRIVIAL(warning) &lt;&lt; stm._machine_name &lt;&lt; ec.message();<br /><br />stm.d_-&gt;ws_-&gt;next_layer().next_layer().cancel(ec);<br />if (ec) BOOST_LOG_TRIVIAL(warning) &lt;&lt; stm._machine_name &lt;&lt; ec.message();<br /><br />stm.d_-&gt;ws_-&gt;next_layer().next_layer().close(ec);<br />if (ec) BOOST_LOG_TRIVIAL(warning) &lt;&lt; stm._machine_name &lt;&lt; ec.message();<br /><br />// Buffer could be partially filled already, need to re-set it<br />stm.d_-&gt;buffer_.consume(stm.d_-&gt;buffer_.size());<br /><br /></pre></li></ul><div class="sub">
+<a name="ref23_268166"></a>
+<h4 class ="state">1.2.1.1.1.1 State Resolve</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+launch</pre></li><li>C++ : <pre>
+stm.d_-&gt;resolver_-&gt;async_resolve(<br />    stm.d_-&gt;host_, stm.d_-&gt;port_,<br />    boost::asio::bind_executor(<br />        *stm.d_-&gt;strand_,<br />        [&amp;stm](const boost::system::error_code &amp;ec,<br />               boost::asio::ip::tcp::resolver::results_type results) {<br />         if (ec) {<br />          stm.d_-&gt;ec_ = ec;<br />          stm.d_-&gt;error_message_ = ec.message();<br />          BOOST_LOG_TRIVIAL(warning) &lt;&lt; stm._machine_name &lt;&lt; "Resolve "<br />                                     &lt;&lt; ec.message();<br />          stm.failure();<br />         } else {<br />          stm.d_-&gt;results_ = results;<br />          stm.success();<br />         }<br />        }));<br /></pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>success</b></div></td></tr></table><p>From <a href="index.html#ref23_268166"><b>Resolve</b></a> To <a href="index.html#ref23_275206"><b>Connect</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+success</pre></li><li>C++ : <pre>
+success</pre></li></ul></div>
+<a name="ref23_275078"></a>
+<h4 class ="state">1.2.1.1.1.2 State Receive</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+async_read next message</pre></li><li>C++ : <pre>
+stm.d_-&gt;ws_-&gt;async_read(<br />    stm.d_-&gt;buffer_,<br />    boost::asio::bind_executor(*stm.d_-&gt;strand_,<br />                               [&amp;stm](const boost::system::error_code &amp;ec,<br />                                      std::size_t bytes_transferred) {<br />     boost::ignore_unused(bytes_transferred);<br />     if (!ec) {<br />      using namespace boost::property_tree;<br />      auto local_timestamp = date::format(<br />          "%FT%TZ", std::chrono::time_point_cast&lt;std::chrono::microseconds&gt;(<br />                        std::chrono::system_clock::now()));<br />      std::stringstream m;<br />      m &lt;&lt; boost::beast::buffers(stm.d_-&gt;buffer_.data());<br />      stm.d_-&gt;buffer_.consume(stm.d_-&gt;buffer_.size());<br />      stm.d_-&gt;tree_ = boost::make_unique&lt;boost::property_tree::ptree&gt;();<br />      try {<br />       boost::property_tree::read_json(m, *stm.d_-&gt;tree_);<br />       stm.d_-&gt;tree_-&gt;put("local_timestamp", local_timestamp);<br />       stm.d_-&gt;tree_-&gt;put("source", std::move(m.str()));<br />       stm.success();<br />      }<br />      catch (const std::exception &amp;e) {<br />       BOOST_LOG_TRIVIAL(error) &lt;&lt; stm._machine_name<br />                                &lt;&lt; " Couldn't parse JSON: " &lt;&lt; m.str();<br />       BOOST_LOG_TRIVIAL(error) &lt;&lt; e.what();<br />       stm.failure();<br />      }<br />     } else {<br />      stm.d_-&gt;ec_ = ec;<br />      stm.d_-&gt;error_message_ = ec.message();<br />      BOOST_LOG_TRIVIAL(warning) &lt;&lt; stm._machine_name<br />                                 &lt;&lt; " Busy.Receive : " &lt;&lt; ec.message();<br />      stm.failure();<br />     }<br />    }));<br /></pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>success</b></div></td></tr></table><p>From <a href="index.html#ref23_275078"><b>Receive</b></a> To <a href="index.html#ref36_355590"><b>choice pseudo state</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+success</pre></li><li>C++ : <pre>
+success</pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+restart timer</pre></li><li>C++ : <pre>
+if (stm.d_-&gt;timer_-&gt;expires_after(<br />        std::chrono::seconds(stm.d_-&gt;exhausted_after)) &gt; 0) {<br /> // We managed to cancel the timer. Start new asynchronous wait.<br /> stm.d_-&gt;timer_-&gt;async_wait(boost::asio::bind_executor(<br />     *stm.d_-&gt;strand_, [&amp;stm](const boost::system::error_code &amp;ec) {<br />      if (ec != boost::asio::error::operation_aborted) stm.check();<br />     }));<br /> /*BOOST_LOG_TRIVIAL(debug) &lt;&lt; stm._machine_name<br />                          &lt;&lt; "timer will expire at " &lt;&lt; date::format("%FT%TZ", stm.d_-&gt;timer_-&gt;expiry())<br />                          &lt;&lt; "(" &lt;&lt; stm.d_-&gt;exhausted_after &lt;&lt; ")";<br />                          */<br />}<br /></pre></li></ul><a name="ref23_302214"></a>
+<h4 class ="state">1.2.1.1.1.2.1 State Connected</h4>
+<div class="sub">
+<table><tr><td><div class="element">Transition  <b>check</b></div></td></tr></table><p>From <a href="index.html#ref23_302214"><b>Connected</b></a> To <a href="index.html#ref23_302342"><b>Ping</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+check</pre></li><li>C++ : <pre>
+check</pre></li></ul><table><tr><td><div class="element">Transition  <b>pong</b></div></td></tr></table><p>Self relation of <a href="index.html#ref23_302214"><b>Connected</b></a>, internal</p><p>Trigger :</p><ul><li>OCL : <pre>
+pong</pre></li><li>C++ : <pre>
+pong</pre></li></ul></div>
+<a name="ref23_302342"></a>
+<h4 class ="state">1.2.1.1.1.2.2 State Ping</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+send ping,<br />set exhaust timer</pre></li><li>C++ : <pre>
+stm.d_-&gt;ws_-&gt;async_ping(<br />    "",<br />    boost::asio::bind_executor(*stm.d_-&gt;strand_,<br />                               [&amp;stm](const boost::system::error_code &amp;ec) {<br />     if (ec &amp;&amp; ec!= boost::asio::error::operation_aborted) {<br />      BOOST_LOG_TRIVIAL(warning) &lt;&lt; stm._machine_name<br />                                 &lt;&lt; "Couldn't send ping to check websocket ";<br />     }<br />    }));<br />stm.d_-&gt;timer_-&gt;expires_after(std::chrono::seconds(stm.d_-&gt;exhausted_after));<br />stm.d_-&gt;timer_-&gt;async_wait(boost::asio::bind_executor(<br />    *stm.d_-&gt;strand_, [&amp;stm](const boost::system::error_code &amp;ec) {<br />     if (ec != boost::asio::error::operation_aborted) stm.exhausted();<br />    }));<br />BOOST_LOG_TRIVIAL(debug) &lt;&lt; stm._machine_name &lt;&lt; "Feeder may be exhausted at "<br />                         &lt;&lt; date::format("%FT%TZ", stm.d_-&gt;timer_-&gt;expiry());<br /></pre></li></ul><p>Exit Behavior :</p><ul><li>C++ : <pre>
+<br /><br /></pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>pong</b></div></td></tr></table><p>From <a href="index.html#ref23_302342"><b>Ping</b></a> To <a href="index.html#ref23_302214"><b>Connected</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+pong</pre></li><li>C++ : <pre>
+pong</pre></li></ul><p>Activity :</p><ul><li>C++ : <pre>
+if (stm.d_-&gt;timer_-&gt;expires_after(<br />        std::chrono::seconds(stm.d_-&gt;exhausted_after)) &gt; 0) {<br /> // We managed to cancel the timer. Start new asynchronous wait.<br /> stm.d_-&gt;timer_-&gt;async_wait(boost::asio::bind_executor(<br />     *stm.d_-&gt;strand_, [&amp;stm](const boost::system::error_code &amp;ec) {<br />      if (ec != boost::asio::error::operation_aborted) stm.check();<br />     }));<br />}<br /></pre></li></ul></div>
+<a name="ref28_382982"></a>
+<a name="ref28_382982"></a>
+<table><tr><td><div class="element">Initial pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_275078"><b>Receive</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref28_382982"><b>initial pseudo state</b></a> To <a href="index.html#ref23_302214"><b>Connected</b></a></p></div>
+</div>
+<a name="ref28_348550"></a>
+<a name="ref28_348550"></a>
+<table><tr><td><div class="element">Initial pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_259846"><b>Busy</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref28_348550"><b>initial pseudo state</b></a> To <a href="index.html#ref23_268166"><b>Resolve</b></a></p></div>
+<a name="ref23_275206"></a>
+<h4 class ="state">1.2.1.1.1.3 State Connect</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+launch</pre></li><li>C++ : <pre>
+// Make the connection on the IP address we get from a lookup<br />boost::asio::async_connect(<br />    stm.d_-&gt;ws_-&gt;next_layer().next_layer(), stm.d_-&gt;results_.begin(),<br />    stm.d_-&gt;results_.end(),<br />    boost::asio::bind_executor(*stm.d_-&gt;strand_,<br />                               [&amp;stm](const boost::system::error_code &amp;ec,<br />                                      decltype(stm.d_-&gt;results_.begin()) iter) {<br />     if (ec) {<br />      stm.d_-&gt;ec_ = ec;<br />      stm.d_-&gt;error_message_ = ec.message();<br />      BOOST_LOG_TRIVIAL(warning) &lt;&lt; stm._machine_name &lt;&lt; "Connect "<br />                                 &lt;&lt; ec.message();<br />      stm.failure();<br />     } else {<br />      stm.d_-&gt;address_ = iter-&gt;endpoint().address();<br />      stm.success();<br />     }<br />    }));<br /></pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>success</b></div></td></tr></table><p>From <a href="index.html#ref23_275206"><b>Connect</b></a> To <a href="index.html#ref23_275334"><b>Handshake SSL</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+success</pre></li><li>C++ : <pre>
+success</pre></li></ul></div>
+<a name="ref23_275334"></a>
+<h4 class ="state">1.2.1.1.1.4 State Handshake SSL</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+launch</pre></li><li>C++ : <pre>
+stm.d_-&gt;ws_-&gt;next_layer().async_handshake(<br />    boost::asio::ssl::stream_base::client,<br />    boost::asio::bind_executor(*stm.d_-&gt;strand_,<br />                               [&amp;stm](const boost::system::error_code &amp;ec) {<br />     if (ec) {<br />      stm.d_-&gt;ec_ = ec;<br />      stm.d_-&gt;error_message_ = ec.message();<br />      BOOST_LOG_TRIVIAL(warning) &lt;&lt; stm._machine_name &lt;&lt; "Handshake SSL"<br />                                 &lt;&lt; ec.message();<br />      stm.failure();<br />     } else {<br />      stm.success();<br />     }<br />    }));<br /></pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>success</b></div></td></tr></table><p>From <a href="index.html#ref23_275334"><b>Handshake SSL</b></a> To <a href="index.html#ref23_275462"><b>Handshake websocket</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+success</pre></li><li>C++ : <pre>
+success</pre></li></ul></div>
+<a name="ref23_275462"></a>
+<h4 class ="state">1.2.1.1.1.5 State Handshake websocket</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+launch</pre></li><li>C++ : <pre>
+stm.d_-&gt;ws_-&gt;async_handshake(<br />    stm.d_-&gt;host_, stm.d_-&gt;target_,<br />    boost::asio::bind_executor(*stm.d_-&gt;strand_,<br />                               [&amp;stm](const boost::system::error_code &amp;ec) {<br />     if (ec) {<br />      stm.d_-&gt;ec_ = ec;<br />      stm.d_-&gt;error_message_ = ec.message();<br />      BOOST_LOG_TRIVIAL(warning) &lt;&lt; stm._machine_name &lt;&lt; "Handshake websocket "<br />                                 &lt;&lt; ec.message();<br />      stm.failure();<br />     } else {<br />      stm.success();<br />     }<br />    }));<br /></pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>success</b></div></td></tr></table><p>From <a href="index.html#ref23_275462"><b>Handshake websocket</b></a> To <a href="index.html#ref23_275590"><b>Subscribe</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+success</pre></li><li>C++ : <pre>
+success</pre></li></ul></div>
+<a name="ref23_275590"></a>
+<h4 class ="state">1.2.1.1.1.6 State Subscribe</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+launch</pre></li><li>C++ : <pre>
+stm.subscribe();<br /></pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>success</b></div></td></tr></table><p>From <a href="index.html#ref23_275590"><b>Subscribe</b></a> To <a href="index.html#ref23_275078"><b>Receive</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+success</pre></li><li>C++ : <pre>
+success</pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+send "success" event, start check timer<br /></pre></li><li>C++ : <pre>
+if (stm.d_-&gt;sh_)<br />  stm.d_-&gt;sh_();<br />stm.d_-&gt;last_sequence_ = 0;<br /><br />using frame_type = boost::beast::websocket::frame_type;<br />stm.d_-&gt;ws_-&gt;control_callback(boost::asio::bind_executor(<br />    *stm.d_-&gt;strand_,<br />    [&amp;stm](frame_type kind, boost::beast::string_view payload) {<br />      std::string kind_str;<br />      if (kind == frame_type::pong) {<br />        stm.pong();<br />      }<br />    }));<br /><br />stm.d_-&gt;timer_-&gt;expires_after(std::chrono::seconds(stm.d_-&gt;exhausted_after));<br />stm.d_-&gt;timer_-&gt;async_wait(boost::asio::bind_executor(<br />    *stm.d_-&gt;strand_, [&amp;stm](const boost::system::error_code &amp;ec) {<br />      if (ec != boost::asio::error::operation_aborted) {<br />        stm.check();<br />      }<br />    }));<br /><br /></pre></li></ul></div>
+<table><tr><td><div class="element">Transition  <b>stop</b></div></td></tr></table><p>From <a href="index.html#ref23_259846"><b>Busy</b></a> To <a href="index.html#ref23_275718"><b>Stopping</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+stop</pre></li><li>C++ : <pre>
+stop</pre></li></ul><table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref23_259846"><b>Busy</b></a> To <a href="index.html#ref35_355462"><b>junction pseudo state</b></a></p><table><tr><td><div class="element">Transition  <b>failure</b></div></td></tr></table><p>From <a href="index.html#ref23_259846"><b>Busy</b></a> To <a href="index.html#ref35_355462"><b>junction pseudo state</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+failure</pre></li><li>C++ : <pre>
+failure</pre></li></ul><p>Activity :</p><ul><li>C++ : <pre>
+BOOST_LOG_TRIVIAL(warning) &lt;&lt; stm._machine_name &lt;&lt; stm.d_-&gt;error_message_;<br /><br /></pre></li></ul><a name="ref36_355590"></a>
+<a name="ref36_355590"></a>
+<table><tr><td><div class="element">Choice pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_259846"><b>Busy</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>data</b></div></td></tr></table><p>From <a href="index.html#ref36_355590"><b>choice pseudo state</b></a> To <a href="index.html#ref36_355846"><b>choice pseudo state</b></a></p><p>Guard :</p><ul><li>OCL : <pre>
+else</pre></li></ul><table><tr><td><div class="element">Transition  <b>heartbeat or subscriptions</b></div></td></tr></table><p>From <a href="index.html#ref36_355590"><b>choice pseudo state</b></a> To <a href="index.html#ref23_275078"><b>Receive</b></a></p><p>Guard :</p><ul><li>OCL : <pre>
+heartbeat or subscription</pre></li><li>C++ : <pre>
+stm.isControlMessage()<br /></pre></li></ul></div>
+<a name="ref36_355846"></a>
+<a name="ref36_355846"></a>
+<table><tr><td><div class="element">Choice pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_259846"><b>Busy</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>bad sequence number</b></div></td></tr></table><p>From <a href="index.html#ref36_355846"><b>choice pseudo state</b></a> To <a href="index.html#ref30_356102"><b>final state</b></a></p><p>Guard :</p><ul><li>OCL : <pre>
+bad sequence num</pre></li><li>C++ : <pre>
+!stm.isGoodSeqNum()<br /></pre></li></ul><p>Activity :</p><ul><li>C++ : <pre>
+BOOST_LOG_TRIVIAL(warning) &lt;&lt; stm._machine_name<br />                         &lt;&lt; " Bad sequence number: last_seq=" &lt;&lt; stm.d_-&gt;last_sequence_ &lt;&lt; " sequence="<br />                         &lt;&lt; stm.d_-&gt;tree_-&gt;get&lt;long long&gt;("sequence");<br /></pre></li></ul><table><tr><td><div class="element">Transition  <b>report data received</b></div></td></tr></table><p>From <a href="index.html#ref36_355846"><b>choice pseudo state</b></a> To <a href="index.html#ref23_275078"><b>Receive</b></a></p><p>Guard :</p><ul><li>OCL : <pre>
+else</pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+send "message" event <br /></pre></li><li>C++ : <pre>
+stm.reportReceived();<br /></pre></li></ul></div>
+<a name="ref30_356102"></a>
+<a name="ref30_356102"></a>
+<table><tr><td><div class="element">Final state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_259846"><b>Busy</b></a></p><table><tr><td><div class="element">Transition  <b>exhausted</b></div></td></tr></table><p>From <a href="index.html#ref23_259846"><b>Busy</b></a> To <a href="index.html#ref23_282246"><b>Exhausted</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+exhausted</pre></li><li>C++ : <pre>
+exhausted</pre></li></ul><p>Activity :</p><ul><li>C++ : <pre>
+BOOST_LOG_TRIVIAL(warning) &lt;&lt; stm._machine_name &lt;&lt; "Exhausted";<br /><br /></pre></li></ul></div>
+<a name="ref28_348294"></a>
+<a name="ref28_348294"></a>
+<table><tr><td><div class="element">Initial pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_259718"><b>Feeder</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref28_348294"><b>initial pseudo state</b></a> To <a href="index.html#ref36_369542"><b>choice pseudo state</b></a></p></div>
+<a name="ref23_275718"></a>
+<h4 class ="state">1.2.1.1.2 State Stopping</h4>
+<div class="sub">
+<table><tr><td><div class="element">Transition  <b>success</b></div></td></tr></table><p>From <a href="index.html#ref23_275718"><b>Stopping</b></a> To <a href="index.html#ref35_348806"><b>junction pseudo state</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+success</pre></li><li>C++ : <pre>
+success</pre></li></ul><table><tr><td><div class="element">Transition  <b>failure</b></div></td></tr></table><p>From <a href="index.html#ref23_275718"><b>Stopping</b></a> To <a href="index.html#ref35_348806"><b>junction pseudo state</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+failure</pre></li><li>C++ : <pre>
+failure</pre></li></ul></div>
+<a name="ref35_348806"></a>
+<a name="ref35_348806"></a>
+<table><tr><td><div class="element">Junction pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_259718"><b>Feeder</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>stopped</b></div></td></tr></table><p>From <a href="index.html#ref35_348806"><b>junction pseudo state</b></a> To <a href="index.html#ref30_369670"><b>final state</b></a></p><p>Activity :</p><ul><li>OCL : <pre>
+send "failure" event</pre></li><li>C++ : <pre>
+BOOST_LOG_TRIVIAL(debug) &lt;&lt; stm._machine_name &lt;&lt; " success";<br />if(stm.d_-&gt;sh_) stm.d_-&gt;sh_();<br /><br /></pre></li></ul></div>
+<a name="ref35_355462"></a>
+<a name="ref35_355462"></a>
+<table><tr><td><div class="element">Junction pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_259718"><b>Feeder</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>failed</b></div></td></tr></table><p>From <a href="index.html#ref35_355462"><b>junction pseudo state</b></a> To <a href="index.html#ref30_369670"><b>final state</b></a></p><p>Activity :</p><ul><li>OCL : <pre>
+send "failure" event</pre></li><li>C++ : <pre>
+BOOST_LOG_TRIVIAL(debug) &lt;&lt; stm._machine_name &lt;&lt; " failure";<br />if(stm.d_-&gt;fh_) stm.d_-&gt;fh_();<br /></pre></li></ul></div>
+<a name="ref23_282246"></a>
+<h4 class ="state">1.2.1.1.3 State Exhausted</h4>
+<div class="sub">
+<table><tr><td><div class="element">Transition  <b>failure</b></div></td></tr></table><p>From <a href="index.html#ref23_282246"><b>Exhausted</b></a> To <a href="index.html#ref35_355462"><b>junction pseudo state</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+failure</pre></li><li>C++ : <pre>
+failure</pre></li></ul><table><tr><td><div class="element">Transition  <b>success</b></div></td></tr></table><p>From <a href="index.html#ref23_282246"><b>Exhausted</b></a> To <a href="index.html#ref35_355462"><b>junction pseudo state</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+success</pre></li><li>C++ : <pre>
+success</pre></li></ul></div>
+<a name="ref36_369542"></a>
+<a name="ref36_369542"></a>
+<table><tr><td><div class="element">Choice pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_259718"><b>Feeder</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref36_369542"><b>choice pseudo state</b></a> To <a href="index.html#ref23_259846"><b>Busy</b></a></p><p>Guard :</p><ul><li>OCL : <pre>
+else</pre></li><li>C++ : <pre>
+stm.d_</pre></li></ul><table><tr><td><div class="element">Transition  <b>create</b></div></td></tr></table><p>From <a href="index.html#ref36_369542"><b>choice pseudo state</b></a> To <a href="index.html#ref35_355462"><b>junction pseudo state</b></a></p><p>Guard :</p><ul><li>OCL : <pre>
+created with a default constructor</pre></li></ul></div>
+<a name="ref30_369670"></a>
+<a name="ref30_369670"></a>
+<table><tr><td><div class="element">Final state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_259718"><b>Feeder</b></a></p></div>
+<table><tr><td><div class="element">Class <b><a href="class843526.html#ref4_843526"><b>Feeder</b></a></b></div></td></tr></table>
+<a name="ref10_420230"></a>
+<p align="center"><img src="fig420230.png" alt="" /></p>
+ <p align="center"><b>Feeder</b></p><p><br /></p><p><br /></p>
+<a name="ref10_406278"></a>
+<p align="center"><img src="fig406278.png" alt="" /></p>
+ <p align="center"><b>FeederData class diagram</b></p><p><br /></p><p><br /></p>
+<table><tr><td><div class="element">Class <b><a href="class876038.html#ref4_876038"><b>FeederData</b></a></b></div></td></tr></table>
+</div>
+<a name="ref18_340102"></a>
+<h3 class ="view">1.2.2 Class View Snapshot</h3>
+<div class="sub">
+<a name="ref10_406662"></a>
+<p align="center"><img src="fig406662.png" alt="" /></p>
+ <p align="center"><b>Snapshot class diagram</b></p><p><br /></p><p><br /></p>
+<a name="ref23_259974"></a>
+<h4 class ="state">1.2.2.1 StateMachine Snapshot</h4>
+<p>Stereotype: machine</p>
+<div class="sub">
+<a name="ref26_406534"></a>
+<p align="center"><img src="fig406534.png" alt="" /></p>
+ <p align="center"><b>Snapshot state machine</b></p><p><br /></p><p><br /></p>
+<a name="ref28_334342"></a>
+<a name="ref28_334342"></a>
+<table><tr><td><div class="element">Initial pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_259974"><b>Snapshot</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref28_334342"><b>initial pseudo state</b></a> To <a href="index.html#ref36_363014"><b>choice pseudo state</b></a></p></div>
+<a name="ref23_260358"></a>
+<h4 class ="state">1.2.2.1.1 State Obtaining</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+create https stream</pre></li><li>C++ : <pre>
+stm.d_-&gt;resolver_ = boost::make_unique&lt;boost::asio::ip::tcp::resolver&gt;(*stm.d_-&gt;ioc_);<br />stm.d_-&gt;ctx_ = boost::make_unique&lt;boost::asio::ssl::context&gt;(<br />    boost::asio::ssl::context::sslv23_client);<br />stm.d_-&gt;https_ = boost::make_unique&lt;SnapshotData::SslStream&gt;(*stm.d_-&gt;ioc_, *stm.d_-&gt;ctx_);<br /><br />if (!SSL_set_tlsext_host_name(stm.d_-&gt;https_-&gt;native_handle(), stm.d_-&gt;host_.c_str())) {<br />  boost::system::error_code ec{static_cast&lt;int&gt;(::ERR_get_error()),<br />                               boost::asio::error::get_ssl_category()};<br />  BOOST_LOG_TRIVIAL(error) &lt;&lt; ec.message();<br />}<br /><br />/*<br />SSL_CTX_set_keylog_callback(stm.d_-&gt;ctx_-&gt;native_handle(),<br />      [](const SSL *ssl, const char *line) {<br />  ofstream f{"./key_https.txt", ios_base::app};<br />  f &lt;&lt; line &lt;&lt; "\n";<br />  f.close();<br />      });<br />*/<br /><br /></pre></li></ul><p>Exit Behavior :</p><ul><li>OCL : <pre>
+close https stream</pre></li><li>C++ : <pre>
+stm.d_-&gt;https_-&gt;next_layer().close(stm.d_-&gt;ec_);<br />#ifndef NDEBUG<br />if(stm.d_-&gt;ec_)<br /> BOOST_LOG_TRIVIAL(warning) &lt;&lt; "Https closing error: " &lt;&lt; stm.d_-&gt;ec_.message(); <br />#endif<br /></pre></li></ul><div class="sub">
+<a name="ref23_260486"></a>
+<h4 class ="state">1.2.2.1.1.1 State Resolving</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+launch</pre></li><li>C++ : <pre>
+auto self(stm.shared_from_this());<br />stm.d_-&gt;resolver_-&gt;async_resolve(<br />    stm.d_-&gt;host_, stm.d_-&gt;port_,<br />    boost::asio::bind_executor(<br />        *stm.d_-&gt;strand_,<br />        [&amp;stm, self](const boost::system::error_code &amp;ec,<br />                     boost::asio::ip::tcp::resolver::results_type results) {<br />         if (ec) {<br />          stm.d_-&gt;ec_ = ec;<br />          stm.d_-&gt;error_message_ = ec.message();<br />          BOOST_LOG_TRIVIAL(warning) &lt;&lt; stm._machine_name &lt;&lt; ec.message(); <br />          stm.failure();<br />         } else {<br />          stm.d_-&gt;results_ = results;<br />          stm.success();<br />         }<br />        }));<br /></pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>success</b></div></td></tr></table><p>From <a href="index.html#ref23_260486"><b>Resolving</b></a> To <a href="index.html#ref23_260742"><b>Connecting</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+success</pre></li><li>C++ : <pre>
+success</pre></li></ul></div>
+<a name="ref28_334470"></a>
+<a name="ref28_334470"></a>
+<table><tr><td><div class="element">Initial pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_260358"><b>Obtaining</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref28_334470"><b>initial pseudo state</b></a> To <a href="index.html#ref23_260486"><b>Resolving</b></a></p></div>
+<table><tr><td><div class="element">Transition  <b>completion</b></div></td></tr></table><p>From <a href="index.html#ref23_260358"><b>Obtaining</b></a> To <a href="index.html#ref30_334598"><b>final state</b></a></p><p>Activity :</p><ul><li>OCL : <pre>
+send success event</pre></li><li>C++ : <pre>
+BOOST_LOG_TRIVIAL(debug) &lt;&lt; stm._machine_name &lt;&lt; " success";<br />if(stm.d_-&gt;rh_) stm.d_-&gt;rh_(std::move(stm.d_-&gt;snapshot_tree_));<br /><br /><br /><br /></pre></li></ul><a name="ref23_260742"></a>
+<h4 class ="state">1.2.2.1.1.2 State Connecting</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+launch</pre></li><li>C++ : <pre>
+auto self(stm.shared_from_this());<br />boost::asio::async_connect(<br />    stm.d_-&gt;https_-&gt;next_layer(), stm.d_-&gt;results_.begin(), stm.d_-&gt;results_.end(),<br />    boost::asio::bind_executor(<br />        *stm.d_-&gt;strand_, [&amp;stm, self](const boost::system::error_code &amp;ec,<br />                          decltype(stm.d_-&gt;results_)::iterator iter) {<br />          if (ec) {<br />            stm.d_-&gt;ec_ = ec;<br />            stm.d_-&gt;error_message_ = ec.message();<br />            BOOST_LOG_TRIVIAL(warning) &lt;&lt; stm._machine_name &lt;&lt; ec.message(); <br />            stm.failure();<br />          } else {<br />#ifndef NDEBUG<br />            BOOST_LOG_TRIVIAL(debug) &lt;&lt; "IP: " &lt;&lt; iter-&gt;endpoint().address().to_string()<br />                      &lt;&lt; " Port: " &lt;&lt; iter-&gt;endpoint().port() &lt;&lt; "\n";<br />#endif<br />            stm.d_-&gt;address_ = iter-&gt;endpoint().address();<br />            stm.success();<br />          }<br />        }));<br /></pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>success</b></div></td></tr></table><p>From <a href="index.html#ref23_260742"><b>Connecting</b></a> To <a href="index.html#ref23_260870"><b>Doing SSL handshake</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+success</pre></li><li>C++ : <pre>
+success</pre></li></ul></div>
+<a name="ref23_260870"></a>
+<h4 class ="state">1.2.2.1.1.3 State Doing SSL handshake</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+launch</pre></li><li>C++ : <pre>
+auto self(stm.shared_from_this());<br />stm.d_-&gt;https_-&gt;async_handshake(<br />    boost::asio::ssl::stream_base::client,<br />    boost::asio::bind_executor(<br />        *stm.d_-&gt;strand_, [&amp;stm, self](const boost::system::error_code &amp;ec) {<br />         if (ec) {<br />          stm.d_-&gt;ec_ = ec;<br />          stm.d_-&gt;error_message_ = ec.message();<br />          BOOST_LOG_TRIVIAL(warning) &lt;&lt; stm._machine_name &lt;&lt; ec.message();<br />          stm.failure();<br />         } else {<br />          stm.success();<br />         }<br />        }));<br /></pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>success</b></div></td></tr></table><p>From <a href="index.html#ref23_260870"><b>Doing SSL handshake</b></a> To <a href="index.html#ref23_260998"><b>Quering snapshot</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+success</pre></li><li>C++ : <pre>
+success</pre></li></ul></div>
+<a name="ref23_260998"></a>
+<h4 class ="state">1.2.2.1.1.4 State Quering snapshot</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+launch</pre></li><li>C++ : <pre>
+namespace http = boost::beast::http;<br />#ifndef NDEBUG<br />BOOST_LOG_TRIVIAL(debug) &lt;&lt; "HTTP GET " &lt;&lt; stm.d_-&gt;req_.target();<br />#endif<br />auto self(stm.shared_from_this());<br />http::async_write(<br />    *stm.d_-&gt;https_, stm.d_-&gt;req_,<br />    boost::asio::bind_executor(*stm.d_-&gt;strand_,<br />                               [&amp;stm, self](const boost::system::error_code &amp;ec,<br />                                            std::size_t bytes_transferred) {<br />     boost::ignore_unused(bytes_transferred);<br />     if (ec) {<br />      stm.d_-&gt;ec_ = ec;<br />      stm.d_-&gt;error_message_ = ec.message();<br />      BOOST_LOG_TRIVIAL(warning) &lt;&lt; stm._machine_name &lt;&lt; ec.message();<br />      stm.failure();<br />     } else {<br />      stm.success();<br />     }<br />    }));<br /></pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>success</b></div></td></tr></table><p>From <a href="index.html#ref23_260998"><b>Quering snapshot</b></a> To <a href="index.html#ref23_261126"><b>Reading snapshot</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+success</pre></li><li>C++ : <pre>
+success</pre></li></ul></div>
+<a name="ref23_261126"></a>
+<h4 class ="state">1.2.2.1.1.5 State Reading snapshot</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+launch</pre></li><li>C++ : <pre>
+auto self(stm.shared_from_this());<br />boost::beast::http::async_read(<br />    *stm.d_-&gt;https_, stm.d_-&gt;buffer_, stm.d_-&gt;res_,<br />    boost::asio::bind_executor(*stm.d_-&gt;strand_,<br />                               [&amp;stm](const boost::system::error_code &amp;ec,<br />                                      std::size_t bytes_transferred) {<br />     boost::ignore_unused(bytes_transferred);<br />     if (ec) {<br />      stm.d_-&gt;ec_ = ec;<br />      stm.d_-&gt;error_message_ = ec.message();<br />      BOOST_LOG_TRIVIAL(warning) &lt;&lt; stm._machine_name &lt;&lt; ec.message();<br />      stm.failure();<br />     } else<br />      stm.success();<br />    }));<br /></pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>success</b></div></td></tr></table><p>From <a href="index.html#ref23_261126"><b>Reading snapshot</b></a> To <a href="index.html#ref23_261382"><b>Parsing snapshot</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+success</pre></li><li>C++ : <pre>
+success</pre></li></ul></div>
+<a name="ref30_334982"></a>
+<a name="ref30_334982"></a>
+<table><tr><td><div class="element">Final state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_260358"><b>Obtaining</b></a></p><a name="ref23_261382"></a>
+<h4 class ="state">1.2.2.1.1.6 State Parsing snapshot</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+launch</pre></li><li>C++ : <pre>
+auto self(stm.shared_from_this());<br />boost::asio::post(*stm.d_-&gt;ioc_, [&amp;stm]() {<br /> // BOOST_LOG_TRIVIAL(debug) &lt;&lt; stm.d_-&gt;res_.body();<br /> auto local_timestamp = date::format(<br />     "%FT%TZ", std::chrono::time_point_cast&lt;std::chrono::microseconds&gt;(<br />                   std::chrono::system_clock::now()));<br /> std::stringstream is{stm.d_-&gt;res_.body()};<br /> stm.d_-&gt;res_.body().clear();<br /> stm.d_-&gt;snapshot_tree_ = boost::make_unique&lt;boost::property_tree::ptree&gt;();<br /> try {<br />  read_json(is, *stm.d_-&gt;snapshot_tree_);<br />  stm.d_-&gt;snapshot_tree_-&gt;put("local_timestamp", local_timestamp);<br />  boost::asio::post(boost::asio::bind_executor(*stm.d_-&gt;strand_,<br />                                               [&amp;stm]() { stm.success(); }));<br /> }<br /> catch (...) {<br />  BOOST_LOG_TRIVIAL(warning) &lt;&lt; stm._machine_name &lt;&lt; "Failed to parse the snapshot:" &lt;&lt; is.str();<br />  boost::asio::post(boost::asio::bind_executor(*stm.d_-&gt;strand_, [&amp;stm]() {<br />   stm.d_-&gt;error_message_ = "Failed to parse the order book snapshot";<br />   stm.failure();<br />  }));<br /> }<br />});<br /></pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>success</b></div></td></tr></table><p>From <a href="index.html#ref23_261382"><b>Parsing snapshot</b></a> To <a href="index.html#ref30_334982"><b>final state</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+success</pre></li><li>C++ : <pre>
+success</pre></li></ul></div>
+<table><tr><td><div class="element">Transition  <b>stop</b></div></td></tr></table><p>From <a href="index.html#ref23_260358"><b>Obtaining</b></a> To <a href="index.html#ref23_261510"><b>Stopping</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+stop</pre></li><li>C++ : <pre>
+stop</pre></li></ul><p>Activity :</p><ul><li>C++ : <pre>
+BOOST_LOG_TRIVIAL(debug) &lt;&lt; stm._machine_name &lt;&lt; " stop";<br /></pre></li></ul><table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref23_260358"><b>Obtaining</b></a> To <a href="index.html#ref35_335110"><b>junction pseudo state</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+failure</pre></li><li>C++ : <pre>
+failure</pre></li></ul><p>Activity :</p><ul><li>C++ : <pre>
+BOOST_LOG_TRIVIAL(debug) &lt;&lt; stm._machine_name &lt;&lt; " failure";<br /><br /></pre></li></ul></div>
+<a name="ref30_334598"></a>
+<a name="ref30_334598"></a>
+<table><tr><td><div class="element">Final state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_259974"><b>Snapshot</b></a></p><a name="ref23_261510"></a>
+<h4 class ="state">1.2.2.1.2 State Stopping</h4>
+<div class="sub">
+<table><tr><td><div class="element">Transition  <b>failure</b></div></td></tr></table><p>From <a href="index.html#ref23_261510"><b>Stopping</b></a> To <a href="index.html#ref35_335110"><b>junction pseudo state</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+failure</pre></li><li>C++ : <pre>
+failure</pre></li></ul><table><tr><td><div class="element">Transition  <b>success</b></div></td></tr></table><p>From <a href="index.html#ref23_261510"><b>Stopping</b></a> To <a href="index.html#ref35_335110"><b>junction pseudo state</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+success</pre></li><li>C++ : <pre>
+success</pre></li></ul></div>
+<a name="ref35_335110"></a>
+<a name="ref35_335110"></a>
+<table><tr><td><div class="element">Junction pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_259974"><b>Snapshot</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref35_335110"><b>junction pseudo state</b></a> To <a href="index.html#ref30_334598"><b>final state</b></a></p><p>Activity :</p><ul><li>OCL : <pre>
+send failure event</pre></li><li>C++ : <pre>
+BOOST_LOG_TRIVIAL(debug) &lt;&lt; stm._machine_name &lt;&lt; " failure";<br />if(stm.d_-&gt;fh_) stm.d_-&gt;fh_();<br /><br /></pre></li></ul></div>
+<a name="ref30_362886"></a>
+<a name="ref30_362886"></a>
+<table><tr><td><div class="element">Final state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_259974"><b>Snapshot</b></a></p><a name="ref36_363014"></a>
+<a name="ref36_363014"></a>
+<table><tr><td><div class="element">Choice pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_259974"><b>Snapshot</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref36_363014"><b>choice pseudo state</b></a> To <a href="index.html#ref30_362886"><b>final state</b></a></p><p>Guard :</p><ul><li>OCL : <pre>
+created using default constructor </pre></li></ul><table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref36_363014"><b>choice pseudo state</b></a> To <a href="index.html#ref23_260358"><b>Obtaining</b></a></p><p>Guard :</p><ul><li>OCL : <pre>
+else</pre></li><li>C++ : <pre>
+stm.d_</pre></li></ul></div>
+<a name="ref35_402950"></a>
+<a name="ref35_402950"></a>
+<table><tr><td><div class="element">Junction pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_259974"><b>Snapshot</b></a></p></div>
+<table><tr><td><div class="element">Class <b><a href="class825862.html#ref4_825862"><b>Snapshot</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class866566.html#ref4_866566"><b>SnapshotData</b></a></b></div></td></tr></table>
+</div>
+<a name="ref18_253958"></a>
+<h3 class ="view">1.2.3 Class View Receiver</h3>
+<div class="sub">
+<table><tr><td><div class="element">Class <b><a href="class867718.html#ref4_867718"><b>Received</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class868102.html#ref4_868102"><b>SuccessHandler</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class867974.html#ref4_867974"><b>FailureHandler</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class867846.html#ref4_867846"><b>ReceivedHandler</b></a></b></div></td></tr></table>
+<a name="ref23_218374"></a>
+<h4 class ="state">1.2.3.1 StateMachine Receiver</h4>
+<p>Stereotype: machine</p>
+<div class="sub">
+<a name="ref26_399494"></a>
+<p align="center"><img src="fig399494.png" alt="" /></p>
+ <p align="center"><b>Receiver state machine</b></p><p><br /></p><p><br /></p>
+<a name="ref28_274182"></a>
+<a name="ref28_274182"></a>
+<table><tr><td><div class="element">Initial pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_218374"><b>Receiver</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref28_274182"><b>initial pseudo state</b></a> To <a href="index.html#ref23_233222"><b>Engage</b></a></p></div>
+<a name="ref23_233222"></a>
+<h4 class ="state">1.2.3.1.1 State Engage</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+register signal handler</pre></li><li>C++ : <pre>
+stm.d_-&gt;signal_set_-&gt;async_wait(boost::asio::bind_executor(<br />    *stm.d_-&gt;receiving_strand_, [&amp;stm](const boost::system::error_code &amp;ec, int signal_number) {<br />      boost::ignore_unused(signal_number);<br />      if (!ec) {<br />        BOOST_LOG_TRIVIAL(info) &lt;&lt; stm._machine_name &lt;&lt; "Termination requested. Unprocessed queue size is " &lt;&lt; stm.d_-&gt;messages_.size();<br />        stm.stop();<br />      }<br />    }));<br /></pre></li></ul><p>Exit Behavior :</p><ul><li>OCL : <pre>
+stop Feeder, cancel signal handler</pre></li><li>C++ : <pre>
+stm.d_-&gt;signal_set_-&gt;cancel();<br />stm.d_-&gt;feeder_-&gt;postEvent(&amp;Feeder::stop);</pre></li></ul><div class="sub">
+<a name="ref23_219526"></a>
+<h4 class ="state">1.2.3.1.1.1 State Engaging Feeder</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+post reset, engage Feeder</pre></li><li>C++ : <pre>
+boost::asio::post(<br />    boost::asio::bind_executor(*stm.d_-&gt;processing_strand_, [&amp;stm]() {<br />      boost::property_tree::ptree reset;<br />      reset.put&lt;std::string&gt;("type", "reset");  // Coinbase<br />      reset.put&lt;std::string&gt;("event", "reset"); // Bitstamp<br />      try {<br />        stm.d_-&gt;process(reset);<br />        return;<br />      } catch (...) {<br />      }<br />      stm.postEvent(&amp;Receiver::failure);<br />    }));<br />stm.d_-&gt;feeder_-&gt;create();<br /></pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>success</b></div></td></tr></table><p>From <a href="index.html#ref23_219526"><b>Engaging Feeder</b></a> To <a href="index.html#ref23_226694"><b>Feeder Engaged</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+success</pre></li><li>C++ : <pre>
+success</pre></li></ul><p>Activity :</p><ul><li>C++ : <pre>
+BOOST_LOG_TRIVIAL(info) &lt;&lt; stm._machine_name &lt;&lt; "Feeder engaged successfully.";<br /></pre></li></ul><table><tr><td><div class="element">Transition  <b>failure</b></div></td></tr></table><p>From <a href="index.html#ref23_219526"><b>Engaging Feeder</b></a> To <a href="index.html#ref30_314502"><b>final state</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+failure</pre></li><li>C++ : <pre>
+failure</pre></li></ul><p>Activity :</p><ul><li>C++ : <pre>
+BOOST_LOG_TRIVIAL(error) &lt;&lt; stm._machine_name &lt;&lt; "Couldn't engage Feeder, exiting. " &lt;&lt; stm.d_-&gt;error_message_; <br />stm.exit_code_ = EXIT_FAILURE;<br /></pre></li></ul></div>
+<a name="ref23_226694"></a>
+<h4 class ="state">1.2.3.1.1.2 State Feeder Engaged</h4>
+<p>Exit Behavior :</p><ul><li>OCL : <pre>
+clear queued msgs</pre></li><li>C++ : <pre>
+stm.d_-&gt;messages_.clear();<br /><br /><br /></pre></li></ul><div class="sub">
+<a name="ref23_219782"></a>
+<h4 class ="state">1.2.3.1.1.2.1 State Processing messages</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+pass to reconstructor async</pre></li><li>C++ : <pre>
+boost::asio::post(boost::asio::bind_executor(<br />    *stm.d_-&gt;processing_strand_,<br />    [messages = std::move(stm.d_-&gt;messages_), &amp;stm]() {<br />      for (auto &amp;message : messages)<br />        try {<br />          stm.d_-&gt;process(*message);<br />          stm.postEvent(&amp;Receiver::success);<br />        } catch (const reconstructor::processing_error &amp;e) {<br />          stm.postEvent(&amp;Receiver::failure);<br />        }<br />      return;<br />    }));<br /></pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>success</b></div></td></tr></table><p>From <a href="index.html#ref23_219782"><b>Processing messages</b></a> To <a href="index.html#ref36_327558"><b>choice pseudo state</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+success</pre></li><li>C++ : <pre>
+success</pre></li></ul></div>
+<table><tr><td><div class="element">Transition  <b>message</b></div></td></tr></table><p>Self relation of <a href="index.html#ref23_226694"><b>Feeder Engaged</b></a>, internal</p><p>Trigger :</p><ul><li>OCL : <pre>
+message</pre></li><li>C++ : <pre>
+message</pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+queue message</pre></li><li>C++ : <pre>
+stm.defer();<br />#ifndef NDEBUG<br />BOOST_LOG_TRIVIAL(debug) &lt;&lt; stm._machine_name &lt;&lt; " unprocessed message queue size: " &lt;&lt; stm.d_-&gt;messages_.size();<br />#endif<br /></pre></li></ul><a name="ref23_253190"></a>
+<h4 class ="state">1.2.3.1.1.2.2 State Waiting</h4>
+<div class="sub">
+<table><tr><td><div class="element">Transition  <b>message</b></div></td></tr></table><p>From <a href="index.html#ref23_253190"><b>Waiting</b></a> To <a href="index.html#ref23_219782"><b>Processing messages</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+message</pre></li><li>C++ : <pre>
+message</pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+queue message</pre></li><li>C++ : <pre>
+stm.defer();</pre></li></ul></div>
+<a name="ref36_327558"></a>
+<a name="ref36_327558"></a>
+<table><tr><td><div class="element">Choice pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_226694"><b>Feeder Engaged</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>queue not empty</b></div></td></tr></table><p>From <a href="index.html#ref36_327558"><b>choice pseudo state</b></a> To <a href="index.html#ref23_219782"><b>Processing messages</b></a></p><p>Guard :</p><ul><li>OCL : <pre>
+queue not empty</pre></li><li>C++ : <pre>
+!stm.d_-&gt;messages_.empty()</pre></li></ul><table><tr><td><div class="element">Transition  <b>queue is empty</b></div></td></tr></table><p>From <a href="index.html#ref36_327558"><b>choice pseudo state</b></a> To <a href="index.html#ref23_253190"><b>Waiting</b></a></p><p>Activity :</p><ul><li>OCL : <pre>
+else</pre></li></ul></div>
+<a name="ref23_288774"></a>
+<h4 class ="state">1.2.3.1.1.2.3 State Making Snapshot</h4>
+<div class="sub">
+<a name="ref36_335238"></a>
+<a name="ref36_335238"></a>
+<table><tr><td><div class="element">Choice pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_288774"><b>Making Snapshot</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref36_335238"><b>choice pseudo state</b></a> To <a href="index.html#ref23_261638"><b>Obtaining</b></a></p><p>Guard :</p><ul><li>OCL : <pre>
+stale</pre></li><li>C++ : <pre>
+stm.isStale()<br /></pre></li></ul><p>Activity :</p><ul><li>C++ : <pre>
+BOOST_LOG_TRIVIAL(info) &lt;&lt; stm._machine_name &lt;&lt; "The received snapshot is stale";<br /></pre></li></ul><table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref36_335238"><b>choice pseudo state</b></a> To <a href="index.html#ref23_233350"><b>Processing snapshot</b></a></p><p>Guard :</p><ul><li>OCL : <pre>
+else</pre></li></ul></div>
+<a name="ref28_281350"></a>
+<a name="ref28_281350"></a>
+<table><tr><td><div class="element">Initial pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_288774"><b>Making Snapshot</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref28_281350"><b>initial pseudo state</b></a> To <a href="index.html#ref23_261638"><b>Obtaining</b></a></p></div>
+<a name="ref23_261638"></a>
+<h4 class ="state">1.2.3.1.1.2.3.1 State Obtaining</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+launch Snapshot</pre></li><li>C++ : <pre>
+if(!stm.d_-&gt;snapshot_-&gt;create()) {<br />  stm.postEvent(&amp;Receiver::failure);<br />  BOOST_LOG_TRIVIAL(warning) &lt;&lt; stm._machine_name &lt;&lt; "Failed to create Snapshot SM";<br />}<br />else<br /> BOOST_LOG_TRIVIAL(info) &lt;&lt; stm._machine_name &lt;&lt; "An order book snapshot requested";<br /><br /></pre></li></ul><p>Exit Behavior :</p><ul><li>OCL : <pre>
+stop Snapshot</pre></li><li>C++ : <pre>
+stm.d_-&gt;snapshot_-&gt;postEvent(&amp;Snapshot::stop);</pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>success</b></div></td></tr></table><p>From <a href="index.html#ref23_261638"><b>Obtaining</b></a> To <a href="index.html#ref36_335238"><b>choice pseudo state</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+success</pre></li><li>C++ : <pre>
+success</pre></li></ul><p>Activity :</p><ul><li>C++ : <pre>
+BOOST_LOG_TRIVIAL(info) &lt;&lt; stm._machine_name &lt;&lt; "Received the order book snapshot";<br /></pre></li></ul></div>
+<a name="ref23_233350"></a>
+<h4 class ="state">1.2.3.1.1.2.3.2 State Processing snapshot</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+pass to reconstructor async</pre></li><li>C++ : <pre>
+stm.saveSnapshot();</pre></li></ul><p>Exit Behavior :</p><ul><li>OCL : <pre>
+stop processing thread</pre></li><li>C++ : <pre>
+stm.d_-&gt;stop_thread_.store(true);<br /><br /></pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>success</b></div></td></tr></table><p>From <a href="index.html#ref23_233350"><b>Processing snapshot</b></a> To <a href="index.html#ref23_219782"><b>Processing messages</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+success</pre></li><li>C++ : <pre>
+success</pre></li></ul><p>Activity :</p><ul><li>C++ : <pre>
+BOOST_LOG_TRIVIAL(info) &lt;&lt; stm._machine_name &lt;&lt; "Processed the snapshot. Started processing of messages ...";<br /><br /></pre></li></ul></div>
+<table><tr><td><div class="element">Transition  <b>failure</b></div></td></tr></table><p>From <a href="index.html#ref23_288774"><b>Making Snapshot</b></a> To <a href="index.html#ref23_322438"><b>Failing</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+failure</pre></li><li>C++ : <pre>
+failure</pre></li></ul><p>Activity :</p><ul><li>C++ : <pre>
+BOOST_LOG_TRIVIAL(warning) &lt;&lt; stm._machine_name &lt;&lt; "Failed while making snapshot";<br /><br /></pre></li></ul></div>
+<a name="ref28_369798"></a>
+<a name="ref28_369798"></a>
+<table><tr><td><div class="element">Initial pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_226694"><b>Feeder Engaged</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref28_369798"><b>initial pseudo state</b></a> To <a href="index.html#ref23_288774"><b>Making Snapshot</b></a></p></div>
+<table><tr><td><div class="element">Transition  <b>failure</b></div></td></tr></table><p>From <a href="index.html#ref23_226694"><b>Feeder Engaged</b></a> To <a href="index.html#ref23_219526"><b>Engaging Feeder</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+failure</pre></li><li>C++ : <pre>
+failure</pre></li></ul><p>Activity :</p><ul><li>C++ : <pre>
+BOOST_LOG_TRIVIAL(info) &lt;&lt; stm._machine_name &lt;&lt; "Feeder is to be re-engaged ...";<br /></pre></li></ul><a name="ref23_322438"></a>
+<h4 class ="state">1.2.3.1.1.2.4 State Failing</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+stop Feeder</pre></li><li>C++ : <pre>
+stm.d_-&gt;feeder_-&gt;postEvent(&amp;Feeder::stop);</pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>success</b></div></td></tr></table><p>From <a href="index.html#ref23_322438"><b>Failing</b></a> To <a href="index.html#ref32_396422"><b>failure</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+success</pre></li><li>C++ : <pre>
+success</pre></li></ul><table><tr><td><div class="element">Transition  <b>failure</b></div></td></tr></table><p>From <a href="index.html#ref23_322438"><b>Failing</b></a> To <a href="index.html#ref32_396422"><b>failure</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+failure</pre></li><li>C++ : <pre>
+failure</pre></li></ul><table><tr><td><div class="element">Transition  <b>message</b></div></td></tr></table><p>From <a href="index.html#ref23_322438"><b>Failing</b></a> To <a href="index.html#ref32_396422"><b>failure</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+message</pre></li><li>C++ : <pre>
+message</pre></li></ul></div>
+<a name="ref32_396422"></a>
+<a name="ref32_396422"></a>
+<table><tr><td><div class="element">Exit point pseudo state <b>failure</b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_226694"><b>Feeder Engaged</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref32_396422"><b>failure</b></a> To <a href="index.html#ref23_219526"><b>Engaging Feeder</b></a></p></div>
+</div>
+<a name="ref28_287878"></a>
+<a name="ref28_287878"></a>
+<table><tr><td><div class="element">Initial pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_233222"><b>Engage</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref28_287878"><b>initial pseudo state</b></a> To <a href="index.html#ref23_219526"><b>Engaging Feeder</b></a></p></div>
+<table><tr><td><div class="element">Transition  <b>stop</b></div></td></tr></table><p>From <a href="index.html#ref23_233222"><b>Engage</b></a> To <a href="index.html#ref30_314502"><b>final state</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+stop</pre></li><li>C++ : <pre>
+stop</pre></li></ul><p>Activity :</p><ul><li>C++ : <pre>
+stm.exit_code_ = EXIT_SUCCESS;</pre></li></ul></div>
+<a name="ref30_314502"></a>
+<a name="ref30_314502"></a>
+<table><tr><td><div class="element">Final state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_218374"><b>Receiver</b></a></p></div>
+<table><tr><td><div class="element">Class <b><a href="class909958.html#ref4_909958"><b>ConsumerFn</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class712966.html#ref4_712966"><b>Receiver</b></a></b></div></td></tr></table>
+<a name="ref10_399622"></a>
+<p align="center"><img src="fig399622.png" alt="" /></p>
+ <p align="center"><b>Receiver class diagram</b></p><p><br /></p><p><br /></p>
+<table><tr><td><div class="element">Class <b><a href="class868230.html#ref4_868230"><b>ReceiverData</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class999686.html#ref4_999686"><b>io_context_SP</b></a></b></div></td></tr></table>
+</div>
+<a name="ref22_208134"></a>
+<h3 class ="package">1.2.4 Package Coinbase</h3>
+<p></p><ul>
+<li>C++ namespace : oberon::acquirer::coinbase</li>
+</ul>
+<div class="sub">
+<a name="ref18_267398"></a>
+<h4 class ="view">1.2.4.1 Class View Receiver</h4>
+<div class="sub">
+<table><tr><td><div class="element">Class <b><a href="class937606.html#ref4_937606"><b>Receiver</b></a></b></div></td></tr></table>
+<a name="ref10_426758"></a>
+<p align="center"><img src="fig426758.png" alt="" /></p>
+ <p align="center"><b>Coinbase Receiver</b></p><p><br /></p><p><br /></p>
+</div>
+<a name="ref18_267142"></a>
+<h4 class ="view">1.2.4.2 Class View Feeder</h4>
+<div class="sub">
+<a name="ref10_420102"></a>
+<p align="center"><img src="fig420102.png" alt="" /></p>
+ <p align="center"><b>Feeder</b></p><p><br /></p><p><br /></p>
+<table><tr><td><div class="element">Class <b><a href="class930950.html#ref4_930950"><b>Feeder</b></a></b></div></td></tr></table>
+</div>
+<a name="ref21_180358"></a>
+<h4 class ="view">1.2.4.3 Deployment View Source files</h4>
+<div class="sub">
+<a name="ref8_273286"></a>
+<table><tr><td><div class="element">Artifact <b>Feeder</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class930950.html#ref4_930950"><b>Feeder</b></a></p>
+<a name="ref8_326918"></a>
+<table><tr><td><div class="element">Artifact <b>Receiver</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class937606.html#ref4_937606"><b>Receiver</b></a></p>
+</div>
+</div>
+<a name="ref22_208262"></a>
+<h3 class ="package">1.2.5 Package Bitstamp</h3>
+<p></p><ul>
+<li>C++ namespace : oberon::acquirer::bitstamp</li>
+</ul>
+<div class="sub">
+<a name="ref18_267526"></a>
+<h4 class ="view">1.2.5.1 Class View Receiver</h4>
+<div class="sub">
+<table><tr><td><div class="element">Class <b><a href="class937734.html#ref4_937734"><b>Receiver</b></a></b></div></td></tr></table>
+<a name="ref10_426886"></a>
+<p align="center"><img src="fig426886.png" alt="" /></p>
+ <p align="center"><b>Bitstamp Receiver</b></p><p><br /></p><p><br /></p>
+</div>
+<a name="ref18_287238"></a>
+<h4 class ="view">1.2.5.2 Class View Feeder</h4>
+<div class="sub">
+<a name="ref10_413318"></a>
+<p align="center"><img src="fig413318.png" alt="" /></p>
+ <p align="center"><b>Bitstamp Feeder</b></p><p><br /></p><p><br /></p>
+<table><tr><td><div class="element">Class <b><a href="class931078.html#ref4_931078"><b>Feeder</b></a></b></div></td></tr></table>
+</div>
+<a name="ref21_180486"></a>
+<h4 class ="view">1.2.5.3 Deployment View Source files</h4>
+<div class="sub">
+<a name="ref8_273414"></a>
+<table><tr><td><div class="element">Artifact <b>Receiver</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class937734.html#ref4_937734"><b>Receiver</b></a></p>
+<a name="ref8_313734"></a>
+<table><tr><td><div class="element">Artifact <b>Feeder</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class931078.html#ref4_931078"><b>Feeder</b></a></p>
+</div>
+</div>
+<a name="ref22_254342"></a>
+<h3 class ="package">1.2.6 Package File</h3>
+<p></p><ul>
+<li>C++ namespace : oberon::acquirer::file</li>
+</ul>
+<div class="sub">
+<a name="ref18_340230"></a>
+<h4 class ="view">1.2.6.1 Class View Reader</h4>
+<div class="sub">
+<a name="ref10_512134"></a>
+<p align="center"><img src="fig512134.png" alt="" /></p>
+ <p align="center"><b>Reader</b></p><p><br /></p><p><br /></p>
+<table><tr><td><div class="element">Class <b><a href="class1074182.html#ref4_1074182"><b>Reader</b></a></b></div></td></tr></table>
+</div>
+<a name="ref21_226566"></a>
+<h4 class ="view">1.2.6.2 Deployment View Source files</h4>
+<div class="sub">
+<a name="ref8_373894"></a>
+<table><tr><td><div class="element">Artifact <b>Reader</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class1074182.html#ref4_1074182"><b>Reader</b></a></p>
+</div>
+</div>
+<a name="ref21_187014"></a>
+<h3 class ="view">1.2.7 Deployment View Source files</h3>
+<div class="sub">
+<a name="ref8_286726"></a>
+<table><tr><td><div class="element">Artifact <b>ReceiverData</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class868230.html#ref4_868230"><b>ReceiverData</b></a></p>
+<a name="ref8_246406"></a>
+<table><tr><td><div class="element">Artifact <b>Receiver</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class909958.html#ref4_909958"><b>ConsumerFn</b></a>, <a href="class712966.html#ref4_712966"><b>Receiver</b></a></p>
+<a name="ref8_273542"></a>
+<table><tr><td><div class="element">Artifact <b>Snapshot</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class825862.html#ref4_825862"><b>Snapshot</b></a></p>
+<a name="ref8_286598"></a>
+<table><tr><td><div class="element">Artifact <b>SnapshotData</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class866566.html#ref4_866566"><b>SnapshotData</b></a></p>
+<a name="ref8_260102"></a>
+<table><tr><td><div class="element">Artifact <b>common</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class867718.html#ref4_867718"><b>Received</b></a>, <a href="class867974.html#ref4_867974"><b>FailureHandler</b></a>, <a href="class867846.html#ref4_867846"><b>ReceivedHandler</b></a>, <a href="class868102.html#ref4_868102"><b>SuccessHandler</b></a>, <a href="class999686.html#ref4_999686"><b>io_context_SP</b></a></p>
+<a name="ref8_313862"></a>
+<table><tr><td><div class="element">Artifact <b>FeederData</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class876038.html#ref4_876038"><b>FeederData</b></a></p>
+<a name="ref8_320390"></a>
+<table><tr><td><div class="element">Artifact <b>Feeder</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class843526.html#ref4_843526"><b>Feeder</b></a></p>
+</div>
+</div>
+<a name="ref22_141190"></a>
+<h2 class ="package">1.3 Package Reconstr</h2>
+<p></p><ul>
+<li>C++ namespace : oberon::reconstructor</li>
+</ul>
+<div class="sub">
+<a name="ref18_134534"></a>
+<h3 class ="view">1.3.1 Class View Message Hierarchy</h3>
+<div class="sub">
+<table><tr><td><div class="element">Class <b><a href="class271366.html#ref4_271366"><b>BookSide</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class305542.html#ref4_305542"><b>Price</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class305798.html#ref4_305798"><b>Volume</b></a></b></div></td></tr></table>
+<a name="ref10_307590"></a>
+<p align="center"><img src="fig307590.png" alt="" /></p>
+ <p align="center"><b>Message Hierarchy Overview</b></p><p><br /></p><p><br /></p>
+<a name="ref10_161030"></a>
+<p align="center"><img src="fig161030.png" alt="" /></p>
+ <p align="center"><b>Message Hierarchy Detailed</b></p><p><br /></p><p><br /></p>
+<table><tr><td><div class="element">Class <b><a href="class1067398.html#ref4_1067398"><b>Security</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class245766.html#ref4_245766"><b>Message</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class902918.html#ref4_902918"><b>Token</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class903046.html#ref4_903046"><b>Tokens</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class521478.html#ref4_521478"><b>Era</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class1087494.html#ref4_1087494"><b>PriceLevelAttached</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class448390.html#ref4_448390"><b>OrderEvent</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class1080966.html#ref4_1080966"><b>Stripe</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class1094406.html#ref4_1094406"><b>Dot</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class441478.html#ref4_441478"><b>Elapsed</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class966278.html#ref4_966278"><b>Reset</b></a></b></div></td></tr></table>
+</div>
+<a name="ref18_293894"></a>
+<h3 class ="view">1.3.2 Class View Handlers</h3>
+<div class="sub">
+<a name="ref10_492550"></a>
+<p align="center"><img src="fig492550.png" alt="" /></p>
+ <p align="center"><b>EraMerger</b></p><p><br /></p><p><br /></p>
+<a name="ref23_308870"></a>
+<h4 class ="state">1.3.2.1 StateMachine EraMerger</h4>
+<p>Stereotype: machine</p>
+<div class="sub">
+<a name="ref26_486022"></a>
+<p align="center"><img src="fig486022.png" alt="" /></p>
+ <p align="center"><b>EraMerger</b></p><p><br /></p><p><br /></p>
+<a name="ref23_315910"></a>
+<h4 class ="state">1.3.2.1.1 State Engage</h4>
+<div class="sub">
+<a name="ref28_389510"></a>
+<a name="ref28_389510"></a>
+<table><tr><td><div class="element">Initial pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_315910"><b>Engage</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref28_389510"><b>initial pseudo state</b></a> To <a href="index.html#ref23_315398"><b>Wait era start</b></a></p></div>
+<a name="ref23_315782"></a>
+<h4 class ="state">1.3.2.1.1.1 State Prepare merge</h4>
+<div class="sub">
+<table><tr><td><div class="element">Transition  <b>elapsed</b></div></td></tr></table><p>From <a href="index.html#ref23_315782"><b>Prepare merge</b></a> To <a href="index.html#ref23_315526"><b>Era started</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+elapsed</pre></li><li>C++ : <pre>
+elapsed</pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+pass deletions</pre></li><li>C++ : <pre>
+for(auto iter = stm.active_orders_.begin(); iter != stm.active_orders_.end(); ++iter)<br />if(iter-&gt;second-&gt;deleted()) {<br />  auto c = boost::make_unique&lt;reconstructor::OrderEvent&gt;(*iter-&gt;second);<br />  c-&gt;deleted(false);<br />  c-&gt;state(reconstructor::OrderEvent::OrderState::kFinished);<br />  c-&gt;timestamp(stm.era_timestamp_);<br />  assert(c-&gt;isOrderCancelled());<br />  stm.active_orders_.erase(iter);<br />  stm.output_.push_back(std::move(c));<br />}<br /><br /></pre></li></ul><table><tr><td><div class="element">Transition  <b>create</b></div></td></tr></table><p>Self relation of <a href="index.html#ref23_315782"><b>Prepare merge</b></a>, internal</p><p>Trigger :</p><ul><li>OCL : <pre>
+created</pre></li><li>C++ : <pre>
+created</pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+merge with order book</pre></li><li>C++ : <pre>
+using OrderEvent=oberon::reconstructor::OrderEvent;<br />OrderEvent *event = static_cast&lt;OrderEvent*&gt;(stm.received_.get());<br />auto iter = stm.active_orders_.find(event-&gt;maker());<br />if (iter != stm.active_orders_.end()) {<br />  OrderEvent *old = static_cast&lt;OrderEvent *&gt;(iter-&gt;second.get());<br />  event-&gt;deleted(true);<br /><br />  if (old-&gt;price() == event-&gt;price() &amp;&amp;<br />      ( std::abs(old-&gt;remaining() - event-&gt;remaining())/stm.security_-&gt;base()) &lt; 0.99 ) { // the same commitment, so keep old event<br />    old-&gt;deleted(false);<br />    stm.received_.release();<br />  } else { // generate Changed event instead of Created<br />    stm.received_ = boost::make_unique&lt;OrderEvent&gt;(*event); // the original stm.received_ (Created) is deleted here!<br />    stm.received_-&gt;deleted(false);<br />    stm.received_-&gt;timestamp(stm.era_timestamp_);<br />    assert(static_cast&lt;OrderEvent*&gt;(stm.received_.get())-&gt;isOrderChanged());<br />    iter-&gt;second = static_cast&lt;OrderEvent *&gt;(stm.received_.get())-&gt;clone();<br />    stm.output_.push_back(std::move(stm.received_));<br />  }<br />}<br /></pre></li></ul></div>
+<a name="ref23_315526"></a>
+<h4 class ="state">1.3.2.1.1.2 State Era started</h4>
+<div class="sub">
+<table><tr><td><div class="element">Transition  <b>era</b></div></td></tr></table><p>From <a href="index.html#ref23_315526"><b>Era started</b></a> To <a href="index.html#ref23_315782"><b>Prepare merge</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+era</pre></li><li>C++ : <pre>
+era</pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+mark all order book events deleted</pre></li><li>C++ : <pre>
+stm.era_timestamp_ = stm.received_-&gt;timestamp();<br />for(auto &amp;p : stm.active_orders_)<br />  p.second-&gt;deleted(true);<br /></pre></li></ul><table><tr><td><div class="element">Transition  <b>cancelled</b></div></td></tr></table><p>Self relation of <a href="index.html#ref23_315526"><b>Era started</b></a>, internal</p><p>Trigger :</p><ul><li>OCL : <pre>
+cancelled</pre></li><li>C++ : <pre>
+cancelled</pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+update order book</pre></li><li>C++ : <pre>
+using OrderEvent = reconstructor::OrderEvent;<br />OrderEvent *event = static_cast&lt;OrderEvent *&gt;(stm.received_.get());<br />stm.active_orders_.erase(event-&gt;maker());<br />stm.output_.push_back(std::move(stm.received_));<br /></pre></li></ul><table><tr><td><div class="element">Transition  <b>filled</b></div></td></tr></table><p>Self relation of <a href="index.html#ref23_315526"><b>Era started</b></a>, internal</p><p>Trigger :</p><ul><li>OCL : <pre>
+filled</pre></li><li>C++ : <pre>
+filled</pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+update order book</pre></li><li>C++ : <pre>
+using OrderEvent = reconstructor::OrderEvent;<br />OrderEvent *event = static_cast&lt;OrderEvent *&gt;(stm.received_.get());<br />if (event-&gt;state() == OrderEvent::OrderState::kActive) {<br />  stm.active_orders_[event-&gt;maker()] = event-&gt;clone();<br />} else {<br />  stm.active_orders_.erase(event-&gt;maker());<br />}<br />stm.output_.push_back(std::move(stm.received_));<br /></pre></li></ul><table><tr><td><div class="element">Transition  <b>created</b></div></td></tr></table><p>Self relation of <a href="index.html#ref23_315526"><b>Era started</b></a>, internal</p><p>Trigger :</p><ul><li>OCL : <pre>
+created</pre></li><li>C++ : <pre>
+created</pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+update order book</pre></li><li>C++ : <pre>
+using OrderEvent=reconstructor::OrderEvent;<br />OrderEvent *event = static_cast&lt;OrderEvent*&gt;(stm.received_.get());<br />stm.active_orders_[event-&gt;maker()] = event-&gt;clone();<br />stm.output_.push_back(std::move(stm.received_));<br /></pre></li></ul><table><tr><td><div class="element">Transition  <b>changed</b></div></td></tr></table><p>Self relation of <a href="index.html#ref23_315526"><b>Era started</b></a>, internal</p><p>Trigger :</p><ul><li>OCL : <pre>
+changed</pre></li><li>C++ : <pre>
+changed</pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+update order book</pre></li><li>C++ : <pre>
+using OrderEvent=reconstructor::OrderEvent;<br />OrderEvent *event = static_cast&lt;OrderEvent*&gt;(stm.received_.get());<br />stm.active_orders_[event-&gt;maker()] = event-&gt;clone();<br />stm.output_.push_back(std::move(stm.received_));<br /><br /></pre></li></ul><table><tr><td><div class="element">Transition  <b>reset</b></div></td></tr></table><p>Self relation of <a href="index.html#ref23_315526"><b>Era started</b></a>, internal</p><p>Trigger :</p><ul><li>OCL : <pre>
+reset</pre></li><li>C++ : <pre>
+reset</pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+drop</pre></li><li>C++ : <pre>
+stm.received_.reset();</pre></li></ul></div>
+<a name="ref23_315398"></a>
+<h4 class ="state">1.3.2.1.1.3 State Wait era start</h4>
+<div class="sub">
+<table><tr><td><div class="element">Transition  <b>era</b></div></td></tr></table><p>From <a href="index.html#ref23_315398"><b>Wait era start</b></a> To <a href="index.html#ref23_315526"><b>Era started</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+era</pre></li><li>C++ : <pre>
+era</pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+pass</pre></li><li>C++ : <pre>
+stm.security_ = static_cast&lt;Era*&gt;(stm.received_.get())-&gt;security();<br />stm.output_.push_back(std::move(stm.received_));<br /></pre></li></ul><table><tr><td><div class="element">Transition  <b>reset</b></div></td></tr></table><p>Self relation of <a href="index.html#ref23_315398"><b>Wait era start</b></a>, internal</p><p>Trigger :</p><ul><li>OCL : <pre>
+reset</pre></li><li>C++ : <pre>
+reset</pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+pass</pre></li><li>C++ : <pre>
+stm.output_.push_back(std::move(stm.received_));</pre></li></ul></div>
+<table><tr><td><div class="element">Transition  <b>created</b></div></td></tr></table><p>From <a href="index.html#ref23_315910"><b>Engage</b></a> To <a href="index.html#ref30_389894"><b>final state</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+created</pre></li><li>C++ : <pre>
+created</pre></li></ul><table><tr><td><div class="element">Transition  <b>changed</b></div></td></tr></table><p>From <a href="index.html#ref23_315910"><b>Engage</b></a> To <a href="index.html#ref30_389894"><b>final state</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+changed</pre></li><li>C++ : <pre>
+changed</pre></li></ul><table><tr><td><div class="element">Transition  <b>filled</b></div></td></tr></table><p>From <a href="index.html#ref23_315910"><b>Engage</b></a> To <a href="index.html#ref30_389894"><b>final state</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+filled</pre></li><li>C++ : <pre>
+filled</pre></li></ul><table><tr><td><div class="element">Transition  <b>cancelled</b></div></td></tr></table><p>From <a href="index.html#ref23_315910"><b>Engage</b></a> To <a href="index.html#ref30_389894"><b>final state</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+cancelled</pre></li><li>C++ : <pre>
+cancelled</pre></li></ul><table><tr><td><div class="element">Transition  <b>era</b></div></td></tr></table><p>From <a href="index.html#ref23_315910"><b>Engage</b></a> To <a href="index.html#ref30_389894"><b>final state</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+era</pre></li><li>C++ : <pre>
+era</pre></li></ul><table><tr><td><div class="element">Transition  <b>reset</b></div></td></tr></table><p>From <a href="index.html#ref23_315910"><b>Engage</b></a> To <a href="index.html#ref30_389894"><b>final state</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+reset</pre></li><li>C++ : <pre>
+reset</pre></li></ul></div>
+<a name="ref28_389766"></a>
+<a name="ref28_389766"></a>
+<table><tr><td><div class="element">Initial pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_308870"><b>EraMerger</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref28_389766"><b>initial pseudo state</b></a> To <a href="index.html#ref23_315910"><b>Engage</b></a></p></div>
+<a name="ref30_389894"></a>
+<a name="ref30_389894"></a>
+<table><tr><td><div class="element">Final state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_308870"><b>EraMerger</b></a></p></div>
+<table><tr><td><div class="element">Class <b><a href="class1046918.html#ref4_1046918"><b>EraMerger</b></a></b></div></td></tr></table>
+<a name="ref10_479494"></a>
+<p align="center"><img src="fig479494.png" alt="" /></p>
+ <p align="center"><b>EraSlicer</b></p><p><br /></p><p><br /></p>
+<table><tr><td><div class="element">Class <b><a href="class1020678.html#ref4_1020678"><b>EraSlicer</b></a></b></div></td></tr></table>
+<a name="ref23_197894"></a>
+<h4 class ="state">1.3.2.2 StateMachine SizeDeducer</h4>
+<p>Stereotype: machine</p>
+<div class="sub">
+<a name="ref26_314118"></a>
+<p align="center"><img src="fig314118.png" alt="" /></p>
+ <p align="center"><b>Size Deducer</b></p><p><br /></p><p><br /></p>
+<a name="ref23_198022"></a>
+<h4 class ="state">1.3.2.2.1 State Wait</h4>
+<p>Exit Behavior :</p><ul><li>OCL : <pre>
+cast Message to OrderEvent</pre></li><li>C++ : <pre>
+stm.em_ = std::unique_ptr&lt;OrderEvent&gt;(<br />    dynamic_cast&lt;OrderEvent *&gt;(stm.received_.release()));<br /></pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>created</b></div></td></tr></table><p>From <a href="index.html#ref23_198022"><b>Wait</b></a> To <a href="index.html#ref23_198278"><b>Save</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+created</pre></li><li>C++ : <pre>
+created</pre></li></ul><p>Guard :</p><ul><li>OCL : <pre>
+state == kActive</pre></li><li>C++ : <pre>
+static_cast&lt;OrderEvent*&gt;(stm.received_.get())-&gt;state() == OrderEvent::OrderState::kActive<br /></pre></li></ul><table><tr><td><div class="element">Transition  <b>era</b></div></td></tr></table><p>Self relation of <a href="index.html#ref23_198022"><b>Wait</b></a>, internal</p><p>Trigger :</p><ul><li>OCL : <pre>
+reset</pre></li><li>C++ : <pre>
+reset</pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+reset order sizes</pre></li><li>C++ : <pre>
+stm.previous_sizes_.clear();<br />stm.security_.reset();<br />stm.output_.push_back(std::move(stm.received_));<br /></pre></li></ul><table><tr><td><div class="element">Transition  <b>filled</b></div></td></tr></table><p>From <a href="index.html#ref23_198022"><b>Wait</b></a> To <a href="index.html#ref23_204806"><b>Remaining size</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+filled</pre></li><li>C++ : <pre>
+filled</pre></li></ul><table><tr><td><div class="element">Transition  <b>orderEvent</b></div></td></tr></table><p>From <a href="index.html#ref23_198022"><b>Wait</b></a> To <a href="index.html#ref23_204934"><b>Size change</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+orderEvent</pre></li><li>C++ : <pre>
+orderEvent</pre></li></ul><table><tr><td><div class="element">Transition  <b>created</b></div></td></tr></table><p>Self relation of <a href="index.html#ref23_198022"><b>Wait</b></a>, internal</p><p>Trigger :</p><ul><li>OCL : <pre>
+created</pre></li><li>C++ : <pre>
+created</pre></li></ul><p>Guard :</p><ul><li>OCL : <pre>
+state == kNA</pre></li><li>C++ : <pre>
+static_cast&lt;OrderEvent*&gt;(stm.received_.get())-&gt;state() == OrderEvent::OrderState::kNA<br /></pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+drop message</pre></li><li>C++ : <pre>
+static_cast&lt;OrderEvent*&gt;(stm.received_.get())-&gt;deleted(true);<br />stm.output_.push_back(std::move(stm.received_));<br /></pre></li></ul><table><tr><td><div class="element">Transition  <b>era</b></div></td></tr></table><p>Self relation of <a href="index.html#ref23_198022"><b>Wait</b></a>, internal</p><p>Trigger :</p><ul><li>OCL : <pre>
+era</pre></li><li>C++ : <pre>
+era</pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+save security</pre></li><li>C++ : <pre>
+stm.security_ = static_cast&lt;Era *&gt;(stm.received_.get())-&gt;security();<br />stm.output_.push_back(std::move(stm.received_));<br /></pre></li></ul></div>
+<a name="ref23_198150"></a>
+<h4 class ="state">1.3.2.2.2 State Deduce</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+find previous size of the order</pre></li><li>C++ : <pre>
+stm.previous_size_ = OrderEvent::kNaVolume;<br /><br />try {<br />  stm.previous_size_ = stm.previous_sizes_.at(stm.em_-&gt;maker());<br />}<br />catch (...) {};<br /></pre></li></ul><p>Exit Behavior :</p><ul><li>C++ : <pre>
+<br /></pre></li></ul><div class="sub">
+<a name="ref23_204934"></a>
+<h4 class ="state">1.3.2.2.2.1 State Size change</h4>
+<div class="sub">
+<table><tr><td><div class="element">Transition  <b>success</b></div></td></tr></table><p>From <a href="index.html#ref23_204934"><b>Size change</b></a> To <a href="index.html#ref23_198278"><b>Save</b></a></p><p>Guard :</p><ul><li>OCL : <pre>
+success</pre></li><li>C++ : <pre>
+!std::isnan(stm.previous_size_)</pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+set size change</pre></li><li>C++ : <pre>
+if (!std::isnan(stm.em_-&gt;remaining())) {<br />  auto change_size = stm.previous_size_ - stm.em_-&gt;remaining();<br />  if (std::abs(change_size) &lt; stm.security_-&gt;base() &amp;&amp;<br />      (stm.security_-&gt;base() - std::abs(change_size)) / stm.security_-&gt;base() &gt; 0.01) {<br />    // only if change_size is significantly less than base_increment_ we assume<br />    // that it is due to rounding errors. Otherwise we save the provided value<br />    // of change_size<br />    stm.em_-&gt;change(0.0);<br />  } else {<br />    stm.em_-&gt;change(change_size);<br />  }<br />} else {<br />  BOOST_LOG_TRIVIAL(warning)<br />      &lt;&lt; stm._machine_name &lt;&lt; " Remaining size was NA: " &lt;&lt; stm.em_-&gt;toString();<br />  stm.em_-&gt;change(stm.previous_size_);<br />}<br /></pre></li></ul><table><tr><td><div class="element">Transition  <b>failure</b></div></td></tr></table><p>From <a href="index.html#ref23_204934"><b>Size change</b></a> To <a href="index.html#ref32_260870"><b>exit</b></a></p><p>Guard :</p><ul><li>OCL : <pre>
+failure</pre></li><li>C++ : <pre>
+std::isnan(stm.previous_size_)</pre></li></ul></div>
+<a name="ref23_204806"></a>
+<h4 class ="state">1.3.2.2.2.2 State Remaining size</h4>
+<p>Entry Behavior :</p><ul><li>C++ : <pre>
+<br /></pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>success</b></div></td></tr></table><p>From <a href="index.html#ref23_204806"><b>Remaining size</b></a> To <a href="index.html#ref23_198278"><b>Save</b></a></p><p>Guard :</p><ul><li>OCL : <pre>
+success</pre></li><li>C++ : <pre>
+!std::isnan(stm.previous_size_)</pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+set remaining size</pre></li><li>C++ : <pre>
+auto remaining_size = stm.previous_size_ - stm.em_-&gt;change();<br /><br />if (remaining_size &lt; stm.security_-&gt;base() &amp;&amp;<br />    (stm.security_-&gt;base() - remaining_size) / stm.security_-&gt;base() &gt;<br />        0.01) {<br />  // only if remaining_size is significantly less than base_increment_ we assume<br />  // that it is due to rounding errors. Otherwise we save the provided value of<br />  // remaining_size<br />  stm.em_-&gt;remaining(0.0);<br />  if (stm.em_-&gt;isOrderFilled())<br />    stm.em_-&gt;state(OrderEvent::OrderState::kFinished);<br />} else {<br />  stm.em_-&gt;remaining(remaining_size);<br />  if (stm.em_-&gt;isOrderFilled())<br />    stm.em_-&gt;state(OrderEvent::OrderState::kActive);<br />}<br /><br /></pre></li></ul><table><tr><td><div class="element">Transition  <b>failure</b></div></td></tr></table><p>From <a href="index.html#ref23_204806"><b>Remaining size</b></a> To <a href="index.html#ref32_260870"><b>exit</b></a></p><p>Guard :</p><ul><li>OCL : <pre>
+failure</pre></li><li>C++ : <pre>
+std::isnan(stm.previous_size_)</pre></li></ul></div>
+<a name="ref32_260870"></a>
+<a name="ref32_260870"></a>
+<table><tr><td><div class="element">Exit point pseudo state <b>exit</b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_198150"><b>Deduce</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>output message</b></div></td></tr></table><p>From <a href="index.html#ref32_260870"><b>exit</b></a> To <a href="index.html#ref23_198022"><b>Wait</b></a></p><p>Activity :</p><ul><li>OCL : <pre>
+output message</pre></li><li>C++ : <pre>
+stm.output_.push_back(std::move(stm.em_));</pre></li></ul></div>
+</div>
+<a name="ref23_198278"></a>
+<h4 class ="state">1.3.2.2.3 State Save</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+save remaining size of the order</pre></li><li>C++ : <pre>
+if(stm.em_-&gt;remaining())<br />  stm.previous_sizes_[stm.em_-&gt;maker()] = stm.em_-&gt;remaining();<br />else<br />  stm.previous_sizes_.erase(stm.em_-&gt;maker());<br /></pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>output saved</b></div></td></tr></table><p>From <a href="index.html#ref23_198278"><b>Save</b></a> To <a href="index.html#ref23_198022"><b>Wait</b></a></p><p>Activity :</p><ul><li>OCL : <pre>
+output message</pre></li><li>C++ : <pre>
+stm.output_.push_back(std::move(stm.em_));<br /></pre></li></ul></div>
+<a name="ref28_260998"></a>
+<a name="ref28_260998"></a>
+<table><tr><td><div class="element">Initial pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_197894"><b>SizeDeducer</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref28_260998"><b>initial pseudo state</b></a> To <a href="index.html#ref23_198022"><b>Wait</b></a></p></div>
+</div>
+<a name="ref10_439942"></a>
+<p align="center"><img src="fig439942.png" alt="" /></p>
+ <p align="center"><b>SizeDeducer</b></p><p><br /></p><p><br /></p>
+<table><tr><td><div class="element">Class <b><a href="class542982.html#ref4_542982"><b>SizeDeducer</b></a></b></div></td></tr></table>
+<a name="ref10_433414"></a>
+<p align="center"><img src="fig433414.png" alt="" /></p>
+ <p align="center"><b>Token Handler</b></p><p><br /></p><p><br /></p>
+<table><tr><td><div class="element">Class <b><a href="class441222.html#ref4_441222"><b>TokenHandler</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class564230.html#ref4_564230"><b>EventCounter</b></a></b></div></td></tr></table>
+<a name="ref10_208774"></a>
+<p align="center"><img src="fig208774.png" alt="" /></p>
+ <p align="center"><b>File</b></p><p><br /></p><p><br /></p>
+<table><tr><td><div class="element">Class <b><a href="class229510.html#ref4_229510"><b>File</b></a></b></div></td></tr></table>
+<a name="ref10_525190"></a>
+<p align="center"><img src="fig525190.png" alt="" /></p>
+ <p align="center"><b>Transmuter</b></p><p><br /></p><p><br /></p>
+<table><tr><td><div class="element">Class <b><a href="class1087622.html#ref4_1087622"><b>Transmuter</b></a></b></div></td></tr></table>
+<a name="ref23_328966"></a>
+<h4 class ="state">1.3.2.3 StateMachine Transmute</h4>
+<p>Stereotype: machine</p>
+<div class="sub">
+<a name="ref26_558854"></a>
+<p align="center"><img src="fig558854.png" alt="" /></p>
+ <p align="center"><b>Transmute</b></p><p><br /></p><p><br /></p>
+<a name="ref28_409478"></a>
+<a name="ref28_409478"></a>
+<table><tr><td><div class="element">Initial pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_328966"><b>Transmute</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref28_409478"><b>initial pseudo state</b></a> To <a href="index.html#ref23_329094"><b>Passing</b></a></p></div>
+<a name="ref23_329094"></a>
+<h4 class ="state">1.3.2.3.1 State Passing</h4>
+<div class="sub">
+<table><tr><td><div class="element">Transition  <b>orderEvent</b></div></td></tr></table><p>Self relation of <a href="index.html#ref23_329094"><b>Passing</b></a>, internal</p><p>Trigger :</p><ul><li>OCL : <pre>
+orderEvent</pre></li><li>C++ : <pre>
+orderEvent</pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+pass</pre></li></ul><table><tr><td><div class="element">Transition  <b>era</b></div></td></tr></table><p>From <a href="index.html#ref23_329094"><b>Passing</b></a> To <a href="index.html#ref23_329350"><b>Processing</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+era</pre></li><li>C++ : <pre>
+era</pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+save Security</pre></li><li>C++ : <pre>
+stm.security_ = static_cast&lt;Era*&gt;(stm.received_.get())-&gt;security();<br />stm.quote_precision_ = -std::floor(std::log10(stm.security_-&gt;quote()));<br /><br /></pre></li></ul></div>
+<a name="ref23_329350"></a>
+<h4 class ="state">1.3.2.3.2 State Processing</h4>
+<div class="sub">
+<table><tr><td><div class="element">Transition  <b>reset</b></div></td></tr></table><p>From <a href="index.html#ref23_329350"><b>Processing</b></a> To <a href="index.html#ref23_329094"><b>Passing</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+reset</pre></li><li>C++ : <pre>
+reset</pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+release Security</pre></li><li>C++ : <pre>
+stm.security_.reset();</pre></li></ul><a name="ref28_409734"></a>
+<a name="ref28_409734"></a>
+<table><tr><td><div class="element">Initial pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_329350"><b>Processing</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref28_409734"><b>initial pseudo state</b></a> To <a href="index.html#ref23_329478"><b>Waiting</b></a></p></div>
+<a name="ref23_329478"></a>
+<h4 class ="state">1.3.2.3.2.1 State Waiting</h4>
+<div class="sub">
+<table><tr><td><div class="element">Transition  <b>elapsed</b></div></td></tr></table><p>From <a href="index.html#ref23_329478"><b>Waiting</b></a> To <a href="index.html#ref23_329606"><b>Outputting</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+elapsed</pre></li><li>C++ : <pre>
+elapsed</pre></li></ul><table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref23_329478"><b>Waiting</b></a> To <a href="index.html#ref23_329734"><b>Searching by Price</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+orderEvent</pre></li><li>C++ : <pre>
+orderEvent</pre></li></ul><p>Guard :</p><ul><li>OCL : <pre>
+created</pre></li><li>C++ : <pre>
+stm.isOrderCreated()</pre></li></ul><table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref23_329478"><b>Waiting</b></a> To <a href="index.html#ref23_330118"><b>Finding previous event</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+orderEvent</pre></li><li>C++ : <pre>
+orderEvent</pre></li></ul><p>Guard :</p><ul><li>OCL : <pre>
+else</pre></li></ul></div>
+<a name="ref23_329606"></a>
+<h4 class ="state">1.3.2.3.2.2 State Outputting</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+output marked as modified</pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref23_329606"><b>Outputting</b></a> To <a href="index.html#ref23_329478"><b>Waiting</b></a></p></div>
+<a name="ref23_329734"></a>
+<h4 class ="state">1.3.2.3.2.3 State Searching by Price</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+perform search</pre></li><li>C++ : <pre>
+try {<br />  stm.level2_ = stm.by_price_.at(static_cast&lt;OrderEvent*&gt;(stm.received_.get())-&gt;price());<br />}<br />catch (const std::out_of_range &amp;) {<br />  stm.level2_.reset();<br />}<br /></pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref23_329734"><b>Searching by Price</b></a> To <a href="index.html#ref23_329990"><b>Creating</b></a></p><p>Guard :</p><ul><li>OCL : <pre>
+else</pre></li></ul><table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref23_329734"><b>Searching by Price</b></a> To <a href="index.html#ref23_329862"><b>Updating</b></a></p><p>Guard :</p><ul><li>OCL : <pre>
+found</pre></li><li>C++ : <pre>
+stm.level2_</pre></li></ul></div>
+<a name="ref23_329862"></a>
+<h4 class ="state">1.3.2.3.2.4 State Updating</h4>
+<div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref23_329862"><b>Updating</b></a> To <a href="index.html#ref23_329734"><b>Searching by Price</b></a></p><p>Guard :</p><ul><li>OCL : <pre>
+price is different</pre></li><li>C++ : <pre>
+stm.isPriceDifferent()</pre></li></ul><table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref23_329862"><b>Updating</b></a> To <a href="index.html#ref35_409862"><b>junction pseudo state</b></a></p><p>Guard :</p><ul><li>OCL : <pre>
+else</pre></li></ul><a name="ref28_410246"></a>
+<a name="ref28_410246"></a>
+<table><tr><td><div class="element">Initial pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_329862"><b>Updating</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref28_410246"><b>initial pseudo state</b></a> To <a href="index.html#ref23_330374"><b>Remaining and change</b></a></p></div>
+<a name="ref23_330374"></a>
+<h4 class ="state">1.3.2.3.2.4.1 State Remaining and change</h4>
+</div>
+<a name="ref23_329990"></a>
+<h4 class ="state">1.3.2.3.2.5 State Creating</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+create new level2</pre></li></ul><p>Exit Behavior :</p><ul><li>OCL : <pre>
+save to modified</pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref23_329990"><b>Creating</b></a> To <a href="index.html#ref35_409862"><b>junction pseudo state</b></a></p></div>
+<a name="ref23_330118"></a>
+<h4 class ="state">1.3.2.3.2.6 State Finding previous event</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+perform search</pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref23_330118"><b>Finding previous event</b></a> To <a href="index.html#ref23_329862"><b>Updating</b></a></p><p>Guard :</p><ul><li>OCL : <pre>
+found</pre></li><li>C++ : <pre>
+stm.level2_</pre></li></ul><table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref23_330118"><b>Finding previous event</b></a> To <a href="index.html#ref30_410118"><b>final state</b></a></p><p>Guard :</p><ul><li>OCL : <pre>
+not found</pre></li></ul></div>
+<a name="ref35_409862"></a>
+<a name="ref35_409862"></a>
+<table><tr><td><div class="element">Junction pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_329350"><b>Processing</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref35_409862"><b>junction pseudo state</b></a> To <a href="index.html#ref23_329478"><b>Waiting</b></a></p></div>
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref23_329350"><b>Processing</b></a> To <a href="index.html#ref30_409990"><b>final state</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+era</pre></li><li>C++ : <pre>
+era</pre></li></ul><a name="ref30_410118"></a>
+<a name="ref30_410118"></a>
+<table><tr><td><div class="element">Final state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_329350"><b>Processing</b></a></p><table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref23_329350"><b>Processing</b></a> To <a href="index.html#ref30_409990"><b>final state</b></a></p></div>
+<a name="ref30_409990"></a>
+<a name="ref30_409990"></a>
+<table><tr><td><div class="element">Final state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_328966"><b>Transmute</b></a></p><a name="ref23_330246"></a>
+<h4 class ="state">1.3.2.3.3 State test</h4>
+</div>
+<table><tr><td><div class="element">Class <b><a href="class1134726.html#ref4_1134726"><b>Transmute</b></a></b></div></td></tr></table>
+<a name="ref10_558982"></a>
+<p align="center"><img src="fig558982.png" alt="" /></p>
+ <p align="center"><b>Transmute</b></p><p><br /></p><p><br /></p>
+<a name="ref23_330502"></a>
+<h4 class ="state">1.3.2.4 StateMachine Level2 Event</h4>
+<p>Stereotype: machine</p>
+<div class="sub">
+<a name="ref26_559110"></a>
+<p align="center"><img src="fig559110.png" alt="" /></p>
+ <p align="center"><b>Level2 Event</b></p><p><br /></p><p><br /></p>
+<a name="ref23_331142"></a>
+<h4 class ="state">1.3.2.4.1 State Level2</h4>
+<div class="sub">
+<a name="ref28_410502"></a>
+<a name="ref28_410502"></a>
+<table><tr><td><div class="element">Initial pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_331142"><b>Level2</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref28_410502"><b>initial pseudo state</b></a> To <a href="index.html#ref23_330630"><b>Created</b></a></p></div>
+<a name="ref23_330630"></a>
+<h4 class ="state">1.3.2.4.1.1 State Created</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+Set attributes</pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref23_330630"><b>Created</b></a> To <a href="index.html#ref23_330758"><b>Matched</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+update</pre></li></ul><p>Guard :</p><ul><li>OCL : <pre>
+match</pre></li></ul><table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref23_330630"><b>Created</b></a> To <a href="index.html#ref23_330886"><b>Amended</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+update</pre></li></ul><p>Guard :</p><ul><li>OCL : <pre>
+else</pre></li></ul></div>
+<a name="ref23_330758"></a>
+<h4 class ="state">1.3.2.4.1.2 State Matched</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+update attributes</pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref23_330758"><b>Matched</b></a> To <a href="index.html#ref23_331014"><b>Matched and amended</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+update</pre></li></ul><p>Guard :</p><ul><li>OCL : <pre>
+else</pre></li></ul><table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>Self relation of <a href="index.html#ref23_330758"><b>Matched</b></a>, internal</p><p>Trigger :</p><ul><li>OCL : <pre>
+update</pre></li></ul><p>Guard :</p><ul><li>OCL : <pre>
+match</pre></li></ul></div>
+<a name="ref23_330886"></a>
+<h4 class ="state">1.3.2.4.1.3 State Amended</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+update attributes</pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>Self relation of <a href="index.html#ref23_330886"><b>Amended</b></a>, internal</p><table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref23_330886"><b>Amended</b></a> To <a href="index.html#ref23_331014"><b>Matched and amended</b></a></p></div>
+<a name="ref23_331014"></a>
+<h4 class ="state">1.3.2.4.1.4 State Matched and amended</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+update attributes</pre></li></ul></div>
+</div>
+</div>
+<a name="ref18_280710"></a>
+<h3 class ="view">1.3.3 Class View Reconstructor</h3>
+<div class="sub">
+<table><tr><td><div class="element">Class <b><a href="class1108486.html#ref4_1108486"><b>processing_error</b></a></b></div></td></tr></table>
+<a name="ref10_287878"></a>
+<p align="center"><img src="fig287878.png" alt="" /></p>
+ <p align="center"><b>Reconstructor</b></p><p><br /></p><p><br /></p>
+<table><tr><td><div class="element">Class <b><a href="class486278.html#ref4_486278"><b>Reconstructor</b></a></b></div></td></tr></table>
+</div>
+<a name="ref22_214790"></a>
+<h3 class ="package">1.3.4 Package Coinbase</h3>
+<p></p><ul>
+<li>C++ namespace : oberon::reconstructor::coinbase</li>
+</ul>
+<div class="sub">
+<a name="ref18_200966"></a>
+<h4 class ="view">1.3.4.1 Class View Reconstructor</h4>
+<div class="sub">
+<a name="ref10_294406"></a>
+<p align="center"><img src="fig294406.png" alt="" /></p>
+ <p align="center"><b>Coinbase Messages</b></p><p><br /></p><p><br /></p>
+<a name="ref10_314246"></a>
+<p align="center"><img src="fig314246.png" alt="" /></p>
+ <p align="center"><b>Coinbase Reconstructor</b></p><p><br /></p><p><br /></p>
+<table><tr><td><div class="element">Class <b><a href="class486406.html#ref4_486406"><b>Reconstructor</b></a></b></div></td></tr></table>
+</div>
+<a name="ref18_293766"></a>
+<h4 class ="view">1.3.4.2 Class View Handlers</h4>
+<div class="sub">
+<a name="ref10_440070"></a>
+<p align="center"><img src="fig440070.png" alt="" /></p>
+ <p align="center"><b>Synchronizer</b></p><p><br /></p><p><br /></p>
+<table><tr><td><div class="element">Class <b><a href="class958342.html#ref4_958342"><b>Synchronizer</b></a></b></div></td></tr></table>
+</div>
+<a name="ref21_193542"></a>
+<h4 class ="view">1.3.4.3 Deployment View Source files</h4>
+<div class="sub">
+<a name="ref8_213638"></a>
+<table><tr><td><div class="element">Artifact <b>Reconstructor</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class486406.html#ref4_486406"><b>Reconstructor</b></a></p>
+<a name="ref8_333574"></a>
+<table><tr><td><div class="element">Artifact <b>Synchronizer</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class958342.html#ref4_958342"><b>Synchronizer</b></a></p>
+</div>
+</div>
+<a name="ref22_214918"></a>
+<h3 class ="package">1.3.5 Package Bitstamp</h3>
+<p></p><ul>
+<li>C++ namespace : oberon::reconstructor::bitstamp</li>
+</ul>
+<div class="sub">
+<a name="ref18_207494"></a>
+<h4 class ="view">1.3.5.1 Class View Reconstructor</h4>
+<div class="sub">
+<a name="ref10_320774"></a>
+<p align="center"><img src="fig320774.png" alt="" /></p>
+ <p align="center"><b>Bitstamp Reconstructor</b></p><p><br /></p><p><br /></p>
+<table><tr><td><div class="element">Class <b><a href="class603654.html#ref4_603654"><b>Reconstructor</b></a></b></div></td></tr></table>
+</div>
+<a name="ref18_300422"></a>
+<h4 class ="view">1.3.5.2 Class View Handlers</h4>
+<div class="sub">
+<a name="ref10_446598"></a>
+<p align="center"><img src="fig446598.png" alt="" /></p>
+ <p align="center"><b>Deduplicator</b></p><p><br /></p><p><br /></p>
+<table><tr><td><div class="element">Class <b><a href="class965766.html#ref4_965766"><b>Deduplicator</b></a></b></div></td></tr></table>
+<a name="ref10_446726"></a>
+<p align="center"><img src="fig446726.png" alt="" /></p>
+ <p align="center"><b>TimeOrderEnforcer</b></p><p><br /></p><p><br /></p>
+<table><tr><td><div class="element">Class <b><a href="class966022.html#ref4_966022"><b>TimeOrderEnforcer</b></a></b></div></td></tr></table>
+<a name="ref23_295302"></a>
+<h4 class ="state">1.3.5.2.1 StateMachine Synchronizer</h4>
+<p>Stereotype: machine</p>
+<div class="sub">
+<a name="ref26_453254"></a>
+<p align="center"><img src="fig453254.png" alt="" /></p>
+ <p align="center"><b>Synchronizer</b></p><p><br /></p><p><br /></p>
+<a name="ref23_295430"></a>
+<h4 class ="state">1.3.5.2.1.1 State Unsynchronised</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+clear before and era<br /></pre></li><li>C++ : <pre>
+stm.before_messages_.clear();<br />stm.era_messages_.clear();<br />stm.era_.reset();<br /><br /></pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>era</b></div></td></tr></table><p>From <a href="index.html#ref23_295430"><b>Unsynchronised</b></a> To <a href="index.html#ref23_295558"><b>Synchronizing</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+era</pre></li><li>C++ : <pre>
+era</pre></li></ul><table><tr><td><div class="element">Transition  <b>reset</b></div></td></tr></table><p>Self relation of <a href="index.html#ref23_295430"><b>Unsynchronised</b></a>, external</p><p>Trigger :</p><ul><li>OCL : <pre>
+reset</pre></li><li>C++ : <pre>
+reset</pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+pass reset to next</pre></li><li>C++ : <pre>
+stm.output_.push_back(std::move(stm.received_));</pre></li></ul><table><tr><td><div class="element">Transition  <b>message</b></div></td></tr></table><p>Self relation of <a href="index.html#ref23_295430"><b>Unsynchronised</b></a>, internal</p><p>Trigger :</p><ul><li>OCL : <pre>
+message</pre></li><li>C++ : <pre>
+message</pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+buffer before</pre></li><li>C++ : <pre>
+stm.received_-&gt;deleted(true);<br />stm.before_messages_.push_back(std::move(stm.received_));<br /></pre></li></ul></div>
+<a name="ref28_376326"></a>
+<a name="ref28_376326"></a>
+<table><tr><td><div class="element">Initial pseudo state <b></b></div></td></tr></table>
+<p>Defined in <a href="index.html#ref23_295302"><b>Synchronizer</b></a></p><div class="sub">
+<table><tr><td><div class="element">Transition  <b>&lt;transition&gt;</b></div></td></tr></table><p>From <a href="index.html#ref28_376326"><b>initial pseudo state</b></a> To <a href="index.html#ref23_295430"><b>Unsynchronised</b></a></p></div>
+<a name="ref23_295558"></a>
+<h4 class ="state">1.3.5.2.1.2 State Synchronizing</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+clear era buffer, capture era message</pre></li><li>C++ : <pre>
+stm.era_ = std::move(stm.received_);<br />stm.era_messages_.clear();</pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>reset</b></div></td></tr></table><p>From <a href="index.html#ref23_295558"><b>Synchronizing</b></a> To <a href="index.html#ref23_295430"><b>Unsynchronised</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+reset</pre></li><li>C++ : <pre>
+reset</pre></li></ul><table><tr><td><div class="element">Transition  <b>era continue</b></div></td></tr></table><p>Self relation of <a href="index.html#ref23_295558"><b>Synchronizing</b></a>, internal</p><p>Trigger :</p><ul><li>OCL : <pre>
+message</pre></li><li>C++ : <pre>
+message</pre></li></ul><p>Guard :</p><ul><li>OCL : <pre>
+message.timestamp == era</pre></li><li>C++ : <pre>
+stm.received_-&gt;timestamp() == stm.era_-&gt;timestamp()</pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+move to era buffer</pre></li><li>C++ : <pre>
+stm.era_messages_.push_back(std::move(stm.received_));<br /></pre></li></ul><table><tr><td><div class="element">Transition  <b>era</b></div></td></tr></table><p>Self relation of <a href="index.html#ref23_295558"><b>Synchronizing</b></a>, external</p><p>Trigger :</p><ul><li>OCL : <pre>
+era</pre></li><li>C++ : <pre>
+era</pre></li></ul><table><tr><td><div class="element">Transition  <b>era ended</b></div></td></tr></table><p>From <a href="index.html#ref23_295558"><b>Synchronizing</b></a> To <a href="index.html#ref23_295686"><b>Synchronized</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+message</pre></li><li>C++ : <pre>
+message</pre></li></ul><p>Guard :</p><ul><li>OCL : <pre>
+message.timestamp &gt; era</pre></li><li>C++ : <pre>
+stm.received_-&gt;timestamp() &gt; stm.era_-&gt;timestamp()</pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+synchronize buffers before and era</pre></li><li>C++ : <pre>
+std::map&lt;OrderEvent::OrderId, std::vector&lt;std::size_t&gt;&gt; active_chains;<br /><br />for(std::size_t i = 0; i &lt; stm.before_messages_.size(); i++) {<br /> auto event = static_cast&lt;OrderEvent*&gt;(stm.before_messages_[i].get());<br /> if(event-&gt;state() == OrderEvent::OrderState::kActive) <br />  active_chains[event-&gt;maker()].push_back(i);<br /> else  <br />  // Filled have state kNA at this stage and have to be deleted since remaining() is unknown<br />  // Thus, this code will not add all missing chains, but at least some of them ... <br />  active_chains.erase(event-&gt;maker());<br />}<br /><br />for(auto &amp;msg: stm.era_messages_) {<br />  active_chains.erase(static_cast&lt;OrderEvent*&gt;(msg.get())-&gt;maker());<br />  auto iter = std::find_if(stm.before_messages_.begin(), stm.before_messages_.end(),<br />                      [order_id = static_cast&lt;OrderEvent *&gt;(msg.get())-&gt;maker()](const Token &amp;b) {<br />                        auto e = static_cast&lt;OrderEvent*&gt;(b.get());<br />                        return e-&gt;maker() == order_id &amp;&amp;<br />                               e-&gt;state() == OrderEvent::OrderState::kFinished;<br />                      });<br />  if(iter != stm.before_messages_.end())<br />    msg-&gt;deleted(true);<br />}<br /><br />// Add created not deleted and missing from the era_messages_ due to Bitstamp malfunction <br />for(auto &amp;pair : active_chains)<br /> for(auto &amp;i : pair.second) {<br />   BOOST_LOG_TRIVIAL(debug) &lt;&lt; stm._machine_name &lt;&lt; "added to era " &lt;&lt; stm.before_messages_[i]-&gt;toString();<br />   stm.before_messages_[i]-&gt;deleted(false);<br />   stm.before_messages_[i]-&gt;timestamp(stm.era_-&gt;timestamp());<br /> }<br /><br /></pre></li></ul><table><tr><td><div class="element">Transition  <b>before era</b></div></td></tr></table><p>Self relation of <a href="index.html#ref23_295558"><b>Synchronizing</b></a>, internal</p><p>Trigger :</p><ul><li>OCL : <pre>
+message</pre></li><li>C++ : <pre>
+message</pre></li></ul><p>Guard :</p><ul><li>OCL : <pre>
+message.timestamp &lt; era</pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+move to before buffer</pre></li><li>C++ : <pre>
+stm.received_-&gt;deleted(true);<br />stm.before_messages_.push_back(std::move(stm.received_));<br /></pre></li></ul></div>
+<a name="ref23_295686"></a>
+<h4 class ="state">1.3.5.2.1.3 State Synchronized</h4>
+<p>Entry Behavior :</p><ul><li>OCL : <pre>
+move buffers to output</pre></li><li>C++ : <pre>
+stm.output_.push_back(std::move(stm.era_));<br />std::move(stm.before_messages_.begin(), stm.before_messages_.end(), std::back_inserter(stm.output_));<br />std::move(stm.era_messages_.begin(), stm.era_messages_.end(), std::back_inserter(stm.output_));<br />stm.output_.push_back(std::move(stm.received_));</pre></li></ul><div class="sub">
+<table><tr><td><div class="element">Transition  <b>message</b></div></td></tr></table><p>Self relation of <a href="index.html#ref23_295686"><b>Synchronized</b></a>, internal</p><p>Trigger :</p><ul><li>OCL : <pre>
+message</pre></li><li>C++ : <pre>
+message</pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+pass to output</pre></li><li>C++ : <pre>
+stm.output_.push_back(std::move(stm.received_));<br /></pre></li></ul><table><tr><td><div class="element">Transition  <b>reset</b></div></td></tr></table><p>From <a href="index.html#ref23_295686"><b>Synchronized</b></a> To <a href="index.html#ref23_295430"><b>Unsynchronised</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+reset</pre></li><li>C++ : <pre>
+reset</pre></li></ul><p>Activity :</p><ul><li>OCL : <pre>
+pass reset to next</pre></li><li>C++ : <pre>
+stm.output_.push_back(std::move(stm.received_));</pre></li></ul><table><tr><td><div class="element">Transition  <b>era</b></div></td></tr></table><p>From <a href="index.html#ref23_295686"><b>Synchronized</b></a> To <a href="index.html#ref23_295558"><b>Synchronizing</b></a></p><p>Trigger :</p><ul><li>OCL : <pre>
+era</pre></li><li>C++ : <pre>
+era</pre></li></ul></div>
+</div>
+<a name="ref10_453382"></a>
+<p align="center"><img src="fig453382.png" alt="" /></p>
+ <p align="center"><b>Synchronizer</b></p><p><br /></p><p><br /></p>
+<table><tr><td><div class="element">Class <b><a href="class979334.html#ref4_979334"><b>Synchronizer</b></a></b></div></td></tr></table>
+</div>
+<a name="ref21_193670"></a>
+<h4 class ="view">1.3.5.3 Deployment View Source files</h4>
+<div class="sub">
+<a name="ref8_213766"></a>
+<table><tr><td><div class="element">Artifact <b>Reconstructor</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class603654.html#ref4_603654"><b>Reconstructor</b></a></p>
+<a name="ref8_340230"></a>
+<table><tr><td><div class="element">Artifact <b>Deduplicator</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class965766.html#ref4_965766"><b>Deduplicator</b></a></p>
+<a name="ref8_340358"></a>
+<table><tr><td><div class="element">Artifact <b>TimeOrderEnforcer</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class966022.html#ref4_966022"><b>TimeOrderEnforcer</b></a></p>
+<a name="ref8_340486"></a>
+<table><tr><td><div class="element">Artifact <b>Synchronizer</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class979334.html#ref4_979334"><b>Synchronizer</b></a></p>
+</div>
+</div>
+<a name="ref22_215046"></a>
+<h3 class ="package">1.3.6 Package Bitfinex</h3>
+<p></p><ul>
+<li>C++ namespace : oberon::reconstructor::bitfinex</li>
+</ul>
+<div class="sub">
+<a name="ref18_214022"></a>
+<h4 class ="view">1.3.6.1 Class View Reconstructor</h4>
+<div class="sub">
+<a name="ref10_327302"></a>
+<p align="center"><img src="fig327302.png" alt="" /></p>
+ <p align="center"><b>Bitfinex Reconstructor</b></p><p><br /></p><p><br /></p>
+<table><tr><td><div class="element">Class <b><a href="class624902.html#ref4_624902"><b>Reconstructor</b></a></b></div></td></tr></table>
+</div>
+<a name="ref18_346758"></a>
+<h4 class ="view">1.3.6.2 Class View Handlers</h4>
+<div class="sub">
+<table><tr><td><div class="element">Class <b><a href="class638726.html#ref4_638726"><b>DeduceSizeBitfinex</b></a></b></div></td></tr></table>
+<a name="ref10_518662"></a>
+<p align="center"><img src="fig518662.png" alt="" /></p>
+ <p align="center"><b>DeduceSize</b></p><p><br /></p><p><br /></p>
+</div>
+<a name="ref21_193798"></a>
+<h4 class ="view">1.3.6.3 Deployment View Source files</h4>
+<div class="sub">
+<a name="ref8_233350"></a>
+<table><tr><td><div class="element">Artifact <b>Reconstructor</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class624902.html#ref4_624902"><b>Reconstructor</b></a></p>
+<a name="ref8_381446"></a>
+<table><tr><td><div class="element">Artifact <b>DeduceSize</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class638726.html#ref4_638726"><b>DeduceSizeBitfinex</b></a></p>
+</div>
+</div>
+<a name="ref22_254470"></a>
+<h3 class ="package">1.3.7 Package File</h3>
+<p></p><ul>
+<li>C++ namespace : oberon::reconstructor::file</li>
+</ul>
+<div class="sub">
+<a name="ref18_313606"></a>
+<h4 class ="view">1.3.7.1 Class View Reconstructor</h4>
+<div class="sub">
+<a name="ref10_466438"></a>
+<p align="center"><img src="fig466438.png" alt="" /></p>
+ <p align="center"><b>Independent</b></p><p><br /></p><p><br /></p>
+<table><tr><td><div class="element">Class <b><a href="class1020550.html#ref4_1020550"><b>Reconstructor</b></a></b></div></td></tr></table>
+</div>
+<a name="ref21_206854"></a>
+<h4 class ="view">1.3.7.2 Deployment View Source files</h4>
+<div class="sub">
+<a name="ref8_347142"></a>
+<table><tr><td><div class="element">Artifact <b>Reconstructor</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class1020550.html#ref4_1020550"><b>Reconstructor</b></a></p>
+</div>
+</div>
+<a name="ref21_154246"></a>
+<h3 class ="view">1.3.8 Deployment View Source files</h3>
+<div class="sub">
+<a name="ref8_353926"></a>
+<table><tr><td><div class="element">Artifact <b>EraMerger</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class1046918.html#ref4_1046918"><b>EraMerger</b></a></p>
+<a name="ref8_347270"></a>
+<table><tr><td><div class="element">Artifact <b>EraSlicer</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class1020678.html#ref4_1020678"><b>EraSlicer</b></a></p>
+<a name="ref8_333446"></a>
+<table><tr><td><div class="element">Artifact <b>SizeDeducer</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class542982.html#ref4_542982"><b>SizeDeducer</b></a></p>
+<a name="ref8_266630"></a>
+<table><tr><td><div class="element">Artifact <b>File</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class229510.html#ref4_229510"><b>File</b></a></p>
+<a name="ref8_180998"></a>
+<table><tr><td><div class="element">Artifact <b>Reconstructor</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class486278.html#ref4_486278"><b>Reconstructor</b></a></p>
+<a name="ref8_300294"></a>
+<table><tr><td><div class="element">Artifact <b>TokenHandler</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class441222.html#ref4_441222"><b>TokenHandler</b></a></p>
+<a name="ref8_306822"></a>
+<table><tr><td><div class="element">Artifact <b>Message</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class245766.html#ref4_245766"><b>Message</b></a>, <a href="class902918.html#ref4_902918"><b>Token</b></a>, <a href="class903046.html#ref4_903046"><b>Tokens</b></a></p>
+<a name="ref8_306950"></a>
+<table><tr><td><div class="element">Artifact <b>Era</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class521478.html#ref4_521478"><b>Era</b></a></p>
+<a name="ref8_307078"></a>
+<table><tr><td><div class="element">Artifact <b>OrderEvent</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class448390.html#ref4_448390"><b>OrderEvent</b></a></p>
+<a name="ref8_307206"></a>
+<table><tr><td><div class="element">Artifact <b>Elapsed</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class441478.html#ref4_441478"><b>Elapsed</b></a></p>
+<a name="ref8_333702"></a>
+<table><tr><td><div class="element">Artifact <b>EventCounter</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class564230.html#ref4_564230"><b>EventCounter</b></a></p>
+<a name="ref8_340614"></a>
+<table><tr><td><div class="element">Artifact <b>Reset</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class966278.html#ref4_966278"><b>Reset</b></a></p>
+<a name="ref8_374022"></a>
+<table><tr><td><div class="element">Artifact <b>Security</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class1067398.html#ref4_1067398"><b>Security</b></a></p>
+<a name="ref8_380550"></a>
+<table><tr><td><div class="element">Artifact <b>Price</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class305542.html#ref4_305542"><b>Price</b></a></p>
+<a name="ref8_380678"></a>
+<table><tr><td><div class="element">Artifact <b>Volume</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class305798.html#ref4_305798"><b>Volume</b></a></p>
+<a name="ref8_387974"></a>
+<table><tr><td><div class="element">Artifact <b>BookSide</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class271366.html#ref4_271366"><b>BookSide</b></a></p>
+<a name="ref8_388102"></a>
+<table><tr><td><div class="element">Artifact <b>PriceLevelAttached</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class1087494.html#ref4_1087494"><b>PriceLevelAttached</b></a></p>
+<a name="ref8_394630"></a>
+<table><tr><td><div class="element">Artifact <b>Transmuter</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class1087622.html#ref4_1087622"><b>Transmuter</b></a></p>
+<a name="ref8_394758"></a>
+<table><tr><td><div class="element">Artifact <b>Stripe</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class1080966.html#ref4_1080966"><b>Stripe</b></a></p>
+<a name="ref8_401286"></a>
+<table><tr><td><div class="element">Artifact <b>Dot</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class1094406.html#ref4_1094406"><b>Dot</b></a></p>
+<a name="ref8_421126"></a>
+<table><tr><td><div class="element">Artifact <b>processing_error</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class1108486.html#ref4_1108486"><b>processing_error</b></a></p>
+<a name="ref8_427654"></a>
+<table><tr><td><div class="element">Artifact <b>Test</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i></p>
+<a name="ref8_434182"></a>
+<table><tr><td><div class="element">Artifact <b>Transmute</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class1134726.html#ref4_1134726"><b>Transmute</b></a></p>
+</div>
+</div>
+<a name="ref18_306950"></a>
+<h2 class ="view">1.4 Class View Application</h2>
+<div class="sub">
+<table><tr><td><div class="element">Class <b><a href="class1013126.html#ref4_1013126"><b>Main</b></a></b></div></td></tr></table>
+<a name="ref10_459910"></a>
+<p align="center"><img src="fig459910.png" alt="" /></p>
+ <p align="center"><b>Main</b></p><p><br /></p><p><br /></p>
+</div>
+<a name="ref21_160774"></a>
+<h2 class ="view">1.5 Deployment View Source files</h2>
+<div class="sub">
+<a name="ref8_414598"></a>
+<table><tr><td><div class="element">Artifact <b>depth.gp</b></div></td></tr></table>
+<p>Stereotype: text</p>
+<p><i>text</i></p>
+<a name="ref8_253446"></a>
+<table><tr><td><div class="element">Artifact <b>date</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i></p>
+<a name="ref8_173702"></a>
+<table><tr><td><div class="element">Artifact <b>Main</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class1013126.html#ref4_1013126"><b>Main</b></a></p>
+<a name="ref8_174214"></a>
+<table><tr><td><div class="element">Artifact <b>oberon</b></div></td></tr></table>
+<p>Stereotype: executable</p>
+<p>Properties:</p><ul>
+<li>genpro footer:<br /><div class="sub">QMAKE_CC=clang<br />QMAKE_CXX=clang++<br />QMAKE_LINK=clang++<br />target.path=/usr/local/bin<br />INSTALLS += target<br />CONFIG += console <br />CONFIG -= app_bundle<br />CONFIG += thread<br />CONFIG += object_parallel_to_source<br />CONFIG -= qt<br />QMAKE_CXXFLAGS += -std=c++11 -Wfatal-errors<br />#INCLUDEPATH += /usr/include/boost169<br />LIBS +=-lssl -lcrypto  <br />#LIBS += -L/usr/lib64/boost169<br />LIBS += -lboost_log  -lboost_log_setup -lboost_thread -lboost_program_options -lpthread -lboost_system </div></li>
+<li>genpro config:<br /><div class="sub">debug  qt</div></li>
+<li>genpro pro:<br /><div class="sub">/tmp/oberon/cpp/oberon.pro</div></li>
+<li>genpro path:<br /><div class="sub">/home/petr/repos/oberon/cpp</div></li>
+<li>genpro includepath:<br /><div class="sub"></div></li>
+<li>genpro defines:<br /><div class="sub">BOOST_LOG_DYN_LINK NO_VERBOSE_STATE_MACHINE</div></li>
+<li>genpro objectsdir:<br /><div class="sub"></div></li>
+<li>genpro dependpath:<br /><div class="sub"></div></li>
+<li>genpro target:<br /><div class="sub">/tmp/oberon/build/oberon</div></li>
+<li>genpro tmplt:<br /><div class="sub">app</div></li>
+</ul>
+<p><i>executable</i> associated with : <a href="index.html#ref8_273286"><b>Feeder</b></a>, <a href="index.html#ref8_394630"><b>Transmuter</b></a>, <a href="index.html#ref8_320390"><b>Feeder</b></a>, <a href="index.html#ref8_260102"><b>common</b></a>, <a href="index.html#ref8_246406"><b>Receiver</b></a>, <a href="index.html#ref8_353926"><b>EraMerger</b></a>, <a href="index.html#ref8_306950"><b>Era</b></a>, <a href="index.html#ref8_307206"><b>Elapsed</b></a>, <a href="index.html#ref8_273414"><b>Receiver</b></a>, <a href="index.html#ref8_388102"><b>PriceLevelAttached</b></a>, <a href="index.html#ref8_387974"><b>BookSide</b></a>, <a href="index.html#ref8_380550"><b>Price</b></a>, <a href="index.html#ref8_347270"><b>EraSlicer</b></a>, <a href="index.html#ref8_340358"><b>TimeOrderEnforcer</b></a>, <a href="index.html#ref8_313734"><b>Feeder</b></a>, <a href="index.html#ref8_381446"><b>DeduceSize</b></a>, <a href="index.html#ref8_333702"><b>EventCounter</b></a>, <a href="index.html#ref8_266630"><b>File</b></a>, <a href="index.html#ref8_213766"><b>Reconstructor</b></a>, <a href="index.html#ref8_307078"><b>OrderEvent</b></a>, <a href="index.html#ref8_333446"><b>SizeDeducer</b></a>, <a href="index.html#ref8_180998"><b>Reconstructor</b></a>, <a href="index.html#ref8_313862"><b>FeederData</b></a>, <a href="index.html#ref8_306822"><b>Message</b></a>, <a href="index.html#ref8_273542"><b>Snapshot</b></a>, <a href="index.html#ref8_286726"><b>ReceiverData</b></a>, <a href="index.html#ref8_213638"><b>Reconstructor</b></a>, <a href="index.html#ref8_374022"><b>Security</b></a>, <a href="index.html#ref8_347142"><b>Reconstructor</b></a>, <a href="index.html#ref8_300294"><b>TokenHandler</b></a>, <a href="index.html#ref8_401286"><b>Dot</b></a>, <a href="index.html#ref8_373894"><b>Reader</b></a>, <a href="index.html#ref8_286598"><b>SnapshotData</b></a>, <a href="index.html#ref8_394758"><b>Stripe</b></a>, <a href="index.html#ref8_340614"><b>Reset</b></a>, <a href="index.html#ref8_340230"><b>Deduplicator</b></a>, <a href="index.html#ref8_380678"><b>Volume</b></a>, <a href="index.html#ref8_326918"><b>Receiver</b></a>, <a href="index.html#ref8_233350"><b>Reconstructor</b></a>, <a href="index.html#ref8_173702"><b>Main</b></a>, <a href="index.html#ref8_434182"><b>Transmute</b></a>, <a href="index.html#ref8_340486"><b>Synchronizer</b></a>, <a href="index.html#ref8_333574"><b>Synchronizer</b></a>, <a href="index.html#ref8_421126"><b>processing_error</b></a></p>
+</div>
+</div>
+<a name="ref22_241158"></a>
+<h1 class ="package">2 Package Tests</h1>
+<p></p><ul>
+<li>C++ namespace : oberon</li>
+</ul>
+<div class="sub">
+<a name="ref22_241286"></a>
+<h2 class ="package">2.1 Package Reconstructor</h2>
+<p></p><ul>
+<li>C++ namespace : oberon::reconstructor</li>
+</ul>
+<div class="sub">
+<a name="ref18_326790"></a>
+<h3 class ="view">2.1.1 Class View Fixtures</h3>
+<div class="sub">
+<a name="ref10_499078"></a>
+<p align="center"><img src="fig499078.png" alt="" /></p>
+ <p align="center"><b>Fixtures</b></p><p><br /></p><p><br /></p>
+<table><tr><td><div class="element">Class <b><a href="class1060870.html#ref4_1060870"><b>OrderEventFixture</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class1094918.html#ref4_1094918"><b>PriceLevelFixture</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class1101830.html#ref4_1101830"><b>TransmuterFixture</b></a></b></div></td></tr></table>
+</div>
+<a name="ref18_353286"></a>
+<h3 class ="view">2.1.2 Class View Handlers</h3>
+<div class="sub">
+<a name="ref10_531718"></a>
+<p align="center"><img src="fig531718.png" alt="" /></p>
+ <p align="center"><b>Gatherer</b></p><p><br /></p><p><br /></p>
+<table><tr><td><div class="element">Class <b><a href="class1101702.html#ref4_1101702"><b>Gatherer</b></a></b></div></td></tr></table>
+</div>
+<a name="ref21_213510"></a>
+<h3 class ="view">2.1.3 Deployment View Source files</h3>
+<div class="sub">
+<a name="ref8_407942"></a>
+<table><tr><td><div class="element">Artifact <b>Gatherer</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class1101702.html#ref4_1101702"><b>Gatherer</b></a></p>
+<a name="ref8_360838"></a>
+<table><tr><td><div class="element">Artifact <b>test_OrderEvent</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class1060870.html#ref4_1060870"><b>OrderEventFixture</b></a></p>
+<a name="ref8_401414"></a>
+<table><tr><td><div class="element">Artifact <b>test_PriceLevel</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class1094918.html#ref4_1094918"><b>PriceLevelFixture</b></a></p>
+<a name="ref8_408070"></a>
+<table><tr><td><div class="element">Artifact <b>test_Transmuter</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i> associated with : <a href="class1101830.html#ref4_1101830"><b>TransmuterFixture</b></a></p>
+</div>
+</div>
+<a name="ref21_213382"></a>
+<h2 class ="view">2.2 Deployment View Source files</h2>
+<div class="sub">
+<a name="ref8_360582"></a>
+<table><tr><td><div class="element">Artifact <b>test_oberon</b></div></td></tr></table>
+<p>Stereotype: executable</p>
+<p>Properties:</p><ul>
+<li>genpro footer:<br /><div class="sub">QMAKE_CC=clang<br />QMAKE_CXX=clang++<br />QMAKE_LINK=clang++<br />CONFIG += console <br />CONFIG -= app_bundle<br />CONFIG += thread<br />CONFIG += object_parallel_to_source<br />CONFIG -= qt<br />QMAKE_CXXFLAGS += -std=c++11 -Wfatal-errors<br />#INCLUDEPATH += /usr/include/boost169<br />LIBS +=-lssl -lcrypto  <br />#LIBS += -L/usr/lib64/boost169<br />LIBS += -lboost_log  -lboost_log_setup -lboost_thread -lboost_program_options -lpthread -lboost_system -lboost_unit_test_framework</div></li>
+<li>genpro config:<br /><div class="sub">debug  qt</div></li>
+<li>genpro pro:<br /><div class="sub">/tmp/oberon/cpp/test_oberon.pro</div></li>
+<li>genpro path:<br /><div class="sub">/tmp/oberon/build</div></li>
+<li>genpro includepath:<br /><div class="sub"></div></li>
+<li>genpro defines:<br /><div class="sub">BOOST_LOG_DYN_LINK BOOST_TEST_DYN_LINK</div></li>
+<li>genpro objectsdir:<br /><div class="sub"></div></li>
+<li>genpro dependpath:<br /><div class="sub"></div></li>
+<li>genpro target:<br /><div class="sub">/tmp/oberon/test/test_oberon</div></li>
+<li>genpro tmplt:<br /><div class="sub"></div></li>
+</ul>
+<p><i>executable</i> associated with : <a href="index.html#ref8_408070"><b>test_Transmuter</b></a>, <a href="index.html#ref8_394630"><b>Transmuter</b></a>, <a href="index.html#ref8_306950"><b>Era</b></a>, <a href="index.html#ref8_407942"><b>Gatherer</b></a>, <a href="index.html#ref8_401414"><b>test_PriceLevel</b></a>, <a href="index.html#ref8_388102"><b>PriceLevelAttached</b></a>, <a href="index.html#ref8_380550"><b>Price</b></a>, <a href="index.html#ref8_360710"><b>test_Main</b></a>, <a href="index.html#ref8_307078"><b>OrderEvent</b></a>, <a href="index.html#ref8_360838"><b>test_OrderEvent</b></a>, <a href="index.html#ref8_180998"><b>Reconstructor</b></a>, <a href="index.html#ref8_306822"><b>Message</b></a>, <a href="index.html#ref8_374022"><b>Security</b></a>, <a href="index.html#ref8_347142"><b>Reconstructor</b></a>, <a href="index.html#ref8_300294"><b>TokenHandler</b></a>, <a href="index.html#ref8_401286"><b>Dot</b></a>, <a href="index.html#ref8_394758"><b>Stripe</b></a>, <a href="index.html#ref8_340614"><b>Reset</b></a>, <a href="index.html#ref8_380678"><b>Volume</b></a></p>
+<a name="ref8_360710"></a>
+<table><tr><td><div class="element">Artifact <b>test_Main</b></div></td></tr></table>
+<p>Stereotype: source</p>
+<p>Artifact <i>source</i></p>
+</div>
+</div>
+<a name="ref22_147846"></a>
+<h1 class ="package">3 Package std</h1>
+<p>External classes from C++ standard library<br /></p>
+<p></p><ul>
+<li>C++ namespace : std</li>
+</ul>
+<div class="sub">
+<a name="ref18_154374"></a>
+<h2 class ="view">3.1 Class View external</h2>
+<div class="sub">
+<table><tr><td><div class="element">Class <b><a href="class1108614.html#ref4_1108614"><b>exception</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class889734.html#ref4_889734"><b>vector</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class889478.html#ref4_889478"><b>unique_ptr</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class195078.html#ref4_195078"><b>pair</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class564358.html#ref4_564358"><b>cmath</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class611078.html#ref4_611078"><b>iomanip</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class766598.html#ref4_766598"><b>atomic_bool</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class800134.html#ref4_800134"><b>ofstream</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class851974.html#ref4_851974"><b>function</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class1033734.html#ref4_1033734"><b>istream</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class1115142.html#ref4_1115142"><b>list</b></a></b></div></td></tr></table>
+</div>
+<a name="ref22_161286"></a>
+<h2 class ="package">3.2 Package chrono</h2>
+<p></p><ul>
+<li>C++ namespace : std::chrono</li>
+</ul>
+<div class="sub">
+<a name="ref18_194438"></a>
+<h3 class ="view">3.2.1 Class View external</h3>
+<div class="sub">
+<table><tr><td><div class="element">Class <b><a href="class514694.html#ref4_514694"><b>system_clock</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class514822.html#ref4_514822"><b>time_point</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class514950.html#ref4_514950"><b>microseconds</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class1006598.html#ref4_1006598"><b>seconds</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class1094790.html#ref4_1094790"><b>duration</b></a></b></div></td></tr></table>
+</div>
+</div>
+</div>
+<a name="ref22_147974"></a>
+<h1 class ="package">4 Package boost</h1>
+<p>Sub-packages for individual C++ Boost libraries.<br /></p>
+<p></p><ul>
+<li>C++ namespace : boost</li>
+</ul>
+<div class="sub">
+<a name="ref18_181126"></a>
+<h2 class ="view">4.1 Class View boost</h2>
+<div class="sub">
+<table><tr><td><div class="element">Class <b><a href="class1013382.html#ref4_1013382"><b>optional</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class697734.html#ref4_697734"><b>enable_shared_from_this</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class852614.html#ref4_852614"><b>shared_ptr</b></a></b></div></td></tr></table>
+<a name="ref10_267910"></a>
+<p align="center"><img src="fig267910.png" alt="" /></p>
+ <p align="center"><b>boost</b></p><p><br /></p><p><br /></p>
+<table><tr><td><div class="element">Class <b><a href="class472454.html#ref4_472454"><b>lexical_cast</b></a></b></div></td></tr></table>
+</div>
+<a name="ref22_148102"></a>
+<h2 class ="package">4.2 Package property_tree</h2>
+<p>External classes from C++ Boost Property Tree library.<br /></p>
+<p></p><ul>
+<li>C++ namespace : boost::property_tree</li>
+</ul>
+<div class="sub">
+<a name="ref18_154502"></a>
+<h3 class ="view">4.2.1 Class View external</h3>
+<div class="sub">
+<table><tr><td><div class="element">Class <b><a href="class174214.html#ref4_174214"><b>ptree</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class699526.html#ref4_699526"><b>json_parser</b></a></b></div></td></tr></table>
+</div>
+</div>
+<a name="ref22_154630"></a>
+<h2 class ="package">4.3 Package uuids</h2>
+<p></p><ul>
+<li>C++ namespace : boost::uuids</li>
+</ul>
+<div class="sub">
+<a name="ref18_181254"></a>
+<h3 class ="view">4.3.1 Class View uuids</h3>
+<div class="sub">
+<table><tr><td><div class="element">Class <b><a href="class472582.html#ref4_472582"><b>uuid</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class507910.html#ref4_507910"><b>string_generator</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class508038.html#ref4_508038"><b>nil_generator</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class508166.html#ref4_508166"><b>uuid_io.hpp</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class583942.html#ref4_583942"><b>random_generator</b></a></b></div></td></tr></table>
+</div>
+</div>
+<a name="ref22_168198"></a>
+<h2 class ="package">4.4 Package asio</h2>
+<p></p><ul>
+<li>C++ namespace : boost::asio</li>
+</ul>
+<div class="sub">
+<a name="ref22_167942"></a>
+<h3 class ="package">4.4.1 Package ssl</h3>
+<p></p><ul>
+<li>C++ namespace : boost::asio::ssl</li>
+</ul>
+<div class="sub">
+<a name="ref18_220806"></a>
+<h4 class ="view">4.4.1.1 Class View ssl</h4>
+<div class="sub">
+<table><tr><td><div class="element">Class <b><a href="class698118.html#ref4_698118"><b>stream</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class698886.html#ref4_698886"><b>context</b></a></b></div></td></tr></table>
+</div>
+</div>
+<a name="ref22_168582"></a>
+<h3 class ="package">4.4.2 Package ip</h3>
+<p></p><ul>
+<li>C++ namespace : boost::asio::ip</li>
+</ul>
+<div class="sub">
+<a name="ref22_167814"></a>
+<h4 class ="package">4.4.2.1 Package tcp</h4>
+<p></p><ul>
+<li>C++ namespace : boost::asio::ip::tcp</li>
+</ul>
+<div class="sub">
+<a name="ref18_220678"></a>
+<h4 class ="view">4.4.2.1.1 Class View tcp</h4>
+<div class="sub">
+<table><tr><td><div class="element">Class <b><a href="class697862.html#ref4_697862"><b>resolver</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class697990.html#ref4_697990"><b>socket</b></a></b></div></td></tr></table>
+</div>
+</div>
+<a name="ref18_234374"></a>
+<h4 class ="view">4.4.2.2 Class View ip</h4>
+<div class="sub">
+<table><tr><td><div class="element">Class <b><a href="class713862.html#ref4_713862"><b>address</b></a></b></div></td></tr></table>
+</div>
+</div>
+<a name="ref18_221190"></a>
+<h3 class ="view">4.4.3 Class View asio</h3>
+<div class="sub">
+<table><tr><td><div class="element">Class <b><a href="class698758.html#ref4_698758"><b>io_context</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class746886.html#ref4_746886"><b>signal_set</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class972806.html#ref4_972806"><b>system_timer</b></a></b></div></td></tr></table>
+</div>
+<a name="ref22_188294"></a>
+<h3 class ="package">4.4.4 Package io_context</h3>
+<p></p><ul>
+<li>C++ namespace : boost::asio::io_context</li>
+</ul>
+<div class="sub">
+<a name="ref18_247430"></a>
+<h4 class ="view">4.4.4.1 Class View io_context</h4>
+<div class="sub">
+<table><tr><td><div class="element">Class <b><a href="class753414.html#ref4_753414"><b>strand</b></a></b></div></td></tr></table>
+</div>
+</div>
+</div>
+<a name="ref22_168326"></a>
+<h2 class ="package">4.5 Package beast</h2>
+<p></p><ul>
+<li>C++ namespace : boost::beast</li>
+</ul>
+<div class="sub">
+<a name="ref22_168070"></a>
+<h3 class ="package">4.5.1 Package websocket</h3>
+<p></p><ul>
+<li>C++ namespace : boost::beast::websocket</li>
+</ul>
+<div class="sub">
+<a name="ref18_220934"></a>
+<h4 class ="view">4.5.1.1 Class View websocket</h4>
+<div class="sub">
+<table><tr><td><div class="element">Class <b><a href="class698374.html#ref4_698374"><b>stream</b></a></b></div></td></tr></table>
+</div>
+</div>
+<a name="ref18_221062"></a>
+<h3 class ="view">4.5.2 Class View beast</h3>
+<div class="sub">
+<table><tr><td><div class="element">Class <b><a href="class698630.html#ref4_698630"><b>multi_buffer</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class739334.html#ref4_739334"><b>flat_buffer</b></a></b></div></td></tr></table>
+</div>
+<a name="ref22_181766"></a>
+<h3 class ="package">4.5.3 Package http</h3>
+<p></p><ul>
+<li>C++ namespace : boost::beast::http</li>
+</ul>
+<div class="sub">
+<a name="ref18_240902"></a>
+<h4 class ="view">4.5.3.1 Class View http</h4>
+<div class="sub">
+<table><tr><td><div class="element">Class <b><a href="class739462.html#ref4_739462"><b>response</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class739590.html#ref4_739590"><b>request</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class739846.html#ref4_739846"><b>string_body</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class740102.html#ref4_740102"><b>empty_body</b></a></b></div></td></tr></table>
+</div>
+</div>
+</div>
+<a name="ref22_168454"></a>
+<h2 class ="package">4.6 Package system</h2>
+<p></p><ul>
+<li>C++ namespace : boost::system</li>
+</ul>
+<div class="sub">
+<a name="ref18_221318"></a>
+<h3 class ="view">4.6.1 Class View system</h3>
+<div class="sub">
+<table><tr><td><div class="element">Class <b><a href="class699270.html#ref4_699270"><b>error_code</b></a></b></div></td></tr></table>
+</div>
+</div>
+<a name="ref22_221574"></a>
+<h2 class ="package">4.7 Package program_options</h2>
+<p></p><ul>
+<li>C++ namespace : boost::program_options</li>
+</ul>
+<div class="sub">
+<a name="ref18_307078"></a>
+<h3 class ="view">4.7.1 Class View program_options</h3>
+<div class="sub">
+<table><tr><td><div class="element">Class <b><a href="class1013254.html#ref4_1013254"><b>variables_map</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class1014022.html#ref4_1014022"><b>options_description</b></a></b></div></td></tr></table>
+</div>
+</div>
+</div>
+</body>
+</html>

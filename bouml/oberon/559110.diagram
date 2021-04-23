@@ -1,0 +1,65 @@
+format 224
+
+statecanvas 128006 state_ref 330630 // Created
+  
+  xyzwh 132 581 2024 153 77
+end
+pseudostatecanvas 128134 pseudostate_ref 410502 // initial 
+   xyz 46 588 2030
+end
+statecanvas 128390 state_ref 330758 // Matched
+  
+  xyzwh 429 585 2018 173 77
+end
+statecanvas 128646 state_ref 330886 // Amended
+  
+  xyzwh 133 775 2012 173 77
+end
+statecanvas 129286 state_ref 331014 // Matched and amended
+  
+  xyzwh 428 773 2006 173 77
+end
+statecanvas 130054 state_ref 331142 // Level2
+  
+  xyzwh 7 444 2000 771 637
+end
+transitioncanvas 128262 transition_ref 608518 // <transition>
+  
+  from ref 128134 z 2031 to ref 128006
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 128518 transition_ref 608646 // <transition>
+  
+  from ref 128006 z 2025 label "update [match]" xyz 316 611 2025 to ref 128390
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 128774 transition_ref 608774 // <transition>
+  
+  from ref 128006 z 2025 label "update [else]" xyz 178 706 2025 to ref 128646
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 128902 transition_ref 608902 // <transition>
+  
+  from ref 128646 z 2013 to point 103 775
+  line 129030 z 2013 to point 103 805
+  line 129158 z 2013 to ref 128646
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129414 transition_ref 609030 // <transition>
+  
+  from ref 128390 z 2019 label "update [else]" xyz 512 716.5 2019 to ref 129286
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129542 transition_ref 609158 // <transition>
+  
+  from ref 128390 z 2019 to point 589 499
+  line 129670 z 2019 label "update [match]" xyz 500 504 2019 to point 487 524
+  line 129798 z 2019 to ref 128390
+  write_horizontally default show_definition default drawing_language default
+end
+transitioncanvas 129926 transition_ref 609286 // <transition>
+  
+  from ref 128646 z 2013 to ref 129286
+  write_horizontally default show_definition default drawing_language default
+end
+end

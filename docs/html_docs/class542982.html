@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Documentation produced by the Html generator of Bouml (http://www.bouml.fr) -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>Class SizeDeducer</title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body bgcolor="#ffffff">
+
+<div class = "title">Class SizeDeducer</div>
+<p></p>
+
+<!-- ============================================================= -->
+
+<a name="ref4_542982"></a>
+<p> implement the state machine SizeDeducer<br /></p>
+<p>Declaration :</p><ul>
+<li>C++ : class SizeDeducer : public <a href="class441222.html#ref4_441222"><b>TokenHandler</b></a> </li></ul><p>Artifact : <a href="index.html#ref8_333446"><b>SizeDeducer</b></a></p>
+<p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<div class="sub">
+<table><tr><td><div class="element">Class <b><a href="class958470.html#ref4_958470"><b>AnyState</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class958598.html#ref4_958598"><b>SizeDeducer_State</b></a></b></div></td></tr></table>
+<a name="ref1_429318"></a>
+<table><tr><td><div class="element">Attribute <b>previous_size_</b></div></td></tr></table>
+<p>Declaration :</p><ul><li>Uml : # previous_size_ : <a href="class305798.html#ref4_305798"><b>Volume</b></a></li><li>C++ : protected: <a href="class305798.html#ref4_305798"><b>Volume</b></a> previous_size_</li></ul><a name="ref1_429446"></a>
+<table><tr><td><div class="element">Attribute <b>previous_sizes_</b></div></td></tr></table>
+<p>Declaration :</p><ul><li>Uml : # previous_sizes_ : <a href="class305798.html#ref4_305798"><b>Volume</b></a>, multiplicity : *</li><li>C++ : protected: std::map&lt;OrderEvent::OrderId, <a href="class305798.html#ref4_305798"><b>Volume</b></a>&gt; previous_sizes_</li></ul><p>Stereotype: map</p>
+<a name="ref1_429574"></a>
+<table><tr><td><div class="element">Attribute <b>em_</b></div></td></tr></table>
+<p>Declaration :</p><ul><li>Uml : # em_ : <a href="class448390.html#ref4_448390"><b>OrderEvent</b></a></li><li>C++ : protected: std::unique_ptr&lt;<a href="class448390.html#ref4_448390"><b>OrderEvent</b></a>&gt; em_</li></ul><a name="ref2_686854"></a>
+<table><tr><td><div class="element">Operation <b>SizeDeducer</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : + SizeDeducer() : </li><li>C++ : public: SizeDeducer()</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref2_1370630"></a>
+<table><tr><td><div class="element">Operation <b>SizeDeducer</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : + SizeDeducer(in next : <a href="class950918.html#ref4_950918"><b>TokenHandler_SP</b></a>) : </li><li>C++ : public: SizeDeducer(const <a href="class950918.html#ref4_950918"><b>TokenHandler_SP</b></a> &amp; next)</li></ul><a name="ref2_686982"></a>
+<table><tr><td><div class="element">Operation <b>~SizeDeducer</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : + ~SizeDeducer() : </li><li>C++ : public: virtual ~SizeDeducer()</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref2_688262"></a>
+<table><tr><td><div class="element">Operation <b>filled</b></div></td></tr></table><p> the operation you call to signal the event filled<br /></p><p>Declaration :</p><ul><li>Uml : + filled() : bool</li><li>C++ : public: bool filled() override</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref2_691846"></a>
+<table><tr><td><div class="element">Operation <b>doActivity</b></div></td></tr></table><p> to execute the current state 'do activity'<br /></p><p>Declaration :</p><ul><li>Uml : + doActivity() : void</li><li>C++ : public: void doActivity()</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref2_691974"></a>
+<table><tr><td><div class="element">Operation <b>_set_currentState</b></div></td></tr></table><p> change the current state, internal<br /></p><p>Declaration :</p><ul><li>Uml : # _set_currentState(inout st : AnyState) : void</li><li>C++ : protected: inline void _set_currentState(AnyState &amp; st)</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref2_692102"></a>
+<table><tr><td><div class="element">Operation <b>_final</b></div></td></tr></table><p> execution done, internal<br /></p><p>Declaration :</p><ul><li>Uml : # _final() : void</li><li>C++ : protected: void _final()</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref1_718214"></a>
+<table><tr><td><div class="element">Attribute <b>_machine_name</b></div></td></tr></table>
+<p> a (unique) name of the machine <br /></p><p>Declaration :</p><ul><li>Uml : + _machine_name : string</li><li>C++ : public: std::string _machine_name</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref2_1292038"></a>
+<table><tr><td><div class="element">Operation <b>created</b></div></td></tr></table><p> the operation you call to signal the event created<br /></p><p>Declaration :</p><ul><li>Uml : + created() : bool</li><li>C++ : public: bool created() override</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref1_841350"></a>
+<table><tr><td><div class="element">Attribute <b>_sizededucer_state</b></div></td></tr></table>
+<p> memorize the instance of the state SizeDeducer, internal<br /></p><p>Declaration :</p><ul><li>Uml : # _sizededucer_state : <a href="class958598.html#ref4_958598"><b>SizeDeducer_State</b></a></li><li>C++ : protected: <a href="class958598.html#ref4_958598"><b>SizeDeducer_State</b></a> _sizededucer_state</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref2_1374086"></a>
+<table><tr><td><div class="element">Operation <b>create</b></div></td></tr></table><p> the operation you call to signal the event create<br /></p><p>Declaration :</p><ul><li>Uml : + create() : bool</li><li>C++ : public: bool create() override</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref0_1088902"></a>
+<table><tr><td><div class="element">Relation <b>_current_state (&lt;directional aggregation&gt;)</b></div></td></tr></table><p> contains the current state, internal<br /></p><p>Declaration :</p><ul><li>Uml : # _current_state : <a href="class958470.html#ref4_958470"><b>AnyState</b></a></li><li>C++ : protected: <a href="class958470.html#ref4_958470"><b>AnyState</b></a> * _current_state</li></ul><a name="ref2_1385862"></a>
+<table><tr><td><div class="element">Operation <b>reset</b></div></td></tr></table><p> the operation you call to signal the event reset<br /></p><p>Declaration :</p><ul><li>Uml : + reset() : bool</li><li>C++ : public: bool reset() override</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref2_1386246"></a>
+<table><tr><td><div class="element">Operation <b>orderEvent</b></div></td></tr></table><p> the operation you call to signal the event orderEvent<br /></p><p>Declaration :</p><ul><li>Uml : + orderEvent() : bool</li><li>C++ : public: bool orderEvent() override</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref0_1252230"></a>
+<table><tr><td><div class="element">Relation <b>security_ (&lt;directional aggregation&gt;)</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : - security_ : <a href="class1067398.html#ref4_1067398"><b>Security</b></a>, multiplicity : 0..1</li><li>C++ : private: boost::shared_ptr&lt;<a href="class1067398.html#ref4_1067398"><b>Security</b></a>&gt; security_</li></ul><p>Stereotype: shared_ptr</p>
+<a name="ref2_1579910"></a>
+<table><tr><td><div class="element">Operation <b>era</b></div></td></tr></table><p> the operation you call to signal the event era<br /></p><p>Declaration :</p><ul><li>Uml : + era() : bool</li><li>C++ : public: bool era() override</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+</div>
+<p>All public operations : <a href="class441222.html#ref2_485382"><b>cancelled</b></a> , <a href="class441222.html#ref2_730118"><b>changed</b></a> , <a href="class542982.html#ref2_1374086"><b>create</b></a> , <a href="class441222.html#ref2_692230"><b>create</b></a> , <a href="class542982.html#ref2_1292038"><b>created</b></a> , <a href="class441222.html#ref2_752646"><b>created</b></a> , <a href="class542982.html#ref2_691846"><b>doActivity</b></a> , <a href="class441222.html#ref2_1595910"><b>dot</b></a> , <a href="class441222.html#ref2_483590"><b>elapsed</b></a> , <a href="class542982.html#ref2_1579910"><b>era</b></a> , <a href="class441222.html#ref2_1093254"><b>era</b></a> , <a href="class441222.html#ref2_1668358"><b>exchange_time</b></a> , <a href="class542982.html#ref2_688262"><b>filled</b></a> , <a href="class441222.html#ref2_485126"><b>filled</b></a> , <a href="class441222.html#ref2_590214"><b>handle</b></a> , <a href="class441222.html#ref2_721926"><b>message</b></a> , <a href="class542982.html#ref2_1386246"><b>orderEvent</b></a> , <a href="class441222.html#ref2_721798"><b>orderEvent</b></a> , <a href="class542982.html#ref2_1385862"><b>reset</b></a> , <a href="class441222.html#ref2_1385094"><b>reset</b></a> , <a href="class441222.html#ref2_1588486"><b>stripe</b></a> </p>
+</body>
+</html>

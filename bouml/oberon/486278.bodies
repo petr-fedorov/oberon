@@ -13,18 +13,4 @@ Message::Timestamp output;
 ss >> parse("%FT%TZ", output);
 return output;
 !!!575878.cpp!!!	process(in message : ptree [1]) : void
-handle(extract(message));
-!!!1612422.cpp!!!	message() : bool
-if (episode_.empty() || received_->timestamp() == episode_.back()->timestamp())
-  episode_.push_back(std::move(received_));
-else {
-  std::move(episode_.begin(), episode_.end(), std::back_inserter(output_));
-  episode_.clear();
-  episode_.push_back(std::move(received_));
-}
-return true;
-!!!1612550.cpp!!!	reset() : bool
-std::move(episode_.begin(), episode_.end(), std::back_inserter(output_));
-episode_.clear();
-output_.push_back(std::move(received_));
-return true;
+next_->handle(extract(message));

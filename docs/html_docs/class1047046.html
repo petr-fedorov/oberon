@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Documentation produced by the Html generator of Bouml (http://www.bouml.fr) -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>Class AnyState</title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body bgcolor="#ffffff">
+
+<div class = "title">Class AnyState</div>
+<p></p>
+
+<!-- ============================================================= -->
+
+<a name="ref4_1047046"></a>
+<p> Mother class of all the classes representing states<br /></p>
+<p>Declaration :</p><ul>
+<li>C++ : class AnyState </li></ul><p>Directly inherited by : <a href="class1047302.html#ref4_1047302"><b>Engage_State</b></a> <a href="class1047558.html#ref4_1047558"><b>Era_started_State</b></a> <a href="class1047174.html#ref4_1047174"><b>EraMerger_State</b></a> <a href="class1047430.html#ref4_1047430"><b>Prepare_merge_State</b></a> <a href="class1047686.html#ref4_1047686"><b>Wait_era_start_State</b></a> </p>
+<p>nested in <a href="class1046918.html#ref4_1046918"><b>EraMerger</b></a></p>
+<p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<div class="sub">
+<a name="ref2_1483398"></a>
+<table><tr><td><div class="element">Operation <b>~AnyState</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : + ~AnyState() : </li><li>C++ : public: virtual ~AnyState()</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref2_1483526"></a>
+<table><tr><td><div class="element">Operation <b>_upper</b></div></td></tr></table><p> return the upper state<br /></p><p>Declaration :</p><ul><li>Uml : abstract, + _upper(inout stm : <a href="class1046918.html#ref4_1046918"><b>EraMerger</b></a>) : <a href="class1047046.html#ref4_1047046"><b>AnyState</b></a></li><li>C++ : public: virtual <a href="class1047046.html#ref4_1047046"><b>AnyState</b></a> * _upper(<a href="class1046918.html#ref4_1046918"><b>EraMerger</b></a> &amp;)= 0 </li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref2_1483654"></a>
+<table><tr><td><div class="element">Operation <b>_do</b></div></td></tr></table><p> perform the 'do activity'<br /></p><p>Declaration :</p><ul><li>Uml : + _do(inout stm : <a href="class1046918.html#ref4_1046918"><b>EraMerger</b></a>) : void</li><li>C++ : public: virtual void _do(<a href="class1046918.html#ref4_1046918"><b>EraMerger</b></a> &amp;)</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref2_1483782"></a>
+<table><tr><td><div class="element">Operation <b>_doentry</b></div></td></tr></table><p> performs the 'entry activity'<br /></p><p>Declaration :</p><ul><li>Uml : + _doentry(inout stm : <a href="class1046918.html#ref4_1046918"><b>EraMerger</b></a>) : void</li><li>C++ : public: virtual void _doentry(<a href="class1046918.html#ref4_1046918"><b>EraMerger</b></a> &amp;)</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref2_1483910"></a>
+<table><tr><td><div class="element">Operation <b>_doexit</b></div></td></tr></table><p> performs the 'exit activity'<br /></p><p>Declaration :</p><ul><li>Uml : + _doexit(inout stm : <a href="class1046918.html#ref4_1046918"><b>EraMerger</b></a>) : void</li><li>C++ : public: virtual void _doexit(<a href="class1046918.html#ref4_1046918"><b>EraMerger</b></a> &amp;)</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref2_1485062"></a>
+<table><tr><td><div class="element">Operation <b>create</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : + create(inout stm : <a href="class1046918.html#ref4_1046918"><b>EraMerger</b></a>) : void</li><li>C++ : public: virtual void create(<a href="class1046918.html#ref4_1046918"><b>EraMerger</b></a> &amp;)</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref2_1485830"></a>
+<table><tr><td><div class="element">Operation <b>created</b></div></td></tr></table><p> the current state doesn't manage the event created, give it to the upper state<br /></p><p>Declaration :</p><ul><li>Uml : + created(inout stm : <a href="class1046918.html#ref4_1046918"><b>EraMerger</b></a>) : void</li><li>C++ : public: virtual void created(<a href="class1046918.html#ref4_1046918"><b>EraMerger</b></a> &amp; stm)</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref2_1486342"></a>
+<table><tr><td><div class="element">Operation <b>era</b></div></td></tr></table><p> the current state doesn't manage the event era, give it to the upper state<br /></p><p>Declaration :</p><ul><li>Uml : + era(inout stm : <a href="class1046918.html#ref4_1046918"><b>EraMerger</b></a>) : void</li><li>C++ : public: virtual void era(<a href="class1046918.html#ref4_1046918"><b>EraMerger</b></a> &amp; stm)</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref2_1486726"></a>
+<table><tr><td><div class="element">Operation <b>reset</b></div></td></tr></table><p> the current state doesn't manage the event reset, give it to the upper state<br /></p><p>Declaration :</p><ul><li>Uml : + reset(inout stm : <a href="class1046918.html#ref4_1046918"><b>EraMerger</b></a>) : void</li><li>C++ : public: virtual void reset(<a href="class1046918.html#ref4_1046918"><b>EraMerger</b></a> &amp; stm)</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref2_1487110"></a>
+<table><tr><td><div class="element">Operation <b>cancelled</b></div></td></tr></table><p> the current state doesn't manage the event cancelled, give it to the upper state<br /></p><p>Declaration :</p><ul><li>Uml : + cancelled(inout stm : <a href="class1046918.html#ref4_1046918"><b>EraMerger</b></a>) : void</li><li>C++ : public: virtual void cancelled(<a href="class1046918.html#ref4_1046918"><b>EraMerger</b></a> &amp; stm)</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref2_1487494"></a>
+<table><tr><td><div class="element">Operation <b>filled</b></div></td></tr></table><p> the current state doesn't manage the event filled, give it to the upper state<br /></p><p>Declaration :</p><ul><li>Uml : + filled(inout stm : <a href="class1046918.html#ref4_1046918"><b>EraMerger</b></a>) : void</li><li>C++ : public: virtual void filled(<a href="class1046918.html#ref4_1046918"><b>EraMerger</b></a> &amp; stm)</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref2_1488006"></a>
+<table><tr><td><div class="element">Operation <b>changed</b></div></td></tr></table><p> the current state doesn't manage the event changed, give it to the upper state<br /></p><p>Declaration :</p><ul><li>Uml : + changed(inout stm : <a href="class1046918.html#ref4_1046918"><b>EraMerger</b></a>) : void</li><li>C++ : public: virtual void changed(<a href="class1046918.html#ref4_1046918"><b>EraMerger</b></a> &amp; stm)</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref2_1632774"></a>
+<table><tr><td><div class="element">Operation <b>elapsed</b></div></td></tr></table><p> the current state doesn't manage the event elapsed, give it to the upper state<br /></p><p>Declaration :</p><ul><li>Uml : + elapsed(inout stm : <a href="class1046918.html#ref4_1046918"><b>EraMerger</b></a>) : void</li><li>C++ : public: virtual void elapsed(<a href="class1046918.html#ref4_1046918"><b>EraMerger</b></a> &amp; stm)</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+</div>
+<p>All public operations : <a href="class1047046.html#ref2_1483654"><b>_do</b></a> , <a href="class1047046.html#ref2_1483782"><b>_doentry</b></a> , <a href="class1047046.html#ref2_1483910"><b>_doexit</b></a> , <a href="class1047046.html#ref2_1483526"><b>_upper</b></a> , <a href="class1047046.html#ref2_1487110"><b>cancelled</b></a> , <a href="class1047046.html#ref2_1488006"><b>changed</b></a> , <a href="class1047046.html#ref2_1485062"><b>create</b></a> , <a href="class1047046.html#ref2_1485830"><b>created</b></a> , <a href="class1047046.html#ref2_1632774"><b>elapsed</b></a> , <a href="class1047046.html#ref2_1486342"><b>era</b></a> , <a href="class1047046.html#ref2_1487494"><b>filled</b></a> , <a href="class1047046.html#ref2_1486726"><b>reset</b></a> </p>
+</body>
+</html>

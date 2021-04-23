@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Documentation produced by the Html generator of Bouml (http://www.bouml.fr) -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>Class AnyState</title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body bgcolor="#ffffff">
+
+<div class = "title">Class AnyState</div>
+<p></p>
+
+<!-- ============================================================= -->
+
+<a name="ref4_825990"></a>
+<p> Mother class of all the classes representing states<br /></p>
+<p>Declaration :</p><ul>
+<li>C++ : class AnyState </li></ul><p>Directly inherited by : <a href="class867078.html#ref4_867078"><b>Connecting_State</b></a> <a href="class867206.html#ref4_867206"><b>Doing_SSL_handshake_State</b></a> <a href="class866822.html#ref4_866822"><b>Obtaining_State</b></a> <a href="class867590.html#ref4_867590"><b>Parsing_snapshot_State</b></a> <a href="class867334.html#ref4_867334"><b>Quering_snapshot_State</b></a> <a href="class867462.html#ref4_867462"><b>Reading_snapshot_State</b></a> <a href="class866950.html#ref4_866950"><b>Resolving_State</b></a> <a href="class826118.html#ref4_826118"><b>Snapshot_State</b></a> <a href="class882822.html#ref4_882822"><b>Stopping_State</b></a> </p>
+<p>nested in <a href="class825862.html#ref4_825862"><b>Snapshot</b></a></p>
+<p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<div class="sub">
+<a name="ref2_1141510"></a>
+<table><tr><td><div class="element">Operation <b>~AnyState</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : + ~AnyState() : </li><li>C++ : public: virtual ~AnyState()</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref2_1141638"></a>
+<table><tr><td><div class="element">Operation <b>_upper</b></div></td></tr></table><p> return the upper state<br /></p><p>Declaration :</p><ul><li>Uml : abstract, + _upper(inout stm : <a href="class825862.html#ref4_825862"><b>Snapshot</b></a>) : <a href="class825990.html#ref4_825990"><b>AnyState</b></a></li><li>C++ : public: virtual <a href="class825990.html#ref4_825990"><b>AnyState</b></a> * _upper(<a href="class825862.html#ref4_825862"><b>Snapshot</b></a> &amp;)= 0 </li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref2_1141766"></a>
+<table><tr><td><div class="element">Operation <b>_do</b></div></td></tr></table><p> perform the 'do activity'<br /></p><p>Declaration :</p><ul><li>Uml : + _do(inout stm : <a href="class825862.html#ref4_825862"><b>Snapshot</b></a>) : void</li><li>C++ : public: virtual void _do(<a href="class825862.html#ref4_825862"><b>Snapshot</b></a> &amp;)</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref2_1143686"></a>
+<table><tr><td><div class="element">Operation <b>create</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : + create(inout stm : <a href="class825862.html#ref4_825862"><b>Snapshot</b></a>) : void</li><li>C++ : public: virtual void create(<a href="class825862.html#ref4_825862"><b>Snapshot</b></a> &amp;)</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref2_1144070"></a>
+<table><tr><td><div class="element">Operation <b>success</b></div></td></tr></table><p> the current state doesn't manage the event success, give it to the upper state<br /></p><p>Declaration :</p><ul><li>Uml : + success(inout stm : <a href="class825862.html#ref4_825862"><b>Snapshot</b></a>) : void</li><li>C++ : public: virtual void success(<a href="class825862.html#ref4_825862"><b>Snapshot</b></a> &amp; stm)</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref2_1144966"></a>
+<table><tr><td><div class="element">Operation <b>failure</b></div></td></tr></table><p> the current state doesn't manage the event failure, give it to the upper state<br /></p><p>Declaration :</p><ul><li>Uml : + failure(inout stm : <a href="class825862.html#ref4_825862"><b>Snapshot</b></a>) : void</li><li>C++ : public: virtual void failure(<a href="class825862.html#ref4_825862"><b>Snapshot</b></a> &amp; stm)</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref2_1255942"></a>
+<table><tr><td><div class="element">Operation <b>stop</b></div></td></tr></table><p> the current state doesn't manage the event stop, give it to the upper state<br /></p><p>Declaration :</p><ul><li>Uml : + stop(inout stm : <a href="class825862.html#ref4_825862"><b>Snapshot</b></a>) : void</li><li>C++ : public: virtual void stop(<a href="class825862.html#ref4_825862"><b>Snapshot</b></a> &amp; stm)</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref2_1532166"></a>
+<table><tr><td><div class="element">Operation <b>_doentry</b></div></td></tr></table><p> performs the 'entry activity'<br /></p><p>Declaration :</p><ul><li>Uml : + _doentry(inout stm : <a href="class825862.html#ref4_825862"><b>Snapshot</b></a>) : void</li><li>C++ : public: virtual void _doentry(<a href="class825862.html#ref4_825862"><b>Snapshot</b></a> &amp;)</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+<a name="ref2_1532294"></a>
+<table><tr><td><div class="element">Operation <b>_doexit</b></div></td></tr></table><p> performs the 'exit activity'<br /></p><p>Declaration :</p><ul><li>Uml : + _doexit(inout stm : <a href="class825862.html#ref4_825862"><b>Snapshot</b></a>) : void</li><li>C++ : public: virtual void _doexit(<a href="class825862.html#ref4_825862"><b>Snapshot</b></a> &amp;)</li></ul><p>Properties:</p><ul>
+<li>STM generated:<br /><div class="sub"></div></li>
+</ul>
+</div>
+<p>All public operations : <a href="class825990.html#ref2_1141766"><b>_do</b></a> , <a href="class825990.html#ref2_1532166"><b>_doentry</b></a> , <a href="class825990.html#ref2_1532294"><b>_doexit</b></a> , <a href="class825990.html#ref2_1141638"><b>_upper</b></a> , <a href="class825990.html#ref2_1143686"><b>create</b></a> , <a href="class825990.html#ref2_1144966"><b>failure</b></a> , <a href="class825990.html#ref2_1255942"><b>stop</b></a> , <a href="class825990.html#ref2_1144070"><b>success</b></a> </p>
+</body>
+</html>
