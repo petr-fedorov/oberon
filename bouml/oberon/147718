@@ -1,6 +1,6 @@
 format 224
 "App" // App
-  revision 164
+  revision 174
   modified_by 6 "petr"
   // class settings
   
@@ -78,22 +78,22 @@ format 224
 	end
       end
 
-      activityaction 192390 "Receive messages"
-	start_object_behavior_action
-	synchronous
-	flow 415622 "S.1.10"
+      activityaction 192390 "Receiver state machine"
+	call_behavior_action
+	synchronous state_ref 218374 // Receiver
+	flow 415622 "S.1.7"
 	  on activitynode_ref 190086 // activity_final
 	end
 
-	pin 378502 "target" type class_ref 712966 // Receiver
-	   multiplicity "1" unordered 
+	pin 427782 "target" type class_ref 712966 // Receiver
+	   multiplicity "1" unordered is_control
 	  in
 	end
 
-	pin 378630 "tree" type class_ref 174214 // ptree
-	   multiplicity "*" unordered 
+	pin 434310 "tree" type class_ref 174214 // ptree
+	   multiplicity "1" unordered 
 	  out stream
-	  flow 437126 "<flow>"
+	  flow 507142 "S.1.6"
 	    on pin_ref 348678 // tree
 	  end
 	end
@@ -101,7 +101,7 @@ format 224
 
       activitynode 189958 initial_node ""
 	flow 244230 "S.1.1"
-	  on activityaction_ref 213638 // activity action Initialize
+	  on activityaction_ref 213638 // activity action I.1 Initialize
 	end
       end
 
@@ -109,13 +109,9 @@ format 224
       end
 
       interruptibleactivityregion 141062 ""
-	activityaction 213638 "Initialize"
+	activityaction 213638 "I.1 Initialize"
 	  call_behavior_action
-	  synchronous activity_ref 168710 // S.2 Initialize
-	  flow 272646 "S.1.6"
-	    on activitynode_ref 229382 // fork
-	  end
-
+	  synchronous activity_ref 168710 // I.1 Initialize
 	  pin 349318 "exchange_name" explicit_type "string"
 	     multiplicity "1" unordered 
 	    in
@@ -127,37 +123,27 @@ format 224
 	  end
 
 	  pin 349702 "reconstructor" explicit_type "Reconstructor"
-	     multiplicity "1" unordered 
+	     multiplicity "1" unordered is_control
 	    out
-	    flow 407686 "S.1.7"
+	    flow 407686 "S.1.5"
 	      on pin_ref 349062 // target
 	    end
 	  end
 
-	  pin 349830 "receiver" explicit_type ""
-	     multiplicity "1" unordered 
+	  pin 349830 "receiver" type class_ref 712966 // Receiver
+	     multiplicity "1" unordered is_control
 	    out
-	    flow 437254 "S.1.4"
-	      on pin_ref 378502 // target
+	    flow 500614 "S.1.4"
+	      on pin_ref 427782 // target
 	    end
 	  end
 	end
 
-	activitynode 229382 fork ""
-	  flow 272902 "S.1.9"
-	    on activityaction_ref 192390 // activity action Receive messages
-	  end
-
-	  flow 315142 "S.1.8"
-	    on activityaction_ref 247302 // activity action Reconstruct Order Book
-	  end
-	end
-
-	activityaction 247302 "Reconstruct Order Book"
+	activityaction 247302 "R.1 Reconstructor"
 	  call_behavior_action
-	  synchronous activity_ref 175238 // R.1 Reconstruct Order Book
+	  synchronous activity_ref 175238 // R.1 Reconstructor
 	  pin 348678 "tree" type class_ref 174214 // ptree
-	     multiplicity "*" fifo 
+	     multiplicity "1" fifo 
 	    in stream
 	  end
 
@@ -166,7 +152,7 @@ format 224
 	    in
 	  end
 
-	  flow 416006 "S.1.11"
+	  flow 416006 "S.1.8"
 	    on activitynode_ref 317190 // activity_final
 	  end
 	end
@@ -189,8 +175,8 @@ format 224
       end
     end
 
-    activity 168710 "S.2 Initialize"
-      activitydiagram 221830 "S.2 Initialize"
+    activity 168710 "I.1 Initialize"
+      activitydiagram 221830 "I.1 Initialize"
 	activitydiagramsettings
 	 end
 	size A4
@@ -351,9 +337,9 @@ format 224
       end
     end
 
-    activity 175238 "R.1 Reconstruct Order Book"
+    activity 175238 "R.1 Reconstructor"
       specification operation_ref 575878 // process
-      activitydiagram 274822 "R.1 Reconstruct Order Book"
+      activitydiagram 274822 "R.1 Reconstructor"
 	activitydiagramsettings
 	 end
 	size A4
@@ -362,8 +348,8 @@ format 224
       parameter 178694 "tree" type class_ref 174214 // ptree
 	 multiplicity "1" unordered 
 	in stream
-	flow 430086 "R1.2"
-	  on pin_ref 371590 // tree
+	flow 507398 "<flow>"
+	  on pin_ref 434438 // tree
 	end
       end
 
@@ -376,8 +362,8 @@ format 224
 	      uml_transformation "To be defined"
 	end
 
-	flow 429958 "R.1.3"
-	  on pin_ref 371462 // target
+	flow 507270 "<flow>"
+	  on pin_ref 434566 // target
 	end
       end
 
@@ -406,29 +392,29 @@ format 224
 	end
       end
 
-      activityaction 273670 "Process message"
-	call_operation_action
-	synchronous operation_ref 575878 // process
-	pin 371462 "target" type class_ref 486278 // Reconstructor
-	   multiplicity "1" unordered 
-	  in
-	end
-
-	pin 371590 "tree" type class_ref 174214 // ptree
-	   multiplicity "1" unordered 
-	  in
-	end
-
-	pin 371718 "error" type class_ref 1108486 // processing_error
-	   multiplicity "1" unordered is_control
-	  out exception
-	  flow 429702 "R.1.6"
-	    on activitynode_ref 324102 // activity_final
-	  end
-	end
-
+      activityaction 273670 "P.1 Process message"
+	call_behavior_action
+	synchronous activity_ref 188294 // P.1 Process message
 	flow 430470 "R.1.5"
 	  on activitynode_ref 324230 // merge
+	end
+
+	pin 434438 "tree" type class_ref 174214 // ptree
+	   multiplicity "1" unordered 
+	  in stream
+	end
+
+	pin 434566 "target" type class_ref 486278 // Reconstructor
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 434694 "error" type class_ref 1108486 // processing_error
+	   multiplicity "1" unordered is_control
+	  out exception
+	  flow 507526 "<flow>"
+	    on activitynode_ref 324102 // activity_final
+	  end
 	end
       end
 
@@ -451,14 +437,14 @@ format 224
 
       activitynode 324230 merge ""
 	flow 430342 "R.1.4"
-	  on activityaction_ref 273670 // activity action Process message
+	  on activityaction_ref 273670 // activity action P.1 Process message
 	end
       end
     end
 
-    activity 188294 "P.1 Process message - generic"
+    activity 188294 "P.1 Process message"
       specification operation_ref 575878 // process
-      activitydiagram 572166 "P.1 Process message - generic"
+      activitydiagram 572166 "P.1 Process message"
 	activitydiagramsettings
 	 end
 	size A4
@@ -475,14 +461,8 @@ format 224
       parameter 246022 "target" type class_ref 486278 // Reconstructor
 	 multiplicity "1" unordered 
 	in
-	flow 457606 "P.1.1"
-	  on pin_ref 396806 // target
-	end
-      end
-
-      activitynode 331014 initial_node ""
-	flow 457734 "P.1.0"
-	  on activityaction_ref 287366 // activity action extract
+	flow 493574 "P.1.1"
+	  on activitynode_ref 345094 // fork
 	end
       end
 
@@ -495,218 +475,185 @@ format 224
 	end
 
 	pin 396806 "target" type class_ref 486278 // Reconstructor
-	   multiplicity "1" unordered 
+	   multiplicity "1" unordered is_control
 	  in
 	end
 
 	pin 394118 "out" type class_ref 902918 // Token
 	   multiplicity "1" unordered is_control
 	  return
-	  flow 454790 "P.1.3"
-	    on pin_ref 394502 // in
-	  end
-	end
-
-	pin 396294 "next" type class_ref 441222 // TokenHandler
-	  unordered 
-	  out
-	  flow 456454 "P.1.4"
-	    on pin_ref 396422 // target
+	  flow 493958 "P.1.4"
+	    on pin_ref 420870 // token_in
 	  end
 	end
 
 	pin 397702 "error" type class_ref 1108486 // processing_error
 	   multiplicity "1" unordered 
 	  out exception
-	  flow 457862 "P.1.19"
+	  flow 457862 "P.1.6"
 	    on parameter_ref 245894 // error
-	  end
-	end
-      end
-
-      activityaction 287622 "handle"
-	call_operation_action
-	synchronous operation_ref 590214 // handle
-	pin 394502 "in" type class_ref 902918 // Token
-	   multiplicity "1" unordered is_control
-	  in
-	end
-
-	pin 396422 "target" type class_ref 441222 // TokenHandler
-	   multiplicity "1" unordered 
-	  in
-	end
-
-	pin 394630 "out" type class_ref 902918 // Token
-	   multiplicity "*" fifo is_control
-	  out
-	  flow 454662 "P.1.6"
-	    on expansionnode_ref 141318 // input
-	  end
-	end
-
-	pin 394758 "error" explicit_type ""
-	  unordered 
-	  out exception
-	  flow 455430 "P.1.5"
-	    on parameter_ref 245894 // error
-	  end
-	end
-
-	pin 396550 "next" type class_ref 441222 // TokenHandler
-	   multiplicity "1" unordered 
-	  out
-	  flow 456582 "P.1.7"
-	    on pin_ref 396166 // target
-	  end
-	end
-      end
-
-      expansionregion 141318 ""
-	iterative
-	expansionnode 141318 "input"
-	   type class_ref 902918 // Token
-	   multiplicity "*" fifo is_control
-	  flow 455558 "P.1.8"
-	    on pin_ref 395398 // in
-	  end
-	end
-
-	activityaction 287494 "handle"
-	  call_operation_action
-	  synchronous operation_ref 590214 // handle
-	  pin 395398 "in" type class_ref 902918 // Token
-	     multiplicity "1" unordered is_control
-	    in
-	  end
-
-	  pin 396166 "target" type class_ref 441222 // TokenHandler
-	     multiplicity "1" unordered 
-	    in
-	  end
-
-	  pin 395526 "out" explicit_type ""
-	     multiplicity "*" unordered is_control
-	    out
-	    flow 456070 "P.1.11"
-	      on expansionnode_ref 141830 // input
-	    end
-	  end
-
-	  pin 395654 "error" type class_ref 1108486 // processing_error
-	     multiplicity "1" unordered 
-	    out exception
-	    flow 455814 "P.1.9"
-	      on parameter_ref 245894 // error
-	    end
-	  end
-
-	  pin 396934 "next" explicit_type ""
-	     multiplicity "1" unordered 
-	    out
-	    flow 457094 "P.1.10"
-	      on pin_ref 397062 // target
-	    end
-	  end
-	end
-
-	expansionregion 141574 ""
-	  iterative
-	  expansionnode 141830 "input"
-	     type class_ref 902918 // Token
-	     multiplicity "*" fifo is_control
-	    flow 456198 "P.1.17"
-	      on pin_ref 396038 // in
-	    end
-	  end
-
-	  activityaction 287878 "handle"
-	    call_operation_action
-	    synchronous operation_ref 590214 // handle
-	    pin 396038 "in" type class_ref 902918 // Token
-	       multiplicity "1" unordered is_control
-	      in
-	    end
-
-	    pin 397062 "target" type class_ref 441222 // TokenHandler
-	       multiplicity "1" unordered 
-	      in
-	    end
-
-	    pin 397190 "out" explicit_type ""
-	       multiplicity "*" unordered is_control
-	      out
-	      flow 457222 "P.1.14"
-		on expansionnode_ref 141574 // input
-	      end
-	    end
-
-	    pin 397318 "next" explicit_type ""
-	       multiplicity "1" unordered 
-	      out
-	      flow 457350 "P.1.13"
-		on pin_ref 397446 // target
-	      end
-	    end
-
-	    pin 397574 "error" type class_ref 1108486 // processing_error
-	       multiplicity "1" unordered 
-	      out exception
-	      flow 457478 "P.1.12"
-		on parameter_ref 245894 // error
-	      end
-	    end
-	  end
-
-	  expansionregion 141446 ""
-	    iterative
-	    expansionnode 141574 "input"
-	       type class_ref 902918 // Token
-	       multiplicity "*" unordered is_control
-	      flow 455174 "P.1.18"
-		on pin_ref 395014 // in
-	      end
-	    end
-
-	    activityaction 287750 "handle"
-	      call_operation_action
-	      synchronous operation_ref 590214 // handle
-	      pin 395014 "in" type class_ref 902918 // Token
-		 multiplicity "1" unordered is_control
-		in
-	      end
-
-	      pin 397446 "target" type class_ref 441222 // TokenHandler
-		 multiplicity "1" unordered 
-		in
-	      end
-
-	      pin 395142 "error" type class_ref 1108486 // processing_error
-		 multiplicity "1" unordered 
-		out exception
-		flow 455302 "P.1.15"
-		  on parameter_ref 245894 // error
-		end
-	      end
-
-	      pin 395782 "out" type class_ref 902918 // Token
-		 multiplicity "*" unordered is_control
-		out
-		flow 456966 "P.1.16"
-		  on activitynode_ref 331142 // flow_final
-		end
-	      end
-	    end
-
-	    activitynode 331142 flow_final ""
-	    end
 	  end
 	end
       end
 
       parameter 245894 "error" type class_ref 1108486 // processing_error
-	 multiplicity "1" unordered 
+	 multiplicity "1" unordered is_control
 	out exception
+      end
+
+      activityaction 309126 "C.1 Chain of handlers"
+	call_behavior_action
+	synchronous activity_ref 201350 // C.1 Chain of handlers
+	pin 420870 "token_in" type class_ref 902918 // Token
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 420998 "handler" type class_ref 441222 // TokenHandler
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 421126 "error" explicit_type ""
+	   multiplicity "1" unordered 
+	  out exception
+	  flow 494086 "P.1.7"
+	    on parameter_ref 245894 // error
+	  end
+	end
+      end
+
+      activitynode 345094 fork ""
+	flow 493702 "P.1.3"
+	  on pin_ref 396806 // target
+	end
+
+	flow 493830 "P.1.5"
+	  on pin_ref 420998 // handler
+	      uml_transformation "next"
+	end
+      end
+    end
+
+    activity 201350 "C.1 Chain of handlers"
+      parameter 259206 "token_in" explicit_type ""
+	unordered 
+	in
+	flow 491654 "C.1.2"
+	  on activitynode_ref 344326 // merge
+	end
+      end
+
+      parameter 259334 "handler" type class_ref 441222 // TokenHandler
+	 multiplicity "1" unordered is_control
+	in
+	flow 491270 "C.1.1"
+	  on activitynode_ref 344198 // fork
+	end
+      end
+
+      parameter 265862 "error" type class_ref 1108486 // processing_error
+	 multiplicity "1" unordered is_control
+	out exception
+      end
+
+      expansionregion 154886 ""
+	iterative
+	activityaction 302342 "handle"
+	  call_operation_action
+	  synchronous operation_ref 590214 // handle
+	  pin 419718 "target" type class_ref 441222 // TokenHandler
+	     multiplicity "1" unordered is_control
+	    in
+	  end
+
+	  pin 419846 "token_out" type class_ref 902918 // Token
+	     multiplicity "*" unordered is_control
+	    return
+	    flow 493190 "C.1.8"
+	      on expansionnode_ref 155398 // output
+	    end
+	  end
+
+	  pin 419974 "token_in" type class_ref 902918 // Token
+	     multiplicity "1" unordered is_control
+	    in
+	  end
+
+	  pin 421254 "error" type class_ref 1108486 // processing_error
+	     multiplicity "1" unordered 
+	    out exception
+	    flow 493446 "C.1.14"
+	      on parameter_ref 265862 // error
+	    end
+	  end
+	end
+
+	expansionnode 155270 "input"
+	   type class_ref 902918 // Token
+	   multiplicity "1..*" unordered is_control
+	  flow 493318 "C.1.7"
+	    on pin_ref 419974 // token_in
+	  end
+	end
+
+	expansionnode 155398 "output"
+	   type class_ref 902918 // Token
+	   multiplicity "*" fifo is_control
+	  flow 492678 "C.1.9"
+	    on activitynode_ref 344582 // join
+	  end
+	end
+      end
+
+      activitynode 344198 fork ""
+	flow 492422 "C.1.3"
+	  on activitynode_ref 344326 // merge
+	end
+
+	flow 492550 "C.1.10"
+	  on activitynode_ref 344582 // join
+	      uml_transformation "next"
+	end
+      end
+
+      activitynode 344326 merge ""
+	flow 492038 "C.1.4"
+	  on activitynode_ref 344454 // decision
+	end
+      end
+
+      activitynode 344454 decision ""
+	flow 492166 "C.1.5"
+	  on expansionnode_ref 155270 // input
+	    uml_guard "else"
+	end
+
+	flow 492294 "C.1.6"
+	  on pin_ref 419718 // target
+	    uml_guard "is TokenHandler"
+	end
+      end
+
+      activitynode 344582 join ""
+	flow 492806 "C.1.11"
+	  on activitynode_ref 344838 // decision
+	end
+      end
+
+      activitynode 344838 decision ""
+	flow 492934 "C.1.13"
+	  on activitynode_ref 344966 // activity_final
+	    uml_guard "empty"
+	end
+
+	flow 493062 "C.1.12"
+	  on activitynode_ref 344326 // merge
+	    uml_guard "else"
+	end
+      end
+
+      activitynode 344966 activity_final ""
       end
     end
 
@@ -863,6 +810,14 @@ format 224
     classdiagram 552070 "Message hierarchy for process"
       classdiagramsettings hide_attributes yes hide_operations yes member_max_width 0 end
       size A4
+    end
+
+    classinstance 134534 ""
+      type class_ref 486278 // Reconstructor
+      attributes
+        end
+      relations
+        end
     end
   end
 

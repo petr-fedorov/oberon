@@ -1,6 +1,6 @@
 format 224
 
-activitycanvas 128006 activity_ref 175238 // R.1 Reconstruct Order Book
+activitycanvas 128006 activity_ref 175238 // R.1 Reconstructor
   
   xyzwh 124 32 2000 585 259
   params
@@ -19,20 +19,20 @@ end
 activitynodecanvas 151046 activitynode_ref 310662 // initial_node
   xyz 503 62 2005
 end
-activityactioncanvas 154758 activityaction_ref 273670 // activity action Process message
+activityactioncanvas 154758 activityaction_ref 273670 // activity action P.1 Process message
   
   show_opaque_action_definition default
   color green
   xyzwh 463 167 2005 100 60
   pins
-    pincanvas 154886 pin_ref 371462 // target
-      xyzwh 453 174 2007 11 11 label_xy 414 150
+    pincanvas 157318 pin_ref 434438 // tree
+      xyzwh 453 209 2007 11 11 label_xy 412 222
     end
-    pincanvas 155014 pin_ref 371590 // tree
-      xyzwh 453 208 2007 11 11 label_xy 411 225
+    pincanvas 157446 pin_ref 434566 // target
+      xyzwh 453 172 2007 11 11 label_xy 414 156
     end
-    pincanvas 155142 pin_ref 371718 // error
-      xyzwh 558 190 2007 11 11 label_xy 565 203
+    pincanvas 157574 pin_ref 434694 // error
+      xyzwh 558 190 2007 11 11 label_xy 574 198
     end
   end
 end
@@ -42,39 +42,23 @@ end
 activitynodecanvas 156422 activitynode_ref 324230 // merge
   xyz 499 103 2005
 end
-flowcanvas 155782 flow_ref 429702 // R.1.6
-  
-  from ref 155142 z 2008 label "R.1.6" xyz 596 186 3000 to ref 155654
-   write_horizontally default
-end
 flowcanvas 156038 flow_ref 429830 // R.1.1
   
-  from ref 155910 z 2006 label "R.1.1" xyz 202 150 3000 to ref 132998
-   write_horizontally default
-end
-flowcanvas 156166 flow_ref 429958 // R.1.3
-  decenter_begin 782
-  
-  from ref 132998 z 2008 label "R.1.3" xyz 386 170 3000 to ref 154886
-   write_horizontally default
-end
-flowcanvas 156294 flow_ref 430086 // R1.2
-  
-  from ref 128134 z 2008 label "R1.2" xyz 304 205 3000 to ref 155014
+  from ref 155910 z 2006 label "R.1.1" xyz 202 150 2006 to ref 132998
    write_horizontally default
 end
 flowcanvas 156550 flow_ref 430214 // R.1.0
   decenter_begin 526
   decenter_end 520
   
-  from ref 151046 z 2006 label "R.1.0" xyz 498 82 3000 to ref 156422
+  from ref 151046 z 2006 label "R.1.0" xyz 498 82 2006 to ref 156422
    write_horizontally default
 end
 flowcanvas 156678 flow_ref 430342 // R.1.4
   decenter_begin 486
   decenter_end 230
   
-  from ref 156422 z 2006 label "R.1.4" xyz 477 111 3000 to point 482 118
+  from ref 156422 z 2006 label "R.1.4" xyz 477 111 2006 to point 482 118
   line 157062 z 2006 to ref 154758
    write_horizontally default
 end
@@ -82,8 +66,24 @@ flowcanvas 156806 flow_ref 430470 // R.1.5
   decenter_begin 800
   decenter_end 513
   
-  from ref 154758 z 2006 label "R.1.5" xyz 528 134 3000 to point 539 118
+  from ref 154758 z 2006 label "R.1.5" xyz 528 134 2006 to point 539 118
   line 157190 z 2006 to ref 156422
+   write_horizontally default
+end
+flowcanvas 157702 flow_ref 507270 // <flow>
+  decenter_begin 753
+  
+  from ref 132998 z 2008 to ref 157446
+   write_horizontally default
+end
+flowcanvas 157830 flow_ref 507398 // <flow>
+  
+  from ref 128134 z 2008 to ref 157318
+   write_horizontally default
+end
+flowcanvas 157958 flow_ref 507526 // <flow>
+  
+  from ref 157574 z 2008 to ref 155654
    write_horizontally default
 end
 end

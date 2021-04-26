@@ -1,9 +1,10 @@
 class TokenHandler
-!!!590214.cpp!!!	handle(in msg : Token [1]) : void [*]
-assert(msg);
+!!!590214.cpp!!!	handle(in token_in : Token [1]) : Tokens [1]
+assert(token_in);
+output_.clear();
 
-if (is_handles_deleted_ || !msg->deleted()) {
-  received_ = std::move(msg);
+if (is_handles_deleted_ || !token_in->deleted()) {
+  received_ = std::move(token_in);
   if (received_->timestamp() > exchange_time_) {
     exchange_time_ = received_->timestamp();
     if (!elapsed()) {
@@ -21,13 +22,9 @@ if (is_handles_deleted_ || !msg->deleted()) {
     throw processing_error(std::move(received_));
   }
 } else
-  output_.push_back(std::move(msg));
-if (next_) {
-  for (auto &out : output_)
-    next_->handle(std::move(out));
-}
-output_.clear();
-return;
+  output_.push_back(std::move(token_in));
+
+return std::move(output_);
 !!!1093254.cpp!!!	era() : bool
 return message();
 !!!692230.cpp!!!	create() : bool
@@ -55,5 +52,7 @@ return orderEvent();
 return message();
 !!!1595910.cpp!!!	dot() : bool
 return message();
-!!!1668358.cpp!!!	_exchange_time() : Message::Timestamp
+!!!1668358.cpp!!!	exchange_time() : Message::Timestamp
 return exchange_time_;
+!!!1674886.cpp!!!	next() : TokenHandler::TokenHandler_SP
+return next_;

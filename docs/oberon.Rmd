@@ -582,7 +582,7 @@ knitr::include_graphics("html_docs/fig551942.png", dpi=80)
 
 UML2 Activity Diagram on figure \@ref(fig:ad-reconstructor-process) shows a generic `Process message` activity.
 
-```{r ad-reconstructor-process, echo=FALSE, fig.cap="`Reconstructor::process()` first calls `extract()` method to create an instance of a class derived from `Message`. The `extract()` is a virtual abstract method so it is overriden in an exchange-specific implementation class, derived from `Reconstructor`. The returned instance is passed to a chain of `TokenHandler`'s through the call of `handle()`. In this example the chain consists of four `TokenHandler`s shown in green, but there can be any number of `TokenHandler`s in the chain.", fig.align="left"}
+```{r ad-reconstructor-process, echo=FALSE, fig.cap="`Reconstructor::process()` first calls `extract()` method to create an instance of a class derived from `Message`. The `extract()` is a virtual abstract method so it is overriden in an exchange-specific implementation class, derived from `Reconstructor`. The returned instance is passed to a chain of `TokenHandler`s. There can be any number of `TokenHandler`s in the chain.", fig.align="left"}
 knitr::include_graphics("html_docs/fig572166.png", dpi=120)
 ```
 
@@ -602,7 +602,7 @@ Data cleansing is implemented using [Chain of Responsibility](https://en.wikiped
 UML2 Sequence Diagram of `TokenHandler::handle()` is shown on figure \@ref(fig:sd-tokenhandler-handle). The number of `TokenHandler`s involved and their kinds depend on an exchange and described in details in their respective sections later.
 
 
-```{r sd-tokenhandler-handle, echo=FALSE, fig.cap="UML2 Sequence diagram showing a \"happy path\" trace of TokenHandler::handle() method. The loop implements \"iterative\" ExpansionRegion from figure \\@ref(fig:ad-reconstructor-process)", fig.align="left"}
+```{r sd-tokenhandler-handle, echo=FALSE, fig.cap="UML2 Sequence diagram showing a \"happy path\" trace of TokenHandler::handle() method.", fig.align="left"}
 knitr::include_graphics("html_docs/fig551814.png", dpi=80)
 ```
 

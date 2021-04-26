@@ -12,17 +12,17 @@ activitycanvas 142854 activity_ref 148230 // S.1 Capture
     end
   end
 end
-activityactioncanvas 143750 activityaction_ref 192390 // activity action Receive messages
+activityactioncanvas 143750 activityaction_ref 192390 // activity action Receiver state machine
   
   show_opaque_action_definition default
   color green
   xyzwh 512 122 3038 100 60
   pins
-    pincanvas 177158 pin_ref 378502 // target
-      xyzwh 502 146 3040 11 11 label_xy 465 128
+    pincanvas 177670 pin_ref 427782 // target
+      xyzwh 502 152 3040 11 11 label_xy 461 133
     end
-    pincanvas 177286 pin_ref 378630 // tree
-      xyzwh 554 177 3040 11 11 label_xy 569 182
+    pincanvas 178182 pin_ref 434310 // tree
+      xyzwh 552 177 3040 11 11 label_xy 566 185
     end
   end
 end
@@ -35,7 +35,7 @@ end
 interruptibleactivityregioncanvas 149126 interruptibleactivityregion_ref 141062 // 
   xyzwh 143 107 2000 583 410
 end
-activityactioncanvas 151686 activityaction_ref 213638 // activity action Initialize
+activityactioncanvas 151686 activityaction_ref 213638 // activity action I.1 Initialize
   
   show_opaque_action_definition default
   xyzwh 267 275 4013 100 60
@@ -54,10 +54,7 @@ activityactioncanvas 151686 activityaction_ref 213638 // activity action Initial
     end
   end
 end
-activitynodecanvas 156166 activitynode_ref 229382 // fork
-   xyzwh 470 258 2010 15 75
-end
-activityactioncanvas 166534 activityaction_ref 247302 // activity action Reconstruct Order Book
+activityactioncanvas 166534 activityaction_ref 247302 // activity action R.1 Reconstructor
   
   show_opaque_action_definition default
   color green
@@ -84,32 +81,9 @@ flowcanvas 153606 flow_ref 244230 // S.1.1
   from ref 148486 z 3039 label "S.1.1" xyz 300 212 3039 to ref 151686
    write_horizontally default
 end
-flowcanvas 156294 flow_ref 272646 // S.1.6
-  decenter_begin 400
-  decenter_end 546
+flowcanvas 173446 flow_ref 407686 // S.1.5
   
-  from ref 151686 z 4014 label "S.1.6" xyz 403 291 4014 to ref 156166
-   write_horizontally default
-end
-flowcanvas 156550 flow_ref 272902 // S.1.9
-  decenter_begin 120
-  decenter_end 180
-  
-  from ref 156166 z 3039 label "S.1.9" xyz 492 257 3039 to point 529 264
-  line 162822 z 3039 to ref 143750
-   write_horizontally default
-end
-flowcanvas 167942 flow_ref 315142 // S.1.8
-  decenter_begin 880
-  decenter_end 211
-  
-  from ref 156166 z 2011 label "S.1.8" xyz 493 314 2011 to point 528 321
-  line 168326 z 2011 to ref 166534
-   write_horizontally default
-end
-flowcanvas 173446 flow_ref 407686 // S.1.7
-  
-  from ref 171654 z 4016 label "S.1.7" xyz 423 373 4016 to ref 170758
+  from ref 171654 z 4016 label "S.1.5" xyz 423 373 4016 to ref 170758
    write_horizontally default
 end
 flowcanvas 174342 flow_ref 408070 // S.1.2
@@ -122,14 +96,14 @@ flowcanvas 174470 flow_ref 408198 // S.1.3
   from ref 143238 z 4016 label "S.1.3" xyz 169 308 4016 to ref 171398
    write_horizontally default
 end
-flowcanvas 175494 flow_ref 415622 // S.1.10
+flowcanvas 175494 flow_ref 415622 // S.1.7
   
-  from ref 143750 z 3039 label "S.1.10" xyz 544 84 3039 to ref 148870
+  from ref 143750 z 3039 label "S.1.7" xyz 547 84 3039 to ref 148870
    write_horizontally default
 end
-flowcanvas 176390 flow_ref 416006 // S.1.11
+flowcanvas 176390 flow_ref 416006 // S.1.8
   
-  from ref 166534 z 2006 label "S.1.11" xyz 543 502 2006 to ref 176262
+  from ref 166534 z 2006 label "S.1.8" xyz 546 502 2006 to ref 176262
    write_horizontally default
 end
 flowcanvas 176646 flow_ref 430598 // <flow>
@@ -138,14 +112,14 @@ flowcanvas 176646 flow_ref 430598 // <flow>
   line 176774 z 2006 to ref 176262
    write_horizontally default
 end
-flowcanvas 177414 flow_ref 437126 // <flow>
+flowcanvas 177798 flow_ref 500614 // S.1.4
   
-  from ref 177286 z 3041 to ref 170374
+  from ref 171782 z 4016 label "S.1.4" xyz 424 208 3000 to ref 177670
    write_horizontally default
 end
-flowcanvas 177542 flow_ref 437254 // S.1.4
+flowcanvas 178310 flow_ref 507142 // S.1.6
   
-  from ref 171782 z 4016 label "S.1.4" xyz 424 205 4016 to ref 177158
+  from ref 178182 z 3041 label "S.1.6" xyz 544 285 3000 to ref 170374
    write_horizontally default
 end
 end

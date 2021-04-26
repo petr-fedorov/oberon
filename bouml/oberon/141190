@@ -1,6 +1,6 @@
 format 224
 "Reconstr" // App::Reconstr
-  revision 267
+  revision 272
   modified_by 6 "petr"
   // class settings
   
@@ -5773,10 +5773,10 @@ ${inlines}
       end
 
       operation 590214 "handle"
-	public explicit_return_type "void"
-	multiplicity "*"
+	public return_type class_ref 903046 // Tokens
+	multiplicity "1"
 	nparams 1
-	  param in name "msg" type class_ref 902918 // Token
+	  param in name "token_in" type class_ref 902918 // Token
 	multiplicity "1"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} && ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
 "
@@ -5978,6 +5978,20 @@ ${inlines}
 	
 	
 	comment "returns the most recent timestamp that has been seen in received messages"
+      end
+
+      operation 1674886 "next"
+	const cpp_inline public return_type class_ref 950918 // TokenHandler_SP
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
       end
     end
 
@@ -7089,6 +7103,149 @@ ${inlines}
       end
     end
 
+    state 328966 "ReplacePriceChanges"
+      stereotype "machine"
+      comment "Replaces events with a price change by pair of events (deleted/created), so it appears that the order has been cancelled and then placed again with the new price
+"
+      statediagram 578822 "ReplacePriceChanges"
+	statediagramsettings show_trans_definition yes draw_all_relations yes
+	 end
+	size A4
+      end
+
+      state 329094 "waiting"
+	transition 604934 "reset"
+	  on state_ref 329094 // waiting
+	    uml_trigger "reset"
+	    uml_expr "clear all saved prices"
+	    cpp_trigger "reset"
+	end
+
+	transition 605062 "<transition>"
+	  on pseudostate_ref 409606 // choice 
+	    uml_trigger "orderEvent"
+	    cpp_trigger "orderEvent"
+	  external 
+	end
+      end
+
+      pseudostate 409478 initial ""
+	transition 604806 "<transition>"
+	  on state_ref 329094 // waiting
+	  external 
+	end
+      end
+
+      pseudostate 409606 choice ""
+	transition 605318 "<transition>"
+	  on pseudostate_ref 409734 // junction 
+	    uml_guard "deleted"
+	    uml_expr "clear saved price"
+	  external 
+	end
+
+	transition 605446 "<transition>"
+	  on pseudostate_ref 409862 // choice 
+	    uml_guard "changed"
+	  external 
+	end
+
+	transition 605830 "<transition>"
+	  on pseudostate_ref 409734 // junction 
+	    uml_guard "created"
+	    uml_expr "save price"
+	  external 
+	end
+
+	transition 606086 "<transition>"
+	  on pseudostate_ref 409990 // final 
+	    uml_guard "else"
+	  external 
+	end
+      end
+
+      pseudostate 409734 junction ""
+	transition 605190 "<transition>"
+	  on state_ref 329094 // waiting
+	    uml_expr "pass "
+	  external 
+	end
+      end
+
+      pseudostate 409862 choice ""
+	transition 605574 "<transition>"
+	  on pseudostate_ref 409734 // junction 
+	    uml_guard "price hasn't changed"
+	  external 
+	end
+
+	transition 605702 "<transition>"
+	  on state_ref 329094 // waiting
+	    uml_guard "else"
+	    uml_expr "split into deleted/created, update saved price"
+	  external 
+	end
+      end
+
+      pseudostate 409990 final ""
+      end
+    end
+
+    state 335622 "MergeByPrice"
+      stereotype "machine"
+      statediagram 585478 "MergeByPrice"
+	statediagramsettings show_trans_definition yes
+	 end
+	size A4
+      end
+
+      state 335750 "waiting"
+	transition 612870 "orderEvent"
+	  on pseudostate_ref 416774 // choice 
+	    uml_trigger "orderEvent"
+	    uml_expr "find Level2 by price"
+	    cpp_trigger "orderEvent"
+	  external 
+	end
+
+	transition 613382 "reset"
+	  on state_ref 335750 // waiting
+	    uml_trigger "reset"
+	    uml_expr "clear all Level2"
+	    cpp_trigger "reset"
+	end
+      end
+
+      pseudostate 416518 initial ""
+	transition 612614 "<transition>"
+	  on state_ref 335750 // waiting
+	  external 
+	end
+      end
+
+      pseudostate 416774 choice ""
+	transition 612998 "<transition>"
+	  on pseudostate_ref 416902 // junction 
+	    uml_guard "found"
+	  external 
+	end
+
+	transition 613126 "<transition>"
+	  on pseudostate_ref 416902 // junction 
+	    uml_guard "else"
+	    uml_expr "create and store Level2"
+	  external 
+	end
+      end
+
+      pseudostate 416902 junction ""
+	transition 613254 "<transition>"
+	  on state_ref 335750 // waiting
+	    uml_expr "save Level2 handle output"
+	  external 
+	end
+      end
+    end
   end
 
   classview 280710 "Reconstructor"
@@ -7931,6 +8088,5 @@ ${namespace_end}"
       associated_elems
       end
     end
-
   end
 end

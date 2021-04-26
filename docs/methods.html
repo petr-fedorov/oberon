@@ -24,7 +24,7 @@
 <meta name="author" content="Petr Fedorov" />
 
 
-<meta name="date" content="2021-04-22" />
+<meta name="date" content="2021-04-26" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -535,9 +535,9 @@ Figure 2.9: “Reconstructor” hierarchy of classes used in implementation of �
 </div>
 <p>UML2 Activity Diagram on figure <a href="methods.html#fig:ad-reconstructor-process">2.10</a> shows a generic <code>Process message</code> activity.</p>
 <div class="figure" style="text-align: left"><span id="fig:ad-reconstructor-process"></span>
-<img src="html_docs/fig572166.png" alt="`Reconstructor::process()` first calls `extract()` method to create an instance of a class derived from `Message`. The `extract()` is a virtual abstract method so it is overriden in an exchange-specific implementation class, derived from `Reconstructor`. The returned instance is passed to a chain of `TokenHandler`'s through the call of `handle()`. In this example the chain consists of four `TokenHandler`s shown in green, but there can be any number of `TokenHandler`s in the chain."  />
+<img src="html_docs/fig572166.png" alt="`Reconstructor::process()` first calls `extract()` method to create an instance of a class derived from `Message`. The `extract()` is a virtual abstract method so it is overriden in an exchange-specific implementation class, derived from `Reconstructor`. The returned instance is passed to a chain of `TokenHandler`s. There can be any number of `TokenHandler`s in the chain."  />
 <p class="caption">
-Figure 2.10: <code>Reconstructor::process()</code> first calls <code>extract()</code> method to create an instance of a class derived from <code>Message</code>. The <code>extract()</code> is a virtual abstract method so it is overriden in an exchange-specific implementation class, derived from <code>Reconstructor</code>. The returned instance is passed to a chain of <code>TokenHandler</code>’s through the call of <code>handle()</code>. In this example the chain consists of four <code>TokenHandler</code>s shown in green, but there can be any number of <code>TokenHandler</code>s in the chain.
+Figure 2.10: <code>Reconstructor::process()</code> first calls <code>extract()</code> method to create an instance of a class derived from <code>Message</code>. The <code>extract()</code> is a virtual abstract method so it is overriden in an exchange-specific implementation class, derived from <code>Reconstructor</code>. The returned instance is passed to a chain of <code>TokenHandler</code>s. There can be any number of <code>TokenHandler</code>s in the chain.
 </p>
 </div>
 <p>The virtual method <code>Reconstructor::extract()</code> takes a <a href="https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html">Boost.PropertyTree</a> container with an exchange-specific data and creates an instance of one of internal exchange-independent message class shown in green on figure <a href="methods.html#fig:message-hierarchy-process">2.11</a>. The message is returned in <code>Token</code> container and multiple messages are returned in <code>Tokens</code> container.</p>
@@ -554,9 +554,9 @@ Figure 2.11: <code>Message</code>-based hierarchy of classes used in implementat
 <p>Data cleansing is implemented using <a href="https://en.wikipedia.org/wiki/Chain-of-responsibility_pattern">Chain of Responsibility</a> pattern. Each <code>TokenHandler</code> accepts, as a constructor parameter, the next <code>TokenHandler</code> which will receive messages as soon as <code>TokenHandler</code> being constructed has handled them.</p>
 <p>UML2 Sequence Diagram of <code>TokenHandler::handle()</code> is shown on figure <a href="methods.html#fig:sd-tokenhandler-handle">2.12</a>. The number of <code>TokenHandler</code>s involved and their kinds depend on an exchange and described in details in their respective sections later.</p>
 <div class="figure" style="text-align: left"><span id="fig:sd-tokenhandler-handle"></span>
-<img src="html_docs/fig551814.png" alt="UML2 Sequence diagram showing a &quot;happy path&quot; trace of TokenHandler::handle() method. The loop implements &quot;iterative&quot; ExpansionRegion from figure \@ref(fig:ad-reconstructor-process)"  />
+<img src="html_docs/fig551814.png" alt="UML2 Sequence diagram showing a &quot;happy path&quot; trace of TokenHandler::handle() method."  />
 <p class="caption">
-Figure 2.12: UML2 Sequence diagram showing a “happy path” trace of TokenHandler::handle() method. The loop implements “iterative” ExpansionRegion from figure <a href="methods.html#fig:ad-reconstructor-process">2.10</a>
+Figure 2.12: UML2 Sequence diagram showing a “happy path” trace of TokenHandler::handle() method.
 </p>
 </div>
 <p>Handling of messages by <code>TokenHandler</code> is denoted by interaction use <code>Message - accept</code> on figure <a href="methods.html#fig:sd-tokenhandler-handle">2.12</a>. The result of handling is a set of zero or more messages that are stored in <code>output_</code> member variable that is an instance of <code>Tokens</code> class shown on figure <a href="methods.html#fig:message-hierarchy-process">2.11</a>.</p>
