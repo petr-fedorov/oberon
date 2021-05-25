@@ -16,10 +16,9 @@ if (tree.get<std::string>("type") == "event") {
     if (ss.good()) {
       auto output = boost::make_unique<Era>(
           timestamp_ + std::chrono::microseconds{tree.get<int>("mks")},
-          boost::make_shared<Security>(tree.get<std::string>("exchange"),
-                                       tree.get<std::string>("product"),
-                                       tree.get<double>("quote_increment"),
-                                       tree.get<double>("base_increment")));
+          tree.get<std::string>("exchange"), tree.get<std::string>("product"),
+          tree.get<double>("quote_increment"),
+          tree.get<double>("base_increment"));
       csv_version_ =
           OrderEvent::detectCsvVersion(tree.get<std::string>("header"));
       if (csv_version_) {

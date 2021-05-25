@@ -4,28 +4,53 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-<title>Class Reader</title>
+<title>Class Receiver</title>
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 
 <body bgcolor="#ffffff">
 
-<div class = "title">Class Reader</div>
+<div class = "title">Class Receiver</div>
 <p></p>
 
 <!-- ============================================================= -->
 
 <a name="ref4_1074182"></a>
 <p>Declaration :</p><ul>
-<li>C++ : class Reader </li></ul><p>Artifact : <a href="index.html#ref8_373894"><b>Reader</b></a></p>
+<li>C++ : class Receiver </li></ul><p>Artifact : <a href="index.html#ref8_373894"><b>Receiver</b></a></p>
 <div class="sub">
-<a name="ref2_1504390"></a>
+<a name="ref2_1681926"></a>
+<table><tr><td><div class="element">Operation <b>createEraMessage</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : + createEraMessage() : <a href="class174214.html#ref4_174214"><b>ptree</b></a></li><li>C++ : public: inline <a href="class174214.html#ref4_174214"><b>ptree</b></a> createEraMessage() const</li></ul><a name="ref2_1688454"></a>
+<table><tr><td><div class="element">Operation <b>createResetMessage</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : + createResetMessage() : <a href="class174214.html#ref4_174214"><b>ptree</b></a></li><li>C++ : public: <a href="class174214.html#ref4_174214"><b>ptree</b></a> createResetMessage()</li></ul><a name="ref2_1681542"></a>
+<table><tr><td><div class="element">Operation <b>operator &gt;&gt;</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : + operator &gt;&gt;(out message : <a href="class174214.html#ref4_174214"><b>ptree</b></a>) : <a href="class1074182.html#ref4_1074182"><b>Receiver</b></a>,  exceptions : <a href="class1162246.html#ref4_1162246"><b>receiving_error</b></a></li><li>C++ : public: <a href="class1074182.html#ref4_1074182"><b>Receiver</b></a>&amp; operator &gt;&gt;(<a href="class174214.html#ref4_174214"><b>ptree</b></a> &amp; message) throw (<a href="class1162246.html#ref4_1162246"><b>receiving_error</b></a>)</li></ul><a name="ref2_1681670"></a>
+<table><tr><td><div class="element">Operation <b>operator bool</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : + operator bool() : </li><li>C++ : public:  operator bool() const</li></ul><a name="ref1_1035654"></a>
+<table><tr><td><div class="element">Attribute <b>source_</b></div></td></tr></table>
+<p>Declaration :</p><ul><li>Uml : - source_ : <a href="class1155718.html#ref4_1155718"><b>ifstream</b></a>, multiplicity : 1</li><li>C++ : private: <a href="class1155718.html#ref4_1155718"><b>ifstream</b></a> source_</li></ul><a name="ref1_1035782"></a>
+<table><tr><td><div class="element">Attribute <b>exchange_</b></div></td></tr></table>
+<p>Declaration :</p><ul><li>Uml : - exchange_ : string, multiplicity : 1</li><li>C++ : private: std::string exchange_</li></ul><a name="ref1_1035910"></a>
+<table><tr><td><div class="element">Attribute <b>product_</b></div></td></tr></table>
+<p>Declaration :</p><ul><li>Uml : - product_ : string, multiplicity : 1</li><li>C++ : private: std::string product_</li></ul><a name="ref1_1055750"></a>
+<table><tr><td><div class="element">Attribute <b>header_</b></div></td></tr></table>
+<p>Declaration :</p><ul><li>Uml : - header_ : string, multiplicity : 1</li><li>C++ : private: std::string header_</li></ul><a name="ref1_1036038"></a>
+<table><tr><td><div class="element">Attribute <b>timestamp_</b></div></td></tr></table>
+<p>Declaration :</p><ul><li>Uml : - timestamp_ : <a href="class230278.html#ref4_230278"><b>Timestamp</b></a>, multiplicity : 1</li><li>C++ : private: <a href="class230278.html#ref4_230278"><b>Timestamp</b></a> timestamp_</li></ul><a name="ref2_1701766"></a>
+<table><tr><td><div class="element">Operation <b>openSourceFile</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : - openSourceFile(in file_name : string) : void,  exceptions : <a href="class1162246.html#ref4_1162246"><b>receiving_error</b></a></li><li>C++ : private: void openSourceFile(const std::string &amp; file_name)</li></ul><a name="ref2_1688582"></a>
+<table><tr><td><div class="element">Operation <b>parseFileName</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : - parseFileName(in file_name : string) : void,  exceptions : <a href="class1162246.html#ref4_1162246"><b>receiving_error</b></a></li><li>C++ : private: void parseFileName(std::string file_name)</li></ul><a name="ref2_1681798"></a>
+<table><tr><td><div class="element">Operation <b>renameFile</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : - renameFile(in file : string) : string,  exceptions : <a href="class1162246.html#ref4_1162246"><b>receiving_error</b></a></li><li>C++ : private: std::string renameFile(const std::string &amp; file) </li></ul><a name="ref2_1695110"></a>
+<table><tr><td><div class="element">Operation <b>Receiver</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : + Receiver(in reconstructor : <a href="class1142662.html#ref4_1142662"><b>Reconstructor_SP</b></a>, in extension : string, in quote_increment : string, in base_increment : string) : </li><li>C++ : public: Receiver(const <a href="class1142662.html#ref4_1142662"><b>Reconstructor_SP</b></a> &amp; reconstructor, const std::string &amp; extension, const std::string &amp; quote_increment, const std::string &amp; base_increment)</li></ul><a name="ref2_1504390"></a>
 <table><tr><td><div class="element">Operation <b>parseFileName</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : static, - parseFileName(in file_name : string, inout exchange : string, inout product : string, inout timestamp : <a href="class230278.html#ref4_230278"><b>Timestamp</b></a>) : bool</li><li>C++ : private: static bool parseFileName(std::string file_name, std::string &amp; exchange, std::string &amp; product, <a href="class230278.html#ref4_230278"><b>Timestamp</b></a> &amp; timestamp)</li></ul><a name="ref2_1504262"></a>
 <table><tr><td><div class="element">Operation <b>uniqueFileName</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : static, - uniqueFileName(in file_name : string) : string</li><li>C++ : private: static std::string uniqueFileName(std::string file_name)</li></ul><a name="ref2_1475974"></a>
 <table><tr><td><div class="element">Operation <b>fileExists</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : static, - fileExists(in name : string) : bool</li><li>C++ : private: static bool fileExists(const std::string &amp; name)</li></ul><table><tr><td><div class="element">Class <b><a href="class1074310.html#ref4_1074310"><b>Files</b></a></b></div></td></tr></table>
-<table><tr><td><div class="element">Class <b><a href="class1074438.html#ref4_1074438"><b>Reconstructor</b></a></b></div></td></tr></table>
 <a name="ref2_1572614"></a>
-<table><tr><td><div class="element">Operation <b>readAndProcess</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : + readAndProcess(in files : <a href="class1074310.html#ref4_1074310"><b>Files</b></a> [*], inout process : <a href="class1074438.html#ref4_1074438"><b>Reconstructor</b></a>, in extension : string, in quote_increment : string, in base_increment : string) : int</li><li>C++ : public: int32_t readAndProcess(const <a href="class1074310.html#ref4_1074310"><b>Files</b></a> &amp; files, <a href="class1074438.html#ref4_1074438"><b>Reconstructor</b></a> process, const std::string &amp; extension, const std::string &amp; quote_increment, const std::string &amp; base_increment)</li></ul></div>
-<p>All public operations : <a href="class1074182.html#ref2_1572614"><b>readAndProcess</b></a> </p>
+<table><tr><td><div class="element">Operation <b>readAndProcess</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : + readAndProcess(in files : <a href="class1074310.html#ref4_1074310"><b>Files</b></a> [*]) : void,  exceptions : <a href="class1162246.html#ref4_1162246"><b>receiving_error</b></a></li><li>C++ : public: void readAndProcess(const <a href="class1074310.html#ref4_1074310"><b>Files</b></a> &amp; files)</li></ul><a name="ref0_1372550"></a>
+<table><tr><td><div class="element">Relation <b>reconstructor_ (&lt;directional aggregation&gt;)</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : - reconstructor_ : <a href="class486278.html#ref4_486278"><b>Reconstructor</b></a>, multiplicity : 1</li><li>C++ : private: boost::shared_ptr&lt;<a href="class486278.html#ref4_486278"><b>Reconstructor</b></a>&gt; reconstructor_</li></ul><p>Stereotype: shared_ptr</p>
+<a name="ref1_1042566"></a>
+<table><tr><td><div class="element">Attribute <b>extension_</b></div></td></tr></table>
+<p>Declaration :</p><ul><li>Uml : - extension_ : string</li><li>C++ : private: std::string extension_</li></ul><a name="ref1_1049094"></a>
+<table><tr><td><div class="element">Attribute <b>quote_increment_</b></div></td></tr></table>
+<p>Declaration :</p><ul><li>Uml : - quote_increment_ : string, multiplicity : 1</li><li>C++ : private: std::string quote_increment_</li></ul><a name="ref1_1049222"></a>
+<table><tr><td><div class="element">Attribute <b>base_increment_</b></div></td></tr></table>
+<p>Declaration :</p><ul><li>Uml : - base_increment_ : string, multiplicity : 1</li><li>C++ : private: std::string base_increment_</li></ul></div>
+<p>All public operations : <a href="class1074182.html#ref2_1681926"><b>createEraMessage</b></a> , <a href="class1074182.html#ref2_1688454"><b>createResetMessage</b></a> , <a href="class1074182.html#ref2_1681542"><b>operator &gt;&gt;</b></a> , <a href="class1074182.html#ref2_1681670"><b>operator bool</b></a> , <a href="class1074182.html#ref2_1572614"><b>readAndProcess</b></a> </p>
 </body>
 </html>

@@ -1,4 +1,72 @@
-class Reader
+class Receiver
+!!!1681926.cpp!!!	createEraMessage() : ptree
+boost::property_tree::ptree era_message;
+era_message.put("type", "era");
+era_message.put("timestamp", date::format("%FT%TZ", timestamp_));
+era_message.put("mks", "0");
+era_message.put("exchange", exchange_);
+era_message.put("product", product_);
+era_message.put("quote_increment", quote_increment_);
+era_message.put("base_increment", base_increment_);
+era_message.put("header", header_);
+return era_message;
+!!!1688454.cpp!!!	createResetMessage() : ptree
+boost::property_tree::ptree reset_message;
+reset_message.put("type", "reset");
+reset_message.put("timestamp", "");
+return reset_message;
+
+!!!1681542.cpp!!!	operator >>(out message : ptree) : Receiver
+std::string line;
+if (std::getline(source_, line)) {
+  message.put("type", "event");
+  message.put("timestamp", "");
+  message.put("data", line);
+} else {
+  if (!source_.eof() && (source_.fail() || source_.bad())) {
+    BOOST_LOG_TRIVIAL(error) << "Couldn't read next line";
+    throw receiving_error{};
+  }
+}
+return *this;
+!!!1681670.cpp!!!	operator bool()
+return static_cast<bool>(source_);
+!!!1701766.cpp!!!	openSourceFile(in file_name : string) : void
+if(source_.is_open())
+  source_.close();
+source_.open(file_name);
+std::getline(source_, header_);
+if(source_.fail()) {
+  BOOST_LOG_TRIVIAL(error) << "Couldn't read header from " << file_name;
+  throw receiving_error{};
+}
+return;
+!!!1688582.cpp!!!	parseFileName(in file_name : string) : void
+const std::size_t last_slash_idx = file_name.find_last_of("\\/");
+if (std::string::npos != last_slash_idx) {
+  file_name.erase(0, last_slash_idx + 1);
+}
+std::istringstream ss{file_name};
+std::getline(ss, exchange_, '_');
+std::getline(ss, product_, '_');
+ss >> date::parse("%FT%H-%M-%SZ", timestamp_);
+if (!exchange_.empty() && !product_.empty() && !ss.fail())
+  return;
+else {
+  BOOST_LOG_TRIVIAL(error) << "Couldn't parse file name: " << file_name;
+  throw receiving_error{};
+}
+!!!1681798.cpp!!!	renameFile(in file : string) : string
+std::string source{};
+source = uniqueFileName(file + extension_);
+if (!std::rename((file).c_str(), source.c_str()))
+  BOOST_LOG_TRIVIAL(info) << file << " renamed to " << source;
+else {
+  BOOST_LOG_TRIVIAL(error) << file << " couldn't be found or renamed to "
+                           << source << "\n";
+  throw receiving_error{};
+}
+return source;
 !!!1504390.cpp!!!	parseFileName(in file_name : string, inout exchange : string, inout product : string, inout timestamp : Message::Timestamp) : bool
 const std::size_t last_slash_idx = file_name.find_last_of("\\/");
 if (std::string::npos != last_slash_idx)
@@ -24,60 +92,16 @@ return file_name;
 !!!1475974.cpp!!!	fileExists(in name : string) : bool
 std::ifstream infile(name);
 return infile.good();
-!!!1572614.cpp!!!	readAndProcess(in files : Reader::Files [*], inout process : Reader::Reconstructor, in extension : string, in quote_increment : string, in base_increment : string) : int
-std::string exchange;
-std::string product;
-reconstructor::Message::Timestamp output;
-using namespace date;
+!!!1572614.cpp!!!	readAndProcess(in files : Receiver::Files [*]) : void
 for (auto file = files.begin(); file != files.end(); ++file) {
-  if (!parseFileName(*file, exchange, product, output)) {
-    BOOST_LOG_TRIVIAL(error)
-        << "Couldn't parse " << *file
-        << " to extract exchange, product or era timestamp\n";
-    return EXIT_FAILURE;
-  }
-  std::string source{};
-  if (!extension.empty()) {
-    source = uniqueFileName(*file + extension);
-    if (!std::rename((*file).c_str(), source.c_str()))
-      BOOST_LOG_TRIVIAL(info) << *file << " renamed to " << source;
-    else {
-      BOOST_LOG_TRIVIAL(error)
-          << *file << " couldn't be found or renamed to " << source << "\n";
-      return EXIT_FAILURE;
+    parseFileName(*file);
+    openSourceFile(!extension_.empty()?renameFile(*file): *file);
+    reconstructor_->process(createEraMessage());
+    boost::property_tree::ptree event;
+    while(*this >> event) {
+      reconstructor_->process(event);
+      event.clear();
     }
-  } else
-    source = *file;
-
-  try {
-    std::ifstream input{source};
-    std::string header;
-    std::getline(input, header);
-    // CsvOrderEvent event{header};
-    boost::property_tree::ptree control_message;
-    control_message.put("type", "era");
-    control_message.put("timestamp", format("%FT%TZ", output));
-    control_message.put("mks", "0");
-    control_message.put("exchange", exchange);
-    control_message.put("product", product);
-    control_message.put("quote_increment", quote_increment);
-    control_message.put("base_increment", base_increment);
-    control_message.put("header", header);
-    process(control_message);
-    for (std::string line; std::getline(input, line);) {
-      boost::property_tree::ptree event;
-      event.put("type", "event");
-      event.put("timestamp", "");
-      event.put("data", line);
-      // boost::property_tree::write_json(std::cout, event, false);
-      process(event);
-    }
-    control_message.clear();
-    control_message.put("type", "reset");
-    control_message.put("timestamp", "");
-    process(control_message);
-  } catch (const reconstructor::processing_error &e) {
-    return EXIT_FAILURE;
-  }
+    reconstructor_->process(createResetMessage());
 }
-return EXIT_SUCCESS;
+return; 

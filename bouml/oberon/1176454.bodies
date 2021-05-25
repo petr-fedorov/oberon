@@ -1,0 +1,23 @@
+class AnyState
+!!!1742214.cpp!!!	reset(inout stm : PriceChangeEliminator) : void
+  AnyState * st = _upper(stm);
+
+  if (st != 0)
+    st->reset(stm);
+#ifdef VERBOSE_STATE_MACHINE
+  else
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "transition reset not expected";
+#endif
+#endif
+!!!1742598.cpp!!!	orderEvent(inout stm : PriceChangeEliminator) : void
+  AnyState * st = _upper(stm);
+
+  if (st != 0)
+    st->orderEvent(stm);
+#ifdef VERBOSE_STATE_MACHINE
+  else
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "transition orderEvent not expected";
+#endif
+#endif

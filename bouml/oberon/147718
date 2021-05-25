@@ -1,6 +1,6 @@
 format 224
 "App" // App
-  revision 174
+  revision 190
   modified_by 6 "petr"
   // class settings
   
@@ -54,34 +54,25 @@ format 224
     
     activitydiagramsettings
      end
-    activity 148230 "S.1 Capture"
-      activitydiagram 181766 "S.1 Capture"
+    activity 148230 "B.1 Capture"
+      activitydiagram 181766 "B.1 Capture"
 	activitydiagramsettings
 	 end
 	size A4
       end
 
-      parameter 148998 "exchange_name" explicit_type "string"
+      parameter 148998 "options" type class_ref 1014022 // options_description
 	 multiplicity "1" unordered 
 	in
-	flow 408070 "S.1.2"
-	  on pin_ref 349318 // exchange_name
+	flow 408070 "B.1.2"
+	  on pin_ref 349318 // options
 	end
       end
 
-      parameter 149126 "pair_name" explicit_type "string"
-	 multiplicity "1" unordered 
-	in
-	comment "S.1 Standalone Application"
-	flow 408198 "S.1.3"
-	  on pin_ref 349446 // pair_name
-	end
-      end
-
-      activityaction 192390 "Receiver state machine"
+      activityaction 192390 "Run Receiver state machine"
 	call_behavior_action
 	synchronous state_ref 218374 // Receiver
-	flow 415622 "S.1.7"
+	flow 415622 "B.1.7"
 	  on activitynode_ref 190086 // activity_final
 	end
 
@@ -93,15 +84,15 @@ format 224
 	pin 434310 "tree" type class_ref 174214 // ptree
 	   multiplicity "1" unordered 
 	  out stream
-	  flow 507142 "S.1.6"
+	  flow 507142 "B.1.6"
 	    on pin_ref 348678 // tree
 	  end
 	end
       end
 
       activitynode 189958 initial_node ""
-	flow 244230 "S.1.1"
-	  on activityaction_ref 213638 // activity action I.1 Initialize
+	flow 244230 "B.1.1"
+	  on activityaction_ref 213638 // activity action C.01 Init capture
 	end
       end
 
@@ -109,15 +100,10 @@ format 224
       end
 
       interruptibleactivityregion 141062 ""
-	activityaction 213638 "I.1 Initialize"
+	activityaction 213638 "C.01 Init capture"
 	  call_behavior_action
-	  synchronous activity_ref 168710 // I.1 Initialize
-	  pin 349318 "exchange_name" explicit_type "string"
-	     multiplicity "1" unordered 
-	    in
-	  end
-
-	  pin 349446 "pair_name" explicit_type "string"
+	  synchronous activity_ref 168710 // C.01 Init capture
+	  pin 349318 "options" type class_ref 1014022 // options_description
 	     multiplicity "1" unordered 
 	    in
 	  end
@@ -125,7 +111,7 @@ format 224
 	  pin 349702 "reconstructor" explicit_type "Reconstructor"
 	     multiplicity "1" unordered is_control
 	    out
-	    flow 407686 "S.1.5"
+	    flow 407686 "B.1.5"
 	      on pin_ref 349062 // target
 	    end
 	  end
@@ -133,15 +119,15 @@ format 224
 	  pin 349830 "receiver" type class_ref 712966 // Receiver
 	     multiplicity "1" unordered is_control
 	    out
-	    flow 500614 "S.1.4"
+	    flow 500614 "B.1.4"
 	      on pin_ref 427782 // target
 	    end
 	  end
 	end
 
-	activityaction 247302 "R.1 Reconstructor"
+	activityaction 247302 "C.02 Run Reconstructor"
 	  call_behavior_action
-	  synchronous activity_ref 175238 // R.1 Reconstructor
+	  synchronous activity_ref 175238 // C.02 Run Reconstructor
 	  pin 348678 "tree" type class_ref 174214 // ptree
 	     multiplicity "1" fifo 
 	    in stream
@@ -152,14 +138,14 @@ format 224
 	    in
 	  end
 
-	  flow 416006 "S.1.8"
+	  flow 416006 "B.1.8"
 	    on activitynode_ref 317190 // activity_final
 	  end
 	end
 
 	activityaction 273798 "Interrupt"
 	  accept_event_action
-	  flow 430598 "<flow>"
+	  flow 430598 "B.1.3"
 	    on activitynode_ref 317190 // activity_final
 	  end
 	end
@@ -175,171 +161,259 @@ format 224
       end
     end
 
-    activity 168710 "I.1 Initialize"
-      activitydiagram 221830 "I.1 Initialize"
+    activity 208390 "B.2 Transmute"
+      specification operation_ref 1596934 // transmute
+      activitydiagram 592134 "B.2 Transmute"
 	activitydiagramsettings
 	 end
 	size A4
       end
 
-      parameter 164742 "exchange_name" explicit_type "string"
+      parameter 273542 "options" type class_ref 1014022 // options_description
 	 multiplicity "1" unordered 
 	in
-	flow 241670 "S.7.3"
-	  on activityobject_ref 141190 // activity object exchange_name
+	flow 517254 "<flow>"
+	  on activitynode_ref 352390 // fork
 	end
       end
 
-      parameter 164870 "pair_name" explicit_type "string"
-	 multiplicity "1" unordered 
-	in
-	flow 241798 "S.7.4"
-	  on activityobject_ref 141318 // activity object pair_name
+      activitynode 352390 fork ""
+	flow 539270 "<flow>"
+	  on pin_ref 462598 // files
+	      uml_transformation "get value of \"input\" option"
+	end
+
+	flow 594950 "<flow>"
+	  on pin_ref 514694 // base_increment
+	      uml_transformation "get value of \"base_increment\" option"
+	end
+
+	flow 595078 "<flow>"
+	  on pin_ref 514566 // quote_increment
+	      uml_transformation "get value of \"quote_increment\" option"
 	end
       end
 
-      parameter 165126 "reconstructor" explicit_type ""
-	 multiplicity "1" unordered 
-	out
-      end
-
-      parameter 165254 "receiver" explicit_type ""
-	 multiplicity "1" unordered 
-	out
-      end
-
-      parameter 165382 "destination" explicit_type ""
-	unordered 
-	in
-	flow 242182 "S.7.2"
-	  on pin_ref 236294 // destination
-	end
-      end
-
-      activityobject 141190 "exchange_name"
-	stereotype "datastore"
-	 explicit_type "string"
-	 multiplicity "1" unordered 
-	flow 241926 "S.7.6"
-	  on pin_ref 236550 // exchange_name
-	end
-
-	flow 242950 "S.7.7"
-	  on pin_ref 237574 // exchange_name
-	end
-
-	flow 244358 "S.7.8"
-	  on pin_ref 238854 // exchange_name
-	end
-      end
-
-      activityobject 141318 "pair_name"
-	stereotype "datastore"
-	 explicit_type "string"
-	 multiplicity "1" unordered 
-	flow 242054 "S.7.10"
-	  on pin_ref 236422 // pair_name
-	end
-
-	flow 243078 "S.7.9"
-	  on pin_ref 237446 // pair_name
-	end
-
-	flow 244486 "S.7.14"
-	  on pin_ref 238982 // pair_name
-	end
-      end
-
-      activityaction 213254 "S.7 Create a store for Limit Order Book"
+      activityaction 316166 "C.04 Create Transmuter"
 	call_behavior_action
-	no_behavior
-	pin 236294 "destination" explicit_type "string"
-	   multiplicity "1" unordered 
-	  in
-	end
-
-	pin 236422 "pair_name" explicit_type "string"
-	   multiplicity "1" unordered 
-	  in
-	end
-
-	pin 236550 "exchange_name" explicit_type "string"
-	   multiplicity "1" unordered 
-	  in
-	end
-
-	pin 236678 "store" explicit_type "Store1"
+	synchronous activity_ref 208262 // C.04 Create Transmuter
+	pin 442758 "transmuter" type class_ref 1142662 // Reconstructor_SP
 	   multiplicity "1" unordered is_control
 	  out
-	  flow 244614 "S.7.11"
-	    on pin_ref 239110 // store
+	  flow 588166 "<flow>"
+	    on pin_ref 507782 // reconstructor
 	  end
 	end
       end
 
-      activityaction 213382 "S.7 Create Order Book Reconstructor"
+      activityaction 317190 "readAndProcess"
 	call_operation_action
-	synchronous no_operation
-	pin 238726 "" explicit_type "Reconstructor"
-	   multiplicity "1" unordered 
-	  return
-	  flow 244870 "S.7.13"
-	    on parameter_ref 165126 // reconstructor
-	  end
-	end
-
-	pin 238854 "exchange_name" explicit_type "string"
-	   multiplicity "1" unordered 
-	  in
-	end
-
-	pin 238982 "pair_name" explicit_type "string"
-	   multiplicity "1" unordered 
-	  in
-	end
-
-	pin 239110 "store" explicit_type "Store1"
+	synchronous operation_ref 1572614 // readAndProcess
+	pin 462342 "target" type class_ref 1074182 // Receiver
 	   multiplicity "1" unordered is_control
 	  in
 	end
 
-	flow 251782 "S.7.15"
-	  on activityaction_ref 213510 // activity action S.7 Subscribe
+	pin 462470 "error" type class_ref 1108614 // exception
+	   multiplicity "1" unordered is_control
+	  out exception
+	  flow 539014 "<flow>"
+	    on activitynode_ref 352518 // activity_final
+	  end
+	end
+
+	pin 462598 "files" type class_ref 1074310 // Files
+	   multiplicity "1..*" unordered 
+	  in
 	end
       end
 
-      activityaction 213510 "S.7 Subscribe"
-	call_behavior_action
-	no_behavior
-	pin 237446 "pair_name" explicit_type "string"
-	   multiplicity "1" unordered 
-	  in
-	end
+      activitynode 352518 activity_final ""
+      end
 
-	pin 237574 "exchange_name" explicit_type "string"
-	   multiplicity "1" unordered 
-	  in
-	end
-
-	pin 237702 "receiver" explicit_type "Websocket"
+      activityaction 330758 "Create an empty string"
+	value_specification_action
+	uml_value "\"\""
+	pin 470278 "output" explicit_type ""
 	   multiplicity "1" unordered 
 	  out
-	  flow 243206 "S.7.12"
-	    on parameter_ref 165254 // receiver
+	  flow 588294 "<flow>"
+	    on pin_ref 507910 // extension
 	  end
 	end
       end
 
-      activitynode 203142 initial_node ""
-	flow 242310 "S.7.1"
-	  on activityaction_ref 213254 // activity action S.7 Create a store for Limit Order Book
+      activitynode 367110 initial_node ""
+	flow 538630 "<flow>"
+	  on activityaction_ref 316166 // activity action C.04 Create Transmuter
+	end
+      end
+
+      activityaction 331142 "C.05 Create Receiver"
+	call_behavior_action
+	synchronous activity_ref 228230 // C.05 Create Receiver
+	pin 507782 "reconstructor" type class_ref 486278 // Reconstructor
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 507910 "extension" explicit_type "string"
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 508038 "receiver" type class_ref 1074182 // Receiver
+	   multiplicity "1" unordered is_control
+	  out
+	  flow 588038 "<flow>"
+	    on pin_ref 462342 // target
+	  end
+	end
+
+	pin 514566 "quote_increment" explicit_type "string"
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 514694 "base_increment" explicit_type "string"
+	   multiplicity "1" unordered is_control
+	  in
 	end
       end
     end
 
-    activity 175238 "R.1 Reconstructor"
-      specification operation_ref 575878 // process
-      activitydiagram 274822 "R.1 Reconstructor"
+    activity 168710 "C.01 Init capture"
+      activitydiagram 221830 "C.01 Init capture"
+	activitydiagramsettings
+	 end
+	size A4
+      end
+
+      parameter 164742 "options" type class_ref 1014022 // options_description
+	 multiplicity "1" unordered 
+	in
+	flow 516870 "<flow>"
+	  on activitynode_ref 352006 // decision
+	end
+      end
+
+      parameter 165126 "reconstructor" explicit_type ""
+	 multiplicity "1" unordered is_control
+	out
+      end
+
+      parameter 165254 "receiver" explicit_type ""
+	 multiplicity "1" unordered is_control
+	out
+      end
+
+      activityaction 315782 "D.2 Init capture - Coinbase"
+	call_behavior_action
+	synchronous activity_ref 207878 // D.02 Init capture - Coinbase
+	pin 441350 "od" type class_ref 1014022 // options_description
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 441478 "receiver" type class_ref 937606 // Receiver
+	   multiplicity "1" unordered 
+	  out
+	  flow 515078 "<flow>"
+	    on activitynode_ref 352134 // merge
+	  end
+	end
+
+	pin 441606 "reconstructor" type class_ref 486406 // Reconstructor
+	   multiplicity "1" unordered 
+	  out
+	  flow 515462 "<flow>"
+	    on activitynode_ref 352262 // merge
+	  end
+	end
+      end
+
+      activityaction 315910 "I.3 Init capture - Bitstamp"
+	call_behavior_action
+	synchronous activity_ref 208006 // D.03 Init capture - Bitstamp
+	pin 441734 "od" type class_ref 1014022 // options_description
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 441862 "receiver" type class_ref 937734 // Receiver
+	   multiplicity "1" unordered is_control
+	  out
+	  flow 515590 "<flow>"
+	    on activitynode_ref 352134 // merge
+	  end
+	end
+
+	pin 441990 "reconstructor" type class_ref 603654 // Reconstructor
+	   multiplicity "1" unordered is_control
+	  out
+	  flow 515718 "<flow>"
+	    on activitynode_ref 352262 // merge
+	  end
+	end
+      end
+
+      activityaction 316038 "I.4 Init capture - Bitfinex"
+	call_behavior_action
+	synchronous activity_ref 208134 // D.04 Init capture - Bitfinex
+	pin 442118 "od" type class_ref 1014022 // options_description
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 442246 "receiver" explicit_type ""
+	   multiplicity "1" unordered 
+	  out
+	  flow 516230 "<flow>"
+	    on activitynode_ref 352134 // merge
+	  end
+	end
+
+	pin 442374 "reconstructor" type class_ref 624902 // Reconstructor
+	   multiplicity "1" unordered is_control
+	  out
+	  flow 516358 "<flow>"
+	    on activitynode_ref 352262 // merge
+	  end
+	end
+      end
+
+      activitynode 352006 decision ""
+	flow 516486 "<flow>"
+	  on pin_ref 441350 // od
+	    uml_guard "exchange = Coinbase"
+	end
+
+	flow 516614 "<flow>"
+	  on pin_ref 441734 // od
+	    uml_guard "exchange = Bitstamp"
+	end
+
+	flow 516742 "<flow>"
+	  on pin_ref 442118 // od
+	    uml_guard "exchange = Bitfinex"
+	end
+      end
+
+      activitynode 352134 merge ""
+	flow 515206 "<flow>"
+	  on parameter_ref 165254 // receiver
+	end
+      end
+
+      activitynode 352262 merge ""
+	flow 515334 "<flow>"
+	  on parameter_ref 165126 // reconstructor
+	end
+      end
+    end
+
+    activity 175238 "C.02 Run Reconstructor"
+      activitydiagram 274822 "C.02 Run Reconstructor"
 	activitydiagramsettings
 	 end
 	size A4
@@ -348,8 +422,8 @@ format 224
       parameter 178694 "tree" type class_ref 174214 // ptree
 	 multiplicity "1" unordered 
 	in stream
-	flow 507398 "<flow>"
-	  on pin_ref 434438 // tree
+	flow 587654 "C.02.4"
+	  on pin_ref 507526 // tree
 	end
       end
 
@@ -362,8 +436,8 @@ format 224
 	      uml_transformation "To be defined"
 	end
 
-	flow 507270 "<flow>"
-	  on pin_ref 434566 // target
+	flow 587782 "C.02.5"
+	  on pin_ref 507398 // target
 	end
       end
 
@@ -387,32 +461,32 @@ format 224
       end
 
       activitynode 310662 initial_node ""
-	flow 430214 "R.1.0"
+	flow 430214 "C.02.1"
 	  on activitynode_ref 324230 // merge
 	end
       end
 
-      activityaction 273670 "P.1 Process message"
-	call_behavior_action
-	synchronous activity_ref 188294 // P.1 Process message
-	flow 430470 "R.1.5"
+      activityaction 273670 "process"
+	call_operation_action
+	synchronous operation_ref 575878 // process
+	flow 430470 "C.02.6"
 	  on activitynode_ref 324230 // merge
 	end
 
-	pin 434438 "tree" type class_ref 174214 // ptree
-	   multiplicity "1" unordered 
-	  in stream
-	end
-
-	pin 434566 "target" type class_ref 486278 // Reconstructor
+	pin 507398 "target" type class_ref 486278 // Reconstructor
 	   multiplicity "1" unordered 
 	  in
 	end
 
-	pin 434694 "error" type class_ref 1108486 // processing_error
+	pin 507526 "tree" type class_ref 174214 // ptree
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 507654 "error" type class_ref 1108486 // processing_error
 	   multiplicity "1" unordered is_control
 	  out exception
-	  flow 507526 "<flow>"
+	  flow 587910 "C.02.7"
 	    on activitynode_ref 324102 // activity_final
 	  end
 	end
@@ -430,21 +504,373 @@ format 224
       parameter 232582 "target" type class_ref 486278 // Reconstructor
 	 multiplicity "1" unordered 
 	in
-	flow 429830 "R.1.1"
+	flow 429830 "C.02.3"
 	  on activityobject_ref 154502 // activity object target
 	end
       end
 
       activitynode 324230 merge ""
-	flow 430342 "R.1.4"
-	  on activityaction_ref 273670 // activity action P.1 Process message
+	flow 430342 "C.02.2"
+	  on activityaction_ref 273670 // activity action process
 	end
       end
     end
 
-    activity 188294 "P.1 Process message"
+    activity 215046 "C.03 Read and process"
+      specification operation_ref 1572614 // readAndProcess
+      activitydiagram 605318 "C.03 Read and process"
+	activitydiagramsettings
+	 end
+	size A4
+      end
+
+      parameter 287750 "files" explicit_type ""
+	unordered is_control
+	in
+	flow 547206 "<flow>"
+	  on expansionnode_ref 175494 // files
+	end
+      end
+
+      parameter 287878 "target" type class_ref 1074182 // Receiver
+	 multiplicity "1" unordered 
+	in
+	flow 549638 "<flow>"
+	  on activitynode_ref 373766 // fork
+	end
+      end
+
+      parameter 288006 "error" type class_ref 1108614 // exception
+	 multiplicity "1" unordered is_control
+	out exception
+      end
+
+      expansionregion 168326 ""
+	iterative
+	expansionnode 175494 "files"
+	   explicit_type ""
+	  unordered 
+	  flow 585606 "<flow>"
+	    on pin_ref 505862 // file
+	  end
+	end
+
+	activityaction 337926 "D.05 Prepare for next era file"
+	  call_operation_action
+	  synchronous no_operation
+	  pin 505606 "target" type class_ref 1074182 // Receiver
+	     multiplicity "1" unordered is_control
+	    in
+	  end
+
+	  pin 505862 "file" explicit_type "string"
+	     multiplicity "1" unordered 
+	    in
+	  end
+
+	  pin 506118 "error" type class_ref 1162246 // receiving_error
+	     multiplicity "1" unordered is_control
+	    out exception
+	    flow 585734 "<flow>"
+	      on activitynode_ref 374918 // merge
+	    end
+	  end
+
+	  flow 606470 "<flow>"
+	    on activityaction_ref 338054 // activity action D.06 Read messages
+	  end
+	end
+
+	activityaction 338054 "D.06 Read messages"
+	  call_behavior_action
+	  synchronous activity_ref 215174 // D.06 Read messages
+	  pin 472070 "target" explicit_type ""
+	     multiplicity "1" unordered is_control
+	    in
+	  end
+
+	  pin 472198 "messages" type class_ref 174214 // ptree
+	     multiplicity "1..*" unordered is_control
+	    out
+	    flow 548102 "<flow>"
+	      on expansionnode_ref 175622 // messages
+	    end
+	  end
+
+	  pin 472710 "error" type class_ref 1162246 // receiving_error
+	     multiplicity "1" unordered 
+	    out exception
+	    flow 549766 "<flow>"
+	      on activitynode_ref 374918 // merge
+	    end
+	  end
+	end
+
+	expansionregion 168454 ""
+	  iterative
+	  expansionnode 175622 "messages"
+	     type class_ref 174214 // ptree
+	     multiplicity "1..*" unordered is_control
+	    flow 547974 "<flow>"
+	      on pin_ref 472326 // tree
+	    end
+	  end
+
+	  activityaction 338182 "D.01 Process message"
+	    call_behavior_action
+	    synchronous activity_ref 188294 // D.01 Process message
+	    pin 472326 "tree" type class_ref 174214 // ptree
+	       multiplicity "1" unordered is_control
+	      in
+	    end
+
+	    pin 472454 "target" type class_ref 486278 // Reconstructor
+	       multiplicity "1" unordered 
+	      in
+	    end
+
+	    pin 472582 "error" type class_ref 1108486 // processing_error
+	       multiplicity "1" unordered is_control
+	      out exception
+	      flow 548486 "<flow>"
+		on activitynode_ref 373894 // fork
+	      end
+	    end
+	  end
+
+	  activitynode 373894 fork ""
+	    flow 548230 "<flow>"
+	      on expansionnode_ref 175750 // error
+	    end
+
+	    flow 548358 "<flow>"
+	      on activitynode_ref 374022 // activity_final
+	    end
+	  end
+
+	  expansionnode 175750 "error"
+	     type class_ref 1108486 // processing_error
+	     multiplicity "1" unordered is_control
+	    flow 548614 "<flow>"
+	      on activitynode_ref 374150 // decision
+	    end
+	  end
+
+	  activitynode 374022 activity_final ""
+	  end
+	end
+
+	expansionnode 175878 "error"
+	   type class_ref 1108614 // exception
+	  unordered is_control
+	  flow 549254 "<flow>"
+	    on activitynode_ref 374662 // decision
+	  end
+	end
+
+	activitynode 374150 decision ""
+	  flow 548742 "<flow>"
+	    on activitynode_ref 374278 // flow_final
+	      uml_guard "empty"
+	  end
+
+	  flow 549894 "<flow>"
+	    on activitynode_ref 374918 // merge
+	      uml_guard "else"
+	  end
+	end
+
+	activitynode 374278 flow_final ""
+	end
+
+	activitynode 374406 fork ""
+	  flow 548998 "<flow>"
+	    on activitynode_ref 374534 // activity_final
+	  end
+
+	  flow 549126 "<flow>"
+	    on expansionnode_ref 175878 // error
+	  end
+	end
+
+	activitynode 374534 activity_final ""
+	end
+
+	activitynode 374918 merge ""
+	  flow 550022 "<flow>"
+	    on activitynode_ref 374406 // fork
+	  end
+	end
+
+	activitynode 381446 initial_node ""
+	end
+
+	activityaction 366214 "Read \"reconstructor_\""
+	  read_structural_feature_action
+	  classrelation_ref 1372550 // reconstructor_ (<directional aggregation>)
+	  pin 506502 "object" type class_ref 1074182 // Receiver
+	     multiplicity "1" unordered is_control
+	    in
+	  end
+
+	  pin 506630 "result" type class_ref 486278 // Reconstructor
+	     multiplicity "1" unordered 
+	    out
+	    flow 586630 "<flow>"
+	      on pin_ref 472454 // target
+	    end
+	  end
+	end
+      end
+
+      activitynode 373766 fork ""
+	flow 586502 "<flow>"
+	  on pin_ref 506502 // object
+	end
+
+	flow 606214 "<flow>"
+	  on pin_ref 505606 // target
+	end
+
+	flow 606342 "<flow>"
+	  on pin_ref 472070 // target
+	end
+      end
+
+      activitynode 374662 decision ""
+	flow 549382 "<flow>"
+	  on parameter_ref 288006 // error
+	    uml_guard "else"
+	end
+
+	flow 549510 "<flow>"
+	  on activitynode_ref 374790 // activity_final
+	    uml_guard "empty"
+	end
+      end
+
+      activitynode 374790 activity_final ""
+      end
+    end
+
+    activity 208262 "C.04 Create Transmuter"
+      activitydiagram 598790 "C.04 Create Transmuter"
+	activitydiagramsettings
+	 end
+	size A4
+      end
+
+      parameter 273926 "transmuter" type class_ref 486278 // Reconstructor
+	 multiplicity "1" unordered is_control
+	out
+      end
+
+      activityaction 387718 "D.07 Create File handler"
+	call_behavior_action
+	synchronous activity_ref 247814 // D.07 Create File handler
+	pin 532998 "handler" type class_ref 950918 // TokenHandler_SP
+	   multiplicity "1" unordered is_control
+	  out
+	  flow 613894 "<flow>"
+	    on pin_ref 533382 // next
+	  end
+	end
+      end
+
+      activityaction 387846 "D.08 Create Price Change Eliminator"
+	call_behavior_action
+	synchronous activity_ref 247942 // D.08 Create Price Change Eliminator
+	pin 533126 "next" type class_ref 950918 // TokenHandler_SP
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 533254 "handler" type class_ref 950918 // TokenHandler_SP
+	   multiplicity "1" unordered is_control
+	  out
+	  flow 613638 "<flow>"
+	    on pin_ref 533638 // next
+	  end
+	end
+      end
+
+      activityaction 387974 "D.09 Create Same Price Merger"
+	call_behavior_action
+	synchronous activity_ref 248070 // D.09 Create Same Price Merger
+	pin 533382 "next" type class_ref 950918 // TokenHandler_SP
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 533510 "handler" type class_ref 950918 // TokenHandler_SP
+	   multiplicity "1" unordered is_control
+	  out
+	  flow 613766 "<flow>"
+	    on pin_ref 533126 // next
+	  end
+	end
+      end
+
+      activityaction 388102 "D.10 Create File::Reconstructor"
+	call_behavior_action
+	synchronous activity_ref 248198 // D.10 Create File::Reconstructor 
+	pin 533638 "next" type class_ref 950918 // TokenHandler_SP
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 533766 "reconstructor" type class_ref 1020550 // Reconstructor
+	   multiplicity "1" unordered is_control
+	  out
+	  flow 614022 "<flow>"
+	    on parameter_ref 273926 // transmuter
+	  end
+	end
+      end
+
+      activitynode 416646 initial_node ""
+	flow 614150 "<flow>"
+	  on activityaction_ref 387718 // activity action D.07 Create File handler
+	end
+      end
+    end
+
+    activity 228230 "C.05 Create Receiver"
+      activitydiagram 618502 "C.05 Create Receiver"
+	activitydiagramsettings
+	 end
+	size A4
+      end
+
+      parameter 301958 "reconstructor" type class_ref 486278 // Reconstructor
+	 multiplicity "1" unordered 
+	in
+      end
+
+      parameter 302086 "extension" explicit_type "string"
+	 multiplicity "1" unordered 
+	in
+      end
+
+      parameter 302214 "receiver" type class_ref 1074182 // Receiver
+	 multiplicity "1" unordered 
+	out
+      end
+
+      parameter 308742 "quote_increment" explicit_type "string"
+	 multiplicity "1" unordered 
+	in
+      end
+
+      parameter 308870 "base_increment" explicit_type "string"
+	 multiplicity "1" unordered 
+	in
+      end
+    end
+
+    activity 188294 "D.01 Process message"
       specification operation_ref 575878 // process
-      activitydiagram 572166 "P.1 Process message"
+      activitydiagram 572166 "D.01 Process message"
 	activitydiagramsettings
 	 end
 	size A4
@@ -453,7 +879,7 @@ format 224
       parameter 245766 "tree" type class_ref 174214 // ptree
 	 multiplicity "1" unordered 
 	in
-	flow 455046 "P.1.2"
+	flow 455046 "D.01.2"
 	  on pin_ref 394246 // tree
 	end
       end
@@ -461,7 +887,7 @@ format 224
       parameter 246022 "target" type class_ref 486278 // Reconstructor
 	 multiplicity "1" unordered 
 	in
-	flow 493574 "P.1.1"
+	flow 493574 "D.01.1"
 	  on activitynode_ref 345094 // fork
 	end
       end
@@ -482,7 +908,7 @@ format 224
 	pin 394118 "out" type class_ref 902918 // Token
 	   multiplicity "1" unordered is_control
 	  return
-	  flow 493958 "P.1.4"
+	  flow 493958 "D.01.4"
 	    on pin_ref 420870 // token_in
 	  end
 	end
@@ -490,7 +916,7 @@ format 224
 	pin 397702 "error" type class_ref 1108486 // processing_error
 	   multiplicity "1" unordered 
 	  out exception
-	  flow 457862 "P.1.6"
+	  flow 457862 "D.01.6"
 	    on parameter_ref 245894 // error
 	  end
 	end
@@ -501,9 +927,9 @@ format 224
 	out exception
       end
 
-      activityaction 309126 "C.1 Chain of handlers"
+      activityaction 309126 "E.1 Chain of handlers"
 	call_behavior_action
-	synchronous activity_ref 201350 // C.1 Chain of handlers
+	synchronous activity_ref 201350 // E.01 Chain of handlers
 	pin 420870 "token_in" type class_ref 902918 // Token
 	   multiplicity "1" unordered is_control
 	  in
@@ -517,29 +943,523 @@ format 224
 	pin 421126 "error" explicit_type ""
 	   multiplicity "1" unordered 
 	  out exception
-	  flow 494086 "P.1.7"
+	  flow 494086 "D.01.7"
 	    on parameter_ref 245894 // error
 	  end
 	end
       end
 
       activitynode 345094 fork ""
-	flow 493702 "P.1.3"
+	flow 493702 "D.01.3"
 	  on pin_ref 396806 // target
 	end
 
-	flow 493830 "P.1.5"
-	  on pin_ref 420998 // handler
-	      uml_transformation "next"
+	flow 587014 "D.01.5"
+	  on pin_ref 507014 // object
+	end
+      end
+
+      activityaction 366470 "Read \"next_\""
+	read_structural_feature_action
+	classrelation_ref 1078406 // next_ (<directional aggregation>)
+	pin 507014 "object" type class_ref 486278 // Reconstructor
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 507142 "result" type class_ref 441222 // TokenHandler
+	   multiplicity "1" unordered is_control
+	  out
+	  flow 588422 "D.01.8"
+	    on pin_ref 420998 // handler
+	  end
 	end
       end
     end
 
-    activity 201350 "C.1 Chain of handlers"
+    activity 207878 "D.02 Init capture - Coinbase"
+      activitydiagram 592006 "D.02 Init capture - Coinbase"
+	activitydiagramsettings
+	 end
+	size A4
+      end
+
+      parameter 272390 "od" type class_ref 1014022 // options_description
+	 multiplicity "1" unordered is_control
+	in
+      end
+
+      parameter 272518 "receiver" type class_ref 937606 // Receiver
+	 multiplicity "1" unordered 
+	out
+      end
+
+      parameter 272646 "reconstructor" type class_ref 486406 // Reconstructor
+	 multiplicity "1" unordered 
+	out
+      end
+
+      activityaction 337670 "Create Feeder"
+	create_object_action
+	pin 470406 "return" type class_ref 930950 // Feeder
+	   multiplicity "1" unordered 
+	  out
+	  flow 546438 "<flow>"
+	    on pin_ref 470534 // target
+	  end
+	end
+      end
+
+      activityaction 337798 "Construct Feeder"
+	call_operation_action
+	synchronous operation_ref 1213702 // Feeder
+	pin 470534 "target" type class_ref 930950 // Feeder
+	  unordered is_control
+	  in
+	end
+
+	pin 470662 "ioc" type class_ref 999686 // io_context_SP
+	  unordered 
+	  in
+	end
+
+	pin 470790 "product" explicit_type "string"
+	  unordered 
+	  in
+	end
+
+	pin 470918 "exhausted_after" explicit_type "int"
+	  unordered 
+	  in
+	end
+      end
+
+      parameter 287622 "ioc" type class_ref 698758 // io_context
+	 multiplicity "1" unordered 
+	in
+	flow 546310 "<flow>"
+	  on activitynode_ref 373638 // fork
+	end
+      end
+
+      activitynode 373638 fork ""
+	flow 546182 "<flow>"
+	  on pin_ref 470662 // ioc
+	end
+      end
+    end
+
+    activity 208006 "D.03 Init capture - Bitstamp"
+      parameter 272774 "od" type class_ref 1014022 // options_description
+	 multiplicity "1" unordered is_control
+	in
+      end
+
+      parameter 272902 "receiver" type class_ref 937734 // Receiver
+	 multiplicity "1" unordered is_control
+	out
+      end
+
+      parameter 273030 "reconstructor" type class_ref 603654 // Reconstructor
+	 multiplicity "1" unordered is_control
+	out
+      end
+    end
+
+    activity 208134 "D.04 Init capture - Bitfinex"
+      parameter 273158 "od" type class_ref 1014022 // options_description
+	 multiplicity "1" unordered is_control
+	in
+      end
+
+      parameter 273286 "receiver" explicit_type ""
+	 multiplicity "1" unordered 
+	out
+      end
+
+      parameter 273414 "reconstructor" type class_ref 624902 // Reconstructor
+	 multiplicity "1" unordered is_control
+	out
+      end
+    end
+
+    activity 221702 "D.05 Prepare for next era file"
+      activitydiagram 611974 "D.05 Prepare for next era file"
+	activitydiagramsettings
+	 end
+	size A4
+      end
+
+      parameter 294918 "file_name" explicit_type "string"
+	 multiplicity "1" unordered 
+	in
+	flow 558470 "<flow>"
+	  on activitynode_ref 381702 // fork
+	end
+      end
+
+      parameter 295302 "error" type class_ref 1162246 // receiving_error
+	 multiplicity "1" unordered is_control
+	out exception
+      end
+
+      parameter 295430 "target" type class_ref 1074182 // Receiver
+	 multiplicity "1" unordered is_control
+	inout
+	flow 558342 "<flow>"
+	  on activitynode_ref 381958 // fork
+	end
+      end
+
+      activitynode 381574 decision ""
+	flow 578566 "<flow>"
+	  on activitynode_ref 390022 // merge
+	    uml_guard "extension is empty"
+	end
+
+	flow 578694 "<flow>"
+	  on pin_ref 480262 // file_name
+	    uml_guard "else"
+	end
+      end
+
+      activityaction 345094 "renameFile"
+	call_operation_action
+	synchronous operation_ref 1681798 // renameFile
+	pin 480134 "target" type class_ref 1074182 // Receiver
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 480262 "file_name" explicit_type "string"
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 480518 "error" type class_ref 1162246 // receiving_error
+	  unordered is_control
+	  out exception
+	  flow 576902 "<flow>"
+	    on activitynode_ref 396678 // merge
+	  end
+	end
+
+	pin 491270 "file_name" explicit_type "string"
+	   multiplicity "1" unordered is_control
+	  out
+	  flow 569478 "<flow>"
+	    on activitynode_ref 390022 // merge
+	  end
+	end
+      end
+
+      activitynode 381702 fork ""
+	flow 576646 "<flow>"
+	  on pin_ref 498182 // file_name
+	end
+
+	flow 578438 "<flow>"
+	  on activitynode_ref 381574 // decision
+	end
+      end
+
+      activitynode 381958 fork ""
+	flow 557958 "<flow>"
+	  on pin_ref 480134 // target
+	end
+
+	flow 576774 "<flow>"
+	  on pin_ref 497926 // target
+	end
+
+	flow 595718 "<flow>"
+	  on pin_ref 515462 // target
+	end
+
+	flow 606598 "<flow>"
+	  on pin_ref 525830 // object
+	end
+      end
+
+      activitynode 390022 merge ""
+	flow 595590 "<flow>"
+	  on pin_ref 515590 // file_name
+	end
+      end
+
+      activityaction 359174 "parseFileName"
+	call_operation_action
+	synchronous operation_ref 1688582 // parseFileName
+	pin 497926 "target" type class_ref 1074182 // Receiver
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 498182 "file_name" explicit_type "string"
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 498694 "error" type class_ref 1162246 // receiving_error
+	   multiplicity "1" unordered is_control
+	  out exception
+	  flow 577158 "<flow>"
+	    on activitynode_ref 396678 // merge
+	  end
+	end
+      end
+
+      activitynode 396678 merge ""
+	flow 577030 "<flow>"
+	  on parameter_ref 295302 // error
+	end
+      end
+
+      activityaction 372998 "openSourceFile"
+	call_operation_action
+	synchronous operation_ref 1701766 // openSourceFile
+	pin 515462 "target" type class_ref 1074182 // Receiver
+	  unordered 
+	  in
+	end
+
+	pin 515590 "file_name" explicit_type "string"
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 515718 "error" type class_ref 1162246 // receiving_error
+	  unordered is_control
+	  out exception
+	  flow 595846 "<flow>"
+	    on activitynode_ref 396678 // merge
+	  end
+	end
+      end
+
+      activityaction 380806 "Read \"extension_\""
+	read_structural_feature_action
+	attribute_ref 1042566 // extension_
+	pin 525830 "object" type class_ref 1074182 // Receiver
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 525958 "result" explicit_type "string"
+	   multiplicity "1" unordered is_control
+	  out
+	  flow 606854 "<flow>"
+	    stereotype "decisionInputFlow"
+	    on activitynode_ref 381574 // decision
+	  end
+	end
+      end
+    end
+
+    activity 215174 "D.06 Read messages"
+      activitydiagram 605446 "D.06 Read messages"
+	activitydiagramsettings
+	 end
+	size A4
+      end
+
+      parameter 288134 "target" explicit_type ""
+	 multiplicity "1" unordered is_control
+	in
+	flow 568582 "<flow>"
+	  on activitynode_ref 389638 // fork
+	end
+      end
+
+      parameter 288262 "messages" explicit_type ""
+	 multiplicity "1..*" unordered is_control
+	out
+      end
+
+      parameter 288390 "error" type class_ref 1162246 // receiving_error
+	 multiplicity "1" unordered is_control
+	out exception
+      end
+
+      activityaction 352134 "Read next message"
+	call_operation_action
+	synchronous operation_ref 1681542 // operator >>
+	pin 489734 "target" explicit_type "EraFileReader"
+	  unordered is_control
+	  in
+	end
+
+	pin 489862 "target" explicit_type "EraFileReader"
+	  unordered 
+	  return
+	  flow 566150 "<flow>"
+	    on activitynode_ref 388742 // decision
+	  end
+	end
+
+	pin 489990 "message" type class_ref 174214 // ptree
+	   multiplicity "1" unordered 
+	  out
+	  flow 567302 "<flow>"
+	    on activitynode_ref 389126 // merge
+	  end
+	end
+
+	pin 490118 "error" type class_ref 1162246 // receiving_error
+	   multiplicity "1" unordered is_control
+	  out
+	  flow 605446 "<flow>"
+	    on parameter_ref 288390 // error
+	  end
+	end
+      end
+
+      activitynode 388614 merge ""
+	flow 566022 "<flow>"
+	  on pin_ref 489734 // target
+	end
+      end
+
+      activitynode 388742 decision ""
+	flow 566918 "<flow>"
+	  on activitynode_ref 388614 // merge
+	    uml_guard "message's been read"
+	end
+
+	flow 567686 "<flow>"
+	  on pin_ref 490502 // target
+	    uml_guard "else"
+	end
+      end
+
+      activitynode 389126 merge ""
+	flow 567430 "<flow>"
+	  on parameter_ref 288262 // messages
+	end
+      end
+
+      activityaction 352390 "Create Reset message"
+	call_operation_action
+	synchronous operation_ref 1688454 // createResetMessage
+	pin 490502 "target" explicit_type "EraFileReader"
+	  unordered is_control
+	  in
+	end
+
+	pin 490630 "message" type class_ref 174214 // ptree
+	   multiplicity "1" unordered is_control
+	  return
+	  flow 567814 "<flow>"
+	    on activitynode_ref 389382 // fork
+	  end
+	end
+      end
+
+      activitynode 389382 fork ""
+	flow 567942 "<flow>"
+	  on activitynode_ref 389126 // merge
+	end
+
+	flow 568070 "<flow>"
+	  on activitynode_ref 389510 // activity_final
+	end
+      end
+
+      activitynode 389510 activity_final ""
+      end
+
+      activityaction 352518 "Create Era message"
+	call_operation_action
+	synchronous operation_ref 1681926 // createEraMessage
+	pin 490758 "target" explicit_type "EraFileReader"
+	  unordered is_control
+	  in
+	end
+
+	pin 490886 "message" type class_ref 174214 // ptree
+	   multiplicity "1" unordered 
+	  return
+	  flow 568838 "<flow>"
+	    on activitynode_ref 389126 // merge
+	  end
+	end
+
+	flow 568454 "<flow>"
+	  on activitynode_ref 389766 // join
+	end
+      end
+
+      activitynode 389638 fork ""
+	flow 568198 "<flow>"
+	  on pin_ref 490758 // target
+	end
+
+	flow 568326 "<flow>"
+	  on activitynode_ref 389766 // join
+	end
+      end
+
+      activitynode 389766 join ""
+	flow 568710 "<flow>"
+	  on activitynode_ref 388614 // merge
+	end
+      end
+    end
+
+    activity 247814 "D.07 Create File handler"
+      activitydiagram 638086 "D.07 Create File handler"
+	activitydiagramsettings
+	 end
+	size A4
+      end
+
+      parameter 322566 "handler" type class_ref 950918 // TokenHandler_SP
+	 multiplicity "1" unordered 
+	out
+      end
+    end
+
+    activity 247942 "D.08 Create Price Change Eliminator"
+      parameter 322694 "next" type class_ref 950918 // TokenHandler_SP
+	 multiplicity "1" unordered 
+	in
+      end
+
+      parameter 322822 "handler" type class_ref 950918 // TokenHandler_SP
+	 multiplicity "1" unordered 
+	out
+      end
+    end
+
+    activity 248070 "D.09 Create Same Price Merger"
+      parameter 322950 "next" type class_ref 950918 // TokenHandler_SP
+	 multiplicity "1" unordered 
+	in
+      end
+
+      parameter 323078 "handler" type class_ref 950918 // TokenHandler_SP
+	 multiplicity "1" unordered 
+	out
+      end
+    end
+
+    activity 248198 "D.10 Create File::Reconstructor "
+      parameter 323206 "next" type class_ref 950918 // TokenHandler_SP
+	 multiplicity "1" unordered is_control
+	in
+      end
+
+      parameter 323334 "handler" type class_ref 950918 // TokenHandler_SP
+	 multiplicity "1" unordered is_control
+	out
+      end
+    end
+
+    activity 201350 "E.01 Chain of handlers"
       parameter 259206 "token_in" explicit_type ""
 	unordered 
 	in
-	flow 491654 "C.1.2"
+	flow 491654 "E.01.2"
 	  on activitynode_ref 344326 // merge
 	end
       end
@@ -547,7 +1467,7 @@ format 224
       parameter 259334 "handler" type class_ref 441222 // TokenHandler
 	 multiplicity "1" unordered is_control
 	in
-	flow 491270 "C.1.1"
+	flow 491270 "E.01.1"
 	  on activitynode_ref 344198 // fork
 	end
       end
@@ -570,7 +1490,7 @@ format 224
 	  pin 419846 "token_out" type class_ref 902918 // Token
 	     multiplicity "*" unordered is_control
 	    return
-	    flow 493190 "C.1.8"
+	    flow 493190 "E.01.8"
 	      on expansionnode_ref 155398 // output
 	    end
 	  end
@@ -583,7 +1503,7 @@ format 224
 	  pin 421254 "error" type class_ref 1108486 // processing_error
 	     multiplicity "1" unordered 
 	    out exception
-	    flow 493446 "C.1.14"
+	    flow 493446 "E.01.14"
 	      on parameter_ref 265862 // error
 	    end
 	  end
@@ -592,7 +1512,7 @@ format 224
 	expansionnode 155270 "input"
 	   type class_ref 902918 // Token
 	   multiplicity "1..*" unordered is_control
-	  flow 493318 "C.1.7"
+	  flow 493318 "E.01.7"
 	    on pin_ref 419974 // token_in
 	  end
 	end
@@ -600,60 +1520,332 @@ format 224
 	expansionnode 155398 "output"
 	   type class_ref 902918 // Token
 	   multiplicity "*" fifo is_control
-	  flow 492678 "C.1.9"
+	  flow 492678 "E.01.9"
 	    on activitynode_ref 344582 // join
 	  end
 	end
       end
 
       activitynode 344198 fork ""
-	flow 492422 "C.1.3"
+	flow 492422 "E.01.3"
 	  on activitynode_ref 344326 // merge
 	end
 
-	flow 492550 "C.1.10"
-	  on activitynode_ref 344582 // join
-	      uml_transformation "next"
+	flow 586758 "E.01.10"
+	  on pin_ref 506758 // object
 	end
       end
 
       activitynode 344326 merge ""
-	flow 492038 "C.1.4"
+	flow 492038 "E.01.4"
 	  on activitynode_ref 344454 // decision
 	end
       end
 
       activitynode 344454 decision ""
-	flow 492166 "C.1.5"
+	flow 492166 "E.01.5"
 	  on expansionnode_ref 155270 // input
 	    uml_guard "else"
 	end
 
-	flow 492294 "C.1.6"
+	flow 492294 "E.01.6"
 	  on pin_ref 419718 // target
 	    uml_guard "is TokenHandler"
 	end
       end
 
       activitynode 344582 join ""
-	flow 492806 "C.1.11"
+	flow 492806 "E.01.11"
 	  on activitynode_ref 344838 // decision
 	end
       end
 
       activitynode 344838 decision ""
-	flow 492934 "C.1.13"
+	flow 492934 "E.01.13"
 	  on activitynode_ref 344966 // activity_final
 	    uml_guard "empty"
 	end
 
-	flow 493062 "C.1.12"
+	flow 493062 "E.01.12"
 	  on activitynode_ref 344326 // merge
 	    uml_guard "else"
 	end
       end
 
       activitynode 344966 activity_final ""
+      end
+
+      activityaction 366342 "Read \"next_\""
+	read_structural_feature_action
+	classrelation_ref 1078406 // next_ (<directional aggregation>)
+	pin 506758 "object" type class_ref 441222 // TokenHandler
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 506886 "result" type class_ref 441222 // TokenHandler
+	   multiplicity "0..1" unordered is_control
+	  out
+	  flow 586886 "E.01.14"
+	    on activitynode_ref 344582 // join
+	  end
+	end
+      end
+    end
+
+    activity 234758 "E.02 Open Source File"
+      specification operation_ref 1701766 // openSourceFile
+      activitydiagram 625030 "E.02 Open Source File"
+	activitydiagramsettings
+	 end
+	size A4
+      end
+
+      parameter 308998 "target" explicit_type ""
+	 multiplicity "1" unordered 
+	in
+	flow 603526 "<flow>"
+	  on activitynode_ref 403334 // fork
+	end
+      end
+
+      parameter 309126 "file_name" explicit_type "string"
+	 multiplicity "1" unordered 
+	in
+	flow 603654 "<flow>"
+	  on pin_ref 523142 // value
+	end
+      end
+
+      parameter 315654 "error" type class_ref 1108486 // processing_error
+	 multiplicity "1" unordered is_control
+	out exception
+      end
+
+      activitynode 403334 fork ""
+	flow 603142 "<flow>"
+	  on pin_ref 515846 // object
+	end
+
+	flow 603270 "<flow>"
+	  on pin_ref 522886 // object
+	end
+      end
+
+      activityaction 373126 "Read \"source_\""
+	read_structural_feature_action
+	attribute_ref 1035654 // source_
+	pin 515846 "object" explicit_type "EraFileReader"
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 515974 "result" type class_ref 1155718 // ifstream
+	  unordered is_control
+	  out
+	  flow 602630 "<flow>"
+	    on activitynode_ref 409862 // fork
+	  end
+	end
+      end
+
+      activityaction 373254 "open"
+	opaque_action
+	pin 522502 "object" type class_ref 1155718 // ifstream
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	flow 603014 "<flow>"
+	  on activityaction_ref 379782 // activity action Read first line (header)
+	end
+
+	pin 523142 "value" explicit_type "string"
+	   multiplicity "1" unordered 
+	  in
+	end
+      end
+
+      activitynode 409862 fork ""
+	flow 602758 "<flow>"
+	  on pin_ref 522502 // object
+	end
+
+	flow 602886 "<flow>"
+	  on pin_ref 522630 // object
+	end
+      end
+
+      activityaction 379782 "Read first line (header)"
+	opaque_action
+	pin 522630 "object" type class_ref 1155718 // ifstream
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 522758 "result" explicit_type "string"
+	   multiplicity "1" unordered is_control
+	  out
+	  flow 604038 "<flow>"
+	    on pin_ref 523014 // value
+	  end
+	end
+
+	pin 523270 "error" type class_ref 1108486 // processing_error
+	   multiplicity "1" unordered is_control
+	  out exception
+	  flow 603910 "<flow>"
+	    on parameter_ref 315654 // error
+	  end
+	end
+      end
+
+      activityaction 379910 "Write \"header_\""
+	add_structural_feature_value_action
+	flag
+	attribute_ref 1055750 // header_
+	pin 522886 "object" explicit_type "EraFileReader"
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 523014 "value" explicit_type "string"
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	flow 603782 "<flow>"
+	  on activitynode_ref 409990 // activity_final
+	end
+      end
+
+      activitynode 409990 activity_final ""
+      end
+    end
+
+    activity 241286 "E.03 Parse File Name"
+      specification operation_ref 1688582 // parseFileName
+      activitydiagram 631558 "E.03 Parse File Name"
+	activitydiagramsettings
+	 end
+	size A4
+      end
+
+      parameter 315782 "target" explicit_type ""
+	 multiplicity "1" unordered is_control
+	in
+	flow 605318 "<flow>"
+	  on activitynode_ref 410118 // fork
+	end
+      end
+
+      parameter 315910 "file_name" explicit_type "string"
+	 multiplicity "1" unordered is_control
+	in
+	flow 604294 "<flow>"
+	  on pin_ref 523782 // value
+	end
+      end
+
+      parameter 316038 "error" type class_ref 1108486 // processing_error
+	 multiplicity "1" unordered is_control
+	out exception
+      end
+
+      activityaction 380038 "Parse"
+	opaque_action
+	pin 523398 "exchange" explicit_type "string"
+	   multiplicity "1" unordered is_control
+	  out
+	  flow 604550 "<flow>"
+	    on pin_ref 524166 // value
+	  end
+	end
+
+	pin 523526 "product" explicit_type "string"
+	   multiplicity "1" unordered is_control
+	  out
+	  flow 604934 "<flow>"
+	    on pin_ref 524422 // value
+	  end
+	end
+
+	pin 523654 "timestamp" type class_ref 230278 // Timestamp
+	   multiplicity "1" unordered is_control
+	  out
+	  flow 605190 "<flow>"
+	    on pin_ref 524934 // value
+	  end
+	end
+
+	pin 523782 "value" explicit_type "string"
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 523910 "error" type class_ref 1108486 // processing_error
+	   multiplicity "1" unordered is_control
+	  out exception
+	  flow 604166 "<flow>"
+	    on parameter_ref 316038 // error
+	  end
+	end
+      end
+
+      activitynode 410118 fork ""
+	flow 604422 "<flow>"
+	  on pin_ref 524038 // object
+	end
+
+	flow 604678 "<flow>"
+	  on pin_ref 524294 // object
+	end
+
+	flow 605062 "<flow>"
+	  on pin_ref 524806 // object
+	end
+      end
+
+      activityaction 380166 "Write \"exchange_\""
+	add_structural_feature_value_action
+	attribute_ref 1035782 // exchange_
+	pin 524038 "object" explicit_type "EraFileReader"
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 524166 "value" explicit_type "string"
+	   multiplicity "1" unordered is_control
+	  in
+	end
+      end
+
+      activityaction 380294 "Write \"product_\""
+	add_structural_feature_value_action
+	attribute_ref 1035910 // product_
+	pin 524294 "object" explicit_type "EraFileReader"
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 524422 "value" explicit_type "string"
+	   multiplicity "1" unordered is_control
+	  in
+	end
+      end
+
+      activityaction 380422 "Write \"timestamp_\""
+	add_structural_feature_value_action
+	attribute_ref 1036038 // timestamp_
+	pin 524806 "object" explicit_type "EraFileReader"
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 524934 "value" type class_ref 230278 // Timestamp
+	   multiplicity "1" unordered is_control
+	  in
+	end
       end
     end
 
@@ -1309,38 +2501,12 @@ ${inlines}
 	  b parent class_ref 1087622 // Transmuter
       end
 
-      attribute 1007622 "min_price_"
-	private explicit_type "double"
-	init_value "0"
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-      end
-
-      attribute 1007750 "max_price_"
-	private explicit_type "double"
-	init_value "std::numeric_limits<double>::max()"
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-      end
-
       classrelation 1315206 // <dependency>
 	relation 1304838 -_->
 	  a public
 	    cpp default "#include in source"
 	    classrelation_ref 1315206 // <dependency>
-	  b parent class_ref 1074182 // Reader
+	  b parent class_ref 1074182 // Receiver
       end
     end
 
@@ -9427,7 +10593,7 @@ int main(int argc, char **argv) {
 	artifact_ref 347142 // Reconstructor
 	artifact_ref 347270 // EraSlicer
 	artifact_ref 353926 // EraMerger
-	artifact_ref 373894 // Reader
+	artifact_ref 373894 // Receiver
 	artifact_ref 374022 // Security
 	artifact_ref 380550 // Price
 	artifact_ref 380678 // Volume
@@ -9438,6 +10604,7 @@ int main(int argc, char **argv) {
 	artifact_ref 394758 // Stripe
 	artifact_ref 401286 // Dot
 	artifact_ref 421126 // processing_error
+	artifact_ref 440710 // receiving_error
       end
       ncouples 10
       key "genpro pro" value "/tmp/oberon/cpp/oberon.pro"

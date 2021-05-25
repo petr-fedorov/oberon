@@ -1,8 +1,17 @@
 class Elapsed
 !!!485638.cpp!!!	accept(in mh : TokenHandler [1]) : bool
-return mh->elapsed();
+return mh->message();
 !!!561926.cpp!!!	Elapsed(in exchange_time : Message::Timestamp)
 timestamp(exchange_time);
+!!!1728134.cpp!!!	Elapsed(in line : string)
+std::istringstream ss{line};
+Message::Timestamp era;
+
+if (ss >> date::parse("%FT%TZ", era)) {
+  timestamp(era);
+} else
+  throw std::invalid_argument{line};
+
 !!!650118.cpp!!!	toString() : string
 std::stringstream buf;
 buf << Message::toString() << " Elapsed";

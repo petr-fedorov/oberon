@@ -1,0 +1,143 @@
+format 224
+
+activitycanvas 128006 activity_ref 234758 // E.02 Open Source File
+  
+  xyzwh 82 37 2007 683 467
+  params
+    parametercanvas 128134 parameter_ref 308998 // target
+        xyzwh 359 23 2008 99 29
+    end
+    parametercanvas 128262 parameter_ref 309126 // file_name
+        xyzwh 33 377 2008 99 29
+    end
+    parametercanvas 131590 parameter_ref 315654 // error
+        xyzwh 327 489 2009 99 29 label_xy 366 524
+    end
+  end
+end
+activitynodecanvas 128390 activitynode_ref 403334 // fork
+  horizontal  xyzwh 245 135 2012 337 15
+end
+activityactioncanvas 128518 activityaction_ref 373126 // activity action Read "source_"
+  
+  show_opaque_action_definition default
+  xyzwh 235 197 2012 100 60
+  pins
+    pincanvas 128646 pin_ref 515846 // object
+      xyzwh 281 187 2014 11 11 label_xy 230 174
+    end
+    pincanvas 128774 pin_ref 515974 // result
+      xyzwh 282 256 2014 11 11 label_xy 241 260
+    end
+  end
+end
+activityactioncanvas 128902 activityaction_ref 373254 // activity action open
+  
+  show_opaque_action_definition default
+  xyzwh 193 355 2012 100 60
+  pins
+    pincanvas 129158 pin_ref 522502 // object
+      xyzwh 227 345 2014 11 11 label_xy 177 334
+    end
+    pincanvas 131334 pin_ref 523142 // value
+      xyzwh 183 386 2014 11 11 label_xy 149 398
+    end
+  end
+end
+activitynodecanvas 129030 activitynode_ref 409862 // fork
+  horizontal  xyzwh 180 302 2012 217 15
+end
+activityactioncanvas 129542 activityaction_ref 379782 // activity action Read first line (header)
+  
+  show_opaque_action_definition default
+  xyzwh 328 357 2012 100 60
+  pins
+    pincanvas 129670 pin_ref 522630 // object
+      xyzwh 356 347 2014 11 11 label_xy 370 335
+    end
+    pincanvas 129798 pin_ref 522758 // result
+      xyzwh 427 381 2014 11 11 label_xy 433 398
+    end
+    pincanvas 131974 pin_ref 523270 // error
+      xyzwh 369 416 2014 11 11 label_xy 329 422
+    end
+  end
+end
+activityactioncanvas 130182 activityaction_ref 379910 // activity action Write "header_"
+  
+  show_opaque_action_definition default
+  xyzwh 520 204 2012 100 60
+  pins
+    pincanvas 130310 pin_ref 522886 // object
+      xyzwh 558 194 2014 11 11 label_xy 507 181
+    end
+    pincanvas 130438 pin_ref 523014 // value
+      xyzwh 510 231 2014 11 11 label_xy 473 210
+    end
+  end
+end
+activitynodecanvas 131718 activitynode_ref 409990 // activity_final
+  xyz 702 222 2012
+end
+flowcanvas 129286 flow_ref 602630 // <flow>
+  
+  from ref 128774 z 2015 to ref 129030
+   write_horizontally default
+end
+flowcanvas 129414 flow_ref 602758 // <flow>
+  decenter_begin 235
+  
+  from ref 129030 z 2015 to ref 129158
+   write_horizontally default
+end
+flowcanvas 129926 flow_ref 602886 // <flow>
+  decenter_begin 834
+  
+  from ref 129030 z 2015 to ref 129670
+   write_horizontally default
+end
+flowcanvas 130054 flow_ref 603014 // <flow>
+  
+  from ref 128902 z 2013 to ref 129542
+   write_horizontally default
+end
+flowcanvas 130566 flow_ref 603142 // <flow>
+  decenter_begin 118
+  
+  from ref 128390 z 2015 to ref 128646
+   write_horizontally default
+end
+flowcanvas 130694 flow_ref 603270 // <flow>
+  decenter_begin 940
+  
+  from ref 128390 z 2015 to ref 130310
+   write_horizontally default
+end
+flowcanvas 130950 flow_ref 603526 // <flow>
+  decenter_end 492
+  
+  from ref 128134 z 2013 to ref 128390
+   write_horizontally default
+end
+flowcanvas 131462 flow_ref 603654 // <flow>
+  
+  from ref 128262 z 2015 to ref 131334
+   write_horizontally default
+end
+flowcanvas 131846 flow_ref 603782 // <flow>
+  
+  from ref 130182 z 2013 to ref 131718
+   write_horizontally default
+end
+flowcanvas 132102 flow_ref 603910 // <flow>
+  
+  from ref 131974 z 2015 to ref 131590
+   write_horizontally default
+end
+flowcanvas 132230 flow_ref 604038 // <flow>
+  
+  from ref 129798 z 2015 to point 515 384
+  line 132358 z 2015 to ref 130438
+   write_horizontally default
+end
+end

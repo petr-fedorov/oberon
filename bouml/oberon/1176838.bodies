@@ -1,0 +1,41 @@
+class SamePriceMerger
+!!!1744902.cpp!!!	SamePriceMerger()
+  _current_state = 0;
+!!!1745158.cpp!!!	orderEvent() : bool
+  if (_current_state != 0) {
+ #ifdef VERBOSE_STATE_MACHINE
+SamePriceMerger & stm =*this;
+ #endif
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger orderEvent";
+#endif
+_current_state->orderEvent(*this);
+  }
+  return (_current_state != 0);
+!!!1745542.cpp!!!	reset() : bool
+  if (_current_state != 0) {
+ #ifdef VERBOSE_STATE_MACHINE
+SamePriceMerger & stm =*this;
+ #endif
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "fire trigger reset";
+#endif
+_current_state->reset(*this);
+  }
+  return (_current_state != 0);
+!!!1746054.cpp!!!	create() : bool
+if (_current_state == 0)
+  (_current_state = &(*this)._samepricemerger_state)->create(*this);
+return (_current_state != 0);
+!!!1746694.cpp!!!	doActivity() : void
+  _current_state->_do(*this);
+!!!1746822.cpp!!!	_set_currentState(inout st : SamePriceMerger::AnyState) : void
+  _current_state = &st;
+!!!1746950.cpp!!!	_final() : void
+  _current_state = 0;
+ #ifdef VERBOSE_STATE_MACHINE
+SamePriceMerger & stm =*this;
+ #endif
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "final state reached";
+#endif

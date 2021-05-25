@@ -151,31 +151,27 @@ security_.reset();
 return true;
 !!!1596294.cpp!!!	stripe() : bool
 auto stripe = boost::static_pointer_cast<Stripe>(std::move(received_));
-if (check(stripe->price())) {
-  std::ofstream *depth, *spread;
+std::ofstream *depth, *spread;
 
-  if (stripe->side() == BookSide::kAsk) {
-    depth = &asks_stream_;
-    spread = &best_asks_stream_;
-  } else if (stripe->side() == BookSide::kBid) {
-    depth = &bids_stream_;
-    spread = &best_bids_stream_;
-  } else {
-    BOOST_LOG_TRIVIAL(error)
-        << "Couldn't determine side " << stripe->toString();
-    return false;
-  }
+if (stripe->side() == BookSide::kAsk) {
+  depth = &asks_stream_;
+  spread = &best_asks_stream_;
+} else if (stripe->side() == BookSide::kBid) {
+  depth = &bids_stream_;
+  spread = &best_bids_stream_;
+} else {
+  BOOST_LOG_TRIVIAL(error) << "Couldn't determine side " << stripe->toString();
+  return false;
+}
 
-  auto stripe_str = toCsv(*stripe);
+auto stripe_str = toCsv(*stripe);
 
-  if (depth_)
-    *depth << stripe_str << "\n";
-  if (stripe->isBest())
-    *spread << stripe_str << "\n";
+if (depth_)
+  *depth << stripe_str << "\n";
+if (stripe->isBest())
+  *spread << stripe_str << "\n";
 
-  return depth->good() && spread->good();
-} else
-  return true;
+return depth->good() && spread->good();
 !!!1597958.cpp!!!	toCsv(in stripe : Stripe) : string
 using namespace oberon::reconstructor;
 using boost::uuids::to_string;
@@ -245,12 +241,9 @@ if (!std::isnan(dot.remaining())) {
 return buffer.str();
 !!!1596422.cpp!!!	dot() : bool
 auto dot = boost::static_pointer_cast<Dot>(std::move(received_));
-if (check(dot->price())) {
-  if (trades_)
-    trades_stream_ << toCsv(*dot) << "\n";
-  return trades_stream_.good();
-} else
-  return true;
+if (trades_)
+  trades_stream_ << toCsv(*dot) << "\n";
+return trades_stream_.good();
 
 !!!1597062.cpp!!!	saveDeleted(in save : bool) : File
 is_handles_deleted_ = save;
@@ -270,5 +263,3 @@ return *this;
 !!!1597574.cpp!!!	saveTrades(in save : bool) : File
 trades_ = save;
 return *this;
-!!!1619078.cpp!!!	check(in price : Price) : bool
-return min_price_ <= price && price <= max_price_;

@@ -1,4 +1,12 @@
 class Reset
+!!!1721478.cpp!!!	Reset(in line : string)
+std::istringstream ss{line};
+Timestamp tp;
+ss >> date::parse("%FT%TZ", tp);
+if(ss)
+  timestamp(tp);
+else
+  throw std::invalid_argument{line};
 !!!1384710.cpp!!!	accept(in mh : TokenHandler [1]) : bool
 return mh->reset();
 !!!1384966.cpp!!!	toString() : string

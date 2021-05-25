@@ -84,11 +84,10 @@ try {
     assert(output->isOrderChanged());
     return std::move(output);
   } else if (type == "era") {
-    return boost::make_unique<Era>(toTimestamp(tree.get<string>("time")),
-        boost::make_shared<Security>(tree.get<string>("exchange"),
-          tree.get<string>("product"),
-          tree.get<double>("quote_increment"),
-          tree.get<double>("base_increment")));
+    return boost::make_unique<Era>(
+        toTimestamp(tree.get<string>("time")), tree.get<string>("exchange"),
+        tree.get<string>("product"), tree.get<double>("quote_increment"),
+        tree.get<double>("base_increment"));
   } else if (type == "reset") {
     return boost::make_unique<Reset>(next_->exchange_time());
   }

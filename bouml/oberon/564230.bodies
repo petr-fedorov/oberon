@@ -20,6 +20,7 @@ try {
   em->change_timestamp(em->timestamp() - previous.t);
   eventNumbers_.erase(em->maker());
 } catch (const std::out_of_range &) {
+  BOOST_LOG_TRIVIAL(warning) << "Couldn't find prevsious event for cancelled: " << em->toString();
   em->deleted(true);
 }
 output_.push_back(std::move(received_));
@@ -39,7 +40,7 @@ try {
   else
     eventNumbers_.erase(em->maker());
 } catch (const std::out_of_range &) {
-  BOOST_LOG_TRIVIAL(warning) << "Couldn't find previous event for " << em->toString();
+  BOOST_LOG_TRIVIAL(warning) << "Couldn't find previous event for filled: " << em->toString();
   em->deleted(true);
 }
 output_.push_back(std::move(received_));
@@ -55,6 +56,7 @@ try {
   previous.p = em->price();
   previous.t = em->timestamp();
 } catch (const std::out_of_range &) {
+  BOOST_LOG_TRIVIAL(warning) << "Couldn't find previous event for changed: " << em->toString();
   em->deleted(true);
 }
 output_.push_back(std::move(received_));

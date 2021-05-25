@@ -1,6 +1,6 @@
 format 224
 "Reconstr" // Tests::Reconstr
-  revision 14
+  revision 19
   modified_by 6 "petr"
   // class settings
   
@@ -200,7 +200,7 @@ ${members}};
       attribute 993798 "output"
 	public type class_ref 902918 // Token
 	multiplicity "*"
-	stereotype "vector"
+	stereotype "list"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
 "
 	java_decl ""
@@ -248,7 +248,7 @@ ${members}};
       end
 
       attribute 994310 "sut"
-	public type class_ref 1087622 // Transmuter
+	public type class_ref 950918 // TokenHandler_SP
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -264,21 +264,13 @@ ${members}};
 	nparams 0
 	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} : gatherer{boost::make_shared<Gatherer>()}, sut{gatherer} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw} : gatherer{boost::make_shared<Gatherer>()}, sut{boost::make_shared<oberon::reconstructor::Transmuter>(gatherer)} {
   ${body}}
 "
 	
 	
 	
 	
-      end
-
-      classrelation 1295366 // <dependency>
-	relation 1284998 -_->
-	  a public
-	    cpp default "#include in source"
-	    classrelation_ref 1295366 // <dependency>
-	  b parent class_ref 1101702 // Gatherer
       end
 
       attribute 994438 "episode"
@@ -301,6 +293,108 @@ ${members}};
 	    cpp default "#include in source"
 	    classrelation_ref 1295622 // <dependency>
 	  b parent class_ref 1080966 // Stripe
+      end
+
+      classrelation 1385734 // <dependency>
+	relation 1375366 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1385734 // <dependency>
+	  b parent class_ref 966278 // Reset
+      end
+
+      classrelation 1385862 // <dependency>
+	relation 1375494 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1385862 // <dependency>
+	  b parent class_ref 486278 // Reconstructor
+      end
+
+      classrelation 1385990 // <dependency>
+	relation 1375622 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1385990 // <dependency>
+	  b parent class_ref 1087622 // Transmuter
+      end
+    end
+
+    class 1168774 "EraMergerFixture"
+      visibility package stereotype "struct"
+      cpp_decl "${comment}${template}struct ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl "${comment}struct ${name} {
+${members}};
+"
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      attribute 1062278 "gatherer"
+	public type class_ref 1101958 // Gatherer_SP
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 1062406 "sut"
+	public type class_ref 1046918 // EraMerger
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      operation 1714822 "EraMergerFixture"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw}  : gatherer{boost::make_shared<Gatherer>()}, sut{gatherer} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 1392518 // <dependency>
+	relation 1382150 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1392518 // <dependency>
+	  b parent class_ref 966278 // Reset
+      end
+
+      classrelation 1392646 // <dependency>
+	relation 1382278 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1392646 // <dependency>
+	  b parent class_ref 521478 // Era
+      end
+
+      classrelation 1399174 // <dependency>
+	relation 1388806 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1399174 // <dependency>
+	  b parent class_ref 441478 // Elapsed
       end
     end
   end
@@ -459,12 +553,12 @@ ${namespace_end}
 using namespace oberon::reconstructor;
 using OrderState=OrderEvent::OrderState;
 
+
+// workaround for bug in Boost.Test
+// see https://stackoverflow.com/q/17572583/5674719
 namespace std {
 std::ostream& operator<<(std::ostream& os, oberon::reconstructor::Message::Timestamp const& ts);
 } 
-
-oberon::reconstructor::Message::Timestamp operator \"\"_ts(const char *line, size_t);
-
 
 
 BOOST_AUTO_TEST_CASE(order_event_type_111)
@@ -703,7 +797,7 @@ BOOST_FIXTURE_TEST_CASE(order_event_type_332, OrderEventFixture)
 BOOST_AUTO_TEST_CASE(order_created_from_literal) 
 {
   using namespace date;
-  auto event =\"9208e32d-06dc-46e9-898e-51208e0f58dd,1,2021-02-08T06:54:51Z,52781,1,39029.57,0.09013171,,,,70125,\"_oe;
+  auto event =\"9208e32d-06dc-46e9-898e-51208e0f58dd,1,2021-02-08T06:54:51Z,52781,1,39029.57,0.09013171,,,,70125,\"_oe2;
   boost::uuids::string_generator gen;
 
   BOOST_TEST(event->maker() == gen(\"9208e32d-06dc-46e9-898e-51208e0f58dd\"));
@@ -718,7 +812,7 @@ BOOST_AUTO_TEST_CASE(order_created_from_literal)
 BOOST_AUTO_TEST_CASE(filled_from_literal) 
 {
   using namespace date;
-  auto event =\"f94caea8-2cb6-4c54-85d2-c7e612001abb,2,2021-02-07T15:59:59Z,217281,1,37974.48,0.00835565,-0.00264435,130181221,19e17cff-7870-4e6f-90b8-1799a30594eb,87299,\"_oe;
+  auto event =\"f94caea8-2cb6-4c54-85d2-c7e612001abb,2,2021-02-07T15:59:59Z,217281,1,37974.48,0.00835565,-0.00264435,130181221,19e17cff-7870-4e6f-90b8-1799a30594eb,87299,\"_oe2;
   boost::uuids::string_generator gen;
 
   BOOST_TEST(event->maker() == gen(\"f94caea8-2cb6-4c54-85d2-c7e612001abb\"));
@@ -765,25 +859,24 @@ using namespace oberon::reconstructor;
 using OrderState=OrderEvent::OrderState;
 using Timestamp=Message::Timestamp;
 
+// workaround for bug in Boost.Test
+// see https://stackoverflow.com/q/17572583/5674719
 namespace std {
 std::ostream& operator<<(std::ostream& os, oberon::reconstructor::Message::Timestamp const& ts);
 } 
 
-Timestamp operator \"\"_ts(const char *line, size_t);
-
-
 
 BOOST_FIXTURE_TEST_CASE(take_order_created, PriceLevelFixture)
 {
-  BOOST_TEST(sut.take(\"9208e32d-06dc-46e9-898e-51208e0f58dd,1,2021-02-08T06:54:51Z,52781,1,39029.57,0.09013171,,,,70125,\"_oe, output));
+  BOOST_TEST(sut.take(\"9208e32d-06dc-46e9-898e-51208e0f58dd,1,2021-02-08T06:54:51Z,52781,1,39029.57,0.09013171,,,,70125,\"_oe2, output));
   BOOST_TEST(output.empty());
   BOOST_TEST(sut.start() ==\"2021-02-08T06:54:51.052781Z\"_ts);
 }
 
 BOOST_FIXTURE_TEST_CASE(single_stripe, PriceLevelFixture)
 {
-  BOOST_TEST(sut.take(\"9208e32d-06dc-46e9-898e-51208e0f58dd,1,2021-02-08T06:54:51Z,52781,1,39029.57,0.09013171,,,,70125,\"_oe, output));
-  BOOST_TEST(sut.take(\"9208e32d-06dc-46e9-898e-51208e0f58dd,2,2021-02-08T06:54:53Z,170016,,39029.57,,-0.09013171,130344065,9df46d09-0e13-483d-b40b-f82f79e918f5,71290,\"_oe, output));
+  BOOST_TEST(sut.take(\"9208e32d-06dc-46e9-898e-51208e0f58dd,1,2021-02-08T06:54:51Z,52781,1,39029.57,0.09013171,,,,70125,\"_oe2, output));
+  BOOST_TEST(sut.take(\"9208e32d-06dc-46e9-898e-51208e0f58dd,2,2021-02-08T06:54:53Z,170016,,39029.57,,-0.09013171,130344065,9df46d09-0e13-483d-b40b-f82f79e918f5,71290,\"_oe2, output));
   BOOST_TEST(output.size()==1);
   auto stripe = boost::static_pointer_cast<Stripe>(std::move(output.front()));
   BOOST_TEST(stripe->duration().count() == 2.117235);
@@ -812,6 +905,7 @@ ${namespace_end}
 "
       cpp_src "${comment}
 #include <boost/smart_ptr/make_shared.hpp>
+#include <boost/smart_ptr/make_unique.hpp>
 #include <boost/test/unit_test.hpp>
 #include <boost/pointer_cast.hpp>
 #include \"../date.h\"
@@ -824,25 +918,24 @@ using namespace oberon::reconstructor;
 using OrderState=OrderEvent::OrderState;
 using Timestamp=Message::Timestamp;
 
+// workaround for bug in Boost.Test
+// see https://stackoverflow.com/q/17572583/5674719
 namespace std {
 std::ostream& operator<<(std::ostream& os, oberon::reconstructor::Message::Timestamp const& ts);
 } 
 
-Timestamp operator \"\"_ts(const char *line, size_t);
 
 
 
-BOOST_FIXTURE_TEST_CASE(returns_spread_stripes, TransmuterFixture)
+BOOST_FIXTURE_TEST_CASE(returns_spread_stripes, TransmuterFixture,* boost::unit_test::disabled() )
 {
-  episode.push_back(\"9208e32d-06dc-46e9-898e-51208e0f58dd,1,2021-02-08T06:54:51Z,52781,1,39029.57,0.09013171,,,,70125,\"_oe);
-  episode.push_back(\"00000000-0000-0000-0000-000000000001,1,2021-02-08T06:54:51Z,52781,1,39030.00,-0.08,,,,70126,\"_oe);
-  BOOST_TEST(sut.handle(std::move(episode)));
+/*  Reconstructor::process(sut, \"9208e32d-06dc-46e9-898e-51208e0f58dd,1,2021-02-08T06:54:51Z,52781,1,39029.57,0.09013171,,,,70125,\"_oe2);
+  Reconstructor::process(sut,\"00000000-0000-0000-0000-000000000001,1,2021-02-08T06:54:51Z,52781,1,39030.00,-0.08,,,,70126,\"_oe2);
   BOOST_TEST(gatherer->gathered.empty());
-  episode.clear();
-  // episode.push_back(\"9208e32d-06dc-46e9-898e-51208e0f58dd,2,2021-02-08T06:54:53Z,170016,,39029.57,,-0.09013171,130344065,9df46d09-0e13-483d-b40b-f82f79e918f5,71290,\"_oe);
-  episode.push_back(\"9208e32d-06dc-46e9-898e-51208e0f58dd,2,2021-02-08T06:54:53Z,170016,,39029.57,,-0.09013171,,,71290,\"_oe);
-  episode.push_back(\"00000000-0000-0000-0000-000000000001,2,2021-02-08T06:54:53Z,170016,,39030.00,,0.08,,,71291,\"_oe);
-  BOOST_TEST(sut.handle(std::move(episode)));
+  // BOOST_TEST(Reconstructor::process(sut,\"9208e32d-06dc-46e9-898e-51208e0f58dd,2,2021-02-08T06:54:53Z,170016,,39029.57,,-0.09013171,130344065,9df46d09-0e13-483d-b40b-f82f79e918f5,71290,\"_oe2);
+  Reconstructor::process(sut,\"9208e32d-06dc-46e9-898e-51208e0f58dd,2,2021-02-08T06:54:53Z,170016,,39029.57,,-0.09013171,,,71290,\"_oe2);
+  Reconstructor::process(sut,\"00000000-0000-0000-0000-000000000001,2,2021-02-08T06:54:53Z,170016,,39030.00,,0.08,,,71291,\"_oe2);
+  // Reconstructor::process(sut,boost::make_unique<oberon::reconstructor::Reset>(\"2021-02-08T06:54:53.170016Z\"_ts));
   BOOST_TEST(gatherer->gathered.size()==2);
   if(!gatherer->gathered.empty()) {
     auto s0 = boost::static_pointer_cast<Stripe>(std::move(gatherer->gathered.front()));
@@ -852,10 +945,86 @@ BOOST_FIXTURE_TEST_CASE(returns_spread_stripes, TransmuterFixture)
     BOOST_TEST(s0->side() == BookSide::kBid);
     BOOST_TEST(s1->side() == BookSide::kAsk);
   }
+  */
 }
 "
       associated_elems
 	class_ref 1101830 // TransmuterFixture
+      end
+    end
+
+    artifact 447238 "test_EraMerger"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+#include <boost/smart_ptr/make_shared.hpp>
+// #include <boost/smart_ptr/make_unique.hpp>
+#include <boost/test/unit_test.hpp>
+// #include <boost/pointer_cast.hpp>
+// #include \"../date.h\"
+${includes}
+${namespace_start}
+${members}
+${namespace_end}
+
+using namespace oberon::reconstructor;
+using Timestamp=Message::Timestamp;
+
+namespace std {
+std::ostream& operator<<(std::ostream& os, oberon::reconstructor::Message::Timestamp const& ts);
+} 
+
+BOOST_FIXTURE_TEST_CASE(output_order_cancelled, EraMergerFixture)
+{
+  BOOST_TEST(sut.handle(\"2021-05-12T23:46:06.955243Z,Coinbase,BTC-USD,0.01,0.00000001\"_era).size() == 1); // the first Era message is to be propagated 
+  BOOST_TEST(sut.handle(\"00194871-9e08-4b03-a744-39911b1df6ab,1,,955243,,1,50000,,0.01786355,,,,772611,\"_oe).size() == 1);
+  BOOST_TEST(sut.handle(\"2021-05-12T23:46:06.955243Z\"_rst).empty()); // Reset message is to be consumed
+  BOOST_TEST(sut.handle(\"2021-05-12T23:56:35.709965Z,Coinbase,BTC-USD,0.01,0.00000001\"_era).empty()); // the second Era message is to be consumed 
+  auto out = sut.handle(\"2021-05-12T23:56:36Z\"_elp);
+  BOOST_TEST(out.size() == 2);
+  BOOST_TEST(out.front()->timestamp() == \"2021-05-12T23:56:35.709965Z\"_ts);
+  BOOST_TEST(static_cast<OrderEvent*>(out.front().get())->state() == OrderEvent::OrderState::kFinished);
+  out.pop_front();
+  BOOST_TEST(out.front()->timestamp() == \"2021-05-12T23:56:36Z\"_ts);
+}
+
+
+BOOST_FIXTURE_TEST_CASE(output_order_created, EraMergerFixture)
+{
+  BOOST_TEST(sut.handle(\"2021-05-12T23:46:06.955243Z,Coinbase,BTC-USD,0.01,0.00000001\"_era).size() == 1);
+  BOOST_TEST(sut.handle(\"2021-05-12T23:46:06.955243Z\"_rst).empty());
+  BOOST_TEST(sut.handle(\"2021-05-12T23:56:35.709965Z,Coinbase,BTC-USD,0.01,0.00000001\"_era).empty());
+  BOOST_TEST(sut.handle(\"0bd398f3-5d1b-4b5a-b1c2-85e7a8dff1ed,1,2021-05-12T23:56:35Z,709965,,1,50008.47,,0.0031,,,,219926,\"_oe).size() == 1);
+  BOOST_TEST(sut.handle(\"0bd398f3-5d1b-4b5a-b1c2-85e7a8dff1ed,2,2021-05-12T23:56:36Z,50297,340332,,50008.47,,,-0.0031,168883996,87e1d8c2-4796-446a-804f-74136bd24dc5,567668,\"_oe).size() == 1);
+}
+
+BOOST_FIXTURE_TEST_CASE(output_order_changed, EraMergerFixture)
+{
+  BOOST_TEST(sut.handle(\"2021-05-12T23:46:06.955243Z,Coinbase,BTC-USD,0.01,0.00000001\"_era).size() == 1); // the first Era message is to be propagated 
+  BOOST_TEST(sut.handle(\"00194871-9e08-4b03-a744-39911b1df6ab,1,,955243,,1,50000,,0.01786355,,,,772611,\"_oe).size() == 1);
+  BOOST_TEST(sut.handle(\"2021-05-12T23:46:06.955243Z\"_rst).empty()); // Reset message is to be consumed
+  BOOST_TEST(sut.handle(\"2021-05-12T23:56:35.709965Z,Coinbase,BTC-USD,0.01,0.00000001\"_era).empty()); // the second Era message is to be consumed 
+  auto out = sut.handle(\"00194871-9e08-4b03-a744-39911b1df6ab,1,2021-05-12T23:56:35.709965Z,,,1,60000,,0.01,,,,772611,\"_oe);
+  BOOST_TEST(out.size() == 1);
+  auto event = static_cast<OrderEvent*>(out.front().get()); 
+  BOOST_TEST(event->timestamp() == \"2021-05-12T23:56:35.709965Z\"_ts);
+  BOOST_TEST(event->isOrderChanged());
+  BOOST_TEST(static_cast<double>(event->price()) == 60000.0);
+  BOOST_TEST(static_cast<double>(event->remaining()) == 0.01);
+}
+"
+      associated_elems
+	class_ref 1168774 // EraMergerFixture
       end
     end
   end

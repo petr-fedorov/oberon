@@ -1,6 +1,6 @@
 format 224
 
-activitycanvas 128006 activity_ref 188294 // P.1 Process message
+activitycanvas 128006 activity_ref 188294 // D.01 Process message
   
   xyzwh 5.8 57 1995 283 467
   params
@@ -34,15 +34,15 @@ activityactioncanvas 128262 activityaction_ref 287366 // activity action extract
     end
   end
 end
-activitycanvas 144518 activity_ref 201350 // C.1 Chain of handlers
+activitycanvas 144518 activity_ref 201350 // E.01 Chain of handlers
   
   xyzwh 299 54 2006 521 469
   params
     parametercanvas 144646 parameter_ref 259206 // token_in
-        xyzwh 562 42 2007 55 25
+        xyzwh 499 42 2007 55 25
     end
     parametercanvas 144774 parameter_ref 259334 // handler
-        xyzwh 495 42 2007 55 25
+        xyzwh 428 42 2007 55 25
     end
     parametercanvas 145286 parameter_ref 265862 // error
         xyzwh 726 510 2007 55 25 label_xy 747 543
@@ -80,7 +80,7 @@ expansionregioncanvas 145542 expansionregion_ref 154886 //
     end
   end
 end
-activityactioncanvas 148486 activityaction_ref 309126 // activity action C.1 Chain of handlers
+activityactioncanvas 148486 activityaction_ref 309126 // activity action E.1 Chain of handlers
   
   show_opaque_action_definition default
   color green
@@ -90,7 +90,7 @@ activityactioncanvas 148486 activityaction_ref 309126 // activity action C.1 Cha
       xyzwh 180 394 2002 11 11 label_xy 119 383
     end
     pincanvas 148742 pin_ref 420998 // handler
-      xyzwh 95 427 2002 11 11 label_xy 47 440
+      xyzwh 95 423 2002 11 11 label_xy 50 437
     end
     pincanvas 148870 pin_ref 421126 // error
       xyzwh 200 439 2002 11 11 label_xy 203 421
@@ -98,16 +98,16 @@ activityactioncanvas 148486 activityaction_ref 309126 // activity action C.1 Cha
   end
 end
 activitynodecanvas 150790 activitynode_ref 344198 // fork
-  horizontal  xyzwh 440 159 3033 75 15
+  horizontal  xyzwh 386 159 3033 105 15
 end
 activitynodecanvas 151430 activitynode_ref 344326 // merge
   xyz 497 240 3027
 end
 activitynodecanvas 152454 activitynode_ref 344454 // decision
-  xyz 562 239 3019
+  xyz 572 239 3019
 end
 activitynodecanvas 153350 activitynode_ref 344582 // join
-  horizontal  xyzwh 441 432 3015 75 15
+  horizontal  xyzwh 369 432 3015 145 15
 end
 activitynodecanvas 154374 activitynode_ref 344838 // decision
   xyz 496 373 3021
@@ -118,152 +118,178 @@ end
 activitynodecanvas 156550 activitynode_ref 345094 // fork
   horizontal  xyzwh 15 179 2000 131 15
 end
-flowcanvas 131974 flow_ref 455046 // P.1.2
+activityactioncanvas 158598 activityaction_ref 366342 // activity action Read "next_"
+  
+  show_opaque_action_definition default
+  xyzwh 364 291 3039 100 60
+  pins
+    pincanvas 158726 pin_ref 506758 // object
+      xyzwh 415 281 3041 11 11 label_xy 364 268
+    end
+    pincanvas 158854 pin_ref 506886 // result
+      xyzwh 411 350 3041 11 11 label_xy 425 353
+    end
+  end
+end
+activityactioncanvas 159238 activityaction_ref 366470 // activity action Read "next_"
+  
+  show_opaque_action_definition default
+  xyzwh 25 297 3005 100 60
+  pins
+    pincanvas 159366 pin_ref 507014 // object
+      xyzwh 28 287 3007 11 11 label_xy 46 273
+    end
+    pincanvas 159494 pin_ref 507142 // result
+      xyzwh 33 356 3007 11 11 label_xy 50 360
+    end
+  end
+end
+flowcanvas 131974 flow_ref 455046 // D.01.2
   decenter_begin 163
   
-  from ref 128134 z 2008 label "P.1.2" xyz 209 125 2008 to ref 128646
+  from ref 128134 z 2008 label "D.01.2" xyz 204 125 2008 to ref 128646
    write_horizontally default
 end
-flowcanvas 144262 flow_ref 457862 // P.1.6
+flowcanvas 144262 flow_ref 457862 // D.01.6
   decenter_end 818
   
-  from ref 143750 z 3008 label "P.1.6" xyz 232 368 3008 to ref 132742
+  from ref 143750 z 3008 label "D.01.6" xyz 227 368 3008 to ref 132742
    write_horizontally default
 end
-flowcanvas 150918 flow_ref 491270 // C.1.1
-  decenter_begin 272
-  decenter_end 880
+flowcanvas 150918 flow_ref 491270 // E.01.1
+  decenter_begin 836
+  decenter_end 838
   
-  from ref 144774 z 3034 label "C.1.1" xyz 493 102 3034 to ref 150790
+  from ref 144774 z 3034 label "E.01.1" xyz 455 103 3034 to ref 150790
    write_horizontally default
 end
-flowcanvas 151558 flow_ref 491654 // C.1.2
-  decenter_begin 745
+flowcanvas 151558 flow_ref 491654 // E.01.2
+  decenter_begin 163
   
-  from ref 144646 z 3028 label "C.1.2" xyz 545 143 3028 to ref 151430
+  from ref 144646 z 3028 label "E.01.2" xyz 488 143 3028 to ref 151430
    write_horizontally default
 end
-flowcanvas 152582 flow_ref 492038 // C.1.4
+flowcanvas 152582 flow_ref 492038 // E.01.4
   
-  from ref 151430 z 3028 label "C.1.4" xyz 527 248 3028 to ref 152454
+  from ref 151430 z 3028 label "E.01.4" xyz 529 248 3028 to ref 152454
    write_horizontally default
 end
-flowcanvas 152710 flow_ref 492166 // C.1.5
+flowcanvas 152710 flow_ref 492166 // E.01.5
   
   from ref 152454 z 3020 to point 607 187
-  line 152838 z 3020 label "C.1.5
-[else]" xyz 658 172 3020 to point 733 187
+  line 152838 z 3020 label "E.01.5
+[else]" xyz 655 172 3020 to point 733 187
   line 156166 z 3020 to ref 145798
    write_horizontally default
 end
-flowcanvas 152966 flow_ref 492294 // C.1.6
+flowcanvas 152966 flow_ref 492294 // E.01.6
   decenter_end 818
   
-  from ref 152454 z 3020 label "C.1.6
-[is TokenHandler]" xyz 528 283 3020 to point 572 323
+  from ref 152454 z 3020 label "E.01.6
+[is TokenHandler]" xyz 539 283 3020 to point 584 323
   line 155142 z 3020 to ref 146822
    write_horizontally default
 end
-flowcanvas 153222 flow_ref 492422 // C.1.3
-  decenter_begin 546
+flowcanvas 153222 flow_ref 492422 // E.01.3
+  decenter_begin 876
   
-  from ref 150790 z 3034 label "C.1.3" xyz 466 206 3034 to point 478 256
+  from ref 150790 z 3034 label "E.01.3" xyz 459 206 3034 to point 474 256
   line 155782 z 3034 to ref 151430
    write_horizontally default
 end
-flowcanvas 153478 flow_ref 492550 // C.1.10
-  decenter_begin 142
-  decenter_end 120
-  
-  from ref 150790 z 3034 label "C.1.10" xyz 432 293 3034 to ref 153350
-   write_horizontally default
-  transformation 
-  information 153990 "<<transformation>>
-next"
-    xyzwh 309 197 2007 125 55
-end
-flowcanvas 153734 flow_ref 492678 // C.1.9
+flowcanvas 153734 flow_ref 492678 // E.01.9
+  decenter_end 744
   
   from ref 145926 z 3016 to point 698 474
-  line 156038 z 3016 label "C.1.9" xyz 575 468 3016 to point 476 476
+  line 156038 z 3016 label "E.01.9" xyz 571 467 3016 to point 474 474
   line 153862 z 3016 to ref 153350
    write_horizontally default
 end
-flowcanvas 154502 flow_ref 492806 // C.1.11
+flowcanvas 154502 flow_ref 492806 // E.01.11
+  decenter_begin 751
   
-  from ref 153350 z 3022 label "C.1.11" xyz 458 400 3022 to point 474 386
+  from ref 153350 z 3022 label "E.01.11" xyz 455 401 3022 to point 474 388
   line 155910 z 3022 to ref 154374
    write_horizontally default
 end
-flowcanvas 154758 flow_ref 492934 // C.1.13
+flowcanvas 154758 flow_ref 492934 // E.01.13
   decenter_begin 540
   
-  from ref 154374 z 3022 label "C.1.13
-[empty]" xyz 531 375 3022 to ref 154630
+  from ref 154374 z 3022 label "E.01.13
+[empty]" xyz 530 375 3022 to ref 154630
    write_horizontally default
 end
-flowcanvas 154886 flow_ref 493062 // C.1.12
+flowcanvas 154886 flow_ref 493062 // E.01.12
   
-  from ref 154374 z 3028 label "C.1.12
-[else]" xyz 490 307 3028 to ref 151430
+  from ref 154374 z 3028 label "E.01.12
+[else]" xyz 487 307 3028 to ref 151430
    write_horizontally default
 end
-flowcanvas 155398 flow_ref 493190 // C.1.8
+flowcanvas 155398 flow_ref 493190 // E.01.8
   decenter_end 727
   
-  from ref 146950 z 3028 label "C.1.8" xyz 693 379 3028 to ref 145926
+  from ref 146950 z 3028 label "E.01.8" xyz 690 380 3028 to ref 145926
    write_horizontally default
 end
-flowcanvas 155526 flow_ref 493318 // C.1.7
+flowcanvas 155526 flow_ref 493318 // E.01.7
   
-  from ref 145798 z 3028 label "C.1.7" xyz 722 258 3028 to ref 147078
+  from ref 145798 z 3028 label "E.01.7" xyz 719 258 3028 to ref 147078
    write_horizontally default
 end
-flowcanvas 155654 flow_ref 493446 // C.1.14
+flowcanvas 155654 flow_ref 493446 // E.01.14
   
-  from ref 155014 z 3028 label "C.1.14" xyz 733 430 3028 to ref 145286
+  from ref 155014 z 3028 label "E.01.14" xyz 730 430 3028 to ref 145286
    write_horizontally default
 end
-flowcanvas 156678 flow_ref 493574 // P.1.1
+flowcanvas 156678 flow_ref 493574 // D.01.1
   decenter_begin 436
   decenter_end 618
   
-  from ref 142470 z 2001 label "P.1.1" xyz 158 89 2001 to point 169 125
-  line 157958 z 2001 to point 93 125
+  from ref 142470 z 2001 label "D.01.1" xyz 153 104 2001 to point 169 155
+  line 157958 z 2001 to point 93 155
   line 158086 z 2001 to ref 156550
    write_horizontally default
 end
-flowcanvas 156806 flow_ref 493702 // P.1.3
+flowcanvas 156806 flow_ref 493702 // D.01.3
   decenter_begin 526
   
-  from ref 156550 z 3008 label "P.1.3" xyz 70 206 3008 to point 81 235
+  from ref 156550 z 3008 label "D.01.3" xyz 65 206 3008 to point 81 235
   line 157830 z 3008 to ref 139782
    write_horizontally default
 end
-flowcanvas 157062 flow_ref 493830 // P.1.5
-  decenter_begin 101
+flowcanvas 157702 flow_ref 493958 // D.01.4
   
-  from ref 156550 z 2003 to point 26 429
-  line 157190 z 2003 label "P.1.5" xyz 47 422 2003 to ref 148742
-   write_horizontally default
-  transformation 
-  information 157446 "<<transformation>>
-next"
-    xyzwh 39 327 2003 125 55
-end
-flowcanvas 157702 flow_ref 493958 // P.1.4
-  
-  from ref 128518 z 3007 label "P.1.4" xyz 170 326 3007 to ref 148614
+  from ref 128518 z 3007 label "D.01.4" xyz 165 327 3007 to ref 148614
    write_horizontally default
 end
-flowcanvas 158214 flow_ref 494086 // P.1.7
+flowcanvas 158214 flow_ref 494086 // D.01.7
   decenter_end 163
   
-  from ref 148870 z 2003 label "P.1.7" xyz 194 470 2003 to ref 132742
+  from ref 148870 z 2003 label "D.01.7" xyz 189 470 2003 to ref 132742
    write_horizontally default
 end
-line 154118 -_-_
-  from ref 153478 z 3034 to ref 153990
-line 157574 -_-_
-  from ref 157062 z 2004 to ref 157446
+flowcanvas 158982 flow_ref 586758 // E.01.10
+  decenter_begin 316
+  
+  from ref 150790 z 3042 label "E.01.10" xyz 397 217 3042 to ref 158726
+   write_horizontally default
+end
+flowcanvas 159110 flow_ref 586886 // E.01.14
+  decenter_end 337
+  
+  from ref 158854 z 3042 label "E.01.14" xyz 396 386 3042 to ref 153350
+   write_horizontally default
+end
+flowcanvas 159622 flow_ref 587014 // D.01.5
+  decenter_begin 137
+  
+  from ref 156550 z 3008 label "D.01.5" xyz 14 230 3008 to ref 159366
+   write_horizontally default
+end
+flowcanvas 161030 flow_ref 588422 // D.01.8
+  
+  from ref 159494 z 3008 label "D.01.8" xyz 20 388 3008 to point 36 426
+  line 161158 z 3008 to ref 148742
+   write_horizontally default
+end
 end

@@ -2,8 +2,20 @@ class Era
 !!!642182.cpp!!!	accept(in mh : TokenHandler [1]) : bool
 return mh->era();
 
-!!!642310.cpp!!!	Era(in era : Message::Timestamp, in security : Security::Security_SP, in load : string = "")
-timestamp(era);
+!!!1721350.cpp!!!	Era(in line : string)
+std::istringstream ss{line};
+Message::Timestamp era;
+std::string exchange, product, quote_increment, base_increment;
+
+if (ss >> date::parse("%FT%TZ,", era) && std::getline(ss, exchange, ',') &&
+    std::getline(ss, product, ',') && std::getline(ss, quote_increment, ',') &&
+    std::getline(ss, base_increment, ',')) {
+  timestamp(era);
+  security_ = boost::make_shared<Security>(
+      exchange, product, stod(quote_increment), stod(base_increment));
+} else
+  throw std::invalid_argument{line};
+
 !!!642438.cpp!!!	~Era()
 // BOOST_LOG_TRIVIAL(debug) << toString() << "~Era";
 !!!650246.cpp!!!	toString() : string

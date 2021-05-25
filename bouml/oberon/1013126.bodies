@@ -101,7 +101,7 @@ if (exchange_ && product_ && !help_) {
   // The io_context is required for all I/O
   boost::shared_ptr<boost::asio::io_context> ioc =
       boost::make_shared<boost::asio::io_context>();
-  auto store = boost::make_shared<reconstructor::File>(min_price_, max_price_);
+  auto store = boost::make_shared<reconstructor::File>();
   store->saveOrderEvents(true).saveDeleted(deleted_).saveEventSource(source_);
 
   if (*exchange_ == "Bitstamp") {
@@ -208,14 +208,20 @@ std::cerr << "Usage: oberon capture [options]\n" << od;
 return EXIT_FAILURE;
 !!!1453958.cpp!!!	slice(in od : options_description) : int
 if (!help_ && !era_.empty()) {
-  auto store = boost::make_shared<reconstructor::File>(min_price_, max_price_);
+  auto store = boost::make_shared<reconstructor::File>();
   store->saveOrderEvents(true).saveDeleted(deleted_);
   auto event_counter = boost::make_shared<reconstructor::EventCounter>(store);
   auto slicer =
       boost::make_shared<reconstructor::EraSlicer>(boundary_, event_counter);
-  reconstructor::file::Reconstructor r{slicer};
-  acquirer::file::Reader reader;
-  return reader.readAndProcess(era_, std::bind(&reconstructor::file::Reconstructor::process, &r, std::placeholders::_1), ".sliced", quote_increment_, base_increment_);
+  acquirer::file::Receiver reader{
+      boost::make_shared<reconstructor::file::Reconstructor>(slicer), ".sliced",
+      quote_increment_, base_increment_};
+  try {
+    reader.readAndProcess(era_);
+    return EXIT_SUCCESS;
+  } catch (const std::exception &) {
+    return EXIT_FAILURE;
+  }
 
 } else {
   std::cerr << "Usage: oberon slice [options]\n";
@@ -225,14 +231,18 @@ if (!help_ && !era_.empty()) {
 return EXIT_SUCCESS;
 !!!1504134.cpp!!!	merge(in od : options_description) : int
 if (!help_ && !era_.empty()) {
-  auto store = boost::make_shared<reconstructor::File>(min_price_, max_price_);
+  auto store = boost::make_shared<reconstructor::File>();
   store->saveOrderEvents(true).saveDeleted(deleted_);
   auto event_counter = boost::make_shared<reconstructor::EventCounter>(store);
   auto merger = boost::make_shared<reconstructor::EraMerger>(event_counter);
   merger->create();
-  reconstructor::file::Reconstructor r{merger};
-  acquirer::file::Reader reader;
-  return reader.readAndProcess(era_, std::bind(&reconstructor::file::Reconstructor::process, &r, std::placeholders::_1), ".merged", quote_increment_, base_increment_);
+  acquirer::file::Receiver reader {boost::make_shared<reconstructor::file::Reconstructor>(merger), ".merged", quote_increment_, base_increment_};
+  try {
+    reader.readAndProcess(era_);
+    return EXIT_SUCCESS;
+  } catch (const std::exception &) {
+    return EXIT_FAILURE;
+  }
 } else {
   std::cerr << "Usage: oberon merge [options]\n";
   std::cout << od;
@@ -240,12 +250,16 @@ if (!help_ && !era_.empty()) {
 }
 !!!1596934.cpp!!!	transmute(in od : options_description) : int
 if (!help_ && !era_.empty()) {
-  auto store = boost::make_shared<reconstructor::File>(min_price_, max_price_);
+  auto store = boost::make_shared<reconstructor::File>();
   store->saveDeleted(deleted_).saveDepth(true).saveSpread(true).saveTrades(true);
   auto transmuter = boost::make_shared<reconstructor::Transmuter>(store);
-  reconstructor::file::Reconstructor r{transmuter};
-  acquirer::file::Reader reader;
-  return reader.readAndProcess(era_, std::bind(&reconstructor::file::Reconstructor::process, &r, std::placeholders::_1), std::string{}, quote_increment_, base_increment_);
+  acquirer::file::Receiver reader {boost::make_shared<reconstructor::file::Reconstructor>(transmuter),std::string{}, quote_increment_, base_increment_};
+  try {
+    reader.readAndProcess(era_);
+    return EXIT_SUCCESS;
+  } catch (const std::exception &) {
+    return EXIT_FAILURE;
+  }
 } else {
   std::cerr << "Usage: oberon transmute [options]\n";
   std::cout << od;

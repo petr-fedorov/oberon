@@ -532,16 +532,16 @@ knitr::include_graphics("transmute_example_3.png", dpi=80)
 ### Capture order events
 
 
-Figure \@ref(fig:capture-overview) shows UML2 Activity Diagram [@cook_omg_2017] of `S.1 Capture` activity that represents an implementation of `oberon capture` command. The activity node `Reconstruct Order Book` performs a reconstruction of order book events from exchange-specific messages that are passed by node `Receive messages`.
+Figure \@ref(fig:capture-overview) shows UML2 Activity Diagram [@cook_omg_2017] of `B.1 Capture` activity that represents an implementation of `oberon capture` command. The activity node `C.02 Run Reconstruct` performs a reconstruction of order book events from exchange-specific messages that are passed by node `Run Receiver state machine`.
 
 
-```{r capture-overview, echo=FALSE, fig.cap="`Receive messages` activity node collects avaialbe information in an exchange-specific format and pass the information in the form of [Boost.Property Tree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) to `Reconstruct Order Book` activity node that, as its name implies, reconstructs order book events in an *universal* format described herein. Note that both activity nodes run concurrently.", fig.align="left"}
+```{r capture-overview, echo=FALSE, fig.cap="`Run Receiver state machine` activity node collects avaialbe information in an exchange-specific format and pass the information in the form of [Boost.Property Tree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) to `C.02 Run Reconstructor` activity node that, as its name implies, reconstructs order book events in an *universal* format described herein. Note that both activity nodes run concurrently.", fig.align="left"}
 knitr::include_graphics("html_docs/fig181766.png", dpi=80)
 ```
 
 #### Receive messages
 
-Activity `Receive messages` on figure \@ref(fig:capture-overview) is UML2 `StartObjectBehaviourAction` that starts execution of `Receiver` StateMachine shown on figure \@ref(fig:receiver). The call is synchronous, so the execution of the `Receive messages` does not complete until the execution of `Receiver` StateMachine completes.
+Activity `Run Receiver state machine` on figure \@ref(fig:capture-overview) is UML2 `StartObjectBehaviourAction` that starts execution of `Receiver` StateMachine shown on figure \@ref(fig:receiver). The call is synchronous, so the execution of the `Run Receiver state machine` does not complete until the execution of `Receiver` StateMachine completes.
 
 (ref:receiver-caption) `Processing snapshot` and `Processing messages` states pass received portions of data to `Reconstruct Order Book` (by calling method `Reconstructor::process()` shown on figure \@ref(fig:ad-reconstructor-process)) thereby the streaming of data between `Receive messages` and `Reconstruct Order Book` on figure \@ref(fig:capture-overview) is implemented.
 
@@ -568,19 +568,19 @@ knitr::include_graphics("html_docs/fig406534.png", dpi=80)
 ```
 #### Reconstruct Order Book
 
-Figure \@ref(fig:reconstruct-order-book) shows UML2 Activity Diagram of `Reconstruct Order Book` activity which is called by the activity node with the same name on figure \@ref(fig:capture-overview).
+Figure \@ref(fig:reconstruct-order-book) shows UML2 Activity Diagram of `C.02 Run Reconstructor` activity which is called by the activity node with the same name on figure \@ref(fig:capture-overview).
 
 
-```{r reconstruct-order-book, echo=FALSE, fig.cap="`Reconstruct Order Book` activity is implemented by an indefinite loop that invokes `Process message` activity every time new instance is placed on its input pin `ptree`. The loop terminates if `Process message` throws `processing_error` exception.", fig.align="left"}
+```{r reconstruct-order-book, echo=FALSE, fig.cap="`C.02 Run Reconstructor` activity is implemented as an indefinite loop that invokes `process` method on `target` instance of class `Reconstructor` every time a new instance of class `boost::property_tree::ptree` is placed on its streaming input pin `tree`. The loop terminates if `process` throws `processing_error` exception.", fig.align="left"}
 knitr::include_graphics("html_docs/fig274822.png", dpi=80)
 ```
-The activity node `Process message` on figure \@ref(fig:reconstruct-order-book) is CallAction. It calls method `process()` on `target` instance of class `Reconstructor` as shown on figure \@ref(fig:reconstructor-hierarchy-process).  
+The activity node `process` on figure \@ref(fig:reconstruct-order-book) is CallAction. It calls method `process()` on `target` instance of class `Reconstructor` that is shown on figure \@ref(fig:reconstructor-hierarchy-process).  
 
-```{r reconstructor-hierarchy-process, echo=FALSE, fig.cap="\"Reconstructor\" hierarchy of classes used in implementation of \"Process message\" activity.", fig.align="center"}
+```{r reconstructor-hierarchy-process, echo=FALSE, fig.cap="\"Reconstructor\" hierarchy of classes used in implementation of `D.01 Process message` activity.", fig.align="center"}
 knitr::include_graphics("html_docs/fig551942.png", dpi=80)
 ```
 
-UML2 Activity Diagram on figure \@ref(fig:ad-reconstructor-process) shows a generic `Process message` activity.
+UML2 Activity Diagram on figure \@ref(fig:ad-reconstructor-process) shows `D.01 Process message` activity that implements `process` method.
 
 ```{r ad-reconstructor-process, echo=FALSE, fig.cap="`Reconstructor::process()` first calls `extract()` method to create an instance of a class derived from `Message`. The `extract()` is a virtual abstract method so it is overriden in an exchange-specific implementation class, derived from `Reconstructor`. The returned instance is passed to a chain of `TokenHandler`s. There can be any number of `TokenHandler`s in the chain.", fig.align="left"}
 knitr::include_graphics("html_docs/fig572166.png", dpi=120)
@@ -667,14 +667,36 @@ print_html(ht)
 ```
 
 
-### Slice and merge era files
+### Slice, merge and transmute era files
+
+#### Era file reader
+
+
+Era files are read by an instance of `Acquirer::File::Receiver`. The behaviour `C.03 Read and process` shown on figure \@ref(fig:read-and-process) implements `Acquirer::File::Receiver::readAndProcess()` method.
+
+```{r read-and-process, echo=FALSE, fig.cap="The behaviour shown implements `Acquirer::File::Receiver::readAndProcess()` method", fig.align="left"}
+knitr::include_graphics("html_docs/fig605318.png", dpi=80)
+```
+
+#### Slice
 
 TBD
 
-### Transmute 
+#### Merge
 
 TBD
 
+#### Transmute
+
+```{r transmute-overview, echo=FALSE, fig.cap="`C.04 Create Transmuter` behaviour creates `File::Reconstructor` instance  called Transmuter with the chain of `TokenHandler`s shown of figure \\@ref(fig:create-transmuter). Transmuter is then passed as an argument of `C.05 Create Receiver` behaviour together with the other parameters. The behaviour returns an instance of File::Receiver whose method `readAndProcess()`, implemented as shown on figure \\@ref(fig:read-and-process), reads input file(s) and transfers the read messages to Transmuter for processing as shown on figure \\@ref(fig:ad-reconstructor-process)", fig.align="left"}
+knitr::include_graphics("html_docs/fig592134.png", dpi=80)
+```
+
+
+
+```{r create-transmuter, echo=FALSE, fig.cap="Handlers are created in the reverse of the intended execution order, i.e. Price Change Eliminator is invoked by `Reconstructor::process()` as shown of figure \\@ref(fig:ad-reconstructor-process) to handle a message first and File handler - last.", fig.align="left"}
+knitr::include_graphics("html_docs/fig598790.png", dpi=80)
+```
 # Results
 
 ## Fragments of extracted events

@@ -1,0 +1,34 @@
+class waiting_State
+!!!1742342.cpp!!!	reset(inout stm : PriceChangeEliminator) : void
+  {
+  }
+!!!1742726.cpp!!!	orderEvent(inout stm : PriceChangeEliminator) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._pricechangeeliminator_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .PriceChangeEliminator";
+#endif
+    if (false) {
+      stm._pricechangeeliminator_state._junction1(stm);
+    }
+    else if (false) {
+      if (false) {
+        stm._pricechangeeliminator_state._junction1(stm);
+      }
+      else if (true) {
+        stm._set_currentState(stm._pricechangeeliminator_state._waiting_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .PriceChangeEliminator.waiting";
+#endif
+      }
+    }
+    else if (true) {
+      stm._pricechangeeliminator_state._junction1(stm);
+    }
+    else {
+        stm._final();
+    }
+  }
+!!!1742854.cpp!!!	_upper(inout stm : PriceChangeEliminator) : PriceChangeEliminator::AnyState
+  return &stm._pricechangeeliminator_state;

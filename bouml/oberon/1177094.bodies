@@ -1,0 +1,17 @@
+class SamePriceMerger_State
+!!!1746310.cpp!!!	create(inout stm : SamePriceMerger) : void
+  {
+    stm._set_currentState(stm._samepricemerger_state._waiting_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .SamePriceMerger.waiting";
+#endif
+  }
+!!!1746438.cpp!!!	_junction1(inout stm : SamePriceMerger) : void
+  {
+    stm._set_currentState(stm._samepricemerger_state._waiting_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .SamePriceMerger.waiting";
+#endif
+  }
+!!!1746566.cpp!!!	_upper(inout stm : SamePriceMerger) : SamePriceMerger::AnyState
+  return 0;

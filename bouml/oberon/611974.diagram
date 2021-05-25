@@ -1,0 +1,195 @@
+format 224
+
+activitycanvas 128006 activity_ref 221702 // D.05 Prepare for next era file
+  
+  xyzwh 59 69 1997 699 457
+  params
+    parametercanvas 128134 parameter_ref 294918 // file_name
+        xyzwh 281 513 1998 85 25
+    end
+    parametercanvas 128518 parameter_ref 295302 // error
+        xyzwh 715 242 1998 85 25 label_xy 738 220
+    end
+    parametercanvas 129798 parameter_ref 295430 // target
+        xyzwh 496 57 1998 85 25
+    end
+  end
+end
+activitynodecanvas 129926 activitynode_ref 381574 // decision
+  xyz 264 401 2012
+end
+activityactioncanvas 130182 activityaction_ref 345094 // activity action renameFile
+  
+  show_opaque_action_definition default
+  xyzwh 228 238 2012 100 60
+  pins
+    pincanvas 130438 pin_ref 480134 // target
+      xyzwh 251 228 2014 11 11 label_xy 204 219
+    end
+    pincanvas 130566 pin_ref 480262 // file_name
+      xyzwh 271 297 2014 11 11 label_xy 286 297
+    end
+    pincanvas 130822 pin_ref 480518 // error
+      xyzwh 308 228 2014 11 11 label_xy 284 200
+    end
+    pincanvas 137734 pin_ref 491270 // file_name
+      xyzwh 327 256 2014 11 11 label_xy 330 238
+    end
+  end
+end
+activitynodecanvas 131078 activitynode_ref 381702 // fork
+  horizontal  xyzwh 240 474 2012 161 15
+end
+activitynodecanvas 131590 activitynode_ref 381958 // fork
+  horizontal  xyzwh 102 162 2012 547 15
+end
+activitynodecanvas 137862 activitynode_ref 390022 // merge
+  xyz 400 242 2012
+end
+activityactioncanvas 139654 activityaction_ref 359174 // activity action parseFileName
+  
+  show_opaque_action_definition default
+  xyzwh 606 355 2002 100 60
+  pins
+    pincanvas 139782 pin_ref 497926 // target
+      xyzwh 632 345 2004 11 11 label_xy 585 334
+    end
+    pincanvas 140038 pin_ref 498182 // file_name
+      xyzwh 596 382 2004 11 11 label_xy 528 384
+    end
+    pincanvas 140550 pin_ref 498694 // error
+      xyzwh 665 345 2004 11 11 label_xy 683 339
+    end
+  end
+end
+activitynodecanvas 140806 activitynode_ref 396678 // merge
+  xyz 658 234 2000
+end
+activityactioncanvas 146054 activityaction_ref 372998 // activity action openSourceFile
+  
+  show_opaque_action_definition default
+  xyzwh 482 238 3005 105 60
+  pins
+    pincanvas 147462 pin_ref 515462 // target
+      xyzwh 514 228 3007 11 11 label_xy 477 215
+    end
+    pincanvas 147590 pin_ref 515590 // file_name
+      xyzwh 472 255 3007 11 11 label_xy 413 267
+    end
+    pincanvas 147718 pin_ref 515718 // error
+      xyzwh 586 249 3007 11 11 label_xy 599 253
+    end
+  end
+end
+activityactioncanvas 149894 activityaction_ref 380806 // activity action Read "extension_"
+  
+  show_opaque_action_definition default
+  xyzwh 92 234 3005 100 60
+  pins
+    pincanvas 150022 pin_ref 525830 // object
+      xyzwh 126 224 3007 11 11 label_xy 75 211
+    end
+    pincanvas 150150 pin_ref 525958 // result
+      xyzwh 147 293 3007 11 11 label_xy 159 303
+    end
+  end
+end
+flowcanvas 131718 flow_ref 557958 // <flow>
+  decenter_begin 279
+  
+  from ref 131590 z 2015 to ref 130438
+   write_horizontally default
+end
+flowcanvas 132614 flow_ref 558342 // <flow>
+  decenter_begin 388
+  decenter_end 782
+  
+  from ref 129798 z 2013 to ref 131590
+   write_horizontally default
+end
+flowcanvas 132742 flow_ref 558470 // <flow>
+  decenter_begin 494
+  
+  from ref 128134 z 2013 to ref 131078
+   write_horizontally default
+end
+flowcanvas 138118 flow_ref 569478 // <flow>
+  
+  from ref 137734 z 2015 to ref 137862
+   write_horizontally default
+end
+flowcanvas 140678 flow_ref 576646 // <flow>
+  decenter_begin 931
+  
+  from ref 131078 z 2013 to point 383 384
+  line 148358 z 2013 to ref 140038
+   write_horizontally default
+end
+flowcanvas 140934 flow_ref 576774 // <flow>
+  decenter_begin 974
+  
+  from ref 131590 z 2013 to ref 139782
+   write_horizontally default
+end
+flowcanvas 141062 flow_ref 576902 // <flow>
+  
+  from ref 130822 z 2015 to point 310 195
+  line 149638 z 2015 to point 665 195
+  line 149766 z 2015 to ref 140806
+   write_horizontally default
+end
+flowcanvas 141190 flow_ref 577030 // <flow>
+  
+  from ref 140806 z 2001 to ref 128518
+   write_horizontally default
+end
+flowcanvas 141318 flow_ref 577158 // <flow>
+  
+  from ref 140550 z 2005 to ref 140806
+   write_horizontally default
+end
+flowcanvas 145030 flow_ref 578438 // <flow>
+  decenter_begin 229
+  
+  from ref 131078 z 2013 to ref 129926
+   write_horizontally default
+end
+flowcanvas 145286 flow_ref 578566 // <flow>
+  
+  from ref 129926 z 2013 label "[extension is empty]" xyz 290 328 2013 to ref 137862
+   write_horizontally default
+end
+flowcanvas 145414 flow_ref 578694 // <flow>
+  
+  from ref 129926 z 2015 label "[else]" xyz 261 344 2015 to ref 130566
+   write_horizontally default
+end
+flowcanvas 147846 flow_ref 595590 // <flow>
+  
+  from ref 137862 z 3008 to ref 147590
+   write_horizontally default
+end
+flowcanvas 147974 flow_ref 595718 // <flow>
+  decenter_begin 753
+  decenter_end 181
+  
+  from ref 131590 z 3008 to ref 147462
+   write_horizontally default
+end
+flowcanvas 148486 flow_ref 595846 // <flow>
+  
+  from ref 147718 z 3008 to ref 140806
+   write_horizontally default
+end
+flowcanvas 150662 flow_ref 606598 // <flow>
+  decenter_begin 53
+  
+  from ref 131590 z 3008 to ref 150022
+   write_horizontally default
+end
+flowcanvas 151302 flow_ref 606854 // <flow>
+  
+  from ref 150150 z 3008 stereotype "<<decisionInputFlow>>" xyz 148 354 3000 to ref 129926
+   write_horizontally default
+end
+end

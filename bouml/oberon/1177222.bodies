@@ -1,0 +1,20 @@
+class waiting_State
+!!!1745414.cpp!!!	orderEvent(inout stm : SamePriceMerger) : void
+  {
+    for(auto s = stm._current_state; s != this && s; s = s->_upper(stm)) s->_doexit(stm);
+    stm._set_currentState(stm._samepricemerger_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .SamePriceMerger";
+#endif
+    if (true) {
+      stm._samepricemerger_state._junction1(stm);
+    }
+    else {
+      stm._samepricemerger_state._junction1(stm);
+    }
+  }
+!!!1745798.cpp!!!	reset(inout stm : SamePriceMerger) : void
+  {
+  }
+!!!1745926.cpp!!!	_upper(inout stm : SamePriceMerger) : SamePriceMerger::AnyState
+  return &stm._samepricemerger_state;

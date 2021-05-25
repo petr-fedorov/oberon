@@ -14,15 +14,17 @@ ss >> parse("%FT%TZ", output);
 return output;
 !!!575878.cpp!!!	process(in message : ptree [1]) : void
 auto handler = next_;
-Tokens tokens; 
-tokens.push_back(extract(message));
-
-while(handler && !tokens.empty()) {
-  Tokens gathered;
-  for(auto && token: tokens) {
-    auto output = handler->handle(std::move(token));
-    std::move(output.begin(), output.end(), std::back_inserter(gathered));
+auto token = extract(message);
+if (token) {
+  Tokens tokens;
+  tokens.push_back(std::move(token));
+  while (handler && !tokens.empty()) {
+    Tokens gathered;
+    for (auto &&token : tokens) {
+      auto output = handler->handle(std::move(token));
+      std::move(output.begin(), output.end(), std::back_inserter(gathered));
+    }
+    tokens = std::move(gathered);
+    handler = handler->next();
   }
-  tokens = std::move(gathered);
-  handler = handler->next();
 }

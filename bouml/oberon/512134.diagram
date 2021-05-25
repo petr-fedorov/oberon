@@ -1,6 +1,6 @@
 format 224
 
-classcanvas 128006 class_ref 1074182 // Reader
+classcanvas 128006 class_ref 1074182 // Receiver
   classdiagramsettings member_max_width 0 end
   xyz 82 154 2000
 end
@@ -12,9 +12,17 @@ classcanvas 128390 class_ref 889734 // vector
   classdiagramsettings member_max_width 0 end
   xyz 332 34 2005
 end
-classcanvas 129030 class_ref 1108486 // processing_error
+classcanvas 129286 class_ref 486278 // Reconstructor
   classdiagramsettings member_max_width 0 end
-  xyz 78 366 2000
+  xyz 423 296 2000
+end
+classcanvas 129542 class_ref 1162246 // receiving_error
+  classdiagramsettings member_max_width 0 end
+  xyz 373 488 2000
+end
+classcanvas 129670 class_ref 1108614 // exception
+  classdiagramsettings member_max_width 0 end
+  xyz 407 604 2006
 end
 line 128262 ---+
   from ref 128134 z 2007 to ref 128006
@@ -23,8 +31,18 @@ relationcanvas 128518 relation_ref 1235206 // <realization>
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
-relationcanvas 129158 relation_ref 1325574 // <dependency>
-  from ref 128006 z 2001 to ref 129030
+relationcanvas 129414 relation_ref 1362182 // <directional aggregation>
+  from ref 128006 z 2001 stereotype "<<shared_ptr>>" xyz 276 360 3000 to ref 129286
+  role_a_pos 335 350 3000 no_role_b
+  multiplicity_a_pos 405 383 3000 no_multiplicity_b
+end
+relationcanvas 129926 relation_ref 1368710 // <generalisation>
+  from ref 129542 z 2007 to ref 129670
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130054 relation_ref 1368838 // <dependency>
+  from ref 128006 z 2001 to ref 129542
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end

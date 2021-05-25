@@ -37,6 +37,7 @@ else if (event->side() == BookSide::kAsk) {
 BOOST_LOG_TRIVIAL(warning) << handler_name_ << " ignored " << event->toString();
 return true;
 !!!1587078.cpp!!!	reset() : bool
+BOOST_LOG_TRIVIAL(debug) << handler_name_ << "recevied reset message with " << date::format("%FT%TZ", received_->timestamp());
 for (auto & b : bids_)
   b.second->advance(received_->timestamp(), output_);
 for (auto & a : asks_)

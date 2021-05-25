@@ -1,0 +1,148 @@
+format 224
+
+activitycanvas 128006 activity_ref 208390 // B.2 Transmute
+  
+  xyzwh 62 70 2007 745 391
+  params
+    parametercanvas 128134 parameter_ref 273542 // options
+        xyzwh 427 58 2008 83 25
+    end
+  end
+end
+activitynodecanvas 128518 activitynode_ref 352390 // fork
+  horizontal  xyzwh 320 128 2012 307 15
+end
+activityactioncanvas 129030 activityaction_ref 316166 // activity action C.04 Create Transmuter
+  
+  show_opaque_action_definition default
+  color green
+  xyzwh 153 255 2012 100 60
+  pins
+    pincanvas 129414 pin_ref 442758 // transmuter
+      xyzwh 248 278 2014 11 11 label_xy 252 259
+    end
+  end
+end
+activityactioncanvas 133766 activityaction_ref 317190 // activity action readAndProcess
+  
+  show_opaque_action_definition default
+  xyzwh 599 255 2012 110 60
+  pins
+    pincanvas 137606 pin_ref 462342 // target
+      xyzwh 589 279 2014 11 11 label_xy 551 261
+    end
+    pincanvas 137734 pin_ref 462470 // error
+      xyzwh 708 281 2014 11 11 label_xy 720 294
+    end
+    pincanvas 137862 pin_ref 462598 // files
+      xyzwh 604 245 2014 11 11 label_xy 553 229
+    end
+  end
+end
+activitynodecanvas 134278 activitynode_ref 352518 // activity_final
+  xyz 767 273 2012
+end
+activityactioncanvas 136966 activityaction_ref 330758 // activity action Create an empty string
+  
+  show_opaque_action_definition default
+  xyzwh 344 375 2012 100 60
+  pins
+    pincanvas 140806 pin_ref 470278 // output
+      xyzwh 373 365 2014 11 11 label_xy 388 352
+    end
+  end
+end
+activitynodecanvas 137350 activitynode_ref 367110 // initial_node
+  xyz 78 276 2012
+end
+activityactioncanvas 140550 activityaction_ref 331142 // activity action C.05 Create Receiver
+  
+  show_opaque_action_definition default
+  xyzwh 336 255 2012 100 60
+  pins
+    pincanvas 142854 pin_ref 507782 // reconstructor
+      xyzwh 326 278 2014 11 11 label_xy 251 288
+    end
+    pincanvas 142982 pin_ref 507910 // extension
+      xyzwh 372 314 2014 11 11 label_xy 388 322
+    end
+    pincanvas 143110 pin_ref 508038 // receiver
+      xyzwh 435 280 2014 11 11 label_xy 442 295
+    end
+    pincanvas 143622 pin_ref 514566 // quote_increment
+      xyzwh 353 245 2014 11 11 label_xy 233 231
+    end
+    pincanvas 143750 pin_ref 514694 // base_increment
+      xyzwh 404 245 2014 11 11 label_xy 420 231
+    end
+  end
+end
+flowcanvas 129798 flow_ref 517254 // <flow>
+  decenter_begin 518
+  decenter_end 488
+  
+  from ref 128134 z 2013 to ref 128518
+   write_horizontally default
+end
+flowcanvas 137478 flow_ref 538630 // <flow>
+  
+  from ref 137350 z 2013 to ref 129030
+   write_horizontally default
+end
+flowcanvas 139014 flow_ref 539014 // <flow>
+  
+  from ref 137734 z 2015 to ref 134278
+   write_horizontally default
+end
+flowcanvas 139270 flow_ref 539270 // <flow>
+  decenter_begin 938
+  
+  from ref 128518 z 2015 to ref 137862
+   write_horizontally default
+  transformation 
+  information 139654 "<<transformation>>
+get value of \"input\" option"
+    xyzwh 638 151 2015 155 77
+end
+flowcanvas 143238 flow_ref 588038 // <flow>
+  
+  from ref 143110 z 2015 to ref 137606
+   write_horizontally default
+end
+flowcanvas 143366 flow_ref 588166 // <flow>
+  
+  from ref 129414 z 2015 to ref 142854
+   write_horizontally default
+end
+flowcanvas 143494 flow_ref 588294 // <flow>
+  
+  from ref 140806 z 2015 to ref 142982
+   write_horizontally default
+end
+flowcanvas 143878 flow_ref 594950 // <flow>
+  decenter_begin 283
+  
+  from ref 128518 z 2015 to ref 143750
+   write_horizontally default
+  transformation 
+  information 144006 "<<transformation>>
+get value of \"base_increment\" option"
+    xyzwh 430 151 2015 155 77
+end
+flowcanvas 144262 flow_ref 595078 // <flow>
+  decenter_begin 117
+  
+  from ref 128518 z 2015 to ref 143622
+   write_horizontally default
+  transformation 
+  information 144390 "<<transformation>>
+get value of \"quote_increment\" option"
+    xyzwh 159 151 2015 155 77
+end
+line 139782 -_-_
+  from ref 139270 z 2016 to ref 139654
+line 144134 -_-_
+  from ref 143878 z 2016 to ref 144006
+line 144518 -_-_
+  from ref 144262 z 2016 to ref 144390
+end

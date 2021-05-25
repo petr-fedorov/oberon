@@ -1,0 +1,17 @@
+class PriceChangeEliminator_State
+!!!1743238.cpp!!!	create(inout stm : PriceChangeEliminator) : void
+  {
+    stm._set_currentState(stm._pricechangeeliminator_state._waiting_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .PriceChangeEliminator.waiting";
+#endif
+  }
+!!!1743366.cpp!!!	_junction1(inout stm : PriceChangeEliminator) : void
+  {
+    stm._set_currentState(stm._pricechangeeliminator_state._waiting_state);
+#ifdef VERBOSE_STATE_MACHINE
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .PriceChangeEliminator.waiting";
+#endif
+  }
+!!!1743494.cpp!!!	_upper(inout stm : PriceChangeEliminator) : PriceChangeEliminator::AnyState
+  return 0;

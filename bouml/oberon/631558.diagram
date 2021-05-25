@@ -1,0 +1,130 @@
+format 224
+
+activitycanvas 128006 activity_ref 241286 // E.03 Parse File Name
+  
+  xyzwh 80 61 0 685 395
+  params
+    parametercanvas 128134 parameter_ref 315782 // target
+        xyzwh 729 253 1 71 25
+    end
+    parametercanvas 128262 parameter_ref 315910 // file_name
+        xyzwh 45 269 1 71 25
+    end
+    parametercanvas 128390 parameter_ref 316038 // error
+        xyzwh 171 443 1 71 25 label_xy 170 417
+    end
+  end
+end
+activityactioncanvas 128518 activityaction_ref 380038 // activity action Parse
+  
+  show_opaque_action_definition default
+  xyzwh 168 253 3010 100 60
+  pins
+    pincanvas 128646 pin_ref 523398 // exchange
+      xyzwh 267 243 3012 11 11 label_xy 209 222
+    end
+    pincanvas 128774 pin_ref 523526 // product
+      xyzwh 267 277 3012 11 11 label_xy 274 257
+    end
+    pincanvas 128902 pin_ref 523654 // timestamp
+      xyzwh 267 306 3012 11 11 label_xy 275 289
+    end
+    pincanvas 129030 pin_ref 523782 // value
+      xyzwh 158 278 3012 11 11 label_xy 122 261
+    end
+    pincanvas 129158 pin_ref 523910 // error
+      xyzwh 197 312 3012 11 11 label_xy 215 318
+    end
+  end
+end
+activitynodecanvas 129542 activitynode_ref 410118 // fork
+   xyzwh 605 148 2000 15 231
+end
+activityactioncanvas 129670 activityaction_ref 380166 // activity action Write "exchange_"
+  
+  show_opaque_action_definition default
+  xyzwh 408 151 2000 100 60
+  pins
+    pincanvas 129798 pin_ref 524038 // object
+      xyzwh 507 173 2002 11 11 label_xy 523 156
+    end
+    pincanvas 129926 pin_ref 524166 // value
+      xyzwh 398 196 2002 11 11 label_xy 357 176
+    end
+  end
+end
+activityactioncanvas 130310 activityaction_ref 380294 // activity action Write "product_"
+  
+  show_opaque_action_definition default
+  xyzwh 405 236 2000 100 60
+  pins
+    pincanvas 130438 pin_ref 524294 // object
+      xyzwh 504 242 2002 11 11 label_xy 503 219
+    end
+    pincanvas 130822 pin_ref 524422 // value
+      xyzwh 395 278 2002 11 11 label_xy 354 254
+    end
+  end
+end
+activityactioncanvas 131334 activityaction_ref 380422 // activity action Write "timestamp_"
+  
+  show_opaque_action_definition default
+  xyzwh 410 325 2005 100 60
+  pins
+    pincanvas 131718 pin_ref 524806 // object
+      xyzwh 509 344 2007 11 11 label_xy 512 322
+    end
+    pincanvas 131974 pin_ref 524934 // value
+      xyzwh 400 347 2007 11 11 label_xy 363 362
+    end
+  end
+end
+flowcanvas 129286 flow_ref 604166 // <flow>
+  
+  from ref 129158 z 3013 to ref 128390
+   write_horizontally default
+end
+flowcanvas 129414 flow_ref 604294 // <flow>
+  
+  from ref 128262 z 3013 to ref 129030
+   write_horizontally default
+end
+flowcanvas 130054 flow_ref 604422 // <flow>
+  decenter_begin 134
+  
+  from ref 129542 z 2003 to ref 129798
+   write_horizontally default
+end
+flowcanvas 130182 flow_ref 604550 // <flow>
+  
+  from ref 128646 z 3013 to ref 129926
+   write_horizontally default
+end
+flowcanvas 130566 flow_ref 604678 // <flow>
+  decenter_begin 424
+  
+  from ref 129542 z 2003 to ref 130438
+   write_horizontally default
+end
+flowcanvas 131206 flow_ref 604934 // <flow>
+  
+  from ref 128774 z 3013 to ref 130822
+   write_horizontally default
+end
+flowcanvas 131846 flow_ref 605062 // <flow>
+  decenter_begin 874
+  
+  from ref 129542 z 2008 to ref 131718
+   write_horizontally default
+end
+flowcanvas 132102 flow_ref 605190 // <flow>
+  
+  from ref 128902 z 3013 to ref 131974
+   write_horizontally default
+end
+flowcanvas 132230 flow_ref 605318 // <flow>
+  
+  from ref 128134 z 2001 to ref 129542
+   write_horizontally default
+end
+end

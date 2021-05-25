@@ -24,7 +24,7 @@
 <meta name="author" content="Petr Fedorov" />
 
 
-<meta name="date" content="2021-04-26" />
+<meta name="date" content="2021-05-25" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -82,8 +82,12 @@
 <li class="chapter" data-level="2.2.1.2" data-path="methods.html"><a href="methods.html#reconstruct-order-book"><i class="fa fa-check"></i><b>2.2.1.2</b> Reconstruct Order Book</a></li>
 <li class="chapter" data-level="2.2.1.3" data-path="methods.html"><a href="methods.html#save-output"><i class="fa fa-check"></i><b>2.2.1.3</b> Save output</a></li>
 </ul></li>
-<li class="chapter" data-level="2.2.2" data-path="methods.html"><a href="methods.html#slice-and-merge-era-files"><i class="fa fa-check"></i><b>2.2.2</b> Slice and merge era files</a></li>
-<li class="chapter" data-level="2.2.3" data-path="methods.html"><a href="methods.html#transmute"><i class="fa fa-check"></i><b>2.2.3</b> Transmute</a></li>
+<li class="chapter" data-level="2.2.2" data-path="methods.html"><a href="methods.html#slice-merge-and-transmute-era-files"><i class="fa fa-check"></i><b>2.2.2</b> Slice, merge and transmute era files</a><ul>
+<li class="chapter" data-level="2.2.2.1" data-path="methods.html"><a href="methods.html#era-file-reader"><i class="fa fa-check"></i><b>2.2.2.1</b> Era file reader</a></li>
+<li class="chapter" data-level="2.2.2.2" data-path="methods.html"><a href="methods.html#slice"><i class="fa fa-check"></i><b>2.2.2.2</b> Slice</a></li>
+<li class="chapter" data-level="2.2.2.3" data-path="methods.html"><a href="methods.html#merge"><i class="fa fa-check"></i><b>2.2.2.3</b> Merge</a></li>
+<li class="chapter" data-level="2.2.2.4" data-path="methods.html"><a href="methods.html#transmute"><i class="fa fa-check"></i><b>2.2.2.4</b> Transmute</a></li>
+</ul></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>3</b> Results</a><ul>
@@ -482,16 +486,16 @@ Figure 2.3: A visual representation of Order Book Set <a href="methods.html#tab:
 <h2><span class="header-section-number">2.2</span> Software</h2>
 <div id="capture-order-events" class="section level3">
 <h3><span class="header-section-number">2.2.1</span> Capture order events</h3>
-<p>Figure <a href="methods.html#fig:capture-overview">2.4</a> shows UML2 Activity Diagram <span class="citation">(Cook et al. 2017)</span> of <code>S.1 Capture</code> activity that represents an implementation of <code>oberon capture</code> command. The activity node <code>Reconstruct Order Book</code> performs a reconstruction of order book events from exchange-specific messages that are passed by node <code>Receive messages</code>.</p>
+<p>Figure <a href="methods.html#fig:capture-overview">2.4</a> shows UML2 Activity Diagram <span class="citation">(Cook et al. 2017)</span> of <code>B.1 Capture</code> activity that represents an implementation of <code>oberon capture</code> command. The activity node <code>C.02 Run Reconstruct</code> performs a reconstruction of order book events from exchange-specific messages that are passed by node <code>Run Receiver state machine</code>.</p>
 <div class="figure" style="text-align: left"><span id="fig:capture-overview"></span>
-<img src="html_docs/fig181766.png" alt="`Receive messages` activity node collects avaialbe information in an exchange-specific format and pass the information in the form of [Boost.Property Tree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) to `Reconstruct Order Book` activity node that, as its name implies, reconstructs order book events in an *universal* format described herein. Note that both activity nodes run concurrently."  />
+<img src="html_docs/fig181766.png" alt="`Run Receiver state machine` activity node collects avaialbe information in an exchange-specific format and pass the information in the form of [Boost.Property Tree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) to `C.02 Run Reconstructor` activity node that, as its name implies, reconstructs order book events in an *universal* format described herein. Note that both activity nodes run concurrently."  />
 <p class="caption">
-Figure 2.4: <code>Receive messages</code> activity node collects avaialbe information in an exchange-specific format and pass the information in the form of <a href="https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html">Boost.Property Tree</a> to <code>Reconstruct Order Book</code> activity node that, as its name implies, reconstructs order book events in an <em>universal</em> format described herein. Note that both activity nodes run concurrently.
+Figure 2.4: <code>Run Receiver state machine</code> activity node collects avaialbe information in an exchange-specific format and pass the information in the form of <a href="https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html">Boost.Property Tree</a> to <code>C.02 Run Reconstructor</code> activity node that, as its name implies, reconstructs order book events in an <em>universal</em> format described herein. Note that both activity nodes run concurrently.
 </p>
 </div>
 <div id="receive-messages" class="section level4">
 <h4><span class="header-section-number">2.2.1.1</span> Receive messages</h4>
-<p>Activity <code>Receive messages</code> on figure <a href="methods.html#fig:capture-overview">2.4</a> is UML2 <code>StartObjectBehaviourAction</code> that starts execution of <code>Receiver</code> StateMachine shown on figure <a href="methods.html#fig:receiver">2.5</a>. The call is synchronous, so the execution of the <code>Receive messages</code> does not complete until the execution of <code>Receiver</code> StateMachine completes.</p>
+<p>Activity <code>Run Receiver state machine</code> on figure <a href="methods.html#fig:capture-overview">2.4</a> is UML2 <code>StartObjectBehaviourAction</code> that starts execution of <code>Receiver</code> StateMachine shown on figure <a href="methods.html#fig:receiver">2.5</a>. The call is synchronous, so the execution of the <code>Run Receiver state machine</code> does not complete until the execution of <code>Receiver</code> StateMachine completes.</p>
 
 <div class="figure" style="text-align: left"><span id="fig:receiver"></span>
 <img src="html_docs/fig399494.png" alt="Processing snapshot and Processing messages states pass received portions of data to Reconstruct Order Book (by calling method Reconstructor::process() shown on figure 2.10) thereby the streaming of data between Receive messages and Reconstruct Order Book on figure 2.4 is implemented."  />
@@ -519,21 +523,21 @@ Figure 2.7: Snapshot StateMachine diagram.
 </div>
 <div id="reconstruct-order-book" class="section level4">
 <h4><span class="header-section-number">2.2.1.2</span> Reconstruct Order Book</h4>
-<p>Figure <a href="methods.html#fig:reconstruct-order-book">2.8</a> shows UML2 Activity Diagram of <code>Reconstruct Order Book</code> activity which is called by the activity node with the same name on figure <a href="methods.html#fig:capture-overview">2.4</a>.</p>
+<p>Figure <a href="methods.html#fig:reconstruct-order-book">2.8</a> shows UML2 Activity Diagram of <code>C.02 Run Reconstructor</code> activity which is called by the activity node with the same name on figure <a href="methods.html#fig:capture-overview">2.4</a>.</p>
 <div class="figure" style="text-align: left"><span id="fig:reconstruct-order-book"></span>
-<img src="html_docs/fig274822.png" alt="`Reconstruct Order Book` activity is implemented by an indefinite loop that invokes `Process message` activity every time new instance is placed on its input pin `ptree`. The loop terminates if `Process message` throws `processing_error` exception."  />
+<img src="html_docs/fig274822.png" alt="`C.02 Run Reconstructor` activity is implemented as an indefinite loop that invokes `process` method on `target` instance of class `Reconstructor` every time a new instance of class `boost::property_tree::ptree` is placed on its streaming input pin `tree`. The loop terminates if `process` throws `processing_error` exception."  />
 <p class="caption">
-Figure 2.8: <code>Reconstruct Order Book</code> activity is implemented by an indefinite loop that invokes <code>Process message</code> activity every time new instance is placed on its input pin <code>ptree</code>. The loop terminates if <code>Process message</code> throws <code>processing_error</code> exception.
+Figure 2.8: <code>C.02 Run Reconstructor</code> activity is implemented as an indefinite loop that invokes <code>process</code> method on <code>target</code> instance of class <code>Reconstructor</code> every time a new instance of class <code>boost::property_tree::ptree</code> is placed on its streaming input pin <code>tree</code>. The loop terminates if <code>process</code> throws <code>processing_error</code> exception.
 </p>
 </div>
-<p>The activity node <code>Process message</code> on figure <a href="methods.html#fig:reconstruct-order-book">2.8</a> is CallAction. It calls method <code>process()</code> on <code>target</code> instance of class <code>Reconstructor</code> as shown on figure <a href="methods.html#fig:reconstructor-hierarchy-process">2.9</a>.</p>
+<p>The activity node <code>process</code> on figure <a href="methods.html#fig:reconstruct-order-book">2.8</a> is CallAction. It calls method <code>process()</code> on <code>target</code> instance of class <code>Reconstructor</code> that is shown on figure <a href="methods.html#fig:reconstructor-hierarchy-process">2.9</a>.</p>
 <div class="figure" style="text-align: center"><span id="fig:reconstructor-hierarchy-process"></span>
-<img src="html_docs/fig551942.png" alt="&quot;Reconstructor&quot; hierarchy of classes used in implementation of &quot;Process message&quot; activity."  />
+<img src="html_docs/fig551942.png" alt="&quot;Reconstructor&quot; hierarchy of classes used in implementation of `D.01 Process message` activity."  />
 <p class="caption">
-Figure 2.9: “Reconstructor” hierarchy of classes used in implementation of “Process message” activity.
+Figure 2.9: “Reconstructor” hierarchy of classes used in implementation of <code>D.01 Process message</code> activity.
 </p>
 </div>
-<p>UML2 Activity Diagram on figure <a href="methods.html#fig:ad-reconstructor-process">2.10</a> shows a generic <code>Process message</code> activity.</p>
+<p>UML2 Activity Diagram on figure <a href="methods.html#fig:ad-reconstructor-process">2.10</a> shows <code>D.01 Process message</code> activity that implements <code>process</code> method.</p>
 <div class="figure" style="text-align: left"><span id="fig:ad-reconstructor-process"></span>
 <img src="html_docs/fig572166.png" alt="`Reconstructor::process()` first calls `extract()` method to create an instance of a class derived from `Message`. The `extract()` is a virtual abstract method so it is overriden in an exchange-specific implementation class, derived from `Reconstructor`. The returned instance is passed to a chain of `TokenHandler`s. There can be any number of `TokenHandler`s in the chain."  />
 <p class="caption">
@@ -854,13 +858,41 @@ bool
 </table>
 </div>
 </div>
-<div id="slice-and-merge-era-files" class="section level3">
-<h3><span class="header-section-number">2.2.2</span> Slice and merge era files</h3>
+<div id="slice-merge-and-transmute-era-files" class="section level3">
+<h3><span class="header-section-number">2.2.2</span> Slice, merge and transmute era files</h3>
+<div id="era-file-reader" class="section level4">
+<h4><span class="header-section-number">2.2.2.1</span> Era file reader</h4>
+<p>Era files are read by an instance of <code>Acquirer::File::Receiver</code>. The behaviour <code>C.03 Read and process</code> shown on figure <a href="methods.html#fig:read-and-process">2.14</a> implements <code>Acquirer::File::Receiver::readAndProcess()</code> method.</p>
+<div class="figure" style="text-align: left"><span id="fig:read-and-process"></span>
+<img src="html_docs/fig605318.png" alt="The behaviour shown implements `Acquirer::File::Receiver::readAndProcess()` method"  />
+<p class="caption">
+Figure 2.14: The behaviour shown implements <code>Acquirer::File::Receiver::readAndProcess()</code> method
+</p>
+</div>
+</div>
+<div id="slice" class="section level4">
+<h4><span class="header-section-number">2.2.2.2</span> Slice</h4>
 <p>TBD</p>
 </div>
-<div id="transmute" class="section level3">
-<h3><span class="header-section-number">2.2.3</span> Transmute</h3>
+<div id="merge" class="section level4">
+<h4><span class="header-section-number">2.2.2.3</span> Merge</h4>
 <p>TBD</p>
+</div>
+<div id="transmute" class="section level4">
+<h4><span class="header-section-number">2.2.2.4</span> Transmute</h4>
+<div class="figure" style="text-align: left"><span id="fig:transmute-overview"></span>
+<img src="html_docs/fig592134.png" alt="`C.04 Create Transmuter` behaviour creates `File::Reconstructor` instance  called Transmuter with the chain of `TokenHandler`s shown of figure \@ref(fig:create-transmuter). Transmuter is then passed as an argument of `C.05 Create Receiver` behaviour together with the other parameters. The behaviour returns an instance of File::Receiver whose method `readAndProcess()`, implemented as shown on figure \@ref(fig:read-and-process), reads input file(s) and transfers the read messages to Transmuter for processing as shown on figure \@ref(fig:ad-reconstructor-process)"  />
+<p class="caption">
+Figure 2.15: <code>C.04 Create Transmuter</code> behaviour creates <code>File::Reconstructor</code> instance called Transmuter with the chain of <code>TokenHandler</code>s shown of figure <a href="methods.html#fig:create-transmuter">2.16</a>. Transmuter is then passed as an argument of <code>C.05 Create Receiver</code> behaviour together with the other parameters. The behaviour returns an instance of <a href="File::Receiver" class="uri">File::Receiver</a> whose method <code>readAndProcess()</code>, implemented as shown on figure <a href="methods.html#fig:read-and-process">2.14</a>, reads input file(s) and transfers the read messages to Transmuter for processing as shown on figure <a href="methods.html#fig:ad-reconstructor-process">2.10</a>
+</p>
+</div>
+<div class="figure" style="text-align: left"><span id="fig:create-transmuter"></span>
+<img src="html_docs/fig598790.png" alt="Handlers are created in the reverse of the intended execution order, i.e. Price Change Eliminator is invoked by `Reconstructor::process()` as shown of figure \@ref(fig:ad-reconstructor-process) to handle a message first and File handler - last."  />
+<p class="caption">
+Figure 2.16: Handlers are created in the reverse of the intended execution order, i.e. Price Change Eliminator is invoked by <code>Reconstructor::process()</code> as shown of figure <a href="methods.html#fig:ad-reconstructor-process">2.10</a> to handle a message first and File handler - last.
+</p>
+</div>
+</div>
 </div>
 </div>
 </div>

@@ -2,7 +2,7 @@ class Prepare_merge_State
 !!!1485958.cpp!!!	created(inout stm : EraMerger) : void
   {
 #ifdef VERBOSE_STATE_MACHINE
-   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition create";
+   BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition created";
 #endif
 using OrderEvent=oberon::reconstructor::OrderEvent;
 OrderEvent *event = static_cast<OrderEvent*>(stm.received_.get());
@@ -19,11 +19,17 @@ if (iter != stm.active_orders_.end()) {
     stm.received_ = boost::make_unique<OrderEvent>(*event); // the original stm.received_ (Created) is deleted here!
     stm.received_->deleted(false);
     stm.received_->timestamp(stm.era_timestamp_);
+    static_cast<OrderEvent*>(stm.received_.get())->ordinal(0); // so isOrderCreated() will be false
     assert(static_cast<OrderEvent*>(stm.received_.get())->isOrderChanged());
     iter->second = static_cast<OrderEvent *>(stm.received_.get())->clone();
     stm.output_.push_back(std::move(stm.received_));
   }
 }
+else {
+  stm.active_orders_[event->maker()] = event->clone();
+  stm.output_.push_back(std::move(stm.received_));
+}
+
   }
 !!!1486086.cpp!!!	_upper(inout stm : EraMerger) : EraMerger::AnyState
   return &stm._eramerger_state._engage_state;
@@ -33,17 +39,19 @@ if (iter != stm.active_orders_.end()) {
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "execute activity of transition elapsed";
 #endif
-for(auto iter = stm.active_orders_.begin(); iter != stm.active_orders_.end(); ++iter)
+for(auto iter = stm.active_orders_.begin(); iter != stm.active_orders_.end(); )
 if(iter->second->deleted()) {
   auto c = boost::make_unique<reconstructor::OrderEvent>(*iter->second);
   c->deleted(false);
   c->state(reconstructor::OrderEvent::OrderState::kFinished);
+  c->trade(0);
   c->timestamp(stm.era_timestamp_);
   assert(c->isOrderCancelled());
-  stm.active_orders_.erase(iter);
+  iter = stm.active_orders_.erase(iter);
   stm.output_.push_back(std::move(c));
 }
-
+else
+  ++iter;
     stm._set_currentState(stm._eramerger_state._engage_state._era_started_state);
 #ifdef VERBOSE_STATE_MACHINE
    BOOST_LOG_TRIVIAL(debug) <<  stm._machine_name << "current state is now .EraMerger.Engage.Era started";
