@@ -18,13 +18,14 @@
 <a name="ref4_979334"></a>
 <p> implement the state machine Synchronizer<br /></p>
 <p>Declaration :</p><ul>
-<li>C++ : class Synchronizer : public <a href="class441222.html#ref4_441222"><b>TokenHandler</b></a> </li></ul><p>Artifact : <a href="index.html#ref8_340486"><b>Synchronizer</b></a></p>
+<li>C++ : class Synchronizer : public <a href="class441222.html#ref4_441222"><b>MessageHandler</b></a> </li></ul><p>Artifact : <a href="index.html#ref8_340486"><b>Synchronizer</b></a></p>
 <p>Properties:</p><ul>
 <li>STM generated:<br /><div class="sub"></div></li>
 </ul>
 <div class="sub">
 <table><tr><td><div class="element">Class <b><a href="class979462.html#ref4_979462"><b>AnyState</b></a></b></div></td></tr></table>
 <table><tr><td><div class="element">Class <b><a href="class979590.html#ref4_979590"><b>Synchronizer_State</b></a></b></div></td></tr></table>
+<table><tr><td><div class="element">Class <b><a href="class1225094.html#ref4_1225094"><b>Synchronizer_SP</b></a></b></div></td></tr></table>
 <a name="ref1_855942"></a>
 <table><tr><td><div class="element">Attribute <b>_machine_name</b></div></td></tr></table>
 <p> a (unique) name of the machine <br /></p><p>Declaration :</p><ul><li>Uml : + _machine_name : string</li><li>C++ : public: std::string _machine_name</li></ul><p>Properties:</p><ul>
@@ -39,7 +40,8 @@
 <table><tr><td><div class="element">Operation <b>Synchronizer</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : + Synchronizer() : </li><li>C++ : public: Synchronizer()</li></ul><p>Properties:</p><ul>
 <li>STM generated:<br /><div class="sub"></div></li>
 </ul>
-<a name="ref2_1394310"></a>
+<a name="ref2_1397638"></a>
+<table><tr><td><div class="element">Operation <b>Synchronizer</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : + Synchronizer(in next : <a href="class950918.html#ref4_950918"><b>MessageHandler_SP</b></a>) : </li><li>C++ : public: Synchronizer(const <a href="class950918.html#ref4_950918"><b>MessageHandler_SP</b></a> &amp; next)</li></ul><a name="ref2_1394310"></a>
 <table><tr><td><div class="element">Operation <b>~Synchronizer</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : + ~Synchronizer() : </li><li>C++ : public: virtual ~Synchronizer()</li></ul><p>Properties:</p><ul>
 <li>STM generated:<br /><div class="sub"></div></li>
 </ul>
@@ -74,14 +76,13 @@
 <a name="ref0_1110534"></a>
 <table><tr><td><div class="element">Relation <b>_current_state (&lt;directional aggregation&gt;)</b></div></td></tr></table><p> contains the current state, internal<br /></p><p>Declaration :</p><ul><li>Uml : # _current_state : <a href="class979462.html#ref4_979462"><b>AnyState</b></a></li><li>C++ : protected: <a href="class979462.html#ref4_979462"><b>AnyState</b></a> * _current_state</li></ul><a name="ref1_856582"></a>
 <table><tr><td><div class="element">Attribute <b>era_</b></div></td></tr></table>
-<p>Declaration :</p><ul><li>Uml : - era_ : <a href="class902918.html#ref4_902918"><b>Token</b></a></li><li>C++ : private: <a href="class902918.html#ref4_902918"><b>Token</b></a> era_</li></ul><a name="ref1_856710"></a>
+<p>Declaration :</p><ul><li>Uml : - era_ : <a href="class902918.html#ref4_902918"><b>Message_UP</b></a></li><li>C++ : private: <a href="class902918.html#ref4_902918"><b>Message_UP</b></a> era_</li></ul><a name="ref1_856710"></a>
 <table><tr><td><div class="element">Attribute <b>before_messages_</b></div></td></tr></table>
-<p>Declaration :</p><ul><li>Uml : - before_messages_ : <a href="class902918.html#ref4_902918"><b>Token</b></a>, multiplicity : *</li><li>C++ : private: std::vector&lt;<a href="class902918.html#ref4_902918"><b>Token</b></a>&gt; before_messages_</li></ul><p>Stereotype: vector</p>
+<p>Declaration :</p><ul><li>Uml : - before_messages_ : <a href="class902918.html#ref4_902918"><b>Message_UP</b></a>, multiplicity : *</li><li>C++ : private: std::vector&lt;<a href="class902918.html#ref4_902918"><b>Message_UP</b></a>&gt; before_messages_</li></ul><p>Stereotype: vector</p>
 <a name="ref1_856838"></a>
 <table><tr><td><div class="element">Attribute <b>era_messages_</b></div></td></tr></table>
-<p>Declaration :</p><ul><li>Uml : - era_messages_ : <a href="class902918.html#ref4_902918"><b>Token</b></a>, multiplicity : *</li><li>C++ : private: std::vector&lt;<a href="class902918.html#ref4_902918"><b>Token</b></a>&gt; era_messages_</li></ul><p>Stereotype: vector</p>
-<a name="ref2_1397638"></a>
-<table><tr><td><div class="element">Operation <b>Synchronizer</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : + Synchronizer(in next : <a href="class950918.html#ref4_950918"><b>TokenHandler_SP</b></a>) : </li><li>C++ : public: Synchronizer(const <a href="class950918.html#ref4_950918"><b>TokenHandler_SP</b></a> &amp; next)</li></ul></div>
-<p>All public operations : <a href="class441222.html#ref2_485382"><b>cancelled</b></a> , <a href="class441222.html#ref2_730118"><b>changed</b></a> , <a href="class979334.html#ref2_1395718"><b>create</b></a> , <a href="class441222.html#ref2_692230"><b>create</b></a> , <a href="class441222.html#ref2_752646"><b>created</b></a> , <a href="class979334.html#ref2_1397254"><b>doActivity</b></a> , <a href="class441222.html#ref2_1595910"><b>dot</b></a> , <a href="class441222.html#ref2_483590"><b>elapsed</b></a> , <a href="class979334.html#ref2_1394438"><b>era</b></a> , <a href="class441222.html#ref2_1093254"><b>era</b></a> , <a href="class441222.html#ref2_1668358"><b>exchange_time</b></a> , <a href="class441222.html#ref2_485126"><b>filled</b></a> , <a href="class441222.html#ref2_590214"><b>handle</b></a> , <a href="class979334.html#ref2_1395206"><b>message</b></a> , <a href="class441222.html#ref2_721926"><b>message</b></a> , <a href="class441222.html#ref2_1674886"><b>next</b></a> , <a href="class441222.html#ref2_721798"><b>orderEvent</b></a> , <a href="class979334.html#ref2_1394822"><b>reset</b></a> , <a href="class441222.html#ref2_1385094"><b>reset</b></a> , <a href="class441222.html#ref2_1588486"><b>stripe</b></a> </p>
+<p>Declaration :</p><ul><li>Uml : - era_messages_ : <a href="class902918.html#ref4_902918"><b>Message_UP</b></a>, multiplicity : *</li><li>C++ : private: std::vector&lt;<a href="class902918.html#ref4_902918"><b>Message_UP</b></a>&gt; era_messages_</li></ul><p>Stereotype: vector</p>
+</div>
+<p>All public operations : <a href="class441222.html#ref2_485382"><b>cancelled</b></a> , <a href="class441222.html#ref2_730118"><b>changed</b></a> , <a href="class441222.html#ref2_692230"><b>create</b></a> , <a href="class979334.html#ref2_1395718"><b>create</b></a> , <a href="class441222.html#ref2_752646"><b>created</b></a> , <a href="class979334.html#ref2_1397254"><b>doActivity</b></a> , <a href="class441222.html#ref2_1595910"><b>dot</b></a> , <a href="class441222.html#ref2_483590"><b>elapsed</b></a> , <a href="class441222.html#ref2_1093254"><b>era</b></a> , <a href="class979334.html#ref2_1394438"><b>era</b></a> , <a href="class441222.html#ref2_1668358"><b>exchange_time</b></a> , <a href="class441222.html#ref2_485126"><b>filled</b></a> , <a href="class441222.html#ref2_590214"><b>handle</b></a> , <a href="class441222.html#ref2_721926"><b>message</b></a> , <a href="class979334.html#ref2_1395206"><b>message</b></a> , <a href="class441222.html#ref2_1674886"><b>next</b></a> , <a href="class441222.html#ref2_721798"><b>orderEvent</b></a> , <a href="class441222.html#ref2_1385094"><b>reset</b></a> , <a href="class979334.html#ref2_1394822"><b>reset</b></a> , <a href="class441222.html#ref2_1588486"><b>stripe</b></a> </p>
 </body>
 </html>

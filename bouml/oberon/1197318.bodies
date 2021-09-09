@@ -1,0 +1,37 @@
+class Capture
+!!!1773958.cpp!!!	createReconstructor() : Reconstructor::Reconstructor_SP
+/*
+auto store = boost::make_shared<reconstructor::File>();
+store->saveOrderEvents(true).saveDeleted(deleted_).saveEventSource(source_);
+
+auto event_counter = boost::make_shared<reconstructor::EventCounter>(store);
+auto size_deducer = boost::make_shared<reconstructor::SizeDeducer>(event_counter);
+size_deducer->create();
+boost::shared_ptr<reconstructor::TokenHandler> deduplicator =
+    boost::make_shared<reconstructor::bitstamp::Deduplicator>(size_deducer);
+auto cleaner = boost::make_shared<reconstructor::bitstamp::Synchronizer>(
+    output_delay_ > 0 ? boost::make_shared<reconstructor::bitstamp::TimeOrderEnforcer>(
+                            deduplicator, output_delay_, deleted_)
+                      : deduplicator);
+cleaner->create();
+return boost::make_shared<reconstructor::bitstamp::Reconstructor>(cleaner);
+*/
+auto deduplicator = makeDeduplicator(makeSizeDeducer(makeEventCounter(makeStore())));
+if(output_delay_ > 0)
+  return makeReconstructor(makeTimeOrderEnforcer(deduplicator));
+else
+  return makeReconstructor(deduplicator);
+
+!!!1830022.cpp!!!	makeDeduplicator(in next : MessageHandler::MessageHandler_SP [1]) : Deduplicator::Deduplicator_SP [1]
+return boost::make_shared<reconstructor::bitstamp::Deduplicator>(next);
+
+!!!1830150.cpp!!!	makeTimeOrderEnforcer(in next : MessageHandler::MessageHandler_SP [1]) : TimeOrderEnforcer::TimeOrderEnforcer_SP [1]
+return boost::make_shared<reconstructor::bitstamp::TimeOrderEnforcer>(next, output_delay_, deleted_);
+!!!1830278.cpp!!!	makeSynchronizer(in next : MessageHandler::MessageHandler_SP [1]) : Synchronizer::Synchronizer_SP [1]
+auto synchronizer = boost::make_shared<reconstructor::bitstamp::Synchronizer>(next);
+synchronizer->create();
+return synchronizer;
+
+!!!1830406.cpp!!!	makeReconstructor(in next : MessageHandler::MessageHandler_SP [1]) : Reconstructor::Reconstructor_SP [1]
+return boost::make_shared<reconstructor::bitstamp::Reconstructor>(next);
+

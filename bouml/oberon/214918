@@ -1,7 +1,7 @@
 format 224
 "Bitstamp" // App::Reconstr::Bitstamp
-  revision 43
-  modified_by 6 "petr"
+  revision 46
+  modified_by 6 "root"
   // class settings
   
   classdiagramsettings member_max_width 0 end
@@ -74,7 +74,7 @@ ${inlines}
       operation 759686 "Reconstructor"
 	public explicit_return_type ""
 	nparams 1
-	  param in name "handler" type class_ref 950918 // TokenHandler_SP
+	  param in name "handler" type class_ref 950918 // MessageHandler_SP
 	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} ${p0}${v0}${)}${volatile}${throw};
 "
 	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${throw} : oberon::reconstructor::Reconstructor {handler} {
@@ -94,8 +94,8 @@ ${inlines}
 	  b parent class_ref 486278 // Reconstructor
       end
 
-      operation 759814 "extract"
-	cpp_override protected return_type class_ref 902918 // Token
+      operation 759814 "extractMessage"
+	cpp_override protected return_type class_ref 902918 // Message_UP
 	multiplicity "1..*"
 	nparams 1
 	  param in name "tree" type class_ref 174214 // ptree
@@ -183,12 +183,36 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
+      class 1224838 "Deduplicator_SP"
+	visibility public stereotype "template_typedef"
+	nactuals 1
+	actual class class_ref 852614 // shared_ptr
+	  rank 0 value class_ref 965766 // Deduplicator
+	cpp_decl "${comment}${template}using ${name} = ${inherit};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 1461894 // <realization>
+	  relation 1451526 -_-|>
+	    stereotype "bind"
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 1461894 // <realization>
+	    b parent class_ref 852614 // shared_ptr
+	end
+      end
+
       classrelation 1095430 // <generalisation>
 	relation 1085062 ---|>
 	  a public
 	    cpp default "${type}"
 	    classrelation_ref 1095430 // <generalisation>
-	  b parent class_ref 441222 // TokenHandler
+	  b parent class_ref 441222 // MessageHandler
       end
 
       attribute 848518 "events_"
@@ -220,7 +244,7 @@ ${inlines}
       end
 
       attribute 1021574 "episode_"
-	private type class_ref 902918 // Token
+	private type class_ref 902918 // Message_UP
 	multiplicity "*"
 	stereotype "vector"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
@@ -306,10 +330,10 @@ ${inlines}
       operation 1383558 "Deduplicator"
 	public explicit_return_type ""
 	nparams 1
-	  param in name "next" type class_ref 950918 // TokenHandler_SP
+	  param in name "next" type class_ref 950918 // MessageHandler_SP
 	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} ${p0}${v0}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${throw} : TokenHandler{next, \"Deduplicator\"} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${throw} : MessageHandler{next, \"Deduplicator\"} {
   ${body}}
 "
 	
@@ -359,16 +383,40 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
+      class 1224966 "TimeOrderEnforcer_SP"
+	visibility public stereotype "template_typedef"
+	nactuals 1
+	actual class class_ref 852614 // shared_ptr
+	  rank 0 value class_ref 966022 // TimeOrderEnforcer
+	cpp_decl "${comment}${template}using ${name} = ${inherit};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 1462022 // <realization>
+	  relation 1451654 -_-|>
+	    stereotype "bind"
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 1462022 // <realization>
+	    b parent class_ref 852614 // shared_ptr
+	end
+      end
+
       classrelation 1095814 // <generalisation>
 	relation 1085446 ---|>
 	  a public
 	    cpp default "${type}"
 	    classrelation_ref 1095814 // <generalisation>
-	  b parent class_ref 441222 // TokenHandler
+	  b parent class_ref 441222 // MessageHandler
       end
 
       attribute 848774 "buffer_"
-	private type class_ref 903046 // Tokens
+	private type class_ref 903046 // Messages
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -448,12 +496,12 @@ ${inlines}
       operation 1384070 "TimeOrderEnforcer"
 	public explicit_return_type ""
 	nparams 3
-	  param in name "next" type class_ref 950918 // TokenHandler_SP
+	  param in name "next" type class_ref 950918 // MessageHandler_SP
 	  param in name "delay" explicit_type "int"
 	  param in name "handle_deleted" explicit_type "bool"
 	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} ${p2}${v2}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${volatile}${throw} : TokenHandler{next, \"TimeOrderEnforcer\", handle_deleted}, delay_{delay*1000000} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${volatile}${throw} : MessageHandler{next, \"TimeOrderEnforcer\", handle_deleted}, delay_{delay*1000000} {
   ${body}}
 "
 	
@@ -564,7 +612,7 @@ for(std::size_t i = 0; i < stm.before_messages_.size(); i++) {
 for(auto &msg: stm.era_messages_) {
   active_chains.erase(static_cast<OrderEvent*>(msg.get())->maker());
   auto iter = std::find_if(stm.before_messages_.begin(), stm.before_messages_.end(),
-                      [order_id = static_cast<OrderEvent *>(msg.get())->maker()](const Token &b) {
+                      [order_id = static_cast<OrderEvent *>(msg.get())->maker()](const Message::Message_UP &b) {
                         auto e = static_cast<OrderEvent*>(b.get());
                         return e->maker() == order_id &&
                                e->state() == OrderEvent::OrderState::kFinished;
@@ -1393,6 +1441,30 @@ ${inlines}
 	end
       end
 
+      class 1225094 "Synchronizer_SP"
+	visibility public stereotype "template_typedef"
+	nactuals 1
+	actual class class_ref 852614 // shared_ptr
+	  rank 0 value class_ref 979334 // Synchronizer
+	cpp_decl "${comment}${template}using ${name} = ${inherit};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 1462150 // <realization>
+	  relation 1451782 -_-|>
+	    stereotype "bind"
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 1462150 // <realization>
+	    b parent class_ref 852614 // shared_ptr
+	end
+      end
+
       attribute 855942 "_machine_name"
 	public explicit_type "string"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
@@ -1437,6 +1509,21 @@ ${inlines}
 	
 	ncouples 1
 	key "STM generated" value ""
+      end
+
+      operation 1397638 "Synchronizer"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "next" type class_ref 950918 // MessageHandler_SP
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} : _current_state{0}, MessageHandler{next, \"Synchronizer\"} {
+  ${body}}
+"
+	
+	
+	
+	
       end
 
       operation 1394310 "~Synchronizer"
@@ -1622,7 +1709,7 @@ ${inlines}
       end
 
       attribute 856582 "era_"
-	private type class_ref 902918 // Token
+	private type class_ref 902918 // Message_UP
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -1634,7 +1721,7 @@ ${inlines}
       end
 
       attribute 856710 "before_messages_"
-	private type class_ref 902918 // Token
+	private type class_ref 902918 // Message_UP
 	multiplicity "*"
 	stereotype "vector"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
@@ -1648,7 +1735,7 @@ ${inlines}
       end
 
       attribute 856838 "era_messages_"
-	private type class_ref 902918 // Token
+	private type class_ref 902918 // Message_UP
 	multiplicity "*"
 	stereotype "vector"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
@@ -1666,22 +1753,7 @@ ${inlines}
 	  a public
 	    cpp default "${type}"
 	    classrelation_ref 1110662 // <generalisation>
-	  b parent class_ref 441222 // TokenHandler
-      end
-
-      operation 1397638 "Synchronizer"
-	public explicit_return_type ""
-	nparams 1
-	  param in name "next" type class_ref 950918 // TokenHandler_SP
-	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw};
-"
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} : _current_state{0}, TokenHandler{next, \"Synchronizer\"} {
-  ${body}}
-"
-	
-	
-	
-	
+	  b parent class_ref 441222 // MessageHandler
       end
 
       classrelation 1117318 // <dependency>

@@ -1,7 +1,7 @@
 format 224
 "Coinbase" // App::Reconstr::Coinbase
-  revision 27
-  modified_by 6 "petr"
+  revision 30
+  modified_by 6 "root"
   // class settings
   
   classdiagramsettings member_max_width 0 end
@@ -85,8 +85,8 @@ ${inlines}
 	  b parent class_ref 486278 // Reconstructor
       end
 
-      operation 576134 "extract"
-	cpp_override cpp_final protected return_type class_ref 902918 // Token
+      operation 576134 "extractMessage"
+	cpp_override cpp_final protected return_type class_ref 902918 // Message_UP
 	multiplicity "1..*"
 	nparams 1
 	  param in name "tree" type class_ref 174214 // ptree
@@ -105,7 +105,7 @@ ${inlines}
       operation 582918 "Reconstructor"
 	public explicit_return_type ""
 	nparams 1
-	  param in name "handler" type class_ref 950918 // TokenHandler_SP
+	  param in name "handler" type class_ref 950918 // MessageHandler_SP
 	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(}${t0} ${p0}${v0}${)}${volatile}${throw};
 "
 	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${throw} : oberon::reconstructor::Reconstructor{handler} {
@@ -223,12 +223,36 @@ ${inlines}
       mysql_decl ""
       
       comment "The handler that synchronizes the stream from Websocket API with an order book snapshot received from REST API"
+      class 1224582 "Synchronizer_SP"
+	visibility public stereotype "template_typedef"
+	nactuals 1
+	actual class class_ref 852614 // shared_ptr
+	  rank 0 value class_ref 958342 // Synchronizer
+	cpp_decl "${comment}${template}using ${name} = ${inherit};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 1461638 // <realization>
+	  relation 1451270 -_-|>
+	    stereotype "bind"
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 1461638 // <realization>
+	    b parent class_ref 852614 // shared_ptr
+	end
+      end
+
       classrelation 1087238 // <generalisation>
 	relation 1076870 ---|>
 	  a public
 	    cpp default "${type}"
 	    classrelation_ref 1087238 // <generalisation>
-	  b parent class_ref 441222 // TokenHandler
+	  b parent class_ref 441222 // MessageHandler
       end
 
       attribute 840966 "era_"
@@ -274,10 +298,10 @@ ${inlines}
       operation 1370374 "Synchronizer"
 	public explicit_return_type ""
 	nparams 1
-	  param in name "next" type class_ref 950918 // TokenHandler_SP
+	  param in name "next" type class_ref 950918 // MessageHandler_SP
 	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} ${p0}${v0}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${throw} : TokenHandler{next, \"Synchronizer\"} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${throw} : MessageHandler{next, \"Synchronizer\"} {
   ${body}}
 "
 	

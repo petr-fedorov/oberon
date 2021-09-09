@@ -527,23 +527,115 @@ knitr::include_graphics("transmute_example_3.png", dpi=80)
 
 ## Software 
 
+### Main
+
+`main` function of the application is rather short:
+
+    int main(int argc, char **argv) {
+
+      oberon::Main app;
+      return app.main(argc, argv);
+    }
 
 
-### Capture order events
+Figure \@ref(fig:Main) shows the specification of `oberon::App::main` operation in the form of UML2 Activity Diagrams [@cook_omg_2017] of activity `Main`. 
 
 
-Figure \@ref(fig:capture-overview) shows UML2 Activity Diagram [@cook_omg_2017] of `B.1 Capture` activity that represents an implementation of `oberon capture` command. The activity node `C.02 Run Reconstruct` performs a reconstruction of order book events from exchange-specific messages that are passed by node `Run Receiver state machine`.
+```{r Main, echo=FALSE, fig.cap="Activity `Main` - the specification of `oberon::App::main` operation.", fig.align="left"}
+
+knitr::include_graphics("html_docs/fig644614.png", dpi=80)
+```
+CallOperationAction `Parse options` calls `Main::parseOption` operation that parse command-line options and returns an instance of a class derived from `Command` shown on figure \@ref(fig:Command) in light-green as determined by the value of "command" parameter passed. 
+
+CallOperationAction `Create reconstructor and acquirer` then calls operation `Command::createAcquirer` using the received `Command`-derived instance as a target. The overriden `createAcquirer` operation returns an appropriate instance of class derived from `Acquirer` shown on figure \@ref(fig:Acquirer) in light-green.
+
+The `Acquirer`-derived instance is then used as a `target` by CallOperationAction `AcquireAndProcess` that calls `Acquirer::acquireAndProcess` operation.
+
+There are two kinds of `acquireAndProcess` operation. Their specifications are shown on figures \@ref(fig:receiver-acquireAndProcess) and \@ref(fig:reader-acquireAndProcess). The former is used when `Create reconstructor and acquirer` returns an instance derived from `Receiver` class and the latter is used when the instance is derived from `Reader` class as shown on figure \@ref(fig:Acquirer).
+
+Upon successful completion of `acquireAndProcess` operation, ValueSpecificationAction `Success` returns EXIT_SUCCESS constant.
+
+Otherwise, if some exception was raised, ValueSpecificationAction `Failure` returns EXIT_FAILURE constant.
+
+`Main` activity is then completes.
 
 
-```{r capture-overview, echo=FALSE, fig.cap="`Run Receiver state machine` activity node collects avaialbe information in an exchange-specific format and pass the information in the form of [Boost.Property Tree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) to `C.02 Run Reconstructor` activity node that, as its name implies, reconstructs order book events in an *universal* format described herein. Note that both activity nodes run concurrently.", fig.align="left"}
-knitr::include_graphics("html_docs/fig181766.png", dpi=80)
+### Parse options
+
+Action node "Parse options" on figure \@ref(fig:Main) returns a `unique_ptr` to an instance of concrete class (shown on figure \@ref(fig:Command) in light green) derived from the abstract class `Command`. As it can bee seen the concrete class is derived either from `Capture` or from `Transform`.
+
+```{r Command, echo=FALSE, fig.cap="Command class hierarchy", fig.align="left"}
+
+knitr::include_graphics("html_docs/fig691206.png", dpi=80)
 ```
 
-#### Receive messages
+### Create reconstructor and acquirer
 
-Activity `Run Receiver state machine` on figure \@ref(fig:capture-overview) is UML2 `StartObjectBehaviourAction` that starts execution of `Receiver` StateMachine shown on figure \@ref(fig:receiver). The call is synchronous, so the execution of the `Run Receiver state machine` does not complete until the execution of `Receiver` StateMachine completes.
 
-(ref:receiver-caption) `Processing snapshot` and `Processing messages` states pass received portions of data to `Reconstruct Order Book` (by calling method `Reconstructor::process()` shown on figure \@ref(fig:ad-reconstructor-process)) thereby the streaming of data between `Receive messages` and `Reconstruct Order Book` on figure \@ref(fig:capture-overview) is implemented.
+#### Create acquirer
+
+Action node "Create reconstructor and acquirer" on figure \@ref(fig:Main) calls `createAcquirer()` method on the instance of `Command` class received on `target` input pin. The method calls the protected `createReconstructor()` method internally and returns  a `shared_ptr` to an instance of concrete class derived from the abstract class `Acquirer` shown on figure \@ref(fig:Acquirer) in light green.
+
+
+```{r Acquirer, echo=FALSE, fig.cap="Acquirer class hierarchy", fig.align="left"}
+
+knitr::include_graphics("html_docs/fig704262.png", dpi=80)
+```
+ The specification of  `Receiver::acquireAndProcess` operation is provided in section \@ref(receiver-acquire-and-process).  The specification of `Reader::acquireAndProcess` operation is provided in section \@ref(reader-acquire-and-process).
+
+#### Create reconstructor {#create-reconstructor}
+
+This section provides specifications of `createReconstructor` operation of concrete classes shown on figure \@ref(fig:Command) in light-green.
+
+##### coinbase::Capture
+
+
+```{r create-reconstructor-coinbase, echo=FALSE, fig.cap="Specification of `coinbase::Capture::createReconstructor` operation", fig.align="left"}
+
+knitr::include_graphics("html_docs/fig710918.png", dpi=80)
+```
+
+##### bitstamp::Capture
+
+```{r create-reconstructor-bitstamp, echo=FALSE, fig.cap="Specification of `bitstamp::Capture::createReconstructor` operation", fig.align="left"}
+
+knitr::include_graphics("html_docs/fig717574.png", dpi=80)
+```
+##### Slice
+
+##### Merge
+
+##### Transmute
+
+### Acquire and process
+
+This section provides specifications of `acqureAndProcess` operation of concrete classes shown on figure \@ref(fig:Acquirer) in light-green. Note that both `Receiver`-derived classes share `acquireAndProcess` operation defined in `Receiver` class.
+
+#### Receiver{#receiver-acquire-and-process}
+
+
+`Coinbase::Receiver` and `Bitstamp::Receiver` classes inherit `acquireAndProcess()` method from `Receiver` class. Its activity diagram is shown on figure \@ref(fig:receiver-acquireAndProcess). 
+
+```{r receiver-acquireAndProcess, echo=FALSE, fig.cap="Specificationf of `Receiver::acquireAndProcess()` operation", fig.align="left"}
+knitr::include_graphics("html_docs/fig670854.png", dpi=80)
+```
+
+
+#### Reader{#reader-acquire-and-process}
+
+
+`Reader` class has another `acquireAndProcess()` method. Its activity model is shown on figure \@ref(fig:reader-acquireAndProcess).
+
+```{r reader-acquireAndProcess, echo=FALSE, fig.cap="Specificationf of `Reader::acquireAndProcess()` operation", fig.align="left"}
+knitr::include_graphics("html_docs/fig605318.png", dpi=80)
+```
+
+### Receive messages
+
+Action `Receive messages` on figure \@ref(fig:receiver-acquireAndProcess) is UML2 `StartObjectBehaviorAction` that starts execution of `Receiver` StateMachine shown on figure \@ref(fig:receiver). The call is synchronous, so the execution of the `Receive messages` does not complete until the execution of `Receiver` StateMachine completes.
+
+(ref:receiver-caption) `Processing snapshot` and `Processing messages` states pass received portions of data asynchronously to an instance of `Reconstructor` (by calling operation `Reconstructor::process()` shown on figure \@ref(fig:process-message)) thereby the streaming of data between `Receive messages` and `Process message` on figure \@ref(fig:receiver-acquireAndProcess) is implemented.
+
 
 ```{r receiver, echo=FALSE, fig.cap="(ref:receiver-caption)", fig.align="left"}
 knitr::include_graphics("html_docs/fig399494.png", dpi=80)
@@ -566,78 +658,62 @@ knitr::include_graphics("html_docs/fig406150.png", dpi=80)
 ```{r snapshot, echo=FALSE, fig.cap="(ref:snapshot-caption)", fig.align="left"}
 knitr::include_graphics("html_docs/fig406534.png", dpi=80)
 ```
-#### Reconstruct Order Book
+### Process message
 
-Figure \@ref(fig:reconstruct-order-book) shows UML2 Activity Diagram of `C.02 Run Reconstructor` activity which is called by the activity node with the same name on figure \@ref(fig:capture-overview).
+Activity `Process message` shown on figure \@ref(fig:process-message) is a specification of `Reconstructor::process` operation.
 
-
-```{r reconstruct-order-book, echo=FALSE, fig.cap="`C.02 Run Reconstructor` activity is implemented as an indefinite loop that invokes `process` method on `target` instance of class `Reconstructor` every time a new instance of class `boost::property_tree::ptree` is placed on its streaming input pin `tree`. The loop terminates if `process` throws `processing_error` exception.", fig.align="left"}
-knitr::include_graphics("html_docs/fig274822.png", dpi=80)
-```
-The activity node `process` on figure \@ref(fig:reconstruct-order-book) is CallAction. It calls method `process()` on `target` instance of class `Reconstructor` that is shown on figure \@ref(fig:reconstructor-hierarchy-process).  
-
-```{r reconstructor-hierarchy-process, echo=FALSE, fig.cap="\"Reconstructor\" hierarchy of classes used in implementation of `D.01 Process message` activity.", fig.align="center"}
-knitr::include_graphics("html_docs/fig551942.png", dpi=80)
+```{r process-message, echo=FALSE, fig.cap="Specification of Reconstructor::process() operation that is called by Process message node", fig.align="left"}
+knitr::include_graphics("html_docs/fig704390.png", dpi=80)
 ```
 
-UML2 Activity Diagram on figure \@ref(fig:ad-reconstructor-process) shows `D.01 Process message` activity that implements `process` method.
+It takes an instance of  [Boost.PropertyTree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) container with an exchange-specific data as `message` parameter and passes it to `Extract message` action. The action creates then an instance of one of the exchange-independent class, derived from `Message`. Possible classes are shown in green on figure \@ref(fig:message-hierarchy-process). The instance is returned in `Messages` container. The cointainer is a list of unique pointers `Message_UP` to `Message`-derived objects. 
 
-```{r ad-reconstructor-process, echo=FALSE, fig.cap="`Reconstructor::process()` first calls `extract()` method to create an instance of a class derived from `Message`. The `extract()` is a virtual abstract method so it is overriden in an exchange-specific implementation class, derived from `Reconstructor`. The returned instance is passed to a chain of `TokenHandler`s. There can be any number of `TokenHandler`s in the chain.", fig.align="left"}
-knitr::include_graphics("html_docs/fig572166.png", dpi=120)
-```
-
-The virtual method `Reconstructor::extract()` takes a [Boost.PropertyTree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) container with an exchange-specific data and creates an instance of one of internal exchange-independent message class shown in green on figure \@ref(fig:message-hierarchy-process). The message is returned in `Token` container and multiple messages are returned in `Tokens` container.
-
-```{r message-hierarchy-process, echo=FALSE, fig.cap="`Message`-based hierarchy of classes used in implementation of `Process message` activity. A message of class `Era` carries information about exchange and product being processed.", fig.align="center"}
+```{r message-hierarchy-process, echo=FALSE, fig.cap="`Extract` returns an instance of class `Messages`", fig.align="center"}
 knitr::include_graphics("html_docs/fig552070.png", dpi=80)
 ```
 
+The further processing of messages by `MessageHandler`s is implemented using [Chain of Responsibility](https://en.wikipedia.org/wiki/Chain-of-responsibility_pattern) pattern.  `Messages` container is passed to ExpansionRegion of type "iterative" as `input` parameter as shown on figure \@ref(fig:process-message). The region calls `MessageHandler::handle` operation on the instance of `MessageHandler` currently available within the region for each `Message_UP` in `input`. The outputs are combined and passed to the next `MessageHandler` returned by `next` transformation, if any (this instance becomes available for the next iteration). The cycle repeats until either `input` or next `MessageHandler` is empty.
 
-`Token` that carries an instance of a class derived from `Message` is then taken by the `TokenHandle::handle()`  that is the first step of so called *data cleansing*. According to [@rahm_data_2000]:
+When created, an instance of `MessageHandler` takes, as a constructor parameter, a shared pointer to the next `MessageHandler` which will receive messages as soon as `MessageHandler` being constructed has handled them. Thus the chain is static, i.e. it does not change depending on messages received. 
+
+The kind of processing performed by the chain of `MessageHandler`s depends on command being performed.
+
+For command "capture" the chain performes so called *data cleansing*. According to [@rahm_data_2000]:
 
 > *Data cleaning*, also called *data cleansing* or *scrubbing*, deals with detecting and removing errors and inconsistencies from data in order to improve the quality of data.
-
-Data cleansing is implemented using [Chain of Responsibility](https://en.wikipedia.org/wiki/Chain-of-responsibility_pattern) pattern. Each `TokenHandler` accepts, as a constructor parameter, the next `TokenHandler` which will receive messages as soon as `TokenHandler` being constructed has handled them.
-
-UML2 Sequence Diagram of `TokenHandler::handle()` is shown on figure \@ref(fig:sd-tokenhandler-handle). The number of `TokenHandler`s involved and their kinds depend on an exchange and described in details in their respective sections later.
-
-
-```{r sd-tokenhandler-handle, echo=FALSE, fig.cap="UML2 Sequence diagram showing a \"happy path\" trace of TokenHandler::handle() method.", fig.align="left"}
-knitr::include_graphics("html_docs/fig551814.png", dpi=80)
-```
-
-Handling of messages by `TokenHandler` is denoted by interaction use `Message - accept` on figure \@ref(fig:sd-tokenhandler-handle). The result of handling is a set of zero or more messages that are stored in `output_` member variable that is an instance of `Tokens` class shown on figure \@ref(fig:message-hierarchy-process).
-
-`TokenHandler` will not produce output for a message when subsequent messages are required for handling(cleansing). In this case the message will be kept within this particular `TokenHandler` instance between runs of `Reconstructor::process()` until enough subsequent messages are received. Then all kept and cleansed messages are returned together, saved into `output_` variable and passed one by one in FIFO order to the `this.next_` `TokenHandler`. After that `output_` variables is cleared, so if there is no next `TokenHandler` the messages are deleted after being accepted.
-
-Handling of messages by `TokenHandler` is implemented using [Visitor](https://en.wikipedia.org/wiki/Visitor_pattern) pattern as shown by UML2 Sequence diagram on figure \@ref(fig:sd-message-accept).
-
-```{r sd-message-accept, echo=FALSE, fig.cap="UML2 Sequence diagram showing various alternatives of traces for Message::accept() method. By default all `TokenHandler`s callback (i.e. `era`, `message` etc) just pass the message to `output_` and it is expected that derived classes override the callbacks in order to do something useful. The message can be saved by `TokenHandler` instance in order to be processed later together with messages that follows.", fig.align="left"}
-knitr::include_graphics("html_docs/fig545286.png", dpi=80)
-```
 
 It should be clear from the definition of order table \@ref(def:order-table) that not every set of order events as defined by \@ref(def:order-event) represents a valid order table. Similarly, not every set of orders represents valid LOB as defined by \@ref(def:lob).
 
   Data cleansing process receives a stream of order events (possible extended and/or incomplete i.e. order events as defined by \@ref(def:order-event) but with some additional and/or missing attributes), restores order functions from them and then restores LOB from order functions.
   
-Data cleansing is performed by a sequence of `TokenHandler`s as shown on figure \@ref(fig:sd-tokenhandler-handle). Table \@ref(tab:tokenhandler-chains) below lists `TokenHandler`s used for different exchange event streams.
+The exact list of `MessageHandler`s needed for that depends on exchange. The lists are described in section \@ref(create-reconstructor).
 
-```{r tokenhandler-chains, echo=FALSE}
-hux(TokenHandler=c("Synchronizer", "TimeOrderEnforcer", "Deduplicator", "SizeDeducer", "EventCounter", "File"),
-    Coinbase=c("C", "N", "N", "Y", "Y", "Y"),
-    Bitstamp=c("C", "C", "C", "Y", "Y", "Y"),
-    Bitfinex=c("N", "C","C", "Y", "Y","Y")) %>%
-  set_text_color(1,1, "white") %>%
-  set_align(everywhere, 2:4, "center") %>%
-  set_caption("Y means that TokenHandler (left) is used by the exchange chain (top), N - is not used and C means that a customized version is used.") %>%
-  set_caption_pos("topleft")
+
+### Handle message
+
+UML2 Sequence Diagram of `MessageHandler::handle()` is shown on figure \@ref(fig:sd-Messagehandler-handle). 
+
+```{r sd-Messagehandler-handle, echo=FALSE, fig.cap="UML2 Sequence diagram showing a \"happy path\" trace of `MessageHandler::handle()` method.", fig.align="left"}
+knitr::include_graphics("html_docs/fig551814.png", dpi=80)
 ```
 
-#### Save output
 
-The last TokenHandler in every chain is `File` that outputs the cleansed events. Upon receving a message of class `Era` (see figure \@ref(fig:message-hierarchy-process)) `File` opens a new file called *Era file* and saves the subsequent `OrderEvent` messages there until obtaining `Reset` message when the handler closes Era file. `File` drops `Elapsed` messages silently.
+Handling of messages by `MessageHandler` is implemented using [Visitor](https://en.wikipedia.org/wiki/Visitor_pattern) pattern as shown by UML2 Sequence diagram on figure \@ref(fig:sd-message-accept).
 
-  Era file is [CSV-file](https://en.wikipedia.org/wiki/Comma-separated_values) with one row per `OrderEvent` and name constructed from  exchange, product and timestamp values carried by `Era` message. Row fields are described in the table \@ref(tab:order-record) below.
+```{r sd-message-accept, echo=FALSE, fig.cap="UML2 Sequence diagram showing various alternatives of traces for Message::accept() method. By default all `MessageHandler`s callback (i.e. `era`, `message` etc) just pass the message to `output_` and it is expected that derived classes override the callbacks in order to do something useful. The message can be saved by `MessageHandler` instance in order to be processed later together with messages that follows.", fig.align="left"}
+knitr::include_graphics("html_docs/fig545286.png", dpi=80)
+```
+
+
+The result of `handle` is a set of zero or more messages that are stored in `output_` member variable that is an instance of `Messages` class shown on figure \@ref(fig:message-hierarchy-process). `MessageHandler` will not produce output for a message when subsequent messages are required for handling. In this case the message will be kept within this particular `MessageHandler` instance between runs of `Reconstructor::process()` until enough subsequent messages have been received. Then all kept and handled messages are returned together, saved into `output_` variable.
+
+### Output format
+
+#### File
+
+MessageHandler `File` saves the received events into files. Upon receiving of a message of class `Era` (see figure \@ref(fig:message-hierarchy-process)) `File` opens a new file called *Era file* and saves the subsequent `OrderEvent` messages there until obtaining `Reset` message when the handler closes Era file. `File` drops `Elapsed` messages silently.
+
+Era file is [CSV-file](https://en.wikipedia.org/wiki/Comma-separated_values) with one row per `OrderEvent` and its name is constructed from  `exchange`, `product` and `timestamp` values carried by `Era` message. Row fields are described in the table \@ref(tab:order-record) below.
 
 ```{r order-record, echo=FALSE, results='asis'}
 ht <- hux(`#`=seq(1:14),
@@ -667,36 +743,7 @@ print_html(ht)
 ```
 
 
-### Slice, merge and transmute era files
 
-#### Era file reader
-
-
-Era files are read by an instance of `Acquirer::File::Receiver`. The behaviour `C.03 Read and process` shown on figure \@ref(fig:read-and-process) implements `Acquirer::File::Receiver::readAndProcess()` method.
-
-```{r read-and-process, echo=FALSE, fig.cap="The behaviour shown implements `Acquirer::File::Receiver::readAndProcess()` method", fig.align="left"}
-knitr::include_graphics("html_docs/fig605318.png", dpi=80)
-```
-
-#### Slice
-
-TBD
-
-#### Merge
-
-TBD
-
-#### Transmute
-
-```{r transmute-overview, echo=FALSE, fig.cap="`C.04 Create Transmuter` behaviour creates `File::Reconstructor` instance  called Transmuter with the chain of `TokenHandler`s shown of figure \\@ref(fig:create-transmuter). Transmuter is then passed as an argument of `C.05 Create Receiver` behaviour together with the other parameters. The behaviour returns an instance of File::Receiver whose method `readAndProcess()`, implemented as shown on figure \\@ref(fig:read-and-process), reads input file(s) and transfers the read messages to Transmuter for processing as shown on figure \\@ref(fig:ad-reconstructor-process)", fig.align="left"}
-knitr::include_graphics("html_docs/fig592134.png", dpi=80)
-```
-
-
-
-```{r create-transmuter, echo=FALSE, fig.cap="Handlers are created in the reverse of the intended execution order, i.e. Price Change Eliminator is invoked by `Reconstructor::process()` as shown of figure \\@ref(fig:ad-reconstructor-process) to handle a message first and File handler - last.", fig.align="left"}
-knitr::include_graphics("html_docs/fig598790.png", dpi=80)
-```
 # Results
 
 ## Fragments of extracted events
@@ -1143,7 +1190,7 @@ It can bee seen from figure \@ref(fig:example-order-book) that:
 * At `r format(time_0 + sort(unique(sot$t))[10], "%H:%M:%OS1")` volume and price of order 6 have been amended. Its volume has been reduced by 100 units of the asset and its price increased to 60. At the same time a market buy order has been placed for 5000 units of the currency and single trade has been executed: $(\text{`r format(time_0 + sort(unique(sot$t))[9], "%H:%M:%OS1")`}, 5, 50, -100)$. Most likely the change of price of order 6 has transformed it to a market limit order which was partially executed and the reminder was placed in the order book again. 
 * At `r format(time_0 + sort(unique(sot$t))[11], "%H:%M:%OS1")` a sell market order has been placed, single trade was executed: $(\text{`r format(time_0 + sort(unique(sot$t))[11], "%H:%M:%OS1")`}, 6, 60, 300)$ and, simultaneously, probably as a consequence of the trade, the price of order 6 has been amended from 60 to 20. Note that trade has been executed at price 60.
 
-## Token handlers
+## Message handlers
 
 ### Synchronizer
 

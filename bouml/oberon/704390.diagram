@@ -1,0 +1,209 @@
+format 224
+
+activitycanvas 128006 activity_ref 294022 // Process message
+  
+  xyzwh 96 96.4 2000 719 661
+  params
+    parametercanvas 128134 parameter_ref 349574 // message
+        xyzwh 45.4 271.2 2002 103 25
+    end
+    parametercanvas 128262 parameter_ref 349702 // error
+        xyzwh 45.4 427.6 2002 103 25 label_xy 66 403
+    end
+  end
+end
+activityactioncanvas 128390 activityaction_ref 465542 // activity action Extract message
+  
+  show_opaque_action_definition default
+  xyzwh 213.2 253.2 2005 101 61
+  pins
+    pincanvas 128518 pin_ref 638470 // self
+      xyzwh 262.8 243.6 2007 11 11 label_xy 256 226
+    end
+    pincanvas 128646 pin_ref 638598 // 
+      xyzwh 313.2 275 2007 11 11 label_xy 317 255
+    end
+    pincanvas 128774 pin_ref 638726 // 
+      xyzwh 203.6 277.8 2007 11 11 label_xy 168 258
+    end
+    pincanvas 137734 pin_ref 639622 // 
+      xyzwh 264.6 313.2 2007 11 11 label_xy 282 319
+    end
+  end
+end
+activitynodecanvas 129030 activitynode_ref 484230 // merge
+  xyz 490.8 265.2 2005
+end
+activityactioncanvas 129158 activityaction_ref 465670 // activity action Read "next_"
+  
+  show_opaque_action_definition default
+  xyzwh 448.2 162.8 2005 101 61
+  pins
+    pincanvas 129286 pin_ref 638854 // self
+      xyzwh 489.6 152.2 2007 11 11 label_xy 480 135
+    end
+    pincanvas 129414 pin_ref 638982 // 
+      xyzwh 494.6 222.8 2007 11 11 label_xy 389 222
+    end
+  end
+end
+activitynodecanvas 129670 activitynode_ref 484358 // merge
+  xyz 387.6 261.6 2005
+end
+activitynodecanvas 130438 activitynode_ref 484742 // activity_final
+  xyz 648 455.8 2005
+end
+activitynodecanvas 130694 activitynode_ref 484870 // decision
+  xyz 498 450.2 2005
+end
+expansionregioncanvas 132102 expansionregion_ref 174854 // handle
+  xyzwh 180.2 560.8 2010 318 144
+  nodes
+    expansionnodecanvas 132742 expansionnode_ref 182406 // input
+        xyzwh 444 555.4 2012 33 11 label_xy 470 536
+    end
+    expansionnodecanvas 132870 expansionnode_ref 182534 // output
+        xyzwh 397.2 555.4 2012 33 11 label_xy 364 538
+    end
+  end
+end
+activityactioncanvas 132230 activityaction_ref 465798 // activity action Handle message
+  
+  show_opaque_action_definition default
+  color lightgreen
+  xyzwh 318.2 613.2 2015 101 61
+  pins
+    pincanvas 132358 pin_ref 639110 // target
+      xyzwh 414.6 632.8 2017 11 11 label_xy 418 642
+    end
+    pincanvas 132486 pin_ref 639238 // 
+      xyzwh 323.2 603.6 2017 11 11 label_xy 255 598
+    end
+    pincanvas 132614 pin_ref 639366 // 
+      xyzwh 386.4 603.6 2017 11 11 label_xy 401 592
+    end
+    pincanvas 136966 pin_ref 639494 // 
+      xyzwh 308.6 632.8 2017 11 11 label_xy 242 641
+    end
+  end
+end
+activitynodecanvas 134406 activitynode_ref 485254 // join
+  horizontal  xyzwh 464 394.8 2005 83 15
+end
+activitynodecanvas 135046 activitynode_ref 485382 // fork
+  horizontal  xyzwh 591.2 549.8 2005 97 15
+end
+activitynodecanvas 137478 activitynode_ref 485638 // merge
+  xyz 195.8 418.4 2005
+end
+note 138118 "There is no next MessageHandler or there are no Messages to handle"
+  xyzwh 551.8 323.6 2011 173 73
+flowcanvas 128902 flow_ref 729990 // <flow>
+  
+  from ref 128134 z 2008 to ref 128774
+   write_horizontally default
+end
+flowcanvas 129542 flow_ref 730118 // <flow>
+  
+  from ref 129414 z 2008 to ref 129030
+   write_horizontally default
+end
+flowcanvas 129798 flow_ref 730246 // <flow>
+  
+  from ref 128646 z 2008 to ref 129670
+   write_horizontally default
+end
+flowcanvas 130822 flow_ref 730630 // <flow>
+  decenter_begin 459
+  
+  from ref 130694 z 2006 label "[empty]" xyz 564 457 2006 to ref 130438
+   write_horizontally default
+end
+flowcanvas 133126 flow_ref 731270 // <flow>
+  
+  from ref 132486 z 2018 to ref 132870
+   write_horizontally default
+end
+flowcanvas 133254 flow_ref 731398 // <flow>
+  decenter_begin 272
+  
+  from ref 132870 z 2013 to ref 129670
+   write_horizontally default
+end
+flowcanvas 133510 flow_ref 731654 // <flow>
+  
+  from ref 132742 z 2018 to ref 132614
+   write_horizontally default
+end
+flowcanvas 134534 flow_ref 732166 // <flow>
+  
+  from ref 134406 z 2006 to ref 130694
+   write_horizontally default
+end
+flowcanvas 134790 flow_ref 732294 // <flow>
+  
+  from ref 129030 z 2006 to ref 134406
+   write_horizontally default
+end
+flowcanvas 134918 flow_ref 732422 // <flow>
+  decenter_end 108
+  
+  from ref 129670 z 2006 to point 469 276
+  line 136454 z 2006 to ref 134406
+   write_horizontally default
+end
+flowcanvas 135174 flow_ref 732550 // <flow>
+  decenter_begin 756
+  
+  from ref 130694 z 2006 label "[is MessageHandler]" xyz 520 503 2006 to ref 135046
+   write_horizontally default
+end
+flowcanvas 135302 flow_ref 732678 // <flow>
+  decenter_begin 907
+  decenter_end 540
+  
+  from ref 135046 z 2006 to point 675 634
+  line 136070 z 2006 to point 734 634
+  line 136198 z 2006 to point 729 281
+  line 135430 z 2006 to ref 129030
+   write_horizontally default
+  transformation 
+  information 135558 "<<transformation>>
+next()"
+    xyzwh 566.2 672.6 2006 125 55
+end
+flowcanvas 135814 flow_ref 732806 // <flow>
+  
+  from ref 130694 z 2013 to point 454 464
+  line 136838 z 2013 label "[is Messages]" xyz 420 501 2013 to ref 132742
+   write_horizontally default
+end
+flowcanvas 135942 flow_ref 732934 // <flow>
+  decenter_begin 92
+  
+  from ref 135046 z 2018 to point 599 635
+  line 136326 z 2018 to ref 132358
+   write_horizontally default
+end
+flowcanvas 137606 flow_ref 733190 // <flow>
+  
+  from ref 136966 z 2018 to point 209 634
+  line 138374 z 2018 to ref 137478
+   write_horizontally default
+end
+flowcanvas 137862 flow_ref 733318 // <flow>
+  
+  from ref 137734 z 2008 to point 269 434
+  line 138502 z 2008 to ref 137478
+   write_horizontally default
+end
+flowcanvas 137990 flow_ref 733446 // <flow>
+  
+  from ref 137478 z 2006 to ref 128262
+   write_horizontally default
+end
+line 135686 -_-_ decenter_begin 854
+  from ref 135302 z 2007 to ref 135558
+line 138246 -_-_ decenter_end 753
+  from ref 138118 z 2012 to ref 130822
+end

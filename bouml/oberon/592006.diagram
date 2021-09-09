@@ -1,68 +1,15 @@
 format 224
 
-activitycanvas 128006 activity_ref 207878 // I.2 Init capture - Coinbase
+activitycanvas 128006 activity_ref 207878 // D.02 Init capture - Coinbase
   
   xyzwh 73 38 2007 661 535
   params
-    parametercanvas 128134 parameter_ref 272390 // od
-        xyzwh 37 265 2008 73 25
-    end
     parametercanvas 128262 parameter_ref 272518 // receiver
         xyzwh 697 209 2008 73 25
     end
     parametercanvas 128390 parameter_ref 272646 // reconstructor
         xyzwh 697 365 2008 73 25
     end
-    parametercanvas 129414 parameter_ref 287622 // ioc
-        xyzwh 37 322 2009 73 25
-    end
   end
-end
-activityactioncanvas 128518 activityaction_ref 337670 // activity action Create Feeder
-  
-  show_opaque_action_definition default
-  xyzwh 188 133 2012 100 60
-  pins
-    pincanvas 128646 pin_ref 470406 // return
-      xyzwh 287 158 2014 11 11 label_xy 302 145
-    end
-  end
-end
-activityactioncanvas 128774 activityaction_ref 337798 // activity action Construct Feeder
-  
-  show_opaque_action_definition default
-  xyzwh 293 251 2012 100 60
-  pins
-    pincanvas 128902 pin_ref 470534 // target
-      xyzwh 323 241 2014 11 11 label_xy 286 228
-    end
-    pincanvas 129030 pin_ref 470662 // ioc
-      xyzwh 345 310 2014 11 11 label_xy 345 325
-    end
-    pincanvas 129158 pin_ref 470790 // product
-      xyzwh 283 292 2014 11 11 label_xy 238 299
-    end
-    pincanvas 129286 pin_ref 470918 // exhausted_after
-      xyzwh 283 267 2014 11 11 label_xy 200 249
-    end
-  end
-end
-activitynodecanvas 129542 activitynode_ref 373638 // fork
-   xyzwh 161 333 2012 15 63
-end
-flowcanvas 129670 flow_ref 546182 // <flow>
-  
-  from ref 129542 z 2015 to ref 129030
-   write_horizontally default
-end
-flowcanvas 129798 flow_ref 546310 // <flow>
-  
-  from ref 129414 z 2013 to ref 129542
-   write_horizontally default
-end
-flowcanvas 129926 flow_ref 546438 // <flow>
-  
-  from ref 128646 z 2015 to ref 128902
-   write_horizontally default
 end
 end

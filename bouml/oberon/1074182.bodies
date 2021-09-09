@@ -1,4 +1,4 @@
-class Receiver
+class Reader
 !!!1681926.cpp!!!	createEraMessage() : ptree
 boost::property_tree::ptree era_message;
 era_message.put("type", "era");
@@ -16,7 +16,7 @@ reset_message.put("type", "reset");
 reset_message.put("timestamp", "");
 return reset_message;
 
-!!!1681542.cpp!!!	operator >>(out message : ptree) : Receiver
+!!!1681542.cpp!!!	operator >>(out message : ptree) : Reader
 std::string line;
 if (std::getline(source_, line)) {
   message.put("type", "event");
@@ -32,6 +32,7 @@ return *this;
 !!!1681670.cpp!!!	operator bool()
 return static_cast<bool>(source_);
 !!!1701766.cpp!!!	openSourceFile(in file_name : string) : void
+file_name = !extension_.empty()?renameFile(file_name): file_name;
 if(source_.is_open())
   source_.close();
 source_.open(file_name);
@@ -92,10 +93,10 @@ return file_name;
 !!!1475974.cpp!!!	fileExists(in name : string) : bool
 std::ifstream infile(name);
 return infile.good();
-!!!1572614.cpp!!!	readAndProcess(in files : Receiver::Files [*]) : void
-for (auto file = files.begin(); file != files.end(); ++file) {
+!!!1572614.cpp!!!	acquireAndProcess() : void
+for (auto file = file_names_.begin(); file != file_names_.end(); ++file) {
     parseFileName(*file);
-    openSourceFile(!extension_.empty()?renameFile(*file): *file);
+    openSourceFile(*file);
     reconstructor_->process(createEraMessage());
     boost::property_tree::ptree event;
     while(*this >> event) {

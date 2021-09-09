@@ -1,114 +1,285 @@
 format 224
 
-activitycanvas 142854 activity_ref 148230 // B.1 Capture
+activitycanvas 142854 activity_ref 148230 // Create reconstructor
   
-  xyzwh 54 31 0 723 551
+  xyzwh 43 61 0 699 827
   params
-    parametercanvas 142982 parameter_ref 148998 // options
-        xyzwh 5 293 1 99 25
+    parametercanvas 192646 parameter_ref 343046 // reconstructor
+        xyzwh 461 875 1 87 25
+    end
+    parametercanvas 194822 parameter_ref 349574 // error
+        xyzwh 268 875 2 87 25 label_xy 292 853
     end
   end
 end
-activityactioncanvas 143750 activityaction_ref 192390 // activity action Run Receiver state machine
+activitynodecanvas 190214 activitynode_ref 437254 // initial_node
+  xyz 342 81 4051
+end
+activityactioncanvas 192774 activityaction_ref 457734 // activity action Read command_
   
   show_opaque_action_definition default
-  color green
-  xyzwh 512 122 3038 100 60
+  xyzwh 79 125 2000 99 67
   pins
-    pincanvas 177670 pin_ref 427782 // target
-      xyzwh 502 152 3040 11 11 label_xy 461 133
+    pincanvas 192902 pin_ref 601734 // self
+      xyzwh 123 191 2002 11 11 label_xy 115 201
     end
-    pincanvas 178182 pin_ref 434310 // tree
-      xyzwh 552 177 3040 11 11 label_xy 566 185
+    pincanvas 193030 pin_ref 601862 // result
+      xyzwh 177 151 2002 11 11 label_xy 192 138
     end
   end
 end
-activitynodecanvas 148486 activitynode_ref 189958 // initial_node
-  xyz 307 51 3027
+activitynodecanvas 193158 activitynode_ref 476678 // decision
+  xyz 341 137 2000
 end
-activitynodecanvas 148870 activitynode_ref 190086 // activity_final
-  xyz 549 42 2006
-end
-interruptibleactivityregioncanvas 149126 interruptibleactivityregion_ref 141062 // 
-  xyzwh 143 107 2000 583 410
-end
-activityactioncanvas 151686 activityaction_ref 213638 // activity action C.01 Init capture
+activityactioncanvas 193542 activityaction_ref 457862 // activity action Read exchange_
   
   show_opaque_action_definition default
-  xyzwh 267 275 4013 100 60
+  xyzwh 79 293 2000 99 67
   pins
-    pincanvas 171270 pin_ref 349318 // options
-      xyzwh 257 301 4015 11 11 label_xy 203 312
+    pincanvas 193670 pin_ref 601990 // self
+      xyzwh 122 283 2002 11 11 label_xy 112 264
     end
-    pincanvas 171654 pin_ref 349702 // reconstructor
-      xyzwh 366 320 4015 11 11 label_xy 381 309
-    end
-    pincanvas 171782 pin_ref 349830 // receiver
-      xyzwh 366 276 4015 11 11 label_xy 331 251
+    pincanvas 193798 pin_ref 602118 // result
+      xyzwh 177 312 2002 11 11 label_xy 192 299
     end
   end
 end
-activityactioncanvas 166534 activityaction_ref 247302 // activity action C.02 Run Reconstructor
+activitynodecanvas 193926 activitynode_ref 476806 // decision
+  xyz 315 299 2000
+end
+activityactioncanvas 194310 activityaction_ref 457990 // activity action Create Coinbase Reconstructor
   
   show_opaque_action_definition default
-  color green
-  xyzwh 509 412 2005 104 68
+  xyzwh 377 464 2000 99 67
   pins
-    pincanvas 170374 pin_ref 348678 // tree
-      xyzwh 555 402 2007 11 11 label_xy 565 364
+    pincanvas 194438 pin_ref 602246 // self
+      xyzwh 438 454 2002 11 11 label_xy 428 435
     end
-    pincanvas 170758 pin_ref 349062 // target
-      xyzwh 499 437 2007 11 11 label_xy 443 433
+    pincanvas 194566 pin_ref 602374 // 
+      xyzwh 432 530 2002 11 11 label_xy 453 528
+    end
+    pincanvas 194694 pin_ref 602502 // 
+      xyzwh 415 530 2002 11 11 label_xy 364 528
     end
   end
 end
-activitynodecanvas 176262 activitynode_ref 317190 // activity_final
-  xyz 550 544 2000
+activitynodecanvas 194950 activitynode_ref 476934 // merge
+  xyz 299 793 2000
 end
-activityactioncanvas 176518 activityaction_ref 273798 // activity action Interrupt
+activitynodecanvas 195078 activitynode_ref 477062 // merge
+  xyz 487 790 2000
+end
+activityactioncanvas 196102 activityaction_ref 458118 // activity action Create Slicer
   
   show_opaque_action_definition default
-  xyzwh 167 426 2005 100 60
+  xyzwh 527 463 2000 99 67
+  pins
+    pincanvas 196230 pin_ref 602630 // self
+      xyzwh 517 482 2002 11 11 label_xy 492 462
+    end
+    pincanvas 196358 pin_ref 602758 // 
+      xyzwh 625 467 2002 11 11 label_xy 561 443
+    end
+    pincanvas 196486 pin_ref 602886 // 
+      xyzwh 625 503 2002 11 11 label_xy 580 529
+    end
+  end
 end
-flowcanvas 153606 flow_ref 244230 // B.1.1
+activityactioncanvas 196614 activityaction_ref 458246 // activity action Create Merger
   
-  from ref 148486 z 3039 label "B.1.1" xyz 302 162 3039 to ref 151686
+  show_opaque_action_definition default
+  xyzwh 527 293 2000 99 67
+  pins
+    pincanvas 196742 pin_ref 603014 // self
+      xyzwh 517 320 2002 11 11 label_xy 493 304
+    end
+    pincanvas 196870 pin_ref 603142 // 
+      xyzwh 625 297 2002 11 11 label_xy 548 274
+    end
+    pincanvas 196998 pin_ref 603270 // 
+      xyzwh 625 339 2002 11 11 label_xy 578 356
+    end
+  end
+end
+activityactioncanvas 197126 activityaction_ref 458374 // activity action Create Transmuter
+  
+  show_opaque_action_definition default
+  xyzwh 527 125 2000 99 67
+  pins
+    pincanvas 197254 pin_ref 603398 // self
+      xyzwh 517 133 2002 11 11 label_xy 496 115
+    end
+    pincanvas 197382 pin_ref 603526 // 
+      xyzwh 625 131 2002 11 11 label_xy 553 105
+    end
+    pincanvas 197510 pin_ref 603654 // 
+      xyzwh 625 170 2002 11 11 label_xy 572 197
+    end
+  end
+end
+activityactioncanvas 200710 activityaction_ref 458502 // activity action Create Bitstamp Reconstructor
+  
+  show_opaque_action_definition default
+  xyzwh 227 464 2000 99 67
+  pins
+    pincanvas 200838 pin_ref 603782 // self
+      xyzwh 253 454 2002 11 11 label_xy 242 434
+    end
+    pincanvas 200966 pin_ref 603910 // 
+      xyzwh 278 530 2002 11 11 label_xy 293 536
+    end
+    pincanvas 201094 pin_ref 604038 // 
+      xyzwh 255 530 2002 11 11 label_xy 209 544
+    end
+  end
+end
+activityactioncanvas 201222 activityaction_ref 458630 // activity action Create Bitfinex Reconstructor
+  
+  show_opaque_action_definition default
+  xyzwh 79 463 2000 99 67
+  pins
+    pincanvas 201350 pin_ref 604166 // self
+      xyzwh 116 453 2002 11 11 label_xy 106 436
+    end
+    pincanvas 201478 pin_ref 604294 // 
+      xyzwh 132 529 2002 11 11 label_xy 146 527
+    end
+    pincanvas 201606 pin_ref 604422 // 
+      xyzwh 115 529 2002 11 11 label_xy 59 530
+    end
+  end
+end
+flowcanvas 193286 flow_ref 686086 // <flow>
+  
+  from ref 190214 z 4052 to ref 193158
    write_horizontally default
 end
-flowcanvas 173446 flow_ref 407686 // B.1.5
+flowcanvas 193414 flow_ref 686214 // <flow>
   
-  from ref 171654 z 4016 label "B.1.5" xyz 423 373 4016 to ref 170758
+  from ref 193030 z 2003 stereotype "<<decisionInputFlow>>" xyz 200.5 154 3000 to ref 193158
    write_horizontally default
 end
-flowcanvas 174342 flow_ref 408070 // B.1.2
+flowcanvas 194054 flow_ref 686342 // <flow>
   
-  from ref 142982 z 4016 label "B.1.2" xyz 165 296 4016 to ref 171270
+  from ref 193158 z 2001 label "[kCapture]" xyz 311 226 2001 to ref 193926
    write_horizontally default
 end
-flowcanvas 175494 flow_ref 415622 // B.1.7
+flowcanvas 194182 flow_ref 686470 // <flow>
   
-  from ref 143750 z 3039 label "B.1.7" xyz 547 84 3039 to ref 148870
+  from ref 193798 z 2003 stereotype "<<decisionInputFlow>>" xyz 188.5 317 3000 to ref 193926
    write_horizontally default
 end
-flowcanvas 176390 flow_ref 416006 // B.1.8
+flowcanvas 195206 flow_ref 686598 // <flow>
   
-  from ref 166534 z 2006 label "B.1.8" xyz 546 502 2006 to ref 176262
+  from ref 194694 z 2003 to ref 194950
    write_horizontally default
 end
-flowcanvas 176646 flow_ref 430598 // B.1.3
+flowcanvas 195334 flow_ref 686726 // <flow>
   
-  from ref 176518 z 2006 label "B.1.3" xyz 201 511 2006 to point 213 553
-  line 176774 z 2006 to ref 176262
+  from ref 194566 z 2003 to ref 195078
    write_horizontally default
 end
-flowcanvas 177798 flow_ref 500614 // B.1.4
+flowcanvas 195462 flow_ref 686854 // <flow>
   
-  from ref 171782 z 4016 label "B.1.4" xyz 424 208 4016 to ref 177670
+  from ref 193926 z 2001 label "[Coinbase]" xyz 341.5 389.5 2001 to ref 194310
    write_horizontally default
 end
-flowcanvas 178310 flow_ref 507142 // B.1.6
+flowcanvas 195590 flow_ref 686982 // <flow>
   
-  from ref 178182 z 3041 label "B.1.6" xyz 544 285 3041 to ref 170374
+  from ref 194950 z 2001 to ref 194822
+   write_horizontally default
+end
+flowcanvas 195718 flow_ref 687110 // <flow>
+  
+  from ref 195078 z 2001 to ref 192646
+   write_horizontally default
+end
+flowcanvas 197638 flow_ref 687238 // <flow>
+  
+  from ref 193158 z 2001 label "[kSlice]" xyz 438.5 308 2001 to ref 196102
+   write_horizontally default
+end
+flowcanvas 197766 flow_ref 687366 // <flow>
+  decenter_begin 594
+  
+  from ref 193158 z 2001 label "[kMerge]" xyz 426 215.5 2001 to ref 196614
+   write_horizontally default
+end
+flowcanvas 197894 flow_ref 687494 // <flow>
+  
+  from ref 193158 z 2001 label "[kTransmute]" xyz 411 146 2001 to ref 197126
+   write_horizontally default
+end
+flowcanvas 198022 flow_ref 687622 // <flow>
+  
+  from ref 197510 z 2003 to point 695 174
+  line 199174 z 2003 to point 701 628
+  line 198790 z 2003 to ref 194950
+   write_horizontally default
+end
+flowcanvas 198150 flow_ref 687750 // <flow>
+  
+  from ref 196998 z 2003 to point 675 341
+  line 199558 z 2003 to point 675 608
+  line 199686 z 2003 to ref 194950
+   write_horizontally default
+end
+flowcanvas 198278 flow_ref 687878 // <flow>
+  
+  from ref 196486 z 2003 to point 652 505
+  line 200070 z 2003 to point 653 591
+  line 200198 z 2003 to ref 194950
+   write_horizontally default
+end
+flowcanvas 198406 flow_ref 688006 // <flow>
+  
+  from ref 197382 z 2003 to point 710 134
+  line 198918 z 2003 to point 716 806
+  line 199046 z 2003 to ref 195078
+   write_horizontally default
+end
+flowcanvas 198534 flow_ref 688134 // <flow>
+  
+  from ref 196870 z 2003 to point 688 300
+  line 199302 z 2003 to point 687 780
+  line 199430 z 2003 to ref 195078
+   write_horizontally default
+end
+flowcanvas 198662 flow_ref 688262 // <flow>
+  
+  from ref 196358 z 2003 to point 665 470
+  line 199814 z 2003 to point 663 743
+  line 199942 z 2003 to ref 195078
+   write_horizontally default
+end
+flowcanvas 201734 flow_ref 688390 // <flow>
+  
+  from ref 193926 z 2001 label "[kBitstamp]" xyz 272 390 3000 to ref 200710
+   write_horizontally default
+end
+flowcanvas 201862 flow_ref 688518 // <flow>
+  
+  from ref 193926 z 2001 label "[kBitfinex]" xyz 212 385 3000 to ref 201222
+   write_horizontally default
+end
+flowcanvas 202246 flow_ref 688646 // <flow>
+  
+  from ref 201606 z 2003 to ref 194950
+   write_horizontally default
+end
+flowcanvas 202374 flow_ref 688774 // <flow>
+  
+  from ref 201478 z 2003 to ref 195078
+   write_horizontally default
+end
+flowcanvas 202502 flow_ref 688902 // <flow>
+  
+  from ref 201094 z 2013 to ref 194950
+   write_horizontally default
+end
+flowcanvas 202758 flow_ref 689030 // <flow>
+  
+  from ref 200966 z 2003 to ref 195078
    write_horizontally default
 end
 end

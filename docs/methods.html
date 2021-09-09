@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>2 Methods | Order book events reconstruction from empirical data</title>
   <meta name="description" content="2 Methods | Order book events reconstruction from empirical data" />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.23 and GitBook 2.6.7" />
 
   <meta property="og:title" content="2 Methods | Order book events reconstruction from empirical data" />
   <meta property="og:type" content="book" />
@@ -24,7 +24,7 @@
 <meta name="author" content="Petr Fedorov" />
 
 
-<meta name="date" content="2021-05-25" />
+<meta name="date" content="2021-09-09" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +33,8 @@
   
 <link rel="prev" href="index.html"/>
 <link rel="next" href="results.html"/>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -50,8 +51,33 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 
 
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
 
 </head>
 
@@ -65,46 +91,63 @@
       <nav role="navigation">
 
 <ul class="summary">
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
 <li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#continuous-time-double-auction-and-lob"><i class="fa fa-check"></i><b>1.1</b> Continuous-time double auction and LOB</a></li>
 <li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#available-data-sets"><i class="fa fa-check"></i><b>1.2</b> Available data sets</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="methods.html"><a href="methods.html"><i class="fa fa-check"></i><b>2</b> Methods</a><ul>
-<li class="chapter" data-level="2.1" data-path="methods.html"><a href="methods.html#definitions"><i class="fa fa-check"></i><b>2.1</b> Definitions</a><ul>
+<li class="chapter" data-level="2" data-path="methods.html"><a href="methods.html"><i class="fa fa-check"></i><b>2</b> Methods</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="methods.html"><a href="methods.html#definitions"><i class="fa fa-check"></i><b>2.1</b> Definitions</a>
+<ul>
 <li class="chapter" data-level="2.1.1" data-path="methods.html"><a href="methods.html#order-function"><i class="fa fa-check"></i><b>2.1.1</b> Order function</a></li>
 <li class="chapter" data-level="2.1.2" data-path="methods.html"><a href="methods.html#order-book"><i class="fa fa-check"></i><b>2.1.2</b> Order book</a></li>
 <li class="chapter" data-level="2.1.3" data-path="methods.html"><a href="methods.html#market-orders"><i class="fa fa-check"></i><b>2.1.3</b> Market orders</a></li>
 <li class="chapter" data-level="2.1.4" data-path="methods.html"><a href="methods.html#level2-order-function"><i class="fa fa-check"></i><b>2.1.4</b> Level2 order function</a></li>
 </ul></li>
-<li class="chapter" data-level="2.2" data-path="methods.html"><a href="methods.html#software"><i class="fa fa-check"></i><b>2.2</b> Software</a><ul>
-<li class="chapter" data-level="2.2.1" data-path="methods.html"><a href="methods.html#capture-order-events"><i class="fa fa-check"></i><b>2.2.1</b> Capture order events</a><ul>
-<li class="chapter" data-level="2.2.1.1" data-path="methods.html"><a href="methods.html#receive-messages"><i class="fa fa-check"></i><b>2.2.1.1</b> Receive messages</a></li>
-<li class="chapter" data-level="2.2.1.2" data-path="methods.html"><a href="methods.html#reconstruct-order-book"><i class="fa fa-check"></i><b>2.2.1.2</b> Reconstruct Order Book</a></li>
-<li class="chapter" data-level="2.2.1.3" data-path="methods.html"><a href="methods.html#save-output"><i class="fa fa-check"></i><b>2.2.1.3</b> Save output</a></li>
+<li class="chapter" data-level="2.2" data-path="methods.html"><a href="methods.html#software"><i class="fa fa-check"></i><b>2.2</b> Software</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="methods.html"><a href="methods.html#main"><i class="fa fa-check"></i><b>2.2.1</b> Main</a></li>
+<li class="chapter" data-level="2.2.2" data-path="methods.html"><a href="methods.html#parse-options"><i class="fa fa-check"></i><b>2.2.2</b> Parse options</a></li>
+<li class="chapter" data-level="2.2.3" data-path="methods.html"><a href="methods.html#create-reconstructor-and-acquirer"><i class="fa fa-check"></i><b>2.2.3</b> Create reconstructor and acquirer</a>
+<ul>
+<li class="chapter" data-level="2.2.3.1" data-path="methods.html"><a href="methods.html#create-acquirer"><i class="fa fa-check"></i><b>2.2.3.1</b> Create acquirer</a></li>
+<li class="chapter" data-level="2.2.3.2" data-path="methods.html"><a href="methods.html#create-reconstructor"><i class="fa fa-check"></i><b>2.2.3.2</b> Create reconstructor</a></li>
 </ul></li>
-<li class="chapter" data-level="2.2.2" data-path="methods.html"><a href="methods.html#slice-merge-and-transmute-era-files"><i class="fa fa-check"></i><b>2.2.2</b> Slice, merge and transmute era files</a><ul>
-<li class="chapter" data-level="2.2.2.1" data-path="methods.html"><a href="methods.html#era-file-reader"><i class="fa fa-check"></i><b>2.2.2.1</b> Era file reader</a></li>
-<li class="chapter" data-level="2.2.2.2" data-path="methods.html"><a href="methods.html#slice"><i class="fa fa-check"></i><b>2.2.2.2</b> Slice</a></li>
-<li class="chapter" data-level="2.2.2.3" data-path="methods.html"><a href="methods.html#merge"><i class="fa fa-check"></i><b>2.2.2.3</b> Merge</a></li>
-<li class="chapter" data-level="2.2.2.4" data-path="methods.html"><a href="methods.html#transmute"><i class="fa fa-check"></i><b>2.2.2.4</b> Transmute</a></li>
+<li class="chapter" data-level="2.2.4" data-path="methods.html"><a href="methods.html#acquire-and-process"><i class="fa fa-check"></i><b>2.2.4</b> Acquire and process</a>
+<ul>
+<li class="chapter" data-level="2.2.4.1" data-path="methods.html"><a href="methods.html#receiver-acquire-and-process"><i class="fa fa-check"></i><b>2.2.4.1</b> Receiver</a></li>
+<li class="chapter" data-level="2.2.4.2" data-path="methods.html"><a href="methods.html#reader-acquire-and-process"><i class="fa fa-check"></i><b>2.2.4.2</b> Reader</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2.5" data-path="methods.html"><a href="methods.html#receive-messages"><i class="fa fa-check"></i><b>2.2.5</b> Receive messages</a></li>
+<li class="chapter" data-level="2.2.6" data-path="methods.html"><a href="methods.html#process-message"><i class="fa fa-check"></i><b>2.2.6</b> Process message</a></li>
+<li class="chapter" data-level="2.2.7" data-path="methods.html"><a href="methods.html#handle-message"><i class="fa fa-check"></i><b>2.2.7</b> Handle message</a></li>
+<li class="chapter" data-level="2.2.8" data-path="methods.html"><a href="methods.html#output-format"><i class="fa fa-check"></i><b>2.2.8</b> Output format</a>
+<ul>
+<li class="chapter" data-level="2.2.8.1" data-path="methods.html"><a href="methods.html#file"><i class="fa fa-check"></i><b>2.2.8.1</b> File</a></li>
 </ul></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>3</b> Results</a><ul>
-<li class="chapter" data-level="3.1" data-path="results.html"><a href="results.html#fragments-of-extracted-events"><i class="fa fa-check"></i><b>3.1</b> Fragments of extracted events</a><ul>
+<li class="chapter" data-level="3" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>3</b> Results</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="results.html"><a href="results.html#fragments-of-extracted-events"><i class="fa fa-check"></i><b>3.1</b> Fragments of extracted events</a>
+<ul>
 <li class="chapter" data-level="3.1.1" data-path="results.html"><a href="results.html#coinbase"><i class="fa fa-check"></i><b>3.1.1</b> Coinbase</a></li>
 <li class="chapter" data-level="3.1.2" data-path="results.html"><a href="results.html#bitstamp"><i class="fa fa-check"></i><b>3.1.2</b> Bitstamp</a></li>
 <li class="chapter" data-level="3.1.3" data-path="results.html"><a href="results.html#bitfinex"><i class="fa fa-check"></i><b>3.1.3</b> Bitfinex</a></li>
 </ul></li>
-<li class="chapter" data-level="3.2" data-path="results.html"><a href="results.html#fragments-of-cleansed-data"><i class="fa fa-check"></i><b>3.2</b> Fragments of cleansed data</a><ul>
+<li class="chapter" data-level="3.2" data-path="results.html"><a href="results.html#fragments-of-cleansed-data"><i class="fa fa-check"></i><b>3.2</b> Fragments of cleansed data</a>
+<ul>
 <li class="chapter" data-level="3.2.1" data-path="results.html"><a href="results.html#bitstamp-1"><i class="fa fa-check"></i><b>3.2.1</b> Bitstamp</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="discussion.html"><a href="discussion.html"><i class="fa fa-check"></i><b>4</b> Discussion</a></li>
-<li class="chapter" data-level="5" data-path="appendix.html"><a href="appendix.html"><i class="fa fa-check"></i><b>5</b> Appendix</a><ul>
+<li class="chapter" data-level="5" data-path="appendix.html"><a href="appendix.html"><i class="fa fa-check"></i><b>5</b> Appendix</a>
+<ul>
 <li class="chapter" data-level="5.1" data-path="appendix.html"><a href="appendix.html#examples-of-order-tables-and-restored-functions"><i class="fa fa-check"></i><b>5.1</b> Examples of order tables and restored functions</a></li>
 <li class="chapter" data-level="5.2" data-path="appendix.html"><a href="appendix.html#example-of-lob"><i class="fa fa-check"></i><b>5.2</b> Example of LOB</a></li>
-<li class="chapter" data-level="5.3" data-path="appendix.html"><a href="appendix.html#token-handlers"><i class="fa fa-check"></i><b>5.3</b> Token handlers</a><ul>
+<li class="chapter" data-level="5.3" data-path="appendix.html"><a href="appendix.html#message-handlers"><i class="fa fa-check"></i><b>5.3</b> Message handlers</a>
+<ul>
 <li class="chapter" data-level="5.3.1" data-path="appendix.html"><a href="appendix.html#synchronizer"><i class="fa fa-check"></i><b>5.3.1</b> Synchronizer</a></li>
 <li class="chapter" data-level="5.3.2" data-path="appendix.html"><a href="appendix.html#timeorderenforcer"><i class="fa fa-check"></i><b>5.3.2</b> TimeOrderEnforcer</a></li>
 <li class="chapter" data-level="5.3.3" data-path="appendix.html"><a href="appendix.html#deduplicator"><i class="fa fa-check"></i><b>5.3.3</b> Deduplicator</a></li>
@@ -128,9 +171,9 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="methods" class="section level1">
+<div id="methods" class="section level1" number="2">
 <h1><span class="header-section-number">2</span> Methods</h1>
-<p>We defined the terms “order event and”reconstruction&quot; strictly, developed a software that reconstructs order events in accordance with these definitions from data provided by several cryptocurrency exchanges and analysed whether the exchanges provide enough information for the comprehensive reconstruction of their order book evolution.</p>
+<p>We defined the terms “order event and”reconstruction" strictly, developed a software that reconstructs order events in accordance with these definitions from data provided by several cryptocurrency exchanges and analysed whether the exchanges provide enough information for the comprehensive reconstruction of their order book evolution.</p>
 <p>Surprisingly, an order, an order event, a limit order book, the operations of a continuous double auction are rather complicated things if one attempts to define them rigorously. Consider, for example, a definition given in the book <span class="citation">(Bouchaud and Bonart 2018)</span>:</p>
 <blockquote>
 <p>An order is a commitment, declared at a given submission time, to buy or sell a given volume of an asset at no worse than a given price. An order <span class="math inline">\(x\)</span> is thus described by four attributes:</p>
@@ -153,9 +196,9 @@
 <li><p>It is not stated what will happen if <span class="math inline">\(v_x \leq v_y\)</span>, etc.</p></li>
 </ul>
 <p>Below we propose stricter definitions that address these and the other similar issues trying to stay close to <span class="citation">(Bouchaud and Bonart 2018)</span>. Afterwards we describe the reconstruction process.</p>
-<div id="definitions" class="section level2">
+<div id="definitions" class="section level2" number="2.1">
 <h2><span class="header-section-number">2.1</span> Definitions</h2>
-<div id="order-function" class="section level3">
+<div id="order-function" class="section level3" number="2.1.1">
 <h3><span class="header-section-number">2.1.1</span> Order function</h3>
 
 <div class="definition">
@@ -194,11 +237,9 @@ where</p>
 is called a <em>price function</em>.
 </div>
 
-
 <div class="definition">
 <span id="def:volume-function" class="definition"><strong>Definition 2.3  (Volume Function)  </strong></span>Suppose an order function <span class="math inline">\(o(p,t)\)</span> as defined by <a href="methods.html#def:order">2.1</a> and related price function <span class="math inline">\(p(t)\)</span> as defined by <a href="methods.html#def:price-function">2.2</a> are given. A function of time <span class="math display">\[v(t) \equiv o(p(t),t)\]</span> is called a <em>volume function</em>.
 </div>
-
 
 <div class="definition">
 <p><span id="def:filled-volume" class="definition"><strong>Definition 2.4  (Filled Volume)  </strong></span>Suppose a volume function <span class="math inline">\(v(t)\)</span> as defined by <a href="methods.html#def:volume-function">2.3</a> is given. The function
@@ -206,7 +247,6 @@ is called a <em>price function</em>.
   f_{v}(t) = v(t) - \lim_{t^{&#39;} \uparrow t} v(t^{&#39;}) 
   \]</span> is called a <em>filled volume</em> at time <span class="math inline">\(t\)</span>.</p>
 </div>
-
 <p><span class="math inline">\(f_{v}(t) \neq 0\)</span> implies that there is a right-open interval <span class="math inline">\(T_k\)</span> such that its right endpoint equals to <span class="math inline">\(t\)</span>.</p>
 
 <div class="definition">
@@ -215,7 +255,6 @@ is called a <em>price function</em>.
   a_{v}(t) = \lim_{t^{&#39;} \downarrow t} v(t^{&#39;}) - v(t)
 \]</span> is called an <em>amended</em> volume at time <span class="math inline">\(t\)</span>.</p>
 </div>
-
 <p>It follows from definition <a href="methods.html#def:order">2.1</a> that <span class="math inline">\(T_1\)</span> is left-open, so <span class="math inline">\(a_v(t_{1,1}) = v_1 \neq 0\)</span>. This is the only place where we follow <span class="citation">(Bouchaud and Bonart 2018)</span> by modelling order placement as càglàd (continue à gauche, limite à droite) process:</p>
 <blockquote>
 <p>… we will consider the evolution of an LOB <span class="math inline">\(\mathcal{L}(t)\)</span> as a so-called <em>càglàd process (continu à gauche, limite à droite)</em>. Informally, this means that when a new order <span class="math inline">\(x\)</span> is submitted at time <span class="math inline">\(t_x\)</span> , we regard it to be present in the LOB immediately after its arrival, but not immediately upon its arrival.</p>
@@ -239,7 +278,7 @@ An <em>order event</em> is a tuple <span class="math inline">\((t,s,p,v,m)\)</sp
 <div class="definition">
 <p><span id="def:order-table" class="definition"><strong>Definition 2.7  (Order Table)  </strong></span>Suppose an order function <span class="math inline">\(o(p,t)\)</span> as defined by <a href="methods.html#def:order">2.1</a> is given. A set <span class="math display">\[\mathcal{E} = \{(t_k&#39;,s_k&#39;,p_k&#39;,v_k&#39;, m_k&#39;)\}_k\]</span> of <span class="math inline">\(K\)</span> or <span class="math inline">\(K+1\)</span> order events</p>
 <ol style="list-style-type: lower-alpha">
-<li><span class="math inline">\(\forall k \in \{1, \ldots, K\}\)</span> <span class="math inline">\(k\)</span>’s order event is defined as follows:
+<li><p><span class="math inline">\(\forall k \in \{1, \ldots, K\}\)</span> <span class="math inline">\(k\)</span>’s order event is defined as follows:</p>
 <ol style="list-style-type: decimal">
 <li><span class="math inline">\(t_k&#39; = t_{k,1}, s_k&#39; = 1, p_k&#39; = p_k, v_k&#39; = v_k\)</span>,</li>
 <li>if <span class="math inline">\(t_{k,1} \in T_k\)</span> then <span class="math inline">\(m_k&#39; = 1\)</span>, otherwise <span class="math inline">\(m_k&#39; = 0\)</span>,</li>
@@ -253,11 +292,9 @@ An <em>order event</em> is a tuple <span class="math inline">\((t,s,p,v,m)\)</sp
 <p>is called <em>an order table</em>. The index <span class="math inline">\(k\)</span> is called <em>an event ordinal number</em>.</p>
 </div>
 
-
 <div class="theorem">
 <span id="thm:equivalence" class="theorem"><strong>Theorem 2.1  </strong></span>An order function <a href="methods.html#def:order">2.1</a> can be unambiguously restored from its order table <a href="methods.html#def:order-table">2.7</a>.
 </div>
-
 
 <div class="proof">
 <p> <span class="proof"><em>Proof. </em></span> Suppose the order table <span class="math inline">\(\mathcal{E} = \{(t_k&#39;,s_k&#39;,p_k&#39;,v_k&#39;, m_k&#39;)\}_{k=1}^{R}\)</span> is given. To restore the corresponding order function <span class="math inline">\(o(p,t)\)</span> as defined by <a href="methods.html#def:order">2.1</a> we need to restore <span class="math inline">\(\mathcal{T}\)</span>, <span class="math inline">\(\mathcal{P}\)</span> and <span class="math inline">\(\mathcal{V}\)</span> sets. It can be done as follows:</p>
@@ -270,10 +307,10 @@ An <em>order event</em> is a tuple <span class="math inline">\((t,s,p,v,m)\)</sp
 <li>a right-open if <span class="math inline">\(m_{k+1}&#39;=1\)</span> and right-closed if <span class="math inline">\(m_{k+1}&#39;=0\)</span></li>
 </ul>
 <p>is added to <span class="math inline">\(\mathcal{T}\)</span></p></li>
-<li>The interval <span class="math inline">\(P_k = \{p_k&#39;\}\)</span> is added to <span class="math inline">\(\mathcal{P}\)</span></li>
+<li><p>The interval <span class="math inline">\(P_k = \{p_k&#39;\}\)</span> is added to <span class="math inline">\(\mathcal{P}\)</span></p></li>
 <li><p>The constant <span class="math inline">\(v_k&#39;\)</span> is added to <span class="math inline">\(\mathcal{V}\)</span></p></li>
 </ol></li>
-<li>If <span class="math inline">\(s_R&#39; = 1\)</span>:
+<li><p>If <span class="math inline">\(s_R&#39; = 1\)</span>:</p>
 <ol style="list-style-type: lower-alpha">
 <li>The interval <span class="math inline">\(T_R\)</span> which is either <span class="math inline">\((t_R&#39;, +\infty)\)</span> if <span class="math inline">\(m_R&#39;=0\)</span> or <span class="math inline">\([t_{R}&#39;, +\infty)\)</span> if <span class="math inline">\(m_R&#39;=1\)</span> is added to <span class="math inline">\(\mathcal{T}\)</span>,</li>
 <li>The interval <span class="math inline">\(P_R = \{p_R\}\)</span> is added to <span class="math inline">\(\mathcal{P}\)</span>,</li>
@@ -281,11 +318,10 @@ An <em>order event</em> is a tuple <span class="math inline">\((t,s,p,v,m)\)</sp
 </ol></li>
 </ol>
 </div>
-
 <p>Note that <span class="math inline">\(|\mathcal{E}| = |\mathcal{T}| + 1\)</span> if the last interval <span class="math inline">\(T_k\)</span> is finite and <span class="math inline">\(|\mathcal{E}| = |\mathcal{T}|\)</span> otherwise, as in definition <a href="methods.html#def:order-table">2.7</a>.</p>
 <p>See <a href="appendix.html#examples-of-order-tables-and-restored-functions">Appendix</a> for examples of order tables and order functions restored from them.</p>
 </div>
-<div id="order-book" class="section level3">
+<div id="order-book" class="section level3" number="2.1.2">
 <h3><span class="header-section-number">2.1.2</span> Order book</h3>
 <p>Typically the term <a href="https://www.investopedia.com/terms/o/order-book.asp">order book</a> refers to an electronic list of buy and sell orders for a specific security or financial instrument organized by price level. An order book lists the number of shares being bid on or offered at each price point, or market depth. Order books are used by almost every exchange to list the orders for different securities.</p>
 
@@ -293,22 +329,18 @@ An <em>order event</em> is a tuple <span class="math inline">\((t,s,p,v,m)\)</sp
 <span id="def:order-set" class="definition"><strong>Definition 2.8  (Order Set)  </strong></span>A finite set of orders with common resolution parameters <span class="math inline">\(\tau\)</span>, <span class="math inline">\(\pi\)</span> and <span class="math inline">\(\phi\)</span> <span class="math display">\[\mathcal{O} = \{o^i(\cdot, \cdot)\}_i\]</span> where <span class="math inline">\(o^i(\cdot, \cdot)\)</span> is defined by <a href="methods.html#def:order">2.1</a> is called an <em>order set</em>.
 </div>
 
-
 <div class="definition">
 <span id="def:order-set-table" class="definition"><strong>Definition 2.9  (Order Set Table)  </strong></span>Suppose an order set <span class="math inline">\(\mathcal{O} = \{ o^i(\cdot, \cdot) \}_i\)</span> as defined by <a href="methods.html#def:order-set">2.8</a> is given. A union of set of tuples:
 <span class="math display">\[\mathcal{S} = \bigcup_i \big\{(i, k, t_k^i, s_k^i,p_k^i, v_k^i, m_k^i)\big\}_{k=1}^{K^i}\]</span> where <span class="math inline">\(i\)</span> is <em>a unique order identification number</em> and <span class="math inline">\(\{(t_k^i, s_k^i,p_k^i, v_k^i, m_k^i)\}_{k=1}^{K^i}\)</span> is the order table as defined by <a href="methods.html#def:order-table">2.7</a> of order <span class="math inline">\(o^i(\cdot, \cdot)\)</span> is called <em>an order set table</em>. Each tuple in the order set table is called <em>an order event with order id</em>.
 </div>
 
-
 <div class="definition">
 <span id="def:bids" class="definition"><strong>Definition 2.10  (Bids)  </strong></span>Suppose an order set <span class="math inline">\(\mathcal{O}\)</span> as defined by <a href="methods.html#def:order-set">2.8</a> is given. A (possibly empty) subset <span class="math inline">\(\mathcal{B} =\{o^b(\cdot, \cdot)\}_{v^b(\cdot) \geq 0} \subset \mathcal{O}\)</span> of buy orders is called <em>bids</em>. A (possibly empty) subset of <em>bids</em> <span class="math inline">\(\mathcal{B}(t) =\{o^b(\cdot,\cdot)\}_{v^b(t) \geq 0 \land p^b(t) &gt; 0} \subset \mathcal{B}\)</span> of buy orders is called <em>bids</em> at time <span class="math inline">\(t\)</span>.
 </div>
 
-
 <div class="definition">
 <span id="def:asks" class="definition"><strong>Definition 2.11  (Asks)  </strong></span>Suppose an order set <span class="math inline">\(\mathcal{O}\)</span> as defined by <a href="methods.html#def:order-set">2.8</a> is given. A (possibly empty) subset <span class="math inline">\(\mathcal{A} =\{o^a(\cdot, \cdot)\}_{v^a(\cdot) \leq 0} \subset \mathcal{O}\)</span> of sell orders is called <em>asks</em>. A (possibly empty) subset of <em>asks</em> <span class="math inline">\(\mathcal{A}(t) =\{o^a(\cdot,\cdot)\}_{v^a(t) \leq 0 \land p^a(t) &gt; 0} \subset \mathcal{A}\)</span> of sell orders is called <em>asks</em> at time <span class="math inline">\(t\)</span>.
 </div>
-
 <p>From definition of an order <a href="methods.html#def:order">2.1</a> follows that <span class="math inline">\(\mathcal{O} = \mathcal{A} \cup \mathcal{B}\)</span> and <span class="math inline">\(\mathcal{A} \cap \mathcal{B} = \emptyset\)</span>.</p>
 
 <div class="definition">
@@ -318,7 +350,6 @@ An <em>order event</em> is a tuple <span class="math inline">\((t,s,p,v,m)\)</sp
   \]</span> is called <em>best bid price</em>.
 </div>
 
-
 <div class="definition">
 <span id="def:best-ask-price" class="definition"><strong>Definition 2.13  (Best Ask Price)  </strong></span>Suppose an order set <span class="math inline">\(\mathcal{O}\)</span> is given. The function <span class="math inline">\(a(t)\)</span> defined as:
 <span class="math display">\[
@@ -326,13 +357,11 @@ An <em>order event</em> is a tuple <span class="math inline">\((t,s,p,v,m)\)</sp
   \]</span> is called <em>best ask price</em>
 </div>
 
-
 <div class="definition">
 <span id="def:spread" class="definition"><strong>Definition 2.14  (Spread)  </strong></span>Suppose an order set <span class="math inline">\(\mathcal{O}\)</span> is given and <span class="math inline">\(a_{\mathcal{O}}(t)\)</span> and <span class="math inline">\(b_{\mathcal{O}}(t)\)</span> are its best ask price and best bid price functions as defined by <a href="methods.html#def:best-ask-price">2.13</a> and <a href="methods.html#def:best-bid-price">2.12</a> respectively. Then the function <span class="math display">\[
   s_{\mathcal{O}}(t) = a_{\mathcal{O}}(t) -  b_{\mathcal{O}}(t) 
   \]</span> is called <em>spread</em>.
 </div>
-
 
 <div class="definition">
 <span id="def:lob" class="definition"><strong>Definition 2.15  (Limit Order Book)  </strong></span>Suppose an order set <span class="math inline">\(\mathcal{L}\)</span> as defined by <a href="methods.html#def:order-set">2.8</a> is given. Then <span class="math inline">\(\mathcal{L}\)</span> is called a <em>Limit Order Book (LOB)</em> if its spread function as defined by <a href="methods.html#def:spread">2.14</a> is always positive:
@@ -340,7 +369,6 @@ An <em>order event</em> is a tuple <span class="math inline">\((t,s,p,v,m)\)</sp
   \forall t: s_{\mathcal{L}}(t) &gt; 0
 \]</span>
 </div>
-
 <p>To make the above definitions intuitively clear, consider an example in <a href="appendix.html#example-of-lob">Appendix</a>.</p>
 
 <div class="definition">
@@ -351,10 +379,9 @@ An <em>order event</em> is a tuple <span class="math inline">\((t,s,p,v,m)\)</sp
 \]</span>
 are called <em>LOB bid function</em> and <em>LOB ask function</em> respectively. Collectively they are called <em>LOB functions</em>.
 </div>
-
 <p>Note that <span class="math display">\[\text{supp}(o^{\mathcal{A}}(p,t)) \cap \text{supp}(o^{\mathcal{B}}(p,t)) = \emptyset\]</span> but <span class="math inline">\(\overline{\text{supp}(o^{\mathcal{A}}(p,t))} \cap \overline{\text{supp}(o^{\mathcal{B}}(p,t))}\)</span> may be non-empty and in this case it will be a finite set of points.</p>
 </div>
-<div id="market-orders" class="section level3">
+<div id="market-orders" class="section level3" number="2.1.3">
 <h3><span class="header-section-number">2.1.3</span> Market orders</h3>
 <p>A <a href="https://www.investopedia.com/terms/m/marketorder.asp">market order</a> is a request by an investor to buy or sell a security at the best available price at the time of order placement. The request is usually made through a broker or brokerage service and is ultimately executed by an exchange that maintains an order book. Clearly, a market order cause an exchange’s order book to be updated so market orders are modeled as <em>changes</em> of an order book.</p>
 
@@ -362,13 +389,11 @@ are called <em>LOB bid function</em> and <em>LOB ask function</em> respectively.
 <p><span id="def:market-buy-order" class="definition"><strong>Definition 2.17  (Market Buy Order)  </strong></span>Suppose a Limit Order Book <span class="math inline">\(\mathcal{L}\)</span> is given as defined by <a href="methods.html#def:lob">2.15</a>. Suppose that at time <span class="math inline">\(t_j\)</span> <span class="math display">\[\sum_{o^a(\cdot, \cdot) \in \mathcal{A(t_j)} } f_{v^a}(t_j) &lt; 0 \]</span> Then it is said that a <em>market buy order</em> is placed and executed at time <span class="math inline">\(t_j\)</span> for <span class="math inline">\(\sum_{o^a(\cdot, \cdot) \in \mathcal{A}(t_j) } |f_{v^a}(t_j)p^a(t_j)|\)</span> units of currency.</p>
 </div>
 
-
 <div class="definition">
 <p><span id="def:market-sell-order" class="definition"><strong>Definition 2.18  (Market Sell Order)  </strong></span>Suppose a Limit Order Book <span class="math inline">\(\mathcal{L}\)</span> is given as defined by <a href="methods.html#def:lob">2.15</a>. Suppose that at time <span class="math inline">\(t_j\)</span> <span class="math display">\[\sum_{o^b(\cdot, \cdot) \in \mathcal{B}(t_j) } f_{v^b}(t_j) &gt; 0 \]</span> Then it is said that a <em>market sell order</em> is placed and executed at time <span class="math inline">\(t_j\)</span> for <span class="math inline">\(\sum_{o^b(\cdot, \cdot) \in \mathcal{B}(t_j) } f_{v^b}(t_j)\)</span> units of asset.</p>
 </div>
-
 </div>
-<div id="level2-order-function" class="section level3">
+<div id="level2-order-function" class="section level3" number="2.1.4">
 <h3><span class="header-section-number">2.1.4</span> Level2 order function</h3>
 <p>The Order Set Table is a precise representation of Order Functions but it is not a good tool for analysis. Consider for example the really short table <a href="methods.html#tab:transmute-example-1">2.1</a>. Even in this simple case, it is rather hard to see how LOB was evolving. The visual representation of the same Order Set Tableshown on figure <a href="methods.html#fig:transmute-example-1-picture">2.1</a> is much more expressive.</p>
 <table class="huxtable" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  " id="tab:transmute-example-1">
@@ -390,13 +415,13 @@ are called <em>LOB bid function</em> and <em>LOB ask function</em> respectively.
 <td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">2</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">2</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">2021-03-26 13:59:07.2</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">530</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">1&nbsp;&nbsp;</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0</td></tr>
 </table>
 
-<div class="figure" style="text-align: center"><span id="fig:transmute-example-1-picture"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:transmute-example-1-picture"></span>
 <img src="transmute_example_1.png" alt="It is easier to grasp the evolution of an order book from the visual representation of Order Set Table \@ref(tab:transmute-example-1) shown above"  />
 <p class="caption">
 Figure 2.1: It is easier to grasp the evolution of an order book from the visual representation of Order Set Table <a href="methods.html#tab:transmute-example-1">2.1</a> shown above
 </p>
 </div>
-<p>Unfortunately, not every Order Set Table can be visualised ‘as-is’. Suppose that one more order function is added to LOB as shown in table <a href="methods.html#tab:transmute-example-2">2.2</a>. Its visualisation shown on figure <a href="methods.html#fig:transmute-example-2-picture">2.2</a> is distorted since the lines corresponding to orders 3 and 4 overlaps. These orders have the same price and their time intervals intersects.</p>
+<p>Unfortunately, not every Order Set Table can be visualised ‘as-is.’ Suppose that one more order function is added to LOB as shown in table <a href="methods.html#tab:transmute-example-2">2.2</a>. Its visualisation shown on figure <a href="methods.html#fig:transmute-example-2-picture">2.2</a> is distorted since the lines corresponding to orders 3 and 4 overlaps. These orders have the same price and their time intervals intersects.</p>
 <table class="huxtable" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  " id="tab:transmute-example-2">
 <caption style="caption-side: top; text-align: center;"><span id="tab:transmute-example-2">Table 2.2: </span> Order 4 with two events and the same price as order 3 (540) has been added to Order Set Table.</caption><col><col><col><col><col><col><col><tr>
 <th style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">\(i\)</th><th style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">\(k\)</th><th style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">\(t^i_k\)</th><th style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">\(s^i_k\)</th><th style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">\(p^i_k\)</th><th style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">\(v^i_k\)</th><th style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">\(m^i_k\)</th></tr>
@@ -420,7 +445,7 @@ Figure 2.1: It is easier to grasp the evolution of an order book from the visual
 <td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; background-color: rgb(190, 190, 190); font-weight: normal;">4</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; background-color: rgb(190, 190, 190); font-weight: normal;">2</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; background-color: rgb(190, 190, 190); font-weight: normal;">2021-03-26 13:59:07.2</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; background-color: rgb(190, 190, 190); font-weight: normal;">0</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; background-color: rgb(190, 190, 190); font-weight: normal;">540</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; background-color: rgb(190, 190, 190); font-weight: normal;">-1&nbsp;&nbsp;</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; background-color: rgb(190, 190, 190); font-weight: normal;">0</td></tr>
 </table>
 
-<div class="figure" style="text-align: center"><span id="fig:transmute-example-2-picture"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:transmute-example-2-picture"></span>
 <img src="transmute_example_2.png" alt="A visual representation of Order Book Set \@ref(tab:transmute-example-2) is distorted since the lines representing orders 3 and 4 overlap"  />
 <p class="caption">
 Figure 2.2: A visual representation of Order Book Set <a href="methods.html#tab:transmute-example-2">2.2</a> is distorted since the lines representing orders 3 and 4 overlap
@@ -435,7 +460,6 @@ Figure 2.2: A visual representation of Order Book Set <a href="methods.html#tab:
   \]</span> is Order Function as defined by <a href="methods.html#def:order">2.1</a>.
 </div>
 
-
 <div class="proof">
 <p> <span class="proof"><em>Proof. </em></span> To prove the theorem we need to construct <span class="math inline">\(\mathcal{T}\)</span>, <span class="math inline">\(\mathcal{P}\)</span> and <span class="math inline">\(\mathcal{V}\)</span> sets which are used in definition <a href="methods.html#def:order">2.1</a>.</p>
 <p>Suppose that <span class="math inline">\(\{t_r^m\}_{r=1}^R \in I_m\)</span> are points of dicontinuity of <span class="math inline">\(o^{p_0,m}(p_0,t)\)</span>.</p>
@@ -449,7 +473,6 @@ Figure 2.2: A visual representation of Order Book Set <a href="methods.html#tab:
 <p>If <span class="math inline">\(I_m\)</span> is right-unbounded then <span class="math inline">\(T_{R+1}\)</span> with <span class="math inline">\(t_R\)</span> as its left-endpoint and <span class="math inline">\(+\infty\)</span> as its right-endpoint is added to <span class="math inline">\(\mathcal{T}\)</span>, <span class="math inline">\(P_{R+1} = \{p_0\}\)</span>, <span class="math inline">\(v_{R+1} = o^{p_0, m}(p_0, t_R+1)\)</span>; <span class="math inline">\(T_{R+1}\)</span> is left-closed if <span class="math inline">\(o^{p_0,m}(p_0, t_R) = v_{R+1}\)</span> and left-open otherwise.</p>
 <p>Finally, <span class="math inline">\(\forall t^m_r : r &gt; 1 \land t^m_r \not \in T_{r-1} \land t^m_r \not \in T_r\)</span> a degenerate interval <span class="math inline">\(\{t^m_r\}\)</span> is added to <span class="math inline">\(\mathcal{T}\)</span>, corresponding interval <span class="math inline">\(\{p_0\}\)</span> is added to <span class="math inline">\(\mathcal{P}\)</span> and corresponding value <span class="math inline">\(o^{p_0, m}(p_0, t^m_r)\)</span> is added to <span class="math inline">\(\mathcal{V}\)</span>.</p>
 </div>
-
 <p>Table <a href="methods.html#tab:transmute-example-3">2.3</a> is a transmuted table <a href="methods.html#tab:transmute-example-2">2.2</a>. Its visual representation shown on figure <a href="methods.html#fig:transmute-example-3-picture">2.3</a> is not distorted since order 5, which is Level2 Order Function, properly aggregates volumes of orders 3 and 4.</p>
 <table class="huxtable" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  " id="tab:transmute-example-3">
 <caption style="caption-side: top; text-align: center;"><span id="tab:transmute-example-3">Table 2.3: </span> Order 5 is now Level2 Order Function created from orders 3 and 4 in the previous table</caption><col><col><col><col><col><col><col><tr>
@@ -474,7 +497,7 @@ Figure 2.2: A visual representation of Order Book Set <a href="methods.html#tab:
 <td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; background-color: rgb(190, 190, 190); font-weight: normal;">5</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; background-color: rgb(190, 190, 190); font-weight: normal;">4</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; background-color: rgb(190, 190, 190); font-weight: normal;">2021-03-26 13:59:07.2</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; background-color: rgb(190, 190, 190); font-weight: normal;">0</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; background-color: rgb(190, 190, 190); font-weight: normal;">540</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; background-color: rgb(190, 190, 190); font-weight: normal;">-1&nbsp;&nbsp;</td><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; background-color: rgb(190, 190, 190); font-weight: normal;">0</td></tr>
 </table>
 
-<div class="figure" style="text-align: center"><span id="fig:transmute-example-3-picture"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:transmute-example-3-picture"></span>
 <img src="transmute_example_3.png" alt="A visual representation of Order Book Set \@ref(tab:transmute-example-3) contains Level2 Order Function created from orders 3 and 4 from table \@ref(tab:transmute-example-2)"  />
 <p class="caption">
 Figure 2.3: A visual representation of Order Book Set <a href="methods.html#tab:transmute-example-3">2.3</a> contains Level2 Order Function created from orders 3 and 4 from table <a href="methods.html#tab:transmute-example-2">2.2</a>
@@ -482,124 +505,192 @@ Figure 2.3: A visual representation of Order Book Set <a href="methods.html#tab:
 </div>
 </div>
 </div>
-<div id="software" class="section level2">
+<div id="software" class="section level2" number="2.2">
 <h2><span class="header-section-number">2.2</span> Software</h2>
-<div id="capture-order-events" class="section level3">
-<h3><span class="header-section-number">2.2.1</span> Capture order events</h3>
-<p>Figure <a href="methods.html#fig:capture-overview">2.4</a> shows UML2 Activity Diagram <span class="citation">(Cook et al. 2017)</span> of <code>B.1 Capture</code> activity that represents an implementation of <code>oberon capture</code> command. The activity node <code>C.02 Run Reconstruct</code> performs a reconstruction of order book events from exchange-specific messages that are passed by node <code>Run Receiver state machine</code>.</p>
-<div class="figure" style="text-align: left"><span id="fig:capture-overview"></span>
-<img src="html_docs/fig181766.png" alt="`Run Receiver state machine` activity node collects avaialbe information in an exchange-specific format and pass the information in the form of [Boost.Property Tree](https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html) to `C.02 Run Reconstructor` activity node that, as its name implies, reconstructs order book events in an *universal* format described herein. Note that both activity nodes run concurrently."  />
-<p class="caption">
-Figure 2.4: <code>Run Receiver state machine</code> activity node collects avaialbe information in an exchange-specific format and pass the information in the form of <a href="https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html">Boost.Property Tree</a> to <code>C.02 Run Reconstructor</code> activity node that, as its name implies, reconstructs order book events in an <em>universal</em> format described herein. Note that both activity nodes run concurrently.
-</p>
-</div>
-<div id="receive-messages" class="section level4">
-<h4><span class="header-section-number">2.2.1.1</span> Receive messages</h4>
-<p>Activity <code>Run Receiver state machine</code> on figure <a href="methods.html#fig:capture-overview">2.4</a> is UML2 <code>StartObjectBehaviourAction</code> that starts execution of <code>Receiver</code> StateMachine shown on figure <a href="methods.html#fig:receiver">2.5</a>. The call is synchronous, so the execution of the <code>Run Receiver state machine</code> does not complete until the execution of <code>Receiver</code> StateMachine completes.</p>
+<div id="main" class="section level3" number="2.2.1">
+<h3><span class="header-section-number">2.2.1</span> Main</h3>
+<p><code>main</code> function of the application is rather short:</p>
+<pre><code>int main(int argc, char **argv) {
 
-<div class="figure" style="text-align: left"><span id="fig:receiver"></span>
-<img src="html_docs/fig399494.png" alt="Processing snapshot and Processing messages states pass received portions of data to Reconstruct Order Book (by calling method Reconstructor::process() shown on figure 2.10) thereby the streaming of data between Receive messages and Reconstruct Order Book on figure 2.4 is implemented."  />
+  oberon::Main app;
+  return app.main(argc, argv);
+}</code></pre>
+<p>Figure <a href="methods.html#fig:Main">2.4</a> shows the specification of <code>oberon::App::main</code> operation in the form of UML2 Activity Diagrams <span class="citation">(Cook et al. 2017)</span> of activity <code>Main</code>.</p>
+<div class="figure" style="text-align: left"><span style="display:block;" id="fig:Main"></span>
+<img src="html_docs/fig644614.png" alt="Activity `Main` - the specification of `oberon::App::main` operation."  />
 <p class="caption">
-Figure 2.5: <code>Processing snapshot</code> and <code>Processing messages</code> states pass received portions of data to <code>Reconstruct Order Book</code> (by calling method <code>Reconstructor::process()</code> shown on figure <a href="methods.html#fig:ad-reconstructor-process">2.10</a>) thereby the streaming of data between <code>Receive messages</code> and <code>Reconstruct Order Book</code> on figure <a href="methods.html#fig:capture-overview">2.4</a> is implemented.
+Figure 2.4: Activity <code>Main</code> - the specification of <code>oberon::App::main</code> operation.
 </p>
 </div>
-<p>Almost all exchanges provide two separate channels for receiving (i) a list of orders currently open on order book and (ii) order updates. In order to capture a dynamics of an order book one need to receive information from both channels and combine it. <code>Feeder</code> StateMachine shown on figure <a href="methods.html#fig:feeder">2.6</a> deals with receiving order updates while <code>Snapshot</code> StateMachine shown on figure <a href="methods.html#fig:snapshot">2.7</a> is responsible for getting a list of orders currently open on order book.</p>
-<p>Now look at figure <a href="methods.html#fig:receiver">2.5</a> again. An entry behaviour of <code>Engage.Engaging Feeder</code> state launches <code>Feeder</code> StateMachine asynchronously. The latter sends “success” event as soon as it successfully subscribed for order updates and <code>Receiver</code> transitions to <code>Engage.Feeder Engaged.Making Snapshot.Obtaining</code> state. The state’s entry behaviour asynchronously launches <code>Snapshot</code> StateMachine shown on figure <a href="methods.html#fig:snapshot">2.7</a>.</p>
+<p>CallOperationAction <code>Parse options</code> calls <code>Main::parseOption</code> operation that parse command-line options and returns an instance of a class derived from <code>Command</code> shown on figure <a href="methods.html#fig:Command">2.5</a> in light-green as determined by the value of “command” parameter passed.</p>
+<p>CallOperationAction <code>Create reconstructor and acquirer</code> then calls operation <code>Command::createAcquirer</code> using the received <code>Command</code>-derived instance as a target. The overriden <code>createAcquirer</code> operation returns an appropriate instance of class derived from <code>Acquirer</code> shown on figure <a href="methods.html#fig:Acquirer">2.6</a> in light-green.</p>
+<p>The <code>Acquirer</code>-derived instance is then used as a <code>target</code> by CallOperationAction <code>AcquireAndProcess</code> that calls <code>Acquirer::acquireAndProcess</code> operation.</p>
+<p>There are two kinds of <code>acquireAndProcess</code> operation. Their specifications are shown on figures <a href="methods.html#fig:receiver-acquireAndProcess">2.9</a> and <a href="methods.html#fig:reader-acquireAndProcess">2.10</a>. The former is used when <code>Create reconstructor and acquirer</code> returns an instance derived from <code>Receiver</code> class and the latter is used when the instance is derived from <code>Reader</code> class as shown on figure <a href="methods.html#fig:Acquirer">2.6</a>.</p>
+<p>Upon successful completion of <code>acquireAndProcess</code> operation, ValueSpecificationAction <code>Success</code> returns EXIT_SUCCESS constant.</p>
+<p>Otherwise, if some exception was raised, ValueSpecificationAction <code>Failure</code> returns EXIT_FAILURE constant.</p>
+<p><code>Main</code> activity is then completes.</p>
+</div>
+<div id="parse-options" class="section level3" number="2.2.2">
+<h3><span class="header-section-number">2.2.2</span> Parse options</h3>
+<p>Action node “Parse options” on figure <a href="methods.html#fig:Main">2.4</a> returns a <code>unique_ptr</code> to an instance of concrete class (shown on figure <a href="methods.html#fig:Command">2.5</a> in light green) derived from the abstract class <code>Command</code>. As it can bee seen the concrete class is derived either from <code>Capture</code> or from <code>Transform</code>.</p>
+<div class="figure" style="text-align: left"><span style="display:block;" id="fig:Command"></span>
+<img src="html_docs/fig691206.png" alt="Command class hierarchy"  />
+<p class="caption">
+Figure 2.5: Command class hierarchy
+</p>
+</div>
+</div>
+<div id="create-reconstructor-and-acquirer" class="section level3" number="2.2.3">
+<h3><span class="header-section-number">2.2.3</span> Create reconstructor and acquirer</h3>
+<div id="create-acquirer" class="section level4" number="2.2.3.1">
+<h4><span class="header-section-number">2.2.3.1</span> Create acquirer</h4>
+<p>Action node “Create reconstructor and acquirer” on figure <a href="methods.html#fig:Main">2.4</a> calls <code>createAcquirer()</code> method on the instance of <code>Command</code> class received on <code>target</code> input pin. The method calls the protected <code>createReconstructor()</code> method internally and returns a <code>shared_ptr</code> to an instance of concrete class derived from the abstract class <code>Acquirer</code> shown on figure <a href="methods.html#fig:Acquirer">2.6</a> in light green.</p>
+<div class="figure" style="text-align: left"><span style="display:block;" id="fig:Acquirer"></span>
+<img src="html_docs/fig704262.png" alt="Acquirer class hierarchy"  />
+<p class="caption">
+Figure 2.6: Acquirer class hierarchy
+</p>
+</div>
+<p>The specification of <code>Receiver::acquireAndProcess</code> operation is provided in section <a href="methods.html#receiver-acquire-and-process">2.2.4.1</a>. The specification of <code>Reader::acquireAndProcess</code> operation is provided in section <a href="methods.html#reader-acquire-and-process">2.2.4.2</a>.</p>
+</div>
+<div id="create-reconstructor" class="section level4" number="2.2.3.2">
+<h4><span class="header-section-number">2.2.3.2</span> Create reconstructor</h4>
+<p>This section provides specifications of <code>createReconstructor</code> operation of concrete classes shown on figure <a href="methods.html#fig:Command">2.5</a> in light-green.</p>
+<div id="coinbasecapture" class="section level5" number="2.2.3.2.1">
+<h5><span class="header-section-number">2.2.3.2.1</span> coinbase::Capture</h5>
+<div class="figure" style="text-align: left"><span style="display:block;" id="fig:create-reconstructor-coinbase"></span>
+<img src="html_docs/fig710918.png" alt="Specification of `coinbase::Capture::createReconstructor` operation"  />
+<p class="caption">
+Figure 2.7: Specification of <code>coinbase::Capture::createReconstructor</code> operation
+</p>
+</div>
+</div>
+<div id="bitstampcapture" class="section level5" number="2.2.3.2.2">
+<h5><span class="header-section-number">2.2.3.2.2</span> bitstamp::Capture</h5>
+<div class="figure" style="text-align: left"><span style="display:block;" id="fig:create-reconstructor-bitstamp"></span>
+<img src="html_docs/fig717574.png" alt="Specification of `bitstamp::Capture::createReconstructor` operation"  />
+<p class="caption">
+Figure 2.8: Specification of <code>bitstamp::Capture::createReconstructor</code> operation
+</p>
+</div>
+</div>
+<div id="slice" class="section level5" number="2.2.3.2.3">
+<h5><span class="header-section-number">2.2.3.2.3</span> Slice</h5>
+</div>
+<div id="merge" class="section level5" number="2.2.3.2.4">
+<h5><span class="header-section-number">2.2.3.2.4</span> Merge</h5>
+</div>
+<div id="transmute" class="section level5" number="2.2.3.2.5">
+<h5><span class="header-section-number">2.2.3.2.5</span> Transmute</h5>
+</div>
+</div>
+</div>
+<div id="acquire-and-process" class="section level3" number="2.2.4">
+<h3><span class="header-section-number">2.2.4</span> Acquire and process</h3>
+<p>This section provides specifications of <code>acqureAndProcess</code> operation of concrete classes shown on figure <a href="methods.html#fig:Acquirer">2.6</a> in light-green. Note that both <code>Receiver</code>-derived classes share <code>acquireAndProcess</code> operation defined in <code>Receiver</code> class.</p>
+<div id="receiver-acquire-and-process" class="section level4" number="2.2.4.1">
+<h4><span class="header-section-number">2.2.4.1</span> Receiver</h4>
+<p><code>Coinbase::Receiver</code> and <code>Bitstamp::Receiver</code> classes inherit <code>acquireAndProcess()</code> method from <code>Receiver</code> class. Its activity diagram is shown on figure <a href="methods.html#fig:receiver-acquireAndProcess">2.9</a>.</p>
+<div class="figure" style="text-align: left"><span style="display:block;" id="fig:receiver-acquireAndProcess"></span>
+<img src="html_docs/fig670854.png" alt="Specificationf of `Receiver::acquireAndProcess()` operation"  />
+<p class="caption">
+Figure 2.9: Specificationf of <code>Receiver::acquireAndProcess()</code> operation
+</p>
+</div>
+</div>
+<div id="reader-acquire-and-process" class="section level4" number="2.2.4.2">
+<h4><span class="header-section-number">2.2.4.2</span> Reader</h4>
+<p><code>Reader</code> class has another <code>acquireAndProcess()</code> method. Its activity model is shown on figure <a href="methods.html#fig:reader-acquireAndProcess">2.10</a>.</p>
+<div class="figure" style="text-align: left"><span style="display:block;" id="fig:reader-acquireAndProcess"></span>
+<img src="html_docs/fig605318.png" alt="Specificationf of `Reader::acquireAndProcess()` operation"  />
+<p class="caption">
+Figure 2.10: Specificationf of <code>Reader::acquireAndProcess()</code> operation
+</p>
+</div>
+</div>
+</div>
+<div id="receive-messages" class="section level3" number="2.2.5">
+<h3><span class="header-section-number">2.2.5</span> Receive messages</h3>
+<p>Action <code>Receive messages</code> on figure <a href="methods.html#fig:receiver-acquireAndProcess">2.9</a> is UML2 <code>StartObjectBehaviorAction</code> that starts execution of <code>Receiver</code> StateMachine shown on figure <a href="methods.html#fig:receiver">2.11</a>. The call is synchronous, so the execution of the <code>Receive messages</code> does not complete until the execution of <code>Receiver</code> StateMachine completes.</p>
+
+<div class="figure" style="text-align: left"><span style="display:block;" id="fig:receiver"></span>
+<img src="html_docs/fig399494.png" alt="Processing snapshot and Processing messages states pass received portions of data asynchronously to an instance of Reconstructor (by calling operation Reconstructor::process() shown on figure 2.14) thereby the streaming of data between Receive messages and Process message on figure 2.9 is implemented."  />
+<p class="caption">
+Figure 2.11: <code>Processing snapshot</code> and <code>Processing messages</code> states pass received portions of data asynchronously to an instance of <code>Reconstructor</code> (by calling operation <code>Reconstructor::process()</code> shown on figure <a href="methods.html#fig:process-message">2.14</a>) thereby the streaming of data between <code>Receive messages</code> and <code>Process message</code> on figure <a href="methods.html#fig:receiver-acquireAndProcess">2.9</a> is implemented.
+</p>
+</div>
+<p>Almost all exchanges provide two separate channels for receiving (i) a list of orders currently open on order book and (ii) order updates. In order to capture a dynamics of an order book one need to receive information from both channels and combine it. <code>Feeder</code> StateMachine shown on figure <a href="methods.html#fig:feeder">2.12</a> deals with receiving order updates while <code>Snapshot</code> StateMachine shown on figure <a href="methods.html#fig:snapshot">2.13</a> is responsible for getting a list of orders currently open on order book.</p>
+<p>Now look at figure <a href="methods.html#fig:receiver">2.11</a> again. An entry behaviour of <code>Engage.Engaging Feeder</code> state launches <code>Feeder</code> StateMachine asynchronously. The latter sends “success” event as soon as it successfully subscribed for order updates and <code>Receiver</code> transitions to <code>Engage.Feeder Engaged.Making Snapshot.Obtaining</code> state. The state’s entry behaviour asynchronously launches <code>Snapshot</code> StateMachine shown on figure <a href="methods.html#fig:snapshot">2.13</a>.</p>
 <p>While <code>Receiver</code> remains in <code>Engaged.Feeder Engaged.Making Snapshot</code> state messages sent by <code>Feeder</code> are queued by internal transition activity on <code>Receiver.Feeder Engaged</code> state. As soon as <code>Snapshot</code> has received the snapshot, it sends <code>Receiver</code> “success” event and <code>Receiver</code> checks whether the snapshot and messages from <code>Feeder</code> cover the intersecting time periods or the snapshot is stale. In the latter case the snapshot is re-queried. Otherwise <code>Receiver</code> transitions to <code>Processing snapshot</code> state which asynchronously passes the snapshot to <code>Reconstruct Order Book</code> activity and upon receiveing “success” event transitions to <code>Processing messages</code> which asynchronously passes messages received from an exchange to <code>Reconstruct Order Book</code>. It is assumed that <code>Receiver</code> spends most of the time in this state.</p>
 
-<div class="figure" style="text-align: left"><span id="fig:feeder"></span>
+<div class="figure" style="text-align: left"><span style="display:block;" id="fig:feeder"></span>
 <img src="html_docs/fig406150.png" alt="Transition success between Subscribe and Receive states sends “success” event to Receiver StateMachine. An entry behaviour of Receive state launches asynchronous read operation, whose successfull completion triggers success transition from Receive. If some service message (i.e. heartbeat, subscription) has arrived, it is processed locally. Otherwise “message” event is sent to Receiver."  />
 <p class="caption">
-Figure 2.6: Transition <code>success</code> between <code>Subscribe</code> and <code>Receive</code> states sends “success” event to <code>Receiver</code> StateMachine. An entry behaviour of <code>Receive</code> state launches asynchronous read operation, whose successfull completion triggers <code>success</code> transition from <code>Receive</code>. If some service message (i.e. heartbeat, subscription) has arrived, it is processed locally. Otherwise “message” event is sent to <code>Receiver</code>.
+Figure 2.12: Transition <code>success</code> between <code>Subscribe</code> and <code>Receive</code> states sends “success” event to <code>Receiver</code> StateMachine. An entry behaviour of <code>Receive</code> state launches asynchronous read operation, whose successfull completion triggers <code>success</code> transition from <code>Receive</code>. If some service message (i.e. heartbeat, subscription) has arrived, it is processed locally. Otherwise “message” event is sent to <code>Receiver</code>.
 </p>
 </div>
 
-<div class="figure" style="text-align: left"><span id="fig:snapshot"></span>
+<div class="figure" style="text-align: left"><span style="display:block;" id="fig:snapshot"></span>
 <img src="html_docs/fig406534.png" alt="Snapshot StateMachine diagram."  />
 <p class="caption">
-Figure 2.7: Snapshot StateMachine diagram.
+Figure 2.13: Snapshot StateMachine diagram.
 </p>
 </div>
 </div>
-<div id="reconstruct-order-book" class="section level4">
-<h4><span class="header-section-number">2.2.1.2</span> Reconstruct Order Book</h4>
-<p>Figure <a href="methods.html#fig:reconstruct-order-book">2.8</a> shows UML2 Activity Diagram of <code>C.02 Run Reconstructor</code> activity which is called by the activity node with the same name on figure <a href="methods.html#fig:capture-overview">2.4</a>.</p>
-<div class="figure" style="text-align: left"><span id="fig:reconstruct-order-book"></span>
-<img src="html_docs/fig274822.png" alt="`C.02 Run Reconstructor` activity is implemented as an indefinite loop that invokes `process` method on `target` instance of class `Reconstructor` every time a new instance of class `boost::property_tree::ptree` is placed on its streaming input pin `tree`. The loop terminates if `process` throws `processing_error` exception."  />
+<div id="process-message" class="section level3" number="2.2.6">
+<h3><span class="header-section-number">2.2.6</span> Process message</h3>
+<p>Activity <code>Process message</code> shown on figure <a href="methods.html#fig:process-message">2.14</a> is a specification of <code>Reconstructor::process</code> operation.</p>
+<div class="figure" style="text-align: left"><span style="display:block;" id="fig:process-message"></span>
+<img src="html_docs/fig704390.png" alt="Specification of Reconstructor::process() operation that is called by Process message node"  />
 <p class="caption">
-Figure 2.8: <code>C.02 Run Reconstructor</code> activity is implemented as an indefinite loop that invokes <code>process</code> method on <code>target</code> instance of class <code>Reconstructor</code> every time a new instance of class <code>boost::property_tree::ptree</code> is placed on its streaming input pin <code>tree</code>. The loop terminates if <code>process</code> throws <code>processing_error</code> exception.
+Figure 2.14: Specification of Reconstructor::process() operation that is called by Process message node
 </p>
 </div>
-<p>The activity node <code>process</code> on figure <a href="methods.html#fig:reconstruct-order-book">2.8</a> is CallAction. It calls method <code>process()</code> on <code>target</code> instance of class <code>Reconstructor</code> that is shown on figure <a href="methods.html#fig:reconstructor-hierarchy-process">2.9</a>.</p>
-<div class="figure" style="text-align: center"><span id="fig:reconstructor-hierarchy-process"></span>
-<img src="html_docs/fig551942.png" alt="&quot;Reconstructor&quot; hierarchy of classes used in implementation of `D.01 Process message` activity."  />
+<p>It takes an instance of <a href="https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html">Boost.PropertyTree</a> container with an exchange-specific data as <code>message</code> parameter and passes it to <code>Extract message</code> action. The action creates then an instance of one of the exchange-independent class, derived from <code>Message</code>. Possible classes are shown in green on figure <a href="methods.html#fig:message-hierarchy-process">2.15</a>. The instance is returned in <code>Messages</code> container. The cointainer is a list of unique pointers <code>Message_UP</code> to <code>Message</code>-derived objects.</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:message-hierarchy-process"></span>
+<img src="html_docs/fig552070.png" alt="`Extract` returns an instance of class `Messages`"  />
 <p class="caption">
-Figure 2.9: “Reconstructor” hierarchy of classes used in implementation of <code>D.01 Process message</code> activity.
+Figure 2.15: <code>Extract</code> returns an instance of class <code>Messages</code>
 </p>
 </div>
-<p>UML2 Activity Diagram on figure <a href="methods.html#fig:ad-reconstructor-process">2.10</a> shows <code>D.01 Process message</code> activity that implements <code>process</code> method.</p>
-<div class="figure" style="text-align: left"><span id="fig:ad-reconstructor-process"></span>
-<img src="html_docs/fig572166.png" alt="`Reconstructor::process()` first calls `extract()` method to create an instance of a class derived from `Message`. The `extract()` is a virtual abstract method so it is overriden in an exchange-specific implementation class, derived from `Reconstructor`. The returned instance is passed to a chain of `TokenHandler`s. There can be any number of `TokenHandler`s in the chain."  />
-<p class="caption">
-Figure 2.10: <code>Reconstructor::process()</code> first calls <code>extract()</code> method to create an instance of a class derived from <code>Message</code>. The <code>extract()</code> is a virtual abstract method so it is overriden in an exchange-specific implementation class, derived from <code>Reconstructor</code>. The returned instance is passed to a chain of <code>TokenHandler</code>s. There can be any number of <code>TokenHandler</code>s in the chain.
-</p>
-</div>
-<p>The virtual method <code>Reconstructor::extract()</code> takes a <a href="https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html">Boost.PropertyTree</a> container with an exchange-specific data and creates an instance of one of internal exchange-independent message class shown in green on figure <a href="methods.html#fig:message-hierarchy-process">2.11</a>. The message is returned in <code>Token</code> container and multiple messages are returned in <code>Tokens</code> container.</p>
-<div class="figure" style="text-align: center"><span id="fig:message-hierarchy-process"></span>
-<img src="html_docs/fig552070.png" alt="`Message`-based hierarchy of classes used in implementation of `Process message` activity. A message of class `Era` carries information about exchange and product being processed."  />
-<p class="caption">
-Figure 2.11: <code>Message</code>-based hierarchy of classes used in implementation of <code>Process message</code> activity. A message of class <code>Era</code> carries information about exchange and product being processed.
-</p>
-</div>
-<p><code>Token</code> that carries an instance of a class derived from <code>Message</code> is then taken by the <code>TokenHandle::handle()</code> that is the first step of so called <em>data cleansing</em>. According to <span class="citation">(Rahm and Do 2000)</span>:</p>
+<p>The further processing of messages by <code>MessageHandler</code>s is implemented using <a href="https://en.wikipedia.org/wiki/Chain-of-responsibility_pattern">Chain of Responsibility</a> pattern. <code>Messages</code> container is passed to ExpansionRegion of type “iterative” as <code>input</code> parameter as shown on figure <a href="methods.html#fig:process-message">2.14</a>. The region calls <code>MessageHandler::handle</code> operation on the instance of <code>MessageHandler</code> currently available within the region for each <code>Message_UP</code> in <code>input</code>. The outputs are combined and passed to the next <code>MessageHandler</code> returned by <code>next</code> transformation, if any (this instance becomes available for the next iteration). The cycle repeats until either <code>input</code> or next <code>MessageHandler</code> is empty.</p>
+<p>When created, an instance of <code>MessageHandler</code> takes, as a constructor parameter, a shared pointer to the next <code>MessageHandler</code> which will receive messages as soon as <code>MessageHandler</code> being constructed has handled them. Thus the chain is static, i.e. it does not change depending on messages received.</p>
+<p>The kind of processing performed by the chain of <code>MessageHandler</code>s depends on command being performed.</p>
+<p>For command “capture” the chain performes so called <em>data cleansing</em>. According to <span class="citation">(Rahm and Do 2000)</span>:</p>
 <blockquote>
 <p><em>Data cleaning</em>, also called <em>data cleansing</em> or <em>scrubbing</em>, deals with detecting and removing errors and inconsistencies from data in order to improve the quality of data.</p>
 </blockquote>
-<p>Data cleansing is implemented using <a href="https://en.wikipedia.org/wiki/Chain-of-responsibility_pattern">Chain of Responsibility</a> pattern. Each <code>TokenHandler</code> accepts, as a constructor parameter, the next <code>TokenHandler</code> which will receive messages as soon as <code>TokenHandler</code> being constructed has handled them.</p>
-<p>UML2 Sequence Diagram of <code>TokenHandler::handle()</code> is shown on figure <a href="methods.html#fig:sd-tokenhandler-handle">2.12</a>. The number of <code>TokenHandler</code>s involved and their kinds depend on an exchange and described in details in their respective sections later.</p>
-<div class="figure" style="text-align: left"><span id="fig:sd-tokenhandler-handle"></span>
-<img src="html_docs/fig551814.png" alt="UML2 Sequence diagram showing a &quot;happy path&quot; trace of TokenHandler::handle() method."  />
-<p class="caption">
-Figure 2.12: UML2 Sequence diagram showing a “happy path” trace of TokenHandler::handle() method.
-</p>
-</div>
-<p>Handling of messages by <code>TokenHandler</code> is denoted by interaction use <code>Message - accept</code> on figure <a href="methods.html#fig:sd-tokenhandler-handle">2.12</a>. The result of handling is a set of zero or more messages that are stored in <code>output_</code> member variable that is an instance of <code>Tokens</code> class shown on figure <a href="methods.html#fig:message-hierarchy-process">2.11</a>.</p>
-<p><code>TokenHandler</code> will not produce output for a message when subsequent messages are required for handling(cleansing). In this case the message will be kept within this particular <code>TokenHandler</code> instance between runs of <code>Reconstructor::process()</code> until enough subsequent messages are received. Then all kept and cleansed messages are returned together, saved into <code>output_</code> variable and passed one by one in FIFO order to the <code>this.next_</code> <code>TokenHandler</code>. After that <code>output_</code> variables is cleared, so if there is no next <code>TokenHandler</code> the messages are deleted after being accepted.</p>
-<p>Handling of messages by <code>TokenHandler</code> is implemented using <a href="https://en.wikipedia.org/wiki/Visitor_pattern">Visitor</a> pattern as shown by UML2 Sequence diagram on figure <a href="methods.html#fig:sd-message-accept">2.13</a>.</p>
-<div class="figure" style="text-align: left"><span id="fig:sd-message-accept"></span>
-<img src="html_docs/fig545286.png" alt="UML2 Sequence diagram showing various alternatives of traces for Message::accept() method. By default all `TokenHandler`s callback (i.e. `era`, `message` etc) just pass the message to `output_` and it is expected that derived classes override the callbacks in order to do something useful. The message can be saved by `TokenHandler` instance in order to be processed later together with messages that follows."  />
-<p class="caption">
-Figure 2.13: UML2 Sequence diagram showing various alternatives of traces for <a href="Message::accept" class="uri">Message::accept</a>() method. By default all <code>TokenHandler</code>s callback (i.e. <code>era</code>, <code>message</code> etc) just pass the message to <code>output_</code> and it is expected that derived classes override the callbacks in order to do something useful. The message can be saved by <code>TokenHandler</code> instance in order to be processed later together with messages that follows.
-</p>
-</div>
 <p>It should be clear from the definition of order table <a href="methods.html#def:order-table">2.7</a> that not every set of order events as defined by <a href="methods.html#def:order-event">2.6</a> represents a valid order table. Similarly, not every set of orders represents valid LOB as defined by <a href="methods.html#def:lob">2.15</a>.</p>
 <p>Data cleansing process receives a stream of order events (possible extended and/or incomplete i.e. order events as defined by <a href="methods.html#def:order-event">2.6</a> but with some additional and/or missing attributes), restores order functions from them and then restores LOB from order functions.</p>
-<p>Data cleansing is performed by a sequence of <code>TokenHandler</code>s as shown on figure <a href="methods.html#fig:sd-tokenhandler-handle">2.12</a>. Table <a href="methods.html#tab:tokenhandler-chains">2.4</a> below lists <code>TokenHandler</code>s used for different exchange event streams.</p>
-<table class="huxtable" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  " id="tab:tokenhandler-chains">
-<caption style="caption-side: top; text-align: left;"><span id="tab:tokenhandler-chains">Table 2.4: </span> Y means that TokenHandler (left) is used by the exchange chain (top), N - is not used and C means that a customized version is used.</caption><col><col><col><col><tr>
-<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;"><span style="color: rgb(255, 255, 255);">TokenHandler</span></th><th style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Coinbase</th><th style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Bitstamp</th><th style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Bitfinex</th></tr>
-<tr>
-<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Synchronizer</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">C</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">C</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">N</td></tr>
-<tr>
-<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">TimeOrderEnforcer</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">N</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">C</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">C</td></tr>
-<tr>
-<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Deduplicator</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">N</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">C</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">C</td></tr>
-<tr>
-<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">SizeDeducer</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Y</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Y</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Y</td></tr>
-<tr>
-<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">EventCounter</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Y</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Y</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Y</td></tr>
-<tr>
-<td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">File</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Y</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Y</td><td style="vertical-align: top; text-align: center; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Y</td></tr>
-</table>
-
+<p>The exact list of <code>MessageHandler</code>s needed for that depends on exchange. The lists are described in section <a href="methods.html#create-reconstructor">2.2.3.2</a>.</p>
 </div>
-<div id="save-output" class="section level4">
-<h4><span class="header-section-number">2.2.1.3</span> Save output</h4>
-<p>The last TokenHandler in every chain is <code>File</code> that outputs the cleansed events. Upon receving a message of class <code>Era</code> (see figure <a href="methods.html#fig:message-hierarchy-process">2.11</a>) <code>File</code> opens a new file called <em>Era file</em> and saves the subsequent <code>OrderEvent</code> messages there until obtaining <code>Reset</code> message when the handler closes Era file. <code>File</code> drops <code>Elapsed</code> messages silently.</p>
-<p>Era file is <a href="https://en.wikipedia.org/wiki/Comma-separated_values">CSV-file</a> with one row per <code>OrderEvent</code> and name constructed from exchange, product and timestamp values carried by <code>Era</code> message. Row fields are described in the table <a href="methods.html#tab:order-record">2.5</a> below.</p>
+<div id="handle-message" class="section level3" number="2.2.7">
+<h3><span class="header-section-number">2.2.7</span> Handle message</h3>
+<p>UML2 Sequence Diagram of <code>MessageHandler::handle()</code> is shown on figure <a href="methods.html#fig:sd-Messagehandler-handle">2.16</a>.</p>
+<div class="figure" style="text-align: left"><span style="display:block;" id="fig:sd-Messagehandler-handle"></span>
+<img src="html_docs/fig551814.png" alt="UML2 Sequence diagram showing a &quot;happy path&quot; trace of `MessageHandler::handle()` method."  />
+<p class="caption">
+Figure 2.16: UML2 Sequence diagram showing a “happy path” trace of <code>MessageHandler::handle()</code> method.
+</p>
+</div>
+<p>Handling of messages by <code>MessageHandler</code> is implemented using <a href="https://en.wikipedia.org/wiki/Visitor_pattern">Visitor</a> pattern as shown by UML2 Sequence diagram on figure <a href="methods.html#fig:sd-message-accept">2.17</a>.</p>
+<div class="figure" style="text-align: left"><span style="display:block;" id="fig:sd-message-accept"></span>
+<img src="html_docs/fig545286.png" alt="UML2 Sequence diagram showing various alternatives of traces for Message::accept() method. By default all `MessageHandler`s callback (i.e. `era`, `message` etc) just pass the message to `output_` and it is expected that derived classes override the callbacks in order to do something useful. The message can be saved by `MessageHandler` instance in order to be processed later together with messages that follows."  />
+<p class="caption">
+Figure 2.17: UML2 Sequence diagram showing various alternatives of traces for <a href="Message::accept" class="uri">Message::accept</a>() method. By default all <code>MessageHandler</code>s callback (i.e. <code>era</code>, <code>message</code> etc) just pass the message to <code>output_</code> and it is expected that derived classes override the callbacks in order to do something useful. The message can be saved by <code>MessageHandler</code> instance in order to be processed later together with messages that follows.
+</p>
+</div>
+<p>The result of <code>handle</code> is a set of zero or more messages that are stored in <code>output_</code> member variable that is an instance of <code>Messages</code> class shown on figure <a href="methods.html#fig:message-hierarchy-process">2.15</a>. <code>MessageHandler</code> will not produce output for a message when subsequent messages are required for handling. In this case the message will be kept within this particular <code>MessageHandler</code> instance between runs of <code>Reconstructor::process()</code> until enough subsequent messages have been received. Then all kept and handled messages are returned together, saved into <code>output_</code> variable.</p>
+</div>
+<div id="output-format" class="section level3" number="2.2.8">
+<h3><span class="header-section-number">2.2.8</span> Output format</h3>
+<div id="file" class="section level4" number="2.2.8.1">
+<h4><span class="header-section-number">2.2.8.1</span> File</h4>
+<p>MessageHandler <code>File</code> saves the received events into files. Upon receiving of a message of class <code>Era</code> (see figure <a href="methods.html#fig:message-hierarchy-process">2.15</a>) <code>File</code> opens a new file called <em>Era file</em> and saves the subsequent <code>OrderEvent</code> messages there until obtaining <code>Reset</code> message when the handler closes Era file. <code>File</code> drops <code>Elapsed</code> messages silently.</p>
+<p>Era file is <a href="https://en.wikipedia.org/wiki/Comma-separated_values">CSV-file</a> with one row per <code>OrderEvent</code> and its name is constructed from <code>exchange</code>, <code>product</code> and <code>timestamp</code> values carried by <code>Era</code> message. Row fields are described in the table <a href="methods.html#tab:order-record">2.4</a> below.</p>
 <table class="huxtable" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  " id="tab:order-record">
 <caption style="caption-side: top; text-align: left;">
-<span id="tab:order-record">Table 2.5: </span> Era file fields and their corresponding elements of order event with order id tuple as defined by <a href="methods.html#def:order-set-table">2.9</a>. If the value of a field can not be determined, it is reported as NA. UUIDs may be shorter than 32 hexadecimal digits; in this case it is assumed to be padded by zeros from the left.
+<span id="tab:order-record">Table 2.4: </span> Era file fields and their corresponding elements of order event with order id tuple as defined by <a href="methods.html#def:order-set-table">2.9</a>. If the value of a field can not be determined, it is reported as NA. UUIDs may be shorter than 32 hexadecimal digits; in this case it is assumed to be padded by zeros from the left.
 </caption>
 <col>
 <col>
@@ -702,7 +793,7 @@ timestamp_change
 long long
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-Microseconds passed since the previous event, i.e. <span class="math inline">\(t_k^i - t_{k-1}^i\)</span> if <span class="math inline">\(k\)</span> is greater than 1 and <span class="math inline">\(t_k^i \neq t_{k-1}^i\)</span>; otherwise empty
+Microseconds passed since the previous event, i.e. <span class="math inline">\(t_k^i - t_{k-1}^i\)</span> if <span class="math inline">\(k\)</span> is greater than 1 and <span class="math inline">\(t_k^i \neq t_{k-1}^i\)</span>; otherwise empty
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
 </td>
@@ -752,7 +843,7 @@ price_change
 double
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-Price change since the previous event, i.e. <span class="math inline">\(p_k^i - p_{k-1}^i\)</span> if <span class="math inline">\(k\)</span> is greater than 1 and <span class="math inline">\(p_k^i \neq p_{k-1}^i\)</span>; otherwise empty
+Price change since the previous event, i.e. <span class="math inline">\(p_k^i - p_{k-1}^i\)</span> if <span class="math inline">\(k\)</span> is greater than 1 and <span class="math inline">\(p_k^i \neq p_{k-1}^i\)</span>; otherwise empty
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
 </td>
@@ -785,7 +876,7 @@ volume_change
 double
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
-Change of the order’s volume since the previous event, i.e. <span class="math inline">\(v_k^i - v_{k-1}^i\)</span> if <span class="math inline">\(k\)</span> is greater than 1 and <span class="math inline">\(v_k^i \neq v_{k-1}^i\)</span>; otherwise empty
+Change of the order’s volume since the previous event, i.e. <span class="math inline">\(v_k^i - v_{k-1}^i\)</span> if <span class="math inline">\(k\)</span> is greater than 1 and <span class="math inline">\(v_k^i \neq v_{k-1}^i\)</span>; otherwise empty
 </td>
 <td style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">
 </td>
@@ -858,42 +949,6 @@ bool
 </table>
 </div>
 </div>
-<div id="slice-merge-and-transmute-era-files" class="section level3">
-<h3><span class="header-section-number">2.2.2</span> Slice, merge and transmute era files</h3>
-<div id="era-file-reader" class="section level4">
-<h4><span class="header-section-number">2.2.2.1</span> Era file reader</h4>
-<p>Era files are read by an instance of <code>Acquirer::File::Receiver</code>. The behaviour <code>C.03 Read and process</code> shown on figure <a href="methods.html#fig:read-and-process">2.14</a> implements <code>Acquirer::File::Receiver::readAndProcess()</code> method.</p>
-<div class="figure" style="text-align: left"><span id="fig:read-and-process"></span>
-<img src="html_docs/fig605318.png" alt="The behaviour shown implements `Acquirer::File::Receiver::readAndProcess()` method"  />
-<p class="caption">
-Figure 2.14: The behaviour shown implements <code>Acquirer::File::Receiver::readAndProcess()</code> method
-</p>
-</div>
-</div>
-<div id="slice" class="section level4">
-<h4><span class="header-section-number">2.2.2.2</span> Slice</h4>
-<p>TBD</p>
-</div>
-<div id="merge" class="section level4">
-<h4><span class="header-section-number">2.2.2.3</span> Merge</h4>
-<p>TBD</p>
-</div>
-<div id="transmute" class="section level4">
-<h4><span class="header-section-number">2.2.2.4</span> Transmute</h4>
-<div class="figure" style="text-align: left"><span id="fig:transmute-overview"></span>
-<img src="html_docs/fig592134.png" alt="`C.04 Create Transmuter` behaviour creates `File::Reconstructor` instance  called Transmuter with the chain of `TokenHandler`s shown of figure \@ref(fig:create-transmuter). Transmuter is then passed as an argument of `C.05 Create Receiver` behaviour together with the other parameters. The behaviour returns an instance of File::Receiver whose method `readAndProcess()`, implemented as shown on figure \@ref(fig:read-and-process), reads input file(s) and transfers the read messages to Transmuter for processing as shown on figure \@ref(fig:ad-reconstructor-process)"  />
-<p class="caption">
-Figure 2.15: <code>C.04 Create Transmuter</code> behaviour creates <code>File::Reconstructor</code> instance called Transmuter with the chain of <code>TokenHandler</code>s shown of figure <a href="methods.html#fig:create-transmuter">2.16</a>. Transmuter is then passed as an argument of <code>C.05 Create Receiver</code> behaviour together with the other parameters. The behaviour returns an instance of <a href="File::Receiver" class="uri">File::Receiver</a> whose method <code>readAndProcess()</code>, implemented as shown on figure <a href="methods.html#fig:read-and-process">2.14</a>, reads input file(s) and transfers the read messages to Transmuter for processing as shown on figure <a href="methods.html#fig:ad-reconstructor-process">2.10</a>
-</p>
-</div>
-<div class="figure" style="text-align: left"><span id="fig:create-transmuter"></span>
-<img src="html_docs/fig598790.png" alt="Handlers are created in the reverse of the intended execution order, i.e. Price Change Eliminator is invoked by `Reconstructor::process()` as shown of figure \@ref(fig:ad-reconstructor-process) to handle a message first and File handler - last."  />
-<p class="caption">
-Figure 2.16: Handlers are created in the reverse of the intended execution order, i.e. Price Change Eliminator is invoked by <code>Reconstructor::process()</code> as shown of figure <a href="methods.html#fig:ad-reconstructor-process">2.10</a> to handle a message first and File handler - last.
-</p>
-</div>
-</div>
-</div>
 </div>
 </div>
             </section>
@@ -925,6 +980,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
@@ -945,10 +1001,10 @@ gitbook.start({
 "text": null
 },
 "download": null,
+"search": false,
 "toc": {
 "collapse": "subsection"
-},
-"search": false
+}
 });
 });
 </script>

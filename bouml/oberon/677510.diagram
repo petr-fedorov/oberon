@@ -1,0 +1,118 @@
+format 224
+
+classcanvas 128006 class_ref 1196934 // Command
+  classdiagramsettings member_max_width 0 end
+  xyz 660 40 2000
+end
+classcanvas 128134 class_ref 1197062 // CaptureFromCoinbase
+  classdiagramsettings member_max_width 0 end
+  xyz 232 780 2000
+end
+classcanvas 128390 class_ref 1197318 // CaptureFromBitstamp
+  classdiagramsettings member_max_width 0 end
+  xyz 40 780 2000
+end
+classcanvas 128902 class_ref 1197190 // Transmute
+  classdiagramsettings member_max_width 0 end
+  xyz 839 747 2000
+end
+classcanvas 129158 class_ref 1197574 // Transform
+  classdiagramsettings member_max_width 0 end
+  xyz 675 555 2000
+end
+classcanvas 129670 class_ref 1197702 // Slice
+  classdiagramsettings member_max_width 0 end
+  xyz 482 747 2000
+end
+classcanvas 129798 class_ref 1197830 // Merge
+  classdiagramsettings member_max_width 0 end
+  xyz 660 747 2000
+end
+classcanvas 130182 class_ref 1204358 // Capture
+  classdiagramsettings member_max_width 0 end
+  xyz 251 330 2000
+end
+classcanvas 132102 class_ref 1210886 // FileNames
+  classdiagramsettings member_max_width 0 end
+  xyz 348 578 2006
+end
+classcanvas 132358 class_ref 889734 // vector
+  classdiagramsettings member_max_width 0 end
+  xyz 393 681 2005
+end
+classcanvas 133382 class_ref 1217542 // Command_UP
+  classdiagramsettings member_max_width 0 end
+  xyzwh 838 113 2006 133 65
+end
+classcanvas 133638 class_ref 889478 // unique_ptr
+  classdiagramsettings member_max_width 0 end
+  xyz 867 215 2005
+end
+relationcanvas 129286 relation_ref 1411462 // <generalisation>
+  from ref 129158 z 2001 to ref 128006
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 129414 relation_ref 1411590 // <generalisation>
+  geometry VHV unfixed
+  decenter_begin 517
+  from ref 128902 z 2001 to point 909 706
+  line 133126 z 2001 to point 728 706
+  line 133254 z 2001 to ref 129158
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 129926 relation_ref 1411718 // <generalisation>
+  geometry VHV unfixed
+  decenter_begin 475
+  from ref 129670 z 2001 to point 546 706
+  line 131590 z 2001 to point 728 706
+  line 131718 z 2001 to ref 129158
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130054 relation_ref 1411846 // <generalisation>
+  from ref 129798 z 2001 to ref 129158
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130310 relation_ref 1418374 // <generalisation>
+  geometry VHV unfixed
+  from ref 130182 z 2001 to point 307 289
+  line 132614 z 2001 to point 728 289
+  line 132742 z 2001 to ref 128006
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130566 relation_ref 1418630 // <generalisation>
+  geometry VHV unfixed
+  decenter_begin 516
+  from ref 128390 z 2001 to point 115 740
+  line 133894 z 2001 to point 307 740
+  line 134022 z 2001 to ref 130182
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130694 relation_ref 1418758 // <generalisation>
+  from ref 128134 z 2001 to ref 130182
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+line 132230 ---+
+  from ref 132102 z 2007 to ref 129158
+relationcanvas 132486 relation_ref 1425286 // <realization>
+  decenter_begin 518
+  from ref 132102 z 2007 label "<T->string>" max_width 255 xyz 385 642 2007 to ref 132358
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+line 133510 ---+
+  from ref 133382 z 2007 to ref 128006
+relationcanvas 133766 relation_ref 1434246 // <realization>
+  decenter_begin 518
+  decenter_end 533
+  from ref 133382 z 2007 label "<T->Command>" max_width 255 xyz 862 177 2007 stereotype "<<bind>>" xyz 880 195 3000 to ref 133638
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+end

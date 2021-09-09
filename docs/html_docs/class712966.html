@@ -18,7 +18,7 @@
 <a name="ref4_712966"></a>
 <p> implement the state machine Receiver<br /></p>
 <p>Declaration :</p><ul>
-<li>C++ : class Receiver : public <a href="class697734.html#ref4_697734"><b>enable_shared_from_this</b></a>&lt;<a href="class712966.html#ref4_712966"><b>Receiver</b></a>&gt; </li></ul><p>Directly inherited by : <a href="class937734.html#ref4_937734"><b>Receiver</b></a> <a href="class937606.html#ref4_937606"><b>Receiver</b></a> </p>
+<li>C++ : class Receiver : public <a href="class697734.html#ref4_697734"><b>enable_shared_from_this</b></a>&lt;<a href="class712966.html#ref4_712966"><b>Receiver</b></a>&gt;, public <a href="class1190406.html#ref4_1190406"><b>Acquirer</b></a> </li></ul><p>Directly inherited by : <a href="class937734.html#ref4_937734"><b>Receiver</b></a> <a href="class937606.html#ref4_937606"><b>Receiver</b></a> </p>
 <p>Artifact : <a href="index.html#ref8_246406"><b>Receiver</b></a></p>
 <p>Properties:</p><ul>
 <li>STM generated:<br /><div class="sub"></div></li>
@@ -27,13 +27,15 @@
 <table><tr><td><div class="element">Class <b><a href="class827526.html#ref4_827526"><b>AnyState</b></a></b></div></td></tr></table>
 <table><tr><td><div class="element">Class <b><a href="class827654.html#ref4_827654"><b>Receiver_State</b></a></b></div></td></tr></table>
 <table><tr><td><div class="element">Class <b><a href="class1000070.html#ref4_1000070"><b>ptree_SP</b></a></b></div></td></tr></table>
-<a name="ref1_769670"></a>
-<table><tr><td><div class="element">Attribute <b>product_</b></div></td></tr></table>
-<p>Declaration :</p><ul><li>Uml : - product_ : string</li><li>C++ : private: std::string product_</li></ul><a name="ref2_915590"></a>
+<a name="ref2_1815686"></a>
+<table><tr><td><div class="element">Operation <b>classifierBehavior</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : + classifierBehavior() : </li></ul><a name="ref2_915590"></a>
 <table><tr><td><div class="element">Operation <b>Receiver</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : + Receiver() : </li><li>C++ : public: Receiver()</li></ul><p>Properties:</p><ul>
 <li>STM generated:<br /><div class="sub"></div></li>
 </ul>
-<a name="ref1_938374"></a>
+<a name="ref1_769670"></a>
+<table><tr><td><div class="element">Attribute <b>product_</b></div></td></tr></table>
+<p>Declaration :</p><ul><li>Uml : - product_ : string</li><li>C++ : private: std::string product_</li></ul><a name="ref2_1766790"></a>
+<table><tr><td><div class="element">Operation <b>acquireAndProcess</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : + acquireAndProcess() : void,  exceptions : <a href="class1108614.html#ref4_1108614"><b>exception</b></a></li><li>C++ : public: virtual void acquireAndProcess()</li></ul><a name="ref1_938374"></a>
 <table><tr><td><div class="element">Attribute <b>exit_code_</b></div></td></tr></table>
 <p>Declaration :</p><ul><li>Uml : + exit_code_ : int = EXIT_SUCCESS</li><li>C++ : public: int32_t exit_code_</li></ul><a name="ref2_917382"></a>
 <table><tr><td><div class="element">Operation <b>Receiver</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : + Receiver(in ioc : <a href="class999686.html#ref4_999686"><b>io_context_SP</b></a>, in feeder : <a href="class999814.html#ref4_999814"><b>Feeder_SP</b></a>, in snapshot : <a href="class999942.html#ref4_999942"><b>Snapshot_SP</b></a>, inout processor : <a href="class909958.html#ref4_909958"><b>ConsumerFn</b></a>, in exchange : string, in product : string, in quote_increment : string, in base_increment : string) : </li><li>C++ : public: Receiver(const <a href="class999686.html#ref4_999686"><b>io_context_SP</b></a> &amp; ioc, const <a href="class999814.html#ref4_999814"><b>Feeder_SP</b></a> &amp; feeder, const <a href="class999942.html#ref4_999942"><b>Snapshot_SP</b></a> &amp; snapshot, <a href="class909958.html#ref4_909958"><b>ConsumerFn</b></a> processor, const std::string &amp; exchange, const std::string &amp; product, const std::string &amp; quote_increment, const std::string &amp; base_increment)</li></ul><a name="ref2_915718"></a>
@@ -95,6 +97,6 @@
 <table><tr><td><div class="element">Relation <b>d_ (&lt;directional composition&gt;)</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : # d_ : <a href="class868230.html#ref4_868230"><b>ReceiverData</b></a></li><li>C++ : protected: std::unique_ptr&lt;<a href="class868230.html#ref4_868230"><b>ReceiverData</b></a>&gt; d_</li></ul><a name="ref2_1343622"></a>
 <table><tr><td><div class="element">Operation <b>isStale</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : abstract, + isStale() : bool</li><li>C++ : public: virtual bool isStale()= 0 </li></ul><a name="ref2_1343878"></a>
 <table><tr><td><div class="element">Operation <b>saveSnapshot</b></div></td></tr></table><p>Declaration :</p><ul><li>Uml : abstract, + saveSnapshot() : void</li><li>C++ : public: virtual void saveSnapshot()= 0 </li></ul></div>
-<p>All public operations : <a href="class712966.html#ref2_1241478"><b>_post</b></a> , <a href="class712966.html#ref2_1138438"><b>create</b></a> , <a href="class712966.html#ref2_1115014"><b>defer</b></a> , <a href="class712966.html#ref2_916486"><b>doActivity</b></a> , <a href="class712966.html#ref2_1138694"><b>failure</b></a> , <a href="class712966.html#ref2_1343622"><b>isStale</b></a> , <a href="class712966.html#ref2_1138950"><b>message</b></a> , <a href="class712966.html#ref2_1205382"><b>on_message</b></a> , <a href="class712966.html#ref2_1230342"><b>on_snapshot</b></a> , <a href="class712966.html#ref2_1191174"><b>postEvent</b></a> , <a href="class712966.html#ref2_1205254"><b>postMessage</b></a> , <a href="class712966.html#ref2_1230214"><b>postSnapshot</b></a> , <a href="class712966.html#ref2_1343878"><b>saveSnapshot</b></a> , <a href="class712966.html#ref2_1139206"><b>stop</b></a> , <a href="class712966.html#ref2_1138566"><b>success</b></a> </p>
+<p>All public operations : <a href="class712966.html#ref2_1241478"><b>_post</b></a> , <a href="class1190406.html#ref2_1766918"><b>acquireAndProcess</b></a> , <a href="class712966.html#ref2_1766790"><b>acquireAndProcess</b></a> , <a href="class712966.html#ref2_1815686"><b>classifierBehavior</b></a> , <a href="class712966.html#ref2_1138438"><b>create</b></a> , <a href="class712966.html#ref2_1115014"><b>defer</b></a> , <a href="class712966.html#ref2_916486"><b>doActivity</b></a> , <a href="class712966.html#ref2_1138694"><b>failure</b></a> , <a href="class712966.html#ref2_1343622"><b>isStale</b></a> , <a href="class712966.html#ref2_1138950"><b>message</b></a> , <a href="class712966.html#ref2_1205382"><b>on_message</b></a> , <a href="class712966.html#ref2_1230342"><b>on_snapshot</b></a> , <a href="class712966.html#ref2_1191174"><b>postEvent</b></a> , <a href="class712966.html#ref2_1205254"><b>postMessage</b></a> , <a href="class712966.html#ref2_1230214"><b>postSnapshot</b></a> , <a href="class712966.html#ref2_1343878"><b>saveSnapshot</b></a> , <a href="class712966.html#ref2_1139206"><b>stop</b></a> , <a href="class712966.html#ref2_1138566"><b>success</b></a> </p>
 </body>
 </html>

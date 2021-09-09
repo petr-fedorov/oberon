@@ -1,0 +1,44 @@
+format 224
+
+classcanvas 128006 class_ref 1197062 // Capture
+  classdiagramsettings member_max_width 0 end
+  xyz 303 282 2000
+end
+classcanvas 129158 class_ref 486406 // Reconstructor
+  classdiagramsettings member_max_width 0 end
+  xyz 209 426 2005
+end
+classcanvas 130054 class_ref 958342 // Synchronizer
+  classdiagramsettings member_max_width 0 end
+  xyz 493 284 2000
+end
+classcanvas 130310 class_ref 1204358 // Capture
+  classdiagramsettings member_max_width 0 end
+  xyz 300 32 3005
+end
+classcanvas 130694 class_ref 1224454 // CaptureFromCoinbase
+  classdiagramsettings member_max_width 0 end
+  xyz 262 186 2000
+end
+relationcanvas 129286 relation_ref 1433350 // <dependency>
+  decenter_begin 192
+  from ref 128006 z 2006 to ref 129158
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130182 relation_ref 1433734 // <dependency>
+  from ref 128006 z 2001 to ref 130054
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130950 relation_ref 1451014 // <realization>
+  from ref 130694 z 3006 label "<R->Receiver, F->Feeder>" max_width 255 xyz 258.5 120 3000 stereotype "<<bind>>" xyz 304.5 134 3000 to ref 130310
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131078 relation_ref 1451142 // <generalisation>
+  from ref 128006 z 2001 to ref 130694
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+end

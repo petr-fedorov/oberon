@@ -1,0 +1,156 @@
+format 224
+
+activitycanvas 128902 activity_ref 261254 // Main
+  
+  xyzwh 37.6 55 0 751 691
+  params
+    parametercanvas 130182 parameter_ref 329862 // argc
+        xyzwh 373.9 43.5 2 39 25
+    end
+    parametercanvas 130310 parameter_ref 329990 // argv
+        xyzwh 324.3 43.5 2 39 25
+    end
+    parametercanvas 135174 parameter_ref 336518 // exit_code
+        xyzwh 341 733.5 2 67 25
+    end
+  end
+end
+activityactioncanvas 129030 activityaction_ref 428806 // activity action Parse options
+  
+  show_opaque_action_definition default
+  xyzwh 316.9 143.5 3016 101 61
+  pins
+    pincanvas 130694 pin_ref 569094 // self
+      xyzwh 306.3 166 3018 11 11 label_xy 270.8 161
+    end
+    pincanvas 130950 pin_ref 569350 // argc
+      xyzwh 390.6 133.9 3018 11 11 label_xy 408.8 126
+    end
+    pincanvas 131078 pin_ref 569478 // argv
+      xyzwh 340.6 133.9 3018 11 11 label_xy 310.8 121
+    end
+    pincanvas 135430 pin_ref 576774 // 
+      xyzwh 416.4 165.6 3018 11 11 label_xy 424.8 149
+    end
+    pincanvas 142470 pin_ref 620806 // 
+      xyzwh 360 203.2 3018 11 11 label_xy 266 205
+    end
+  end
+end
+activitynodecanvas 131590 activitynode_ref 456838 // merge
+  xyz 362.2 657.5 2000
+end
+activityactioncanvas 135814 activityaction_ref 442374 // activity action Failure
+  
+  show_opaque_action_definition default
+  xyzwh 537.1 545 2000 101 61
+  pins
+    pincanvas 135942 pin_ref 583430 // 
+      xyzwh 581.7 605.5 2002 11 11 label_xy 601 609.7
+    end
+  end
+end
+activityactioncanvas 138758 activityaction_ref 450950 // activity action Create reconstructor and acquirer
+  
+  show_opaque_action_definition default
+  xyzwh 316.9 276.4 2000 101 61
+  pins
+    pincanvas 138886 pin_ref 594054 // target
+      xyzwh 360.9 266.4 2002 11 11 label_xy 312.8 254.8
+    end
+    pincanvas 139014 pin_ref 594182 // 
+      xyzwh 362.6 336.9 2002 11 11 label_xy 279.8 339.8
+    end
+    pincanvas 139398 pin_ref 594566 // 
+      xyzwh 416.4 300.1 2002 11 11 label_xy 431.8 286.8
+    end
+  end
+end
+activityactioncanvas 139526 activityaction_ref 451078 // activity action Acquire and process
+  
+  show_opaque_action_definition default
+  xyzwh 316.9 411.4 2000 101 61
+  pins
+    pincanvas 141702 pin_ref 595078 // target
+      xyzwh 364.6 401.4 2002 11 11 label_xy 315 389
+    end
+    pincanvas 141830 pin_ref 595206 // 
+      xyzwh 416.4 417.8 2002 11 11 label_xy 431 404
+    end
+  end
+end
+activityactioncanvas 140294 activityaction_ref 451206 // activity action Success
+  
+  show_opaque_action_definition default
+  xyzwh 316.9 546.4 2006 101 61
+  pins
+    pincanvas 140422 pin_ref 594950 // 
+      xyzwh 366.4 606.9 2008 11 11 label_xy 339 605.4
+    end
+  end
+end
+activitynodecanvas 140806 activitynode_ref 470150 // merge
+  xyz 574.7 282.1 2000
+end
+flowcanvas 131206 flow_ref 659718 // <flow>
+  
+  from ref 130310 z 3019 to ref 131078
+   write_horizontally default
+end
+flowcanvas 131334 flow_ref 659846 // <flow>
+  
+  from ref 130182 z 3019 to ref 130950
+   write_horizontally default
+end
+flowcanvas 135302 flow_ref 661254 // <flow>
+  
+  from ref 131590 z 2001 to ref 135174
+   write_horizontally default
+end
+flowcanvas 136070 flow_ref 667782 // <flow>
+  
+  from ref 135942 z 2003 to point 586 673
+  line 141574 z 2003 to ref 131590
+   write_horizontally default
+end
+flowcanvas 140550 flow_ref 678534 // <flow>
+  
+  from ref 140422 z 2009 to ref 131590
+   write_horizontally default
+end
+flowcanvas 140678 flow_ref 678662 // <flow>
+  
+  from ref 139526 z 2007 to ref 140294
+   write_horizontally default
+end
+flowcanvas 140934 flow_ref 678790 // <flow>
+  
+  from ref 135430 z 3019 to ref 140806
+   write_horizontally default
+end
+flowcanvas 141190 flow_ref 679046 // <flow>
+  
+  from ref 139398 z 2003 to ref 140806
+   write_horizontally default
+end
+flowcanvas 141446 flow_ref 679302 // <flow>
+  
+  from ref 140806 z 2001 to ref 135814
+   write_horizontally default
+end
+flowcanvas 141958 flow_ref 679430 // <flow>
+  
+  from ref 139014 z 2003 to ref 141702
+   write_horizontally default
+end
+flowcanvas 142342 flow_ref 679558 // <flow>
+  
+  from ref 141830 z 2003 to ref 140806
+   write_horizontally default
+end
+flowcanvas 144006 flow_ref 712070 // <flow>
+  
+  from ref 142470 z 3019 to ref 138886
+   write_horizontally default
+end
+end

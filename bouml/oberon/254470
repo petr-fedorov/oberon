@@ -1,7 +1,7 @@
 format 224
 "File" // App::Reconstr::File
-  revision 11
-  modified_by 6 "petr"
+  revision 14
+  modified_by 6 "root"
   // class settings
   
   classdiagramsettings member_max_width 0 end
@@ -74,7 +74,7 @@ ${inlines}
       operation 1460614 "Reconstructor"
 	public explicit_return_type ""
 	nparams 1
-	  param in name "handler" type class_ref 950918 // TokenHandler_SP
+	  param in name "handler" type class_ref 950918 // MessageHandler_SP
 	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} ${p0}${v0}${)}${volatile}${throw};
 "
 	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${throw} : oberon::reconstructor::Reconstructor {handler} {
@@ -94,8 +94,8 @@ ${inlines}
 	  b parent class_ref 486278 // Reconstructor
       end
 
-      operation 1453830 "extract"
-	cpp_virtual protected return_type class_ref 902918 // Token
+      operation 1453830 "extractMessage"
+	cpp_virtual protected return_type class_ref 902918 // Message_UP
 	multiplicity "1..*"
 	nparams 1
 	  param in name "tree" type class_ref 174214 // ptree

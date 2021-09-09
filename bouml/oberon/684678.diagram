@@ -1,0 +1,52 @@
+format 224
+
+classcanvas 128006 class_ref 1197318 // Capture
+  classdiagramsettings member_max_width 0 end
+  xyz 355 313 2000
+end
+classcanvas 128646 class_ref 979334 // Synchronizer
+  classdiagramsettings member_max_width 0 end
+  xyz 369 438 2000
+end
+classcanvas 128774 class_ref 966022 // TimeOrderEnforcer
+  classdiagramsettings member_max_width 0 end
+  xyz 540 413 2000
+end
+classcanvas 129670 class_ref 603654 // Reconstructor
+  classdiagramsettings member_max_width 0 end
+  xyz 175 434 2005
+end
+classcanvas 130694 class_ref 1204358 // Capture
+  classdiagramsettings member_max_width 0 end
+  xyz 349 49 3005
+end
+classcanvas 131078 class_ref 1225222 // CaptureFromBitstamp
+  classdiagramsettings member_max_width 0 end
+  xyz 316 182 3011
+end
+relationcanvas 129414 relation_ref 1436294 // <dependency>
+  from ref 128006 z 2001 to ref 128646
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 129542 relation_ref 1436422 // <dependency>
+  from ref 128006 z 2001 to ref 128774
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 129798 relation_ref 1436550 // <dependency>
+  from ref 128006 z 2006 to ref 129670
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131206 relation_ref 1451910 // <realization>
+  from ref 131078 z 3012 label "<R->Receiver, F->Feeder>" max_width 255 xyz 309 127 3012 stereotype "<<bind>>" xyz 355 141 3000 to ref 130694
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131334 relation_ref 1452038 // <generalisation>
+  from ref 128006 z 3012 to ref 131078
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+end

@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Order book events reconstruction from empirical data</title>
   <meta name="description" content="Order book events reconstruction from empirical data" />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.23 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Order book events reconstruction from empirical data" />
   <meta property="og:type" content="book" />
@@ -24,7 +24,7 @@
 <meta name="author" content="Petr Fedorov" />
 
 
-<meta name="date" content="2021-05-25" />
+<meta name="date" content="2021-09-09" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +33,8 @@
   
 
 <link rel="next" href="methods.html"/>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -50,8 +51,33 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 
 
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
 
 </head>
 
@@ -65,46 +91,63 @@
       <nav role="navigation">
 
 <ul class="summary">
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
 <li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#continuous-time-double-auction-and-lob"><i class="fa fa-check"></i><b>1.1</b> Continuous-time double auction and LOB</a></li>
 <li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#available-data-sets"><i class="fa fa-check"></i><b>1.2</b> Available data sets</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="methods.html"><a href="methods.html"><i class="fa fa-check"></i><b>2</b> Methods</a><ul>
-<li class="chapter" data-level="2.1" data-path="methods.html"><a href="methods.html#definitions"><i class="fa fa-check"></i><b>2.1</b> Definitions</a><ul>
+<li class="chapter" data-level="2" data-path="methods.html"><a href="methods.html"><i class="fa fa-check"></i><b>2</b> Methods</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="methods.html"><a href="methods.html#definitions"><i class="fa fa-check"></i><b>2.1</b> Definitions</a>
+<ul>
 <li class="chapter" data-level="2.1.1" data-path="methods.html"><a href="methods.html#order-function"><i class="fa fa-check"></i><b>2.1.1</b> Order function</a></li>
 <li class="chapter" data-level="2.1.2" data-path="methods.html"><a href="methods.html#order-book"><i class="fa fa-check"></i><b>2.1.2</b> Order book</a></li>
 <li class="chapter" data-level="2.1.3" data-path="methods.html"><a href="methods.html#market-orders"><i class="fa fa-check"></i><b>2.1.3</b> Market orders</a></li>
 <li class="chapter" data-level="2.1.4" data-path="methods.html"><a href="methods.html#level2-order-function"><i class="fa fa-check"></i><b>2.1.4</b> Level2 order function</a></li>
 </ul></li>
-<li class="chapter" data-level="2.2" data-path="methods.html"><a href="methods.html#software"><i class="fa fa-check"></i><b>2.2</b> Software</a><ul>
-<li class="chapter" data-level="2.2.1" data-path="methods.html"><a href="methods.html#capture-order-events"><i class="fa fa-check"></i><b>2.2.1</b> Capture order events</a><ul>
-<li class="chapter" data-level="2.2.1.1" data-path="methods.html"><a href="methods.html#receive-messages"><i class="fa fa-check"></i><b>2.2.1.1</b> Receive messages</a></li>
-<li class="chapter" data-level="2.2.1.2" data-path="methods.html"><a href="methods.html#reconstruct-order-book"><i class="fa fa-check"></i><b>2.2.1.2</b> Reconstruct Order Book</a></li>
-<li class="chapter" data-level="2.2.1.3" data-path="methods.html"><a href="methods.html#save-output"><i class="fa fa-check"></i><b>2.2.1.3</b> Save output</a></li>
+<li class="chapter" data-level="2.2" data-path="methods.html"><a href="methods.html#software"><i class="fa fa-check"></i><b>2.2</b> Software</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="methods.html"><a href="methods.html#main"><i class="fa fa-check"></i><b>2.2.1</b> Main</a></li>
+<li class="chapter" data-level="2.2.2" data-path="methods.html"><a href="methods.html#parse-options"><i class="fa fa-check"></i><b>2.2.2</b> Parse options</a></li>
+<li class="chapter" data-level="2.2.3" data-path="methods.html"><a href="methods.html#create-reconstructor-and-acquirer"><i class="fa fa-check"></i><b>2.2.3</b> Create reconstructor and acquirer</a>
+<ul>
+<li class="chapter" data-level="2.2.3.1" data-path="methods.html"><a href="methods.html#create-acquirer"><i class="fa fa-check"></i><b>2.2.3.1</b> Create acquirer</a></li>
+<li class="chapter" data-level="2.2.3.2" data-path="methods.html"><a href="methods.html#create-reconstructor"><i class="fa fa-check"></i><b>2.2.3.2</b> Create reconstructor</a></li>
 </ul></li>
-<li class="chapter" data-level="2.2.2" data-path="methods.html"><a href="methods.html#slice-merge-and-transmute-era-files"><i class="fa fa-check"></i><b>2.2.2</b> Slice, merge and transmute era files</a><ul>
-<li class="chapter" data-level="2.2.2.1" data-path="methods.html"><a href="methods.html#era-file-reader"><i class="fa fa-check"></i><b>2.2.2.1</b> Era file reader</a></li>
-<li class="chapter" data-level="2.2.2.2" data-path="methods.html"><a href="methods.html#slice"><i class="fa fa-check"></i><b>2.2.2.2</b> Slice</a></li>
-<li class="chapter" data-level="2.2.2.3" data-path="methods.html"><a href="methods.html#merge"><i class="fa fa-check"></i><b>2.2.2.3</b> Merge</a></li>
-<li class="chapter" data-level="2.2.2.4" data-path="methods.html"><a href="methods.html#transmute"><i class="fa fa-check"></i><b>2.2.2.4</b> Transmute</a></li>
+<li class="chapter" data-level="2.2.4" data-path="methods.html"><a href="methods.html#acquire-and-process"><i class="fa fa-check"></i><b>2.2.4</b> Acquire and process</a>
+<ul>
+<li class="chapter" data-level="2.2.4.1" data-path="methods.html"><a href="methods.html#receiver-acquire-and-process"><i class="fa fa-check"></i><b>2.2.4.1</b> Receiver</a></li>
+<li class="chapter" data-level="2.2.4.2" data-path="methods.html"><a href="methods.html#reader-acquire-and-process"><i class="fa fa-check"></i><b>2.2.4.2</b> Reader</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2.5" data-path="methods.html"><a href="methods.html#receive-messages"><i class="fa fa-check"></i><b>2.2.5</b> Receive messages</a></li>
+<li class="chapter" data-level="2.2.6" data-path="methods.html"><a href="methods.html#process-message"><i class="fa fa-check"></i><b>2.2.6</b> Process message</a></li>
+<li class="chapter" data-level="2.2.7" data-path="methods.html"><a href="methods.html#handle-message"><i class="fa fa-check"></i><b>2.2.7</b> Handle message</a></li>
+<li class="chapter" data-level="2.2.8" data-path="methods.html"><a href="methods.html#output-format"><i class="fa fa-check"></i><b>2.2.8</b> Output format</a>
+<ul>
+<li class="chapter" data-level="2.2.8.1" data-path="methods.html"><a href="methods.html#file"><i class="fa fa-check"></i><b>2.2.8.1</b> File</a></li>
 </ul></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>3</b> Results</a><ul>
-<li class="chapter" data-level="3.1" data-path="results.html"><a href="results.html#fragments-of-extracted-events"><i class="fa fa-check"></i><b>3.1</b> Fragments of extracted events</a><ul>
+<li class="chapter" data-level="3" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>3</b> Results</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="results.html"><a href="results.html#fragments-of-extracted-events"><i class="fa fa-check"></i><b>3.1</b> Fragments of extracted events</a>
+<ul>
 <li class="chapter" data-level="3.1.1" data-path="results.html"><a href="results.html#coinbase"><i class="fa fa-check"></i><b>3.1.1</b> Coinbase</a></li>
 <li class="chapter" data-level="3.1.2" data-path="results.html"><a href="results.html#bitstamp"><i class="fa fa-check"></i><b>3.1.2</b> Bitstamp</a></li>
 <li class="chapter" data-level="3.1.3" data-path="results.html"><a href="results.html#bitfinex"><i class="fa fa-check"></i><b>3.1.3</b> Bitfinex</a></li>
 </ul></li>
-<li class="chapter" data-level="3.2" data-path="results.html"><a href="results.html#fragments-of-cleansed-data"><i class="fa fa-check"></i><b>3.2</b> Fragments of cleansed data</a><ul>
+<li class="chapter" data-level="3.2" data-path="results.html"><a href="results.html#fragments-of-cleansed-data"><i class="fa fa-check"></i><b>3.2</b> Fragments of cleansed data</a>
+<ul>
 <li class="chapter" data-level="3.2.1" data-path="results.html"><a href="results.html#bitstamp-1"><i class="fa fa-check"></i><b>3.2.1</b> Bitstamp</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="discussion.html"><a href="discussion.html"><i class="fa fa-check"></i><b>4</b> Discussion</a></li>
-<li class="chapter" data-level="5" data-path="appendix.html"><a href="appendix.html"><i class="fa fa-check"></i><b>5</b> Appendix</a><ul>
+<li class="chapter" data-level="5" data-path="appendix.html"><a href="appendix.html"><i class="fa fa-check"></i><b>5</b> Appendix</a>
+<ul>
 <li class="chapter" data-level="5.1" data-path="appendix.html"><a href="appendix.html#examples-of-order-tables-and-restored-functions"><i class="fa fa-check"></i><b>5.1</b> Examples of order tables and restored functions</a></li>
 <li class="chapter" data-level="5.2" data-path="appendix.html"><a href="appendix.html#example-of-lob"><i class="fa fa-check"></i><b>5.2</b> Example of LOB</a></li>
-<li class="chapter" data-level="5.3" data-path="appendix.html"><a href="appendix.html#token-handlers"><i class="fa fa-check"></i><b>5.3</b> Token handlers</a><ul>
+<li class="chapter" data-level="5.3" data-path="appendix.html"><a href="appendix.html#message-handlers"><i class="fa fa-check"></i><b>5.3</b> Message handlers</a>
+<ul>
 <li class="chapter" data-level="5.3.1" data-path="appendix.html"><a href="appendix.html#synchronizer"><i class="fa fa-check"></i><b>5.3.1</b> Synchronizer</a></li>
 <li class="chapter" data-level="5.3.2" data-path="appendix.html"><a href="appendix.html#timeorderenforcer"><i class="fa fa-check"></i><b>5.3.2</b> TimeOrderEnforcer</a></li>
 <li class="chapter" data-level="5.3.3" data-path="appendix.html"><a href="appendix.html#deduplicator"><i class="fa fa-check"></i><b>5.3.3</b> Deduplicator</a></li>
@@ -132,11 +175,11 @@
 <h1 class="title">Order book events reconstruction from empirical data</h1>
 <h2 class="subtitle"><em>A preliminary draft</em></h2>
 <p class="author"><em>Petr Fedorov</em></p>
-<p class="date"><em>2021-05-25</em></p>
+<p class="date"><em>2021-09-09</em></p>
 </div>
-<div id="index" class="section level1">
+<div id="index" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
-<div id="continuous-time-double-auction-and-lob" class="section level2">
+<div id="continuous-time-double-auction-and-lob" class="section level2" number="1.1">
 <h2><span class="header-section-number">1.1</span> Continuous-time double auction and LOB</h2>
 <p>Today, most liquid markets – including stocks, futures, and foreign exchange – are electronic, and adopt a continuous-time double auction mechanism using a limit order book (LOB), in which a transaction occurs whenever a buyer and a seller agree on a price<span class="citation">(Bouchaud and Bonart 2018)</span>. Cryptocurrency exchanges are not exception.</p>
 <p>The mechanics of the continuous double auction or LOB trading may be briefly described as follows:</p>
@@ -149,7 +192,7 @@
 <p>Note that not all matched orders are necessarily executed to produce trades. If a market order and a matched limit order are placed by the same trader, an execution would lead to a self-trade. So called self-match or self-trade prevention rules stipulate that in this situation some or both of the matched orders have to be cancelled instead of being executed. See for example <a href="https://www.cmegroup.com/globex/trade-on-cme-globex/self-match-faq.html">CME Globex Self-Match Prevention</a> or <a href="https://www.coinbase.com/legal/trading_rules">Coinbase Markets Trading Rules 2.4 Self-trade prevention</a>.</p>
 <p>Thus even if one can figure out from an exchange provided data that a market order has been placed, he can deduce neither whether the trade(s) is going to be produced from the market order nor the amount of the trade(s). In order to reconstruct the dynamics of the countinous-time double auction completely one needs information about all submitted limit and market orders as well as about all trades produced. As we will see below not all exchanges provide this information.</p>
 </div>
-<div id="available-data-sets" class="section level2">
+<div id="available-data-sets" class="section level2" number="1.2">
 <h2><span class="header-section-number">1.2</span> Available data sets</h2>
 <p>Most of data sets containing information about orders and trades consist of two separate loosely coupled files: a <strong>trades</strong> file recording trades and an <strong>orders</strong> file recording limit and sometimes market order placements, changes and cancellations. Loosely coupled in this context means that records in <strong>trades</strong> file do not always have clearly identifiable corresponding records in <strong>orders</strong> file as one would expect since by definition every trade should change some limit order. A matching or <em>coupling</em> procedure is required in order to establish the link between the <strong>trades</strong> and <strong>orders</strong> files in order to</p>
 <ul>
@@ -210,6 +253,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
@@ -230,10 +274,10 @@ gitbook.start({
 "text": null
 },
 "download": null,
+"search": false,
 "toc": {
 "collapse": "subsection"
-},
-"search": false
+}
 });
 });
 </script>

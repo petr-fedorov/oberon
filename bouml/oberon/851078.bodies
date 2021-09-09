@@ -79,7 +79,11 @@ stm.d_->ws_->async_read(
           "%FT%TZ", std::chrono::time_point_cast<std::chrono::microseconds>(
                         std::chrono::system_clock::now()));
       std::stringstream m;
+#ifdef BOOST_BEAST_MAKE_PRINTABLE_HPP
+      m << boost::beast::make_printable(stm.d_->buffer_.data());
+#else
       m << boost::beast::buffers(stm.d_->buffer_.data());
+#endif
       stm.d_->buffer_.consume(stm.d_->buffer_.size());
       stm.d_->tree_ = boost::make_unique<boost::property_tree::ptree>();
       try {

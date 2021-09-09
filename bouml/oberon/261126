@@ -1,0 +1,482 @@
+format 224
+"Bitstamp" // App::Bitstamp
+  revision 4
+  modified_by 6 "root"
+  // class settings
+  
+  classdiagramsettings member_max_width 0 end
+  
+  classcompositediagramsettings end
+  
+  usecasediagramsettings end
+  
+  sequencediagramsettings end
+  
+  collaborationdiagramsettings end
+  
+  objectdiagramsettings end
+  
+  objectcompositediagramsettings end
+  
+  componentdiagramsettings
+   end
+  
+  deploymentdiagramsettings
+   end
+  
+  statediagramsettings
+   end
+  
+  activitydiagramsettings
+   end
+  
+  cpp_h_dir "cpp/bitstamp"
+  cpp_src_dir "cpp/bitstamp"
+  cpp_namespace "oberon::bitstamp"
+  classview 373126 "Command"
+    
+    classdiagramsettings member_max_width 0 end
+    
+    classcompositediagramsettings end
+    
+    collaborationdiagramsettings end
+    
+    objectdiagramsettings end
+    
+    objectcompositediagramsettings end
+    
+    sequencediagramsettings end
+    
+    statediagramsettings
+     end
+    
+    
+    activitydiagramsettings
+     end
+    classdiagram 684678 "CaptureFromBitstamp"
+      classdiagramsettings hide_attributes yes hide_operations yes member_max_width 0 end
+      size A4
+    end
+
+    class 1225222 "CaptureFromBitstamp"
+      visibility package stereotype "template_typedef"
+      nactuals 2
+      actual class class_ref 1204358 // Capture
+        rank 0 value class_ref 937734 // Receiver
+      actual class class_ref 1204358 // Capture
+        rank 1 value class_ref 931078 // Feeder
+      cpp_decl "${comment}${template}using ${name} = ${inherit};
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 1462278 // <realization>
+	relation 1451910 -_-|>
+	  stereotype "bind"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 1462278 // <realization>
+	  b parent class_ref 1204358 // Capture
+      end
+    end
+
+    class 1197318 "Capture"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      operation 1822470 "Capture"
+	cpp_inline public explicit_return_type ""
+	nparams 8
+	  param in name "quote_increment" explicit_type "string"
+	  param in name "base_increment" explicit_type "string"
+	  param in name "exchange" type class_ref 1013766 // O_string
+	  param in name "product" type class_ref 1013766 // O_string
+	  param in name "deleted" explicit_type "bool"
+	  param in name "source" explicit_type "bool"
+	  param in name "pong_wait_time" explicit_type "int"
+	  param in name "output_delay" explicit_type "int"
+	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}, ${t4} ${p4}${v4}, ${t5} ${p5}${v5}, ${t6} ${p6}${v6}, ${t7} ${p7}${v7}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, ${t4} ${p4}, ${t5} ${p5}, ${t6} ${p6}, ${t7} ${p7}${)}${volatile}${throw}: CaptureFromBitstamp { ${p0},${p1},${p2},${p3},${p4},${p5},${p6}, ${p7},\"www.bitstamp.net\",\"443\",\"/api/v2/order_book/\" + *product +
+                                                 \"?group=2\" } {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1773958 "createReconstructor"
+	protected return_type class_ref 1142662 // Reconstructor_SP
+	nparams 0
+	nexceptions 1
+	  exception class_ref 1108614 // exception
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1830022 "makeDeduplicator"
+	private return_type class_ref 1224838 // Deduplicator_SP
+	multiplicity "1"
+	nparams 1
+	  param in name "next" type class_ref 950918 // MessageHandler_SP
+	multiplicity "1"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1830150 "makeTimeOrderEnforcer"
+	private return_type class_ref 1224966 // TimeOrderEnforcer_SP
+	multiplicity "1"
+	nparams 1
+	  param in name "next" type class_ref 950918 // MessageHandler_SP
+	multiplicity "1"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1830278 "makeSynchronizer"
+	private return_type class_ref 1225094 // Synchronizer_SP
+	multiplicity "1"
+	nparams 1
+	  param in name "next" type class_ref 950918 // MessageHandler_SP
+	multiplicity "1"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1830406 "makeReconstructor"
+	private return_type class_ref 1142662 // Reconstructor_SP
+	multiplicity "1"
+	nparams 1
+	  param in name "next" type class_ref 950918 // MessageHandler_SP
+	multiplicity "1"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 1446534 // <dependency>
+	relation 1436166 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1446534 // <dependency>
+	  b parent class_ref 965766 // Deduplicator
+      end
+
+      classrelation 1446662 // <dependency>
+	relation 1436294 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1446662 // <dependency>
+	  b parent class_ref 979334 // Synchronizer
+      end
+
+      classrelation 1446790 // <dependency>
+	relation 1436422 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1446790 // <dependency>
+	  b parent class_ref 966022 // TimeOrderEnforcer
+      end
+
+      classrelation 1446918 // <dependency>
+	relation 1436550 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1446918 // <dependency>
+	  b parent class_ref 603654 // Reconstructor
+      end
+
+      classrelation 1462406 // <generalisation>
+	relation 1452038 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 1462406 // <generalisation>
+	  b parent class_ref 1225222 // CaptureFromBitstamp
+      end
+    end
+
+    activity 287494 "Create Reconstructor for BItstamp"
+      activitydiagram 717574 "Create Reconstructor for Bitstamp"
+	activitydiagramsettings
+	 end
+	size A4
+      end
+
+      activitynode 498822 initial_node ""
+	flow 748294 "<flow>"
+	  on activityaction_ref 472966 // activity action Make Store
+	end
+      end
+
+      activityaction 472966 "Make Store"
+	call_operation_action
+	synchronous operation_ref 1829126 // makeStore
+	pin 647942 "self" type class_ref 1204358 // Capture
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 648070 "" type class_ref 1224070 // File_SP
+	   multiplicity "1" unordered is_control
+	  return
+	  flow 748422 "<flow>"
+	    on pin_ref 648454 // next
+	  end
+	end
+      end
+
+      activityaction 473094 "Make Event Counter"
+	call_operation_action
+	synchronous operation_ref 1829254 // makeEventCounter
+	pin 648198 "self" type class_ref 1204358 // Capture
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 648326 "" type class_ref 1224198 // EventCounter_SP
+	   multiplicity "1" unordered is_control
+	  return
+	  flow 748550 "<flow>"
+	    on pin_ref 648838 // next
+	  end
+	end
+
+	pin 648454 "next" type class_ref 950918 // MessageHandler_SP
+	   multiplicity "1" unordered is_control
+	  in
+	end
+      end
+
+      activityaction 473222 "Make Size Deducer"
+	call_operation_action
+	synchronous operation_ref 1829382 // makeSizeDeducer
+	pin 648582 "self" type class_ref 1204358 // Capture
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 648710 "" type class_ref 1224326 // SizeDeducer_SP
+	   multiplicity "1" unordered is_control
+	  return
+	  flow 748678 "<flow>"
+	    on pin_ref 649222 // next
+	  end
+	end
+
+	pin 648838 "next" type class_ref 950918 // MessageHandler_SP
+	   multiplicity "1" unordered is_control
+	  in
+	end
+      end
+
+      activityaction 473350 "Make Deduplicator"
+	call_operation_action
+	synchronous operation_ref 1830022 // makeDeduplicator
+	pin 648966 "self" type class_ref 1197318 // Capture
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 649094 "" type class_ref 1224838 // Deduplicator_SP
+	   multiplicity "1" unordered is_control
+	  return
+	  flow 747398 "<flow>"
+	    on activitynode_ref 498950 // decision
+	  end
+	end
+
+	pin 649222 "next" type class_ref 950918 // MessageHandler_SP
+	   multiplicity "1" unordered is_control
+	  in
+	end
+      end
+
+      activitynode 498950 decision ""
+	flow 747526 "<flow>"
+	  on pin_ref 650246 // next
+	    uml_guard "> 0"
+	end
+
+	flow 747654 "<flow>"
+	  on activitynode_ref 499078 // merge
+	    uml_guard "else"
+	end
+      end
+
+      activityaction 473478 "Read output_delay_"
+	read_structural_feature_action
+	attribute_ref 972038 // output_delay_
+	pin 649350 "self" type class_ref 1204358 // Capture
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 649478 "result" explicit_type "int"
+	   multiplicity "1" unordered 
+	  out
+	  flow 748806 "<flow>"
+	    stereotype "decisionInputFlow"
+	    on activitynode_ref 498950 // decision
+	  end
+	end
+      end
+
+      activityaction 473606 "Make Synchronizer"
+	call_operation_action
+	synchronous operation_ref 1830278 // makeSynchronizer
+	pin 649606 "self" type class_ref 1197318 // Capture
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 649734 "" type class_ref 1225094 // Synchronizer_SP
+	   multiplicity "1" unordered is_control
+	  return
+	  flow 748166 "<flow>"
+	    on pin_ref 650630 // next
+	  end
+	end
+
+	pin 649862 "next" type class_ref 950918 // MessageHandler_SP
+	   multiplicity "1" unordered is_control
+	  in
+	end
+      end
+
+      activitynode 499078 merge ""
+	flow 747910 "<flow>"
+	  on pin_ref 649862 // next
+	end
+      end
+
+      activityaction 473734 "Make Time Order Enforcer"
+	call_operation_action
+	synchronous operation_ref 1830150 // makeTimeOrderEnforcer
+	pin 649990 "self" type class_ref 1197318 // Capture
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 650118 "" type class_ref 1224966 // TimeOrderEnforcer_SP
+	   multiplicity "1" unordered is_control
+	  return
+	  flow 747782 "<flow>"
+	    on activitynode_ref 499078 // merge
+	  end
+	end
+
+	pin 650246 "next" type class_ref 950918 // MessageHandler_SP
+	   multiplicity "1" unordered is_control
+	  in
+	end
+      end
+
+      activityaction 473862 "Make Reconstructor"
+	call_operation_action
+	synchronous operation_ref 1830406 // makeReconstructor
+	pin 650374 "self" type class_ref 1197318 // Capture
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 650502 "" type class_ref 1142662 // Reconstructor_SP
+	   multiplicity "1" unordered is_control
+	  return
+	  flow 748038 "<flow>"
+	    on parameter_ref 356358 // reconstructor
+	  end
+	end
+
+	pin 650630 "next" type class_ref 950918 // MessageHandler_SP
+	   multiplicity "1" unordered is_control
+	  in
+	end
+      end
+
+      parameter 356358 "reconstructor" type class_ref 1142662 // Reconstructor_SP
+	 multiplicity "1" unordered is_control
+	out
+      end
+    end
+  end
+
+  deploymentview 233222 "Source files"
+    //deployment diagram settings
+    deploymentdiagramsettings
+     end
+    artifact 454150 "Capture"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+#include <boost/smart_ptr/make_shared.hpp>
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 1225222 // CaptureFromBitstamp
+	class_ref 1197318 // Capture
+      end
+    end
+  end
+end

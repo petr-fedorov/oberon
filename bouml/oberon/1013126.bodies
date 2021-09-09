@@ -8,30 +8,52 @@ boost::log::add_console_log(
     boost::log::keywords::format = "%TimeStamp% [%Severity%] %Message%");
 boost::log::core::get()->set_filter(boost::log::trivial::severity >=
                                     boost::log::trivial::info);
+try {
+  parseOptions(argc, argv)->createAcquirer()->acquireAndProcess();
+  return EXIT_SUCCESS;
+} catch (const std::exception &) {
+  return EXIT_FAILURE;
+}
+!!!1760006.cpp!!!	parseOptions(in argc : int, in argv : char **) : Command::Command_UP
 namespace po = boost::program_options;
 
-po::options_description common_options("Options are"), deleted_option, input_options,
-    slice_options, capture_options, command_option, help_options;
+
+// Variables to hold option values 
+std::string quote_increment;
+std::string base_increment;
+boost::optional<std::string> exchange;
+boost::optional<std::string> product;
+boost::optional<std::string> command;
+bool deleted = false;
+bool source = false;
+bool help = false;
+int pong_wait_time;
+int output_delay;
+std::vector<std::string> file_names;
+int boundary;
+
+po::options_description common_options("Options are"), deleted_option,
+    input_options, slice_options, capture_options, command_option, help_options;
 
 help_options.add_options()("help,h", "produce this help message");
 common_options.add_options()(
     "quote-increment,q",
-    po::value<std::string>(&quote_increment_)->default_value("0.01"),
+    po::value<std::string>(&quote_increment)->default_value("0.01"),
     "specifies the minimum increment for the quote currency "
     "(i.e. USD in BTC-USD)")(
     "base-increment,b",
-    po::value<std::string>(&base_increment_)->default_value("0.00000001"),
+    po::value<std::string>(&base_increment)->default_value("0.00000001"),
     "specifies the minimum increment for the base currency (i.e. BTC in "
     "BTC-USD)");
 deleted_option.add_options()("deleted,d", "output deleted events");
-capture_options.add_options()("exchange,e", po::value(&exchange_),
+capture_options.add_options()("exchange,e", po::value(&exchange),
                               "specifies the name of the exchange (mandatory)")(
-    "product,p", po::value(&product_),
+    "product,p", po::value(&product),
     "specifies the exchange-specific code of the product (mandatory)")(
-    "pong-wait-time,w", po::value<int>(&pong_wait_time_)->default_value(1),
+    "pong-wait-time,w", po::value<int>(&pong_wait_time)->default_value(1),
     "specifies the maximum waiting time for the websocket pong response before "
     "re-connecting, secs")("source,s", "output source of captured events")(
-    "output-delay,o", po::value<int>(&output_delay_)->default_value(0),
+    "output-delay,o", po::value<int>(&output_delay)->default_value(0),
     "a delay of output to enforce correct time order of events, seconds");
 
 input_options.add_options()(
@@ -39,10 +61,9 @@ input_options.add_options()(
     "specifies the name(s) of an era file to be read (mandatory)");
 
 slice_options.add_options()("max-duration,m",
-                            po::value<int>(&boundary_)->default_value(60),
+                            po::value<int>(&boundary)->default_value(60),
                             "specifies that a new era will be started every "
                             "arg minutes since UNIX epoch");
-boost::optional<std::string> command;
 command_option.add_options()("command", po::value(&command), "");
 po::positional_options_description p;
 p.add("command", 1);
@@ -62,209 +83,62 @@ po::store(po::command_line_parser(argc, argv).options(all).positional(p).run(),
 po::notify(vm);
 
 if (vm.count("help"))
-  help_ = true;
+  help = true;
 
 if (vm.count("deleted"))
-  deleted_ = true;
+  deleted = true;
 
 if (vm.count("source"))
-  source_ = true;
+  source = true;
 
 if (vm.count("input"))
-  era_ = std::move(vm["input"].as<std::vector<std::string>>());
+  file_names = std::move(vm["input"].as<std::vector<std::string>>());
 
-// Check command line arguments.
+
 if (command) {
   if (*command == "capture") {
     common_options.add(capture_options).add(deleted_option).add(help_options);
-    return capture(common_options);
+    // Check mandatory options
+    if ((exchange && product) && !help) {
+      if(*exchange == "Coinbase")
+        return boost::make_unique<coinbase::Capture>(quote_increment, base_increment,exchange, product, deleted, source, pong_wait_time, output_delay);
+      if(*exchange == "Bitstamp")
+        return boost::make_unique<bitstamp::Capture>(quote_increment, base_increment,exchange, product, deleted, source, pong_wait_time, output_delay);
+    }
+    std::cerr << "Usage: oberon capture [options]\n" << common_options;
+    throw std::exception();
   } else if (*command == "transmute") {
     common_options.add(input_options).add(help_options);
-    return transmute(common_options);
-  } else if (*command == "slice") {
-    common_options.add(input_options).add(deleted_option).add(slice_options).add(help_options);
-    return slice(common_options);
-  } else if (*command == "merge") {
+    if(!file_names.empty() && !help)
+      return boost::make_unique<Transmute>(quote_increment, base_increment,
+                                           exchange, product, deleted,
+                                           file_names, "");
+    std::cerr << "Usage: oberon transmute [options]\n" << common_options;
+    throw std::exception();
+  }
+  else if (*command == "slice") {
+    common_options.add(input_options)
+        .add(deleted_option)
+        .add(slice_options)
+        .add(help_options);
+    if(!file_names.empty() && !help)
+      return boost::make_unique<Slice>(quote_increment, base_increment,
+                                       exchange, product, deleted, file_names,
+                                       ".sliced", boundary);
+    std::cerr << "Usage: oberon slice [options]\n" << common_options;
+    throw std::exception();
+  }
+  else if (*command == "merge") {
     common_options.add(input_options).add(deleted_option).add(help_options);
-    return merge(common_options);
+    if(!file_names.empty() && !help)
+      return boost::make_unique<Merge>(quote_increment, base_increment,
+                                       exchange, product, deleted, file_names, ".merged");
+    std::cerr << "Usage: oberon merge [options]\n" << common_options;
+    throw std::exception();
   }
 }
 std::cerr << "Usage: oberon <command> [options]\n"
           << "Commands are:\n capture\n transmute\n slice\n merge\nRun oberon "
              "<command> --help for the list of options per command.\n";
-return EXIT_FAILURE;
-!!!1439750.cpp!!!	capture(in od : options_description) : int
-if (exchange_ && product_ && !help_) {
-  using Snapshot = oberon::acquirer::Snapshot;
-  using EventCounter = oberon::reconstructor::EventCounter;
-  using SizeDeducer = oberon::reconstructor::SizeDeducer;
-  // The io_context is required for all I/O
-  boost::shared_ptr<boost::asio::io_context> ioc =
-      boost::make_shared<boost::asio::io_context>();
-  auto store = boost::make_shared<reconstructor::File>();
-  store->saveOrderEvents(true).saveDeleted(deleted_).saveEventSource(source_);
+throw std::exception();
 
-  if (*exchange_ == "Bitstamp") {
-    using Receiver = oberon::acquirer::bitstamp::Receiver;
-    using Feeder = oberon::acquirer::bitstamp::Feeder;
-    using Deduplicator = oberon::reconstructor::bitstamp::Deduplicator;
-    using Reconstructor = oberon::reconstructor::bitstamp::Reconstructor;
-    using TimeOrderEnforcer =
-        oberon::reconstructor::bitstamp::TimeOrderEnforcer;
-    using Synchronizer = oberon::reconstructor::bitstamp::Synchronizer;
-    auto feeder = boost::make_shared<Feeder>(ioc, *product_, pong_wait_time_);
-    auto snapshot = boost::make_shared<Snapshot>(ioc, "www.bitstamp.net", "443",
-                                                 "/api/v2/order_book/" +
-                                                     *product_ + "?group=2");
-
-    auto event_counter = boost::make_shared<EventCounter>(store);
-    auto size_deducer = boost::make_shared<SizeDeducer>(event_counter);
-    size_deducer->create();
-    boost::shared_ptr<reconstructor::TokenHandler> deduplicator = boost::make_shared<Deduplicator>(size_deducer);
-    auto cleaner = boost::make_shared<Synchronizer>(output_delay_ > 0 ? boost::make_shared<TimeOrderEnforcer>(deduplicator, output_delay_, deleted_) : deduplicator);
-    cleaner->create();
-    Reconstructor reconstructor{cleaner};
-
-    auto receiver = boost::make_shared<Receiver>(
-        ioc, boost::static_pointer_cast<Feeder>(feeder), snapshot,
-        std::bind(&Reconstructor::process, &reconstructor,
-                  std::placeholders::_1), *exchange_, *product_, quote_increment_, base_increment_);
-    feeder->registerHandlers(
-        std::bind(&Receiver::postEvent, receiver, &Receiver::success),
-        std::bind(&Receiver::postEvent, receiver, &Receiver::failure),
-        std::bind(&Receiver::postMessage, receiver, std::placeholders::_1));
-    snapshot->registerHandlers(
-        std::bind(&Receiver::postEvent, receiver, &Receiver::failure),
-        std::bind(&Receiver::postSnapshot, receiver, std::placeholders::_1));
-
-    receiver->create();
-    // feeder->registerHandlers( []() { std::cout << "Success\n"; }, []() {
-    // std::cout << "Failure\n"; },
-    // [](boost::shared_ptr<boost::property_tree::ptree> &&tree) {
-    // boost::property_tree::write_json(std::cout, *tree, false); });
-    // feeder->create();
-    // snapshot->registerHandlers( []() { std::cout << "Failure\n"; },
-    // [](boost::shared_ptr<boost::property_tree::ptree> && tree) {
-    // boost::property_tree::write_json(std::cout, *tree, true); });
-    // snapshot->create();
-    std::thread t1{[ioc]() { ioc->run(); }};
-    std::thread t2{[ioc]() { ioc->run(); }};
-    std::thread t3{[ioc]() { ioc->run(); }};
-    ioc->run();
-    t1.join();
-    t2.join();
-    t3.join();
-    return receiver->exit_code_;
-  } else if (*exchange_ == "Coinbase") {
-
-    using Receiver = oberon::acquirer::coinbase::Receiver;
-    using Feeder = oberon::acquirer::coinbase::Feeder;
-    using Synchronizer = oberon::reconstructor::coinbase::Synchronizer;
-    using Reconstructor = oberon::reconstructor::coinbase::Reconstructor;
-
-    if(output_delay_) 
-      BOOST_LOG_TRIVIAL(warning) << "--output-delay is ignored for Coinbase";
-
-    auto feeder = boost::make_shared<Feeder>(ioc, *product_, pong_wait_time_);
-    auto snapshot = boost::make_shared<Snapshot>(
-        ioc, "api.pro.coinbase.com", "443",
-        "/products/" + *product_ + "/book?level=3");
-    auto event_counter = boost::make_shared<EventCounter>(store);
-    auto size_deducer = boost::make_shared<SizeDeducer>(event_counter);
-    size_deducer->create();
-    auto cleaner = boost::make_shared<Synchronizer>(size_deducer);
-    Reconstructor reconstructor{cleaner};
-    auto coinbase = boost::make_shared<Receiver>(
-        ioc, boost::static_pointer_cast<Feeder>(feeder), snapshot,
-        std::bind(&Reconstructor::process, &reconstructor,
-                  std::placeholders::_1), *exchange_, *product_, quote_increment_, base_increment_);
-    feeder->registerHandlers(
-        std::bind(&Receiver::postEvent, coinbase, &Receiver::success),
-        std::bind(&Receiver::postEvent, coinbase, &Receiver::failure),
-        std::bind(&Receiver::postMessage, coinbase, std::placeholders::_1));
-    snapshot->registerHandlers(
-        std::bind(&Receiver::postEvent, coinbase, &Receiver::failure),
-        std::bind(&Receiver::postSnapshot, coinbase, std::placeholders::_1));
-    // feeder->registerHandlers([]() { std::cout << "Success\n"; }, []() {
-    // std::cout << "Failure\n"; },
-    // [](boost::shared_ptr<boost::property_tree::ptree> && tree) {
-    // boost::property_tree::write_json(std::cout, *tree, false); });
-    // feeder->create();
-    // feeder->engage();
-    coinbase->create();
-    // Run the I/O service in two threads.
-    // snapshot->create();
-    std::thread t1{[ioc]() { ioc->run(); }};
-    std::thread t2{[ioc]() { ioc->run(); }};
-    std::thread t3{[ioc]() { ioc->run(); }};
-    ioc->run();
-    t1.join();
-    t2.join();
-    t3.join();
-    return coinbase->exit_code_;
-  }
-}
-std::cerr << "Usage: oberon capture [options]\n" << od;
-return EXIT_FAILURE;
-!!!1453958.cpp!!!	slice(in od : options_description) : int
-if (!help_ && !era_.empty()) {
-  auto store = boost::make_shared<reconstructor::File>();
-  store->saveOrderEvents(true).saveDeleted(deleted_);
-  auto event_counter = boost::make_shared<reconstructor::EventCounter>(store);
-  auto slicer =
-      boost::make_shared<reconstructor::EraSlicer>(boundary_, event_counter);
-  acquirer::file::Receiver reader{
-      boost::make_shared<reconstructor::file::Reconstructor>(slicer), ".sliced",
-      quote_increment_, base_increment_};
-  try {
-    reader.readAndProcess(era_);
-    return EXIT_SUCCESS;
-  } catch (const std::exception &) {
-    return EXIT_FAILURE;
-  }
-
-} else {
-  std::cerr << "Usage: oberon slice [options]\n";
-  std::cerr << od;
-  return EXIT_FAILURE;
-}
-return EXIT_SUCCESS;
-!!!1504134.cpp!!!	merge(in od : options_description) : int
-if (!help_ && !era_.empty()) {
-  auto store = boost::make_shared<reconstructor::File>();
-  store->saveOrderEvents(true).saveDeleted(deleted_);
-  auto event_counter = boost::make_shared<reconstructor::EventCounter>(store);
-  auto merger = boost::make_shared<reconstructor::EraMerger>(event_counter);
-  merger->create();
-  acquirer::file::Receiver reader {boost::make_shared<reconstructor::file::Reconstructor>(merger), ".merged", quote_increment_, base_increment_};
-  try {
-    reader.readAndProcess(era_);
-    return EXIT_SUCCESS;
-  } catch (const std::exception &) {
-    return EXIT_FAILURE;
-  }
-} else {
-  std::cerr << "Usage: oberon merge [options]\n";
-  std::cout << od;
-  return EXIT_FAILURE;
-}
-!!!1596934.cpp!!!	transmute(in od : options_description) : int
-if (!help_ && !era_.empty()) {
-  auto store = boost::make_shared<reconstructor::File>();
-  store->saveDeleted(deleted_).saveDepth(true).saveSpread(true).saveTrades(true);
-  auto transmuter = boost::make_shared<reconstructor::Transmuter>(store);
-  acquirer::file::Receiver reader {boost::make_shared<reconstructor::file::Reconstructor>(transmuter),std::string{}, quote_increment_, base_increment_};
-  try {
-    reader.readAndProcess(era_);
-    return EXIT_SUCCESS;
-  } catch (const std::exception &) {
-    return EXIT_FAILURE;
-  }
-} else {
-  std::cerr << "Usage: oberon transmute [options]\n";
-  std::cout << od;
-  return EXIT_FAILURE;
-}
-!!!1439878.cpp!!!	not_yet_implemented() : int
-std::cerr << "Not yet implemented.\n";
-return EXIT_FAILURE;

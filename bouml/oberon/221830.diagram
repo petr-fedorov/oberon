@@ -2,134 +2,79 @@ format 224
 
 activitycanvas 128518 activity_ref 168710 // C.01 Init capture
   
-  xyzwh 75 95 2007 663 405
+  xyzwh 52 93 2007 713 621
   params
-    parametercanvas 128646 parameter_ref 164742 // options
-        xyzwh 24 294 2008 103 25
-    end
     parametercanvas 129030 parameter_ref 165126 // reconstructor
-        xyzwh 686 335 2008 103 25
+        xyzwh 713 548 2008 103 25
     end
     parametercanvas 129158 parameter_ref 165254 // receiver
-        xyzwh 686 241 2008 103 25
+        xyzwh 713 395 2008 103 25
     end
   end
 end
 activityactioncanvas 136326 activityaction_ref 315782 // activity action D.2 Init capture - Coinbase
   
   show_opaque_action_definition default
-  xyzwh 364 175 2012 100 60
-  pins
-    pincanvas 137350 pin_ref 441350 // od
-      xyzwh 354 198 2014 11 11 label_xy 321 185
-    end
-    pincanvas 137478 pin_ref 441478 // receiver
-      xyzwh 463 167 2014 11 11 label_xy 405 158
-    end
-    pincanvas 137606 pin_ref 441606 // reconstructor
-      xyzwh 463 222 2014 11 11 label_xy 387 232
-    end
-  end
+  xyzwh 230 380 2012 100 60
 end
 activityactioncanvas 136582 activityaction_ref 315910 // activity action I.3 Init capture - Bitstamp
   
   show_opaque_action_definition default
-  xyzwh 365 276 2012 100 60
-  pins
-    pincanvas 139142 pin_ref 441734 // od
-      xyzwh 355 297 2014 11 11 label_xy 342 309
-    end
-    pincanvas 139270 pin_ref 441862 // receiver
-      xyzwh 464 276 2014 11 11 label_xy 410 259
-    end
-    pincanvas 139398 pin_ref 441990 // reconstructor
-      xyzwh 464 333 2014 11 11 label_xy 379 335
-    end
-  end
+  xyzwh 228 456 2012 100 60
 end
 activityactioncanvas 136710 activityaction_ref 316038 // activity action I.4 Init capture - Bitfinex
   
   show_opaque_action_definition default
-  xyzwh 369 385 2012 100 60
+  xyzwh 232 537 2012 100 60
+end
+activitynodecanvas 136838 activitynode_ref 352006 // decision
+  xyz 408 326 2012
+end
+activityactioncanvas 141702 activityaction_ref 394630 // activity action Read exchange_
+  
+  show_opaque_action_definition default
+  xyzwh 114 319 2020 100 60
   pins
-    pincanvas 139910 pin_ref 442118 // od
-      xyzwh 359 404 2014 11 11 label_xy 340 417
+    pincanvas 141830 pin_ref 540294 // object
+      xyzwh 152 309 2022 11 11 label_xy 104 296
     end
-    pincanvas 140038 pin_ref 442246 // receiver
-      xyzwh 468 378 2014 11 11 label_xy 413 368
-    end
-    pincanvas 140166 pin_ref 442374 // reconstructor
-      xyzwh 468 433 2014 11 11 label_xy 391 440
+    pincanvas 141958 pin_ref 540422 // result
+      xyzwh 213 338 2022 11 11 label_xy 217 317
     end
   end
 end
-activitynodecanvas 136838 activitynode_ref 352006 // decision
-  xyz 189 288 2012
-end
-activitynodecanvas 138374 activitynode_ref 352134 // merge
-  xyz 633 237 2013
-end
-activitynodecanvas 138758 activitynode_ref 352262 // merge
-  xyz 632 329 2013
-end
-flowcanvas 138502 flow_ref 515078 // <flow>
+activityactioncanvas 142726 activityaction_ref 394758 // activity action Read self
   
-  from ref 137478 z 2015 to ref 138374
+  show_opaque_action_definition default
+  xyzwh 337 138 2021 100 60
+  pins
+    pincanvas 142854 pin_ref 540550 // result
+      xyzwh 380 197 2022 11 11 label_xy 321 195
+    end
+  end
+end
+activitynodecanvas 143622 activitynode_ref 423174 // fork
+  horizontal  xyzwh 343 230 2012 251 15
+end
+flowcanvas 143366 flow_ref 620806 // <flow>
+  
+  from ref 141958 z 2023 stereotype "<<decisionInputFlow>>" xyz 253 343 3000 to ref 136838
    write_horizontally default
 end
-flowcanvas 138630 flow_ref 515206 // <flow>
+flowcanvas 143750 flow_ref 621062 // <flow>
   
-  from ref 138374 z 2014 to ref 129158
+  from ref 142854 z 2023 to ref 143622
    write_horizontally default
 end
-flowcanvas 138886 flow_ref 515334 // <flow>
+flowcanvas 143878 flow_ref 621190 // <flow>
   
-  from ref 138758 z 2014 to ref 129030
+  from ref 143622 z 2023 to ref 141830
    write_horizontally default
 end
-flowcanvas 139014 flow_ref 515462 // <flow>
+flowcanvas 144006 flow_ref 621318 // <flow>
+  decenter_begin 518
   
-  from ref 137606 z 2015 to ref 138758
-   write_horizontally default
-end
-flowcanvas 139526 flow_ref 515590 // <flow>
-  
-  from ref 139270 z 2015 to ref 138374
-   write_horizontally default
-end
-flowcanvas 139654 flow_ref 515718 // <flow>
-  
-  from ref 139398 z 2015 to ref 138758
-   write_horizontally default
-end
-flowcanvas 140550 flow_ref 516230 // <flow>
-  
-  from ref 140038 z 2015 to ref 138374
-   write_horizontally default
-end
-flowcanvas 140678 flow_ref 516358 // <flow>
-  
-  from ref 140166 z 2015 to ref 138758
-   write_horizontally default
-end
-flowcanvas 140934 flow_ref 516486 // <flow>
-  
-  from ref 136838 z 2015 label "[exchange = Coinbase]" xyz 221 241 2015 to ref 137350
-   write_horizontally default
-end
-flowcanvas 141062 flow_ref 516614 // <flow>
-  
-  from ref 136838 z 2015 label "[exchange = Bitstamp]" xyz 224 294 2015 to ref 139142
-   write_horizontally default
-end
-flowcanvas 141190 flow_ref 516742 // <flow>
-  
-  from ref 136838 z 2015 label "[exchange = Bitfinex]" xyz 229 350 2015 to ref 139910
-   write_horizontally default
-end
-flowcanvas 141318 flow_ref 516870 // <flow>
-  
-  from ref 128646 z 2013 to ref 136838
+  from ref 143622 z 2013 to ref 136838
    write_horizontally default
 end
 end

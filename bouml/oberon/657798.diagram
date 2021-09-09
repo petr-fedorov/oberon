@@ -1,0 +1,40 @@
+format 224
+
+classcanvas 128006 class_ref 1190406 // Acquirer
+  classdiagramsettings member_max_width 0 end
+  xyz 283 116 2000
+end
+classcanvas 128134 class_ref 712966 // Receiver
+  classdiagramsettings member_max_width 0 end
+  xyz 414 249 2000
+end
+classcanvas 128390 class_ref 1074182 // Reader
+  classdiagramsettings member_max_width 0 end
+  xyz 126 282 2000
+end
+classcanvas 128646 class_ref 1217414 // Acquirer_SP
+  classdiagramsettings member_max_width 0 end
+  xyz 102 127 2006
+end
+classcanvas 129414 class_ref 852614 // shared_ptr
+  classdiagramsettings member_max_width 0 end
+  xyz 125 21 2005
+end
+relationcanvas 128262 relation_ref 1404294 // <generalisation>
+  from ref 128134 z 2001 to ref 128006
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 128518 relation_ref 1404422 // <generalisation>
+  from ref 128390 z 2001 to ref 128006
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+line 128774 ---+
+  from ref 128646 z 2007 to ref 128006
+relationcanvas 129542 relation_ref 1433990 // <realization>
+  from ref 128646 z 2007 label "<T->Acquirer>" max_width 255 xyz 125 85 2007 stereotype "<<bind>>" xyz 138 103 3000 to ref 129414
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+end

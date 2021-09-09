@@ -6,7 +6,7 @@ output_.push_back(std::move(received_));
 return true;
 !!!1383686.cpp!!!	orderEvent() : bool
 buffer_.insert(find_if(buffer_.begin(), buffer_.end(),
-                       [&](const Token &t) {
+                       [&](const Message::Message_UP &t) {
                          return t->timestamp() > received_->timestamp();
                        }),
                std::move(received_));
@@ -14,11 +14,11 @@ return true;
 
 !!!1383814.cpp!!!	elapsed() : bool
 auto iter = std::find_if(
-    buffer_.begin(), buffer_.end(), [&](const Token &t) {
+    buffer_.begin(), buffer_.end(), [&](const Message::Message_UP &t) {
       return t->timestamp() > exchange_time_ - delay_;
     });
 std::move(buffer_.begin(), iter, std::back_inserter(output_));
 buffer_.erase(buffer_.begin(), iter);
 return true;
-!!!1384070.cpp!!!	TimeOrderEnforcer(in next : TokenHandler::TokenHandler_SP, in delay : int, in handle_deleted : bool)
+!!!1384070.cpp!!!	TimeOrderEnforcer(in next : MessageHandler::MessageHandler_SP, in delay : int, in handle_deleted : bool)
 BOOST_LOG_TRIVIAL(info) << "Output will be delayed for " << delay << " seconds";

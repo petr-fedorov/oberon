@@ -1,7 +1,19 @@
 class Receiver
 !!!915590.cpp!!!	Receiver()
   _current_state = 0;
+!!!1766790.cpp!!!	acquireAndProcess() : void
+create();
+std::thread t1{[this]() { this->d_->ioc->run(); }};
+std::thread t2{[this]() { this->d_->ioc->run(); }};
+std::thread t3{[this]() { this->d_->ioc->run(); }};
+d_->ioc->run();
+t1.join();
+t2.join();
+t3.join();
+if( exit_code_ != EXIT_SUCCESS)
+  throw std::exception();
 !!!917382.cpp!!!	Receiver(in ioc : io_context_SP, in feeder : Feeder::Feeder_SP, in snapshot : Snapshot::Snapshot_SP, inout processor : ConsumerFn, in exchange : string, in product : string, in quote_increment : string, in base_increment : string)
+d_->ioc = ioc;
 d_->receiving_strand_ = boost::make_unique<boost::asio::io_context::strand>(*ioc);
 d_->processing_strand_ = boost::make_unique<boost::asio::io_context::strand>(*ioc);
 d_->signal_set_ = boost::make_unique<boost::asio::signal_set>(*ioc, SIGINT, SIGTERM);

@@ -1,0 +1,115 @@
+format 224
+
+classcanvas 128006 class_ref 1190406 // Acquirer
+  classdiagramsettings member_max_width 0 end
+  hidden_operations
+    operation_ref 1809030 // ~Acquirer
+  xyz 349 262 2005
+end
+classcanvas 128134 class_ref 712966 // Receiver
+  classdiagramsettings member_max_width 0 end
+  hidden_operations
+    operation_ref 1815686 // classifierBehavior
+    operation_ref 915590 // Receiver
+    operation_ref 917382 // Receiver
+    operation_ref 915718 // ~Receiver
+    operation_ref 916486 // doActivity
+    operation_ref 916614 // _set_currentState
+    operation_ref 916742 // _final
+    operation_ref 1115014 // defer
+    operation_ref 1241478 // _post
+    operation_ref 1138438 // create
+    operation_ref 1138566 // success
+    operation_ref 1138694 // failure
+    operation_ref 1138950 // message
+    operation_ref 1139206 // stop
+    operation_ref 1191174 // postEvent
+    operation_ref 1230214 // postSnapshot
+    operation_ref 1230342 // on_snapshot
+    operation_ref 1205254 // postMessage
+    operation_ref 1205382 // on_message
+  xyz 179 347 2006
+end
+classcanvas 128390 class_ref 1074182 // Reader
+  classdiagramsettings member_max_width 0 end
+  color lightgreen
+  hidden_operations
+    operation_ref 1681926 // createEraMessage
+    operation_ref 1688454 // createResetMessage
+    operation_ref 1681542 // operator >>
+    operation_ref 1681670 // operator bool
+    operation_ref 1701766 // openSourceFile
+    operation_ref 1688582 // parseFileName
+    operation_ref 1681798 // renameFile
+    operation_ref 1695110 // Reader
+    operation_ref 1504390 // parseFileName
+    operation_ref 1504262 // uniqueFileName
+    operation_ref 1475974 // fileExists
+  xyz 591 529 2006
+end
+classcanvas 128646 class_ref 1217414 // Acquirer_SP
+  classdiagramsettings member_max_width 0 end
+  xyz 571 255 2006
+end
+classcanvas 128902 class_ref 852614 // shared_ptr
+  classdiagramsettings member_max_width 0 end
+  xyz 595 11 3005
+end
+packagecanvas 129158 
+  package_ref 208134 // Coinbase
+    xyzwh 54 473 2005 173 147
+end
+classcanvas 129286 class_ref 937606 // Receiver
+  classdiagramsettings member_max_width 0 end
+  color lightgreen
+  hidden_operations
+    operation_ref 1343494 // Receiver
+  xyz 103 529 2012
+end
+packagecanvas 129542 
+  package_ref 147718 // App
+    xyzwh 19 88 1980 779 573
+end
+packagecanvas 129670 
+  package_ref 194822 // Acquirer
+    xyzwh 33 172 1985 741 467
+end
+packagecanvas 129798 
+  package_ref 208262 // Bitstamp
+    xyzwh 268 473 2010 173 147
+end
+classcanvas 130054 class_ref 937734 // Receiver
+  classdiagramsettings member_max_width 0 end
+  color lightgreen
+  hidden_operations
+    operation_ref 1344134 // Receiver
+  xyz 312 529 2015
+end
+relationcanvas 128262 relation_ref 1404294 // <generalisation>
+  from ref 128134 z 2007 to ref 128006
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 128518 relation_ref 1404422 // <generalisation>
+  from ref 128390 z 2007 to ref 128006
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+line 128774 ---+
+  from ref 128646 z 2007 to ref 128006
+relationcanvas 129030 relation_ref 1433990 // <realization>
+  from ref 128646 z 3006 label "<T->Acquirer>" max_width 255 xyz 594.5 160.5 3006 stereotype "<<bind>>" xyz 607.5 178.5 3006 to ref 128902
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 129414 relation_ref 1054342 // <generalisation>
+  from ref 129286 z 2013 to ref 128134
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130182 relation_ref 1054598 // <generalisation>
+  from ref 130054 z 2016 to ref 128134
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+end

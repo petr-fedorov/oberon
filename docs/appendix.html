@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>5 Appendix | Order book events reconstruction from empirical data</title>
   <meta name="description" content="5 Appendix | Order book events reconstruction from empirical data" />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.23 and GitBook 2.6.7" />
 
   <meta property="og:title" content="5 Appendix | Order book events reconstruction from empirical data" />
   <meta property="og:type" content="book" />
@@ -24,7 +24,7 @@
 <meta name="author" content="Petr Fedorov" />
 
 
-<meta name="date" content="2021-05-25" />
+<meta name="date" content="2021-09-09" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +33,8 @@
   
 <link rel="prev" href="discussion.html"/>
 <link rel="next" href="references.html"/>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -50,8 +51,33 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 
 
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
 
 </head>
 
@@ -65,46 +91,63 @@
       <nav role="navigation">
 
 <ul class="summary">
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
 <li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#continuous-time-double-auction-and-lob"><i class="fa fa-check"></i><b>1.1</b> Continuous-time double auction and LOB</a></li>
 <li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#available-data-sets"><i class="fa fa-check"></i><b>1.2</b> Available data sets</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="methods.html"><a href="methods.html"><i class="fa fa-check"></i><b>2</b> Methods</a><ul>
-<li class="chapter" data-level="2.1" data-path="methods.html"><a href="methods.html#definitions"><i class="fa fa-check"></i><b>2.1</b> Definitions</a><ul>
+<li class="chapter" data-level="2" data-path="methods.html"><a href="methods.html"><i class="fa fa-check"></i><b>2</b> Methods</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="methods.html"><a href="methods.html#definitions"><i class="fa fa-check"></i><b>2.1</b> Definitions</a>
+<ul>
 <li class="chapter" data-level="2.1.1" data-path="methods.html"><a href="methods.html#order-function"><i class="fa fa-check"></i><b>2.1.1</b> Order function</a></li>
 <li class="chapter" data-level="2.1.2" data-path="methods.html"><a href="methods.html#order-book"><i class="fa fa-check"></i><b>2.1.2</b> Order book</a></li>
 <li class="chapter" data-level="2.1.3" data-path="methods.html"><a href="methods.html#market-orders"><i class="fa fa-check"></i><b>2.1.3</b> Market orders</a></li>
 <li class="chapter" data-level="2.1.4" data-path="methods.html"><a href="methods.html#level2-order-function"><i class="fa fa-check"></i><b>2.1.4</b> Level2 order function</a></li>
 </ul></li>
-<li class="chapter" data-level="2.2" data-path="methods.html"><a href="methods.html#software"><i class="fa fa-check"></i><b>2.2</b> Software</a><ul>
-<li class="chapter" data-level="2.2.1" data-path="methods.html"><a href="methods.html#capture-order-events"><i class="fa fa-check"></i><b>2.2.1</b> Capture order events</a><ul>
-<li class="chapter" data-level="2.2.1.1" data-path="methods.html"><a href="methods.html#receive-messages"><i class="fa fa-check"></i><b>2.2.1.1</b> Receive messages</a></li>
-<li class="chapter" data-level="2.2.1.2" data-path="methods.html"><a href="methods.html#reconstruct-order-book"><i class="fa fa-check"></i><b>2.2.1.2</b> Reconstruct Order Book</a></li>
-<li class="chapter" data-level="2.2.1.3" data-path="methods.html"><a href="methods.html#save-output"><i class="fa fa-check"></i><b>2.2.1.3</b> Save output</a></li>
+<li class="chapter" data-level="2.2" data-path="methods.html"><a href="methods.html#software"><i class="fa fa-check"></i><b>2.2</b> Software</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="methods.html"><a href="methods.html#main"><i class="fa fa-check"></i><b>2.2.1</b> Main</a></li>
+<li class="chapter" data-level="2.2.2" data-path="methods.html"><a href="methods.html#parse-options"><i class="fa fa-check"></i><b>2.2.2</b> Parse options</a></li>
+<li class="chapter" data-level="2.2.3" data-path="methods.html"><a href="methods.html#create-reconstructor-and-acquirer"><i class="fa fa-check"></i><b>2.2.3</b> Create reconstructor and acquirer</a>
+<ul>
+<li class="chapter" data-level="2.2.3.1" data-path="methods.html"><a href="methods.html#create-acquirer"><i class="fa fa-check"></i><b>2.2.3.1</b> Create acquirer</a></li>
+<li class="chapter" data-level="2.2.3.2" data-path="methods.html"><a href="methods.html#create-reconstructor"><i class="fa fa-check"></i><b>2.2.3.2</b> Create reconstructor</a></li>
 </ul></li>
-<li class="chapter" data-level="2.2.2" data-path="methods.html"><a href="methods.html#slice-merge-and-transmute-era-files"><i class="fa fa-check"></i><b>2.2.2</b> Slice, merge and transmute era files</a><ul>
-<li class="chapter" data-level="2.2.2.1" data-path="methods.html"><a href="methods.html#era-file-reader"><i class="fa fa-check"></i><b>2.2.2.1</b> Era file reader</a></li>
-<li class="chapter" data-level="2.2.2.2" data-path="methods.html"><a href="methods.html#slice"><i class="fa fa-check"></i><b>2.2.2.2</b> Slice</a></li>
-<li class="chapter" data-level="2.2.2.3" data-path="methods.html"><a href="methods.html#merge"><i class="fa fa-check"></i><b>2.2.2.3</b> Merge</a></li>
-<li class="chapter" data-level="2.2.2.4" data-path="methods.html"><a href="methods.html#transmute"><i class="fa fa-check"></i><b>2.2.2.4</b> Transmute</a></li>
+<li class="chapter" data-level="2.2.4" data-path="methods.html"><a href="methods.html#acquire-and-process"><i class="fa fa-check"></i><b>2.2.4</b> Acquire and process</a>
+<ul>
+<li class="chapter" data-level="2.2.4.1" data-path="methods.html"><a href="methods.html#receiver-acquire-and-process"><i class="fa fa-check"></i><b>2.2.4.1</b> Receiver</a></li>
+<li class="chapter" data-level="2.2.4.2" data-path="methods.html"><a href="methods.html#reader-acquire-and-process"><i class="fa fa-check"></i><b>2.2.4.2</b> Reader</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2.5" data-path="methods.html"><a href="methods.html#receive-messages"><i class="fa fa-check"></i><b>2.2.5</b> Receive messages</a></li>
+<li class="chapter" data-level="2.2.6" data-path="methods.html"><a href="methods.html#process-message"><i class="fa fa-check"></i><b>2.2.6</b> Process message</a></li>
+<li class="chapter" data-level="2.2.7" data-path="methods.html"><a href="methods.html#handle-message"><i class="fa fa-check"></i><b>2.2.7</b> Handle message</a></li>
+<li class="chapter" data-level="2.2.8" data-path="methods.html"><a href="methods.html#output-format"><i class="fa fa-check"></i><b>2.2.8</b> Output format</a>
+<ul>
+<li class="chapter" data-level="2.2.8.1" data-path="methods.html"><a href="methods.html#file"><i class="fa fa-check"></i><b>2.2.8.1</b> File</a></li>
 </ul></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>3</b> Results</a><ul>
-<li class="chapter" data-level="3.1" data-path="results.html"><a href="results.html#fragments-of-extracted-events"><i class="fa fa-check"></i><b>3.1</b> Fragments of extracted events</a><ul>
+<li class="chapter" data-level="3" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>3</b> Results</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="results.html"><a href="results.html#fragments-of-extracted-events"><i class="fa fa-check"></i><b>3.1</b> Fragments of extracted events</a>
+<ul>
 <li class="chapter" data-level="3.1.1" data-path="results.html"><a href="results.html#coinbase"><i class="fa fa-check"></i><b>3.1.1</b> Coinbase</a></li>
 <li class="chapter" data-level="3.1.2" data-path="results.html"><a href="results.html#bitstamp"><i class="fa fa-check"></i><b>3.1.2</b> Bitstamp</a></li>
 <li class="chapter" data-level="3.1.3" data-path="results.html"><a href="results.html#bitfinex"><i class="fa fa-check"></i><b>3.1.3</b> Bitfinex</a></li>
 </ul></li>
-<li class="chapter" data-level="3.2" data-path="results.html"><a href="results.html#fragments-of-cleansed-data"><i class="fa fa-check"></i><b>3.2</b> Fragments of cleansed data</a><ul>
+<li class="chapter" data-level="3.2" data-path="results.html"><a href="results.html#fragments-of-cleansed-data"><i class="fa fa-check"></i><b>3.2</b> Fragments of cleansed data</a>
+<ul>
 <li class="chapter" data-level="3.2.1" data-path="results.html"><a href="results.html#bitstamp-1"><i class="fa fa-check"></i><b>3.2.1</b> Bitstamp</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="discussion.html"><a href="discussion.html"><i class="fa fa-check"></i><b>4</b> Discussion</a></li>
-<li class="chapter" data-level="5" data-path="appendix.html"><a href="appendix.html"><i class="fa fa-check"></i><b>5</b> Appendix</a><ul>
+<li class="chapter" data-level="5" data-path="appendix.html"><a href="appendix.html"><i class="fa fa-check"></i><b>5</b> Appendix</a>
+<ul>
 <li class="chapter" data-level="5.1" data-path="appendix.html"><a href="appendix.html#examples-of-order-tables-and-restored-functions"><i class="fa fa-check"></i><b>5.1</b> Examples of order tables and restored functions</a></li>
 <li class="chapter" data-level="5.2" data-path="appendix.html"><a href="appendix.html#example-of-lob"><i class="fa fa-check"></i><b>5.2</b> Example of LOB</a></li>
-<li class="chapter" data-level="5.3" data-path="appendix.html"><a href="appendix.html#token-handlers"><i class="fa fa-check"></i><b>5.3</b> Token handlers</a><ul>
+<li class="chapter" data-level="5.3" data-path="appendix.html"><a href="appendix.html#message-handlers"><i class="fa fa-check"></i><b>5.3</b> Message handlers</a>
+<ul>
 <li class="chapter" data-level="5.3.1" data-path="appendix.html"><a href="appendix.html#synchronizer"><i class="fa fa-check"></i><b>5.3.1</b> Synchronizer</a></li>
 <li class="chapter" data-level="5.3.2" data-path="appendix.html"><a href="appendix.html#timeorderenforcer"><i class="fa fa-check"></i><b>5.3.2</b> TimeOrderEnforcer</a></li>
 <li class="chapter" data-level="5.3.3" data-path="appendix.html"><a href="appendix.html#deduplicator"><i class="fa fa-check"></i><b>5.3.3</b> Deduplicator</a></li>
@@ -128,9 +171,9 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="appendix" class="section level1">
+<div id="appendix" class="section level1" number="5">
 <h1><span class="header-section-number">5</span> Appendix</h1>
-<div id="examples-of-order-tables-and-restored-functions" class="section level2">
+<div id="examples-of-order-tables-and-restored-functions" class="section level2" number="5.1">
 <h2><span class="header-section-number">5.1</span> Examples of order tables and restored functions</h2>
 <p>Let’s start from the simplest case possible.</p>
 <table class="huxtable" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  " id="tab:e1-table">
@@ -564,7 +607,7 @@
 <p>Note that <em>both</em> filled volume function <span class="math inline">\(f_v(t)\)</span> as defined by <a href="methods.html#def:filled-volume">2.4</a> and amended volume function <span class="math inline">\(a_v(t)\)</span> as defined by <a href="methods.html#def:amended-volume">2.5</a> are non-zero at <span class="math inline">\(t = t_{1,2} = t_{2,1} = t_{2,2} = {\small \text{14:02:03.000}}\)</span>:
 <span class="math display">\[f_v({\small \text{14:02:03.000}}) = -3.0 \\a_v({\small \text{14:02:03.000}}) = -2.0\]</span></p>
 </div>
-<div id="example-of-lob" class="section level2">
+<div id="example-of-lob" class="section level2" number="5.2">
 <h2><span class="header-section-number">5.2</span> Example of LOB</h2>
 <p>Table <a href="appendix.html#tab:example-order-table">5.9</a> contains a consolidated order table for six limit orders</p>
 <table class="huxtable" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; width: 90%; margin-left: 0%; margin-right: auto;  " id="tab:example-order-table">
@@ -603,7 +646,7 @@
 </table>
 
 <p>Figure <a href="appendix.html#fig:example-order-book">5.1</a> shows price and volume functions for six limit orders in table <a href="appendix.html#tab:example-order-table">5.9</a>.</p>
-<div class="figure"><span id="fig:example-order-book"></span>
+<div class="figure"><span style="display:block;" id="fig:example-order-book"></span>
 <img src="oberon_files/figure-html/example-order-book-1.png" alt="Price and Volume functions for the limit orders in table \@ref(tab:example-order-table)" width="672" />
 <p class="caption">
 Figure 5.1: Price and Volume functions for the limit orders in table <a href="appendix.html#tab:example-order-table">5.9</a>
@@ -625,32 +668,32 @@ Figure 5.1: Price and Volume functions for the limit orders in table <a href="ap
 <li>At 14:00:03.0 a sell market order has been placed, single trade was executed: <span class="math inline">\((\text{14:00:03.0}, 6, 60, 300)\)</span> and, simultaneously, probably as a consequence of the trade, the price of order 6 has been amended from 60 to 20. Note that trade has been executed at price 60.</li>
 </ul>
 </div>
-<div id="token-handlers" class="section level2">
-<h2><span class="header-section-number">5.3</span> Token handlers</h2>
-<div id="synchronizer" class="section level3">
+<div id="message-handlers" class="section level2" number="5.3">
+<h2><span class="header-section-number">5.3</span> Message handlers</h2>
+<div id="synchronizer" class="section level3" number="5.3.1">
 <h3><span class="header-section-number">5.3.1</span> Synchronizer</h3>
 <p>TBD</p>
 </div>
-<div id="timeorderenforcer" class="section level3">
+<div id="timeorderenforcer" class="section level3" number="5.3.2">
 <h3><span class="header-section-number">5.3.2</span> TimeOrderEnforcer</h3>
 <p>TBD</p>
 </div>
-<div id="deduplicator" class="section level3">
+<div id="deduplicator" class="section level3" number="5.3.3">
 <h3><span class="header-section-number">5.3.3</span> Deduplicator</h3>
 <p>TBD</p>
-<div class="figure" style="text-align: center"><span id="fig:redundant-base"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:redundant-base"></span>
 <img src="redundant0.png" alt="States of an order while it being processed by an exchange"  />
 <p class="caption">
 Figure 5.2: States of an order while it being processed by an exchange
 </p>
 </div>
-<div class="figure" style="text-align: center"><span id="fig:redundant-variant1"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:redundant-variant1"></span>
 <img src="redundant1.png" alt="States of an order while it being processed by an exchange"  />
 <p class="caption">
 Figure 5.3: States of an order while it being processed by an exchange
 </p>
 </div>
-<div class="figure" style="text-align: center"><span id="fig:redundant-variant2"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:redundant-variant2"></span>
 <img src="redundant2.png" alt="States of an order while it being processed by an exchange"  />
 <p class="caption">
 Figure 5.4: States of an order while it being processed by an exchange
@@ -688,6 +731,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
@@ -708,10 +752,10 @@ gitbook.start({
 "text": null
 },
 "download": null,
+"search": false,
 "toc": {
 "collapse": "subsection"
-},
-"search": false
+}
 });
 });
 </script>

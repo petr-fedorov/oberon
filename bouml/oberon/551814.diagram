@@ -1,12 +1,12 @@
 format 224
 
-classinstance 128006 class_ref 441222 // TokenHandler
-  name "this"   xyz 191 33 2005 life_line_z 2005
-classinstance 128646 class_ref 903046 // Tokens
-  name "output_"   xyz 549 33 2005 life_line_z 2005
-classinstance 130054 class_ref 902918 // Token
-  name "token_in"   xyz 426 35 2005 life_line_z 2005
-fragment 131206 "sd TokenHandler - handle"
+classinstance 128006 class_ref 441222 // MessageHandler
+  name "this"   xyz 181 33 2005 life_line_z 2005
+classinstance 128646 class_ref 903046 // Messages
+  name "output_"   xyz 571 36 2005 life_line_z 2005
+classinstance 130054 class_ref 902918 // Message_UP
+  name "input"   xyz 414 35 2005 life_line_z 2005
+fragment 131206 "sd MessageHandler - handle"
   xyzwh 44 3 0 690 525
 end
 fragment 131334 "ref"
@@ -21,32 +21,32 @@ textcanvas 132486 "[current_time  > exchange_time]"
 note 132614 "elapsed() is triggered by any message type when timestamp() returns greater  time"
   xyzwh 502 274 2010 229 75
 classinstancecanvas 133766 classinstance_ref 134534 // 
-  xyz 54 37 2005 life_line_z 2000
+  xyz 53 34 2005 life_line_z 2000
 end
-durationcanvas 128262 classinstance_ref 128006 // this:TokenHandler
-  xyzwh 239 83 2015 11 430
+durationcanvas 128262 classinstance_ref 128006 // this:MessageHandler
+  xyzwh 238 83 2015 11 430
   overlappingdurationcanvas 132230
-    xyzwh 245 309 2025 11 25
+    xyzwh 244 309 2025 11 25
   end
 end
-durationcanvas 128902 classinstance_ref 128646 // output_:Tokens
-  xyzwh 590 123 2010 11 29
+durationcanvas 128902 classinstance_ref 128646 // output_:Messages
+  xyzwh 620 123 2010 11 29
 end
-durationcanvas 131846 classinstance_ref 130054 // token_in:Token
-  xyzwh 467 264 2015 11 35
+durationcanvas 131846 classinstance_ref 130054 // input:Message_UP
+  xyzwh 465 264 2015 11 35
 end
-durationcanvas 132742 classinstance_ref 130054 // token_in:Token
-  xyzwh 467 167 2030 11 38
+durationcanvas 132742 classinstance_ref 130054 // input:Message_UP
+  xyzwh 465 167 2030 11 38
 end
 durationcanvas 133894 classinstance_ref 133766 // :Reconstructor
-  xyzwh 93 84 2010 11 429
+  xyzwh 92 84 2010 11 429
 end
 msg 130822 synchronous
   from durationcanvas_ref 128262
   to durationcanvas_ref 128902
   yz 123 2025 explicitmsg "clear()"
   show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
-  label_xy 357 105
+  label_xy 347 105
 msg 131078 return
   from durationcanvas_ref 128902
   to durationcanvas_ref 128262
@@ -57,41 +57,41 @@ msg 131974 synchronous
   to durationcanvas_ref 131846
   yz 264 2015 explicitmsg "timestamp()"
   show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
-  label_xy 326 246
+  label_xy 316 246
 reflexivemsg 132358 synchronous
   to durationcanvas_ref 132230
   yz 309 3005 msg operation_ref 483590 // "elapsed() : bool"
   show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
-  label_xy 279 305
+  label_xy 280 307
 msg 132870 synchronous
   from durationcanvas_ref 128262
   to durationcanvas_ref 132742
   yz 168 3010 explicitmsg "timestamp()"
   show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
-  label_xy 309 150
+  label_xy 299 150
 msg 132998 return
   from durationcanvas_ref 132742
   to durationcanvas_ref 128262
   yz 194 3015 explicitmsg "current_time = timestamp()"
   show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
-  label_xy 308 176
+  label_xy 298 176
 msg 134150 synchronous
   from durationcanvas_ref 133894
   to durationcanvas_ref 128262
-  yz 84 3020 msg operation_ref 590214 // "handle(in token_in : Token [1]) : Tokens [1]"
+  yz 84 3020 msg operation_ref 590214 // "handle(in input : Message::Message_UP [1]) : Messages [1]"
   show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
-  args "token_in"
-  label_xy 126 66
+  args "input"
+  label_xy 128 65
 msg 134278 return
   from durationcanvas_ref 128262
   to durationcanvas_ref 133894
   yz 502 2035 explicitmsg "output_"
   show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
-  label_xy 151 484
+  label_xy 150 484
 msg 134534 return
   from durationcanvas_ref 131846
   to durationcanvas_ref 128262
   yz 288 2025 explicitmsg "exchange_timestamp = timestamp()"
   show_full_operations_definition default show_class_of_operation default drawing_language default show_context_mode default
-  label_xy 263 270
+  label_xy 253 270
 end

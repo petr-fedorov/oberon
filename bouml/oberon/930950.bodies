@@ -22,7 +22,7 @@ tree.add_child("product_ids", products);
 tree.add_child("channels", channels);
 
 write_json(request, tree, false);
-#ifdef DEBUG
+#ifndef NDEBUG
 BOOST_LOG_TRIVIAL(debug) << "Request: " << request.str();
 #endif
 d_->ws_->async_write(

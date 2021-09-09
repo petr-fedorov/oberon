@@ -1,7 +1,7 @@
 format 224
 "Bitfinex" // App::Reconstr::Bitfinex
-  revision 13
-  modified_by 6 "petr"
+  revision 16
+  modified_by 6 "root"
   // class settings
   
   classdiagramsettings member_max_width 0 end
@@ -74,7 +74,7 @@ ${inlines}
       operation 793222 "Reconstructor"
 	public explicit_return_type ""
 	nparams 1
-	  param inout name "handler" type class_ref 950918 // TokenHandler_SP
+	  param inout name "handler" type class_ref 950918 // MessageHandler_SP
 	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} ${p0}${v0}${)}${volatile}${throw};
 "
 	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${throw} : oberon::reconstructor::Reconstructor(handler) {
@@ -86,8 +86,8 @@ ${inlines}
 	
       end
 
-      operation 792582 "extract"
-	cpp_override protected return_type class_ref 902918 // Token
+      operation 792582 "extractMessage"
+	cpp_override protected return_type class_ref 902918 // Message_UP
 	multiplicity "1..*"
 	nparams 1
 	  param in name "tree" type class_ref 174214 // ptree
@@ -167,7 +167,7 @@ ${inlines}
 	  a public
 	    cpp default "${type}"
 	    classrelation_ref 701318 // <generalisation>
-	  b parent class_ref 441222 // TokenHandler
+	  b parent class_ref 441222 // MessageHandler
       end
 
       operation 806918 "created"
@@ -284,6 +284,7 @@ ${namespace_end}
 #endif
 "
       cpp_src "${comment}
+#include <stdexcept>
 ${includes}
 ${namespace_start}
 ${members}

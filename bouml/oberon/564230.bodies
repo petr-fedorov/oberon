@@ -20,7 +20,7 @@ try {
   em->change_timestamp(em->timestamp() - previous.t);
   eventNumbers_.erase(em->maker());
 } catch (const std::out_of_range &) {
-  BOOST_LOG_TRIVIAL(warning) << "Couldn't find prevsious event for cancelled: " << em->toString();
+  // It is normal to delete a cancellation of market order so we don't log the event
   em->deleted(true);
 }
 output_.push_back(std::move(received_));

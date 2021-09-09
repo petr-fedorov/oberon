@@ -1,7 +1,7 @@
 format 224
 "Reconstr" // App::Reconstr
-  revision 282
-  modified_by 6 "petr"
+  revision 296
+  modified_by 6 "root"
   // class settings
   
   classdiagramsettings member_max_width 0 end
@@ -53,6 +53,11 @@ format 224
     
     activitydiagramsettings
      end
+    classdiagram 552070 "Message hierarchy for process"
+      classdiagramsettings hide_attributes yes hide_operations yes member_max_width 0 end
+      size A4
+    end
+
     class 271366 "BookSide"
       visibility public stereotype "enum"
       cpp_decl "${comment}enum ${name} {
@@ -493,6 +498,30 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
+      class 902918 "Message_UP"
+	visibility public stereotype "template_typedef"
+	nactuals 1
+	actual class class_ref 889478 // unique_ptr
+	  rank 0 value class_ref 245766 // Message
+	cpp_decl "${comment}${template}using ${name} = ${inherit};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 1027334 // <realization>
+	  relation 1016966 -_-|>
+	    stereotype "bind"
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 1027334 // <realization>
+	    b parent class_ref 889478 // unique_ptr
+	end
+      end
+
       class 230278 "Timestamp"
 	visibility public stereotype "typedef" base_type class_ref 514822 // time_point
 	nactuals 2
@@ -563,7 +592,7 @@ ${inlines}
       operation 485510 "accept"
 	abstract const cpp_virtual public explicit_return_type "bool"
 	nparams 1
-	  param in name "mh" type class_ref 441222 // TokenHandler
+	  param in name "mh" type class_ref 441222 // MessageHandler
 	multiplicity "1"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0}* ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
 "
@@ -676,35 +705,11 @@ ${inlines}
       end
     end
 
-    class 902918 "Token"
-      visibility package stereotype "template_typedef"
-      nactuals 1
-      actual class class_ref 889478 // unique_ptr
-        rank 0 value class_ref 245766 // Message
-      cpp_decl "${comment}${template}using ${name} = ${inherit};
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      mysql_decl ""
-      
-      classrelation 1027334 // <realization>
-	relation 1016966 -_-|>
-	  stereotype "bind"
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 1027334 // <realization>
-	  b parent class_ref 889478 // unique_ptr
-      end
-    end
-
-    class 903046 "Tokens"
+    class 903046 "Messages"
       visibility package stereotype "template_typedef"
       nactuals 1
       actual class class_ref 1115142 // list
-        rank 0 value class_ref 902918 // Token
+        rank 0 value class_ref 902918 // Message_UP
       cpp_decl "${comment}${template}using ${name} = ${inherit};
 "
       java_decl ""
@@ -748,7 +753,7 @@ ${inlines}
       operation 642182 "accept"
 	const cpp_override public explicit_return_type "bool"
 	nparams 1
-	  param in name "mh" type class_ref 441222 // TokenHandler
+	  param in name "mh" type class_ref 441222 // MessageHandler
 	multiplicity "1"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0}* ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
 "
@@ -1436,7 +1441,7 @@ ${items}};
       operation 1285510 "accept"
 	const cpp_override public explicit_return_type "bool"
 	nparams 1
-	  param in name "mh" type class_ref 441222 // TokenHandler
+	  param in name "mh" type class_ref 441222 // MessageHandler
 	multiplicity "1"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0}* ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
 "
@@ -2009,7 +2014,7 @@ ${inlines}
       operation 1588358 "accept"
 	const cpp_virtual public explicit_return_type "bool"
 	nparams 1
-	  param in name "mh" type class_ref 441222 // TokenHandler
+	  param in name "mh" type class_ref 441222 // MessageHandler
 	multiplicity "1"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0}* ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
 "
@@ -2155,7 +2160,7 @@ ${inlines}
       operation 1595782 "accept"
 	const cpp_virtual public explicit_return_type "bool"
 	nparams 1
-	  param in name "mh" type class_ref 441222 // TokenHandler
+	  param in name "mh" type class_ref 441222 // MessageHandler
 	multiplicity "1"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0}* ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
 "
@@ -2211,7 +2216,7 @@ ${inlines}
       operation 485638 "accept"
 	const cpp_override cpp_final public explicit_return_type "bool"
 	nparams 1
-	  param in name "mh" type class_ref 441222 // TokenHandler
+	  param in name "mh" type class_ref 441222 // MessageHandler
 	multiplicity "1"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(} ${t0} * ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
 "
@@ -2325,7 +2330,7 @@ ${inlines}
       operation 1384710 "accept"
 	const cpp_override cpp_final public explicit_return_type "bool"
 	nparams 1
-	  param in name "mh" type class_ref 441222 // TokenHandler
+	  param in name "mh" type class_ref 441222 // MessageHandler
 	multiplicity "1"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(} ${t0} * ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
 "
@@ -2374,6 +2379,11 @@ ${inlines}
     
     activitydiagramsettings
      end
+    sequencediagram 551814 "MessageHandler - handle"
+      sequencediagramsettings end
+      overlapping_bars size A4
+    end
+
     classdiagram 492550 "EraMerger"
       classdiagramsettings hide_attributes yes hide_operations yes member_max_width 0 end
       size A4
@@ -3643,10 +3653,10 @@ ${inlines}
       operation 1497606 "EraMerger"
 	force_body_gen public explicit_return_type ""
 	nparams 1
-	  param in name "next" type class_ref 950918 // TokenHandler_SP
+	  param in name "next" type class_ref 950918 // MessageHandler_SP
 	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw}: TokenHandler{next, \"EraMerger\"}, _current_state{0} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw}: MessageHandler{next, \"EraMerger\"}, _current_state{0} {
   ${body}}
 "
 	
@@ -3902,7 +3912,7 @@ ${inlines}
 	  a public
 	    cpp default "${type}"
 	    classrelation_ref 1191814 // <generalisation>
-	  b parent class_ref 441222 // TokenHandler
+	  b parent class_ref 441222 // MessageHandler
       end
 
       classrelation 1252614 // security_ (<directional aggregation>)
@@ -3963,10 +3973,10 @@ ${inlines}
 	public explicit_return_type ""
 	nparams 2
 	  param in name "boundary" explicit_type "int"
-	  param in name "next" type class_ref 950918 // TokenHandler_SP
+	  param in name "next" type class_ref 950918 // MessageHandler_SP
 	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throw} :TokenHandler{next, \"Era Slicer\"}, boundary_{boundary} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throw} : MessageHandler{next, \"Era Slicer\"}, boundary_{boundary} {
   ${body}}
 "
 	
@@ -3980,7 +3990,7 @@ ${inlines}
 	  a public
 	    cpp default "${type}"
 	    classrelation_ref 1182470 // <generalisation>
-	  b parent class_ref 441222 // TokenHandler
+	  b parent class_ref 441222 // MessageHandler
       end
 
       attribute 918662 "active_orders_"
@@ -4350,6 +4360,30 @@ ${inlines}
       ncouples 1
       key "STM generated" value ""
       comment " implement the state machine SizeDeducer"
+      class 1224326 "SizeDeducer_SP"
+	visibility public stereotype "template_typedef"
+	nactuals 1
+	actual class class_ref 852614 // shared_ptr
+	  rank 0 value class_ref 542982 // SizeDeducer
+	cpp_decl "${comment}${template}using ${name} = ${inherit};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 1460742 // <realization>
+	  relation 1450374 -_-|>
+	    stereotype "bind"
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 1460742 // <realization>
+	    b parent class_ref 852614 // shared_ptr
+	end
+      end
+
       class 958470 "AnyState"
 	abstract visibility protected 
 	cpp_decl "${comment}${template}class ${name}${inherit} {
@@ -5384,10 +5418,10 @@ ${inlines}
       operation 1370630 "SizeDeducer"
 	force_body_gen public explicit_return_type ""
 	nparams 1
-	  param in name "next" type class_ref 950918 // TokenHandler_SP
+	  param in name "next" type class_ref 950918 // MessageHandler_SP
 	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} : TokenHandler{next, \"SizeDeducer\"}, _current_state{0} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} : MessageHandler{next, \"SizeDeducer\"}, _current_state{0} {
   ${body}}
 "
 	
@@ -5526,7 +5560,7 @@ ${inlines}
 	  a public
 	    cpp default "${type}"
 	    classrelation_ref 1087110 // <generalisation>
-	  b parent class_ref 441222 // TokenHandler
+	  b parent class_ref 441222 // MessageHandler
       end
 
       attribute 841350 "_sizededucer_state"
@@ -5708,7 +5742,7 @@ ${inlines}
       size A4
     end
 
-    class 441222 "TokenHandler"
+    class 441222 "MessageHandler"
       abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -5721,11 +5755,11 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
-      class 950918 "TokenHandler_SP"
+      class 950918 "MessageHandler_SP"
 	visibility public stereotype "template_typedef"
 	nactuals 1
 	actual class class_ref 852614 // shared_ptr
-	  rank 0 value class_ref 441222 // TokenHandler
+	  rank 0 value class_ref 441222 // MessageHandler
 	cpp_decl "${comment}${template}using ${name} = ${inherit};
 "
 	java_decl ""
@@ -5746,7 +5780,7 @@ ${inlines}
       end
 
       attribute 806790 "received_"
-	protected type class_ref 902918 // Token
+	protected type class_ref 902918 // Message_UP
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -5772,7 +5806,7 @@ ${inlines}
       end
 
       attribute 806918 "output_"
-	protected type class_ref 903046 // Tokens
+	protected type class_ref 903046 // Messages
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -5815,10 +5849,10 @@ ${inlines}
 	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${stereotype}<${const}${type}> ${name}${value};
 "
 	    classrelation_ref 1078406 // next_ (<directional aggregation>)
-	  b parent class_ref 441222 // TokenHandler
+	  b parent class_ref 441222 // MessageHandler
       end
 
-      operation 722182 "TokenHandler"
+      operation 722182 "MessageHandler"
 	public explicit_return_type ""
 	nparams 2
 	  param in name "handler_name" explicit_type "string"
@@ -5836,10 +5870,10 @@ ${inlines}
 	
       end
 
-      operation 1358086 "TokenHandler"
+      operation 1358086 "MessageHandler"
 	public explicit_return_type ""
 	nparams 3
-	  param in name "next" type class_ref 950918 // TokenHandler_SP
+	  param in name "next" type class_ref 950918 // MessageHandler_SP
 	  param in name "handler_name" explicit_type "string"
 	    defaultvalue "\"< a token handler>\""
 	  param in name "handle_deleted" explicit_type "bool"
@@ -5855,7 +5889,7 @@ ${inlines}
 	
       end
 
-      operation 722310 "~TokenHandler"
+      operation 722310 "~MessageHandler"
 	cpp_virtual public explicit_return_type ""
 	nparams 0
 	cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
@@ -5870,14 +5904,16 @@ ${inlines}
       end
 
       operation 590214 "handle"
-	public return_type class_ref 903046 // Tokens
+	public return_type class_ref 903046 // Messages
 	multiplicity "1"
 	nparams 1
-	  param in name "token_in" type class_ref 902918 // Token
+	  param in name "input" type class_ref 902918 // Message_UP
 	multiplicity "1"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} && ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+	nexceptions 1
+	  exception class_ref 1108486 // processing_error
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} && ${p0}${v0}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} && ${p0}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} && ${p0}${)}${const}${volatile}${staticnl}{
   ${body}}
 "
 	
@@ -6078,7 +6114,7 @@ ${inlines}
       end
 
       operation 1674886 "next"
-	const cpp_inline public return_type class_ref 950918 // TokenHandler_SP
+	const cpp_inline public return_type class_ref 950918 // MessageHandler_SP
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -6090,6 +6126,11 @@ ${inlines}
 	
 	
       end
+    end
+
+    classdiagram 717446 "EventCounter"
+      classdiagramsettings member_max_width 0 end
+      size A4
     end
 
     class 564230 "EventCounter"
@@ -6105,6 +6146,30 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
+      class 1224198 "EventCounter_SP"
+	visibility public stereotype "template_typedef"
+	nactuals 1
+	actual class class_ref 852614 // shared_ptr
+	  rank 0 value class_ref 564230 // EventCounter
+	cpp_decl "${comment}${template}using ${name} = ${inherit};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 1460614 // <realization>
+	  relation 1450246 -_-|>
+	    stereotype "bind"
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 1460614 // <realization>
+	    b parent class_ref 852614 // shared_ptr
+	end
+      end
+
       class 1128198 "Saved"
 	visibility private stereotype "struct"
 	cpp_decl "${comment}${template}struct ${name}${inherit} {
@@ -6162,7 +6227,7 @@ ${members}};
 	  a public
 	    cpp default "${type}"
 	    classrelation_ref 615430 // <generalisation>
-	  b parent class_ref 441222 // TokenHandler
+	  b parent class_ref 441222 // MessageHandler
       end
 
       attribute 458374 "eventNumbers_"
@@ -6182,10 +6247,10 @@ ${members}};
       operation 1370502 "EventCounter"
 	public explicit_return_type ""
 	nparams 1
-	  param in name "next" type class_ref 950918 // TokenHandler_SP
+	  param in name "next" type class_ref 950918 // MessageHandler_SP
 	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} ${p0}${v0}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${throw} :TokenHandler{next, \"EventCounter\"} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${throw} : MessageHandler{next, \"EventCounter\"} {
   ${body}}
 "
 	
@@ -6283,6 +6348,30 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
+      class 1224070 "File_SP"
+	visibility public stereotype "template_typedef"
+	nactuals 1
+	actual class class_ref 852614 // shared_ptr
+	  rank 0 value class_ref 229510 // File
+	cpp_decl "${comment}${template}using ${name} = ${inherit};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	classrelation 1460486 // <realization>
+	  relation 1450118 -_-|>
+	    stereotype "bind"
+	    a public
+	      cpp default "${type}"
+	      classrelation_ref 1460486 // <realization>
+	    b parent class_ref 852614 // shared_ptr
+	end
+      end
+
       operation 1646598 "removeTrailingZeros"
 	class_operation cpp_inline private explicit_return_type "string"
 	nparams 1
@@ -6320,7 +6409,7 @@ ${inlines}
 	nparams 0
 	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw}: TokenHandler{\"File\"} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)}${volatile}${throw}: MessageHandler{\"File\"} {
   ${body}}
 "
 	
@@ -6562,7 +6651,7 @@ ${inlines}
 	  a public
 	    cpp default "${type}"
 	    classrelation_ref 1028102 // <generalisation>
-	  b parent class_ref 441222 // TokenHandler
+	  b parent class_ref 441222 // MessageHandler
       end
 
       classrelation 1028230 // <dependency>
@@ -6760,7 +6849,6 @@ ${inlines}
 	    classrelation_ref 1287814 // <dependency>
 	  b parent class_ref 1080966 // Stripe
       end
-
     end
 
     classdiagram 525190 "Transmuter"
@@ -6784,10 +6872,10 @@ ${inlines}
       operation 1605638 "Transmuter"
 	public explicit_return_type ""
 	nparams 1
-	  param in name "next" type class_ref 950918 // TokenHandler_SP
+	  param in name "next" type class_ref 950918 // MessageHandler_SP
 	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} ${p0}${v0}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${volatile}${throw} : TokenHandler{next, \"Transmuter - \", false} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${volatile}${throw} : MessageHandler{next, \"Transmuter - \", false} {
   ${body}}
 "
 	
@@ -6801,7 +6889,7 @@ ${inlines}
 	  a public
 	    cpp default "${type}"
 	    classrelation_ref 1273222 // <generalisation>
-	  b parent class_ref 441222 // TokenHandler
+	  b parent class_ref 441222 // MessageHandler
       end
 
       class 1087750 "PriceLevel"
@@ -6845,7 +6933,7 @@ ${inlines}
 	  public explicit_return_type "bool"
 	  nparams 2
 	    param inout name "event" type class_ref 1040262 // OrderEvent_UP
-	    param out name "stripes" type class_ref 903046 // Tokens
+	    param out name "stripes" type class_ref 903046 // Messages
 	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} && ${p0}${v0}, ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
 "
 	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${t0} && ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
@@ -6861,7 +6949,7 @@ ${inlines}
 	  public explicit_return_type "void"
 	  nparams 2
 	    param in name "timestamp" type class_ref 230278 // Timestamp
-	    param out name "stripes" type class_ref 903046 // Tokens
+	    param out name "stripes" type class_ref 903046 // Messages
 	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}, ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
 "
 	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
@@ -6901,7 +6989,7 @@ ${inlines}
 	  public explicit_return_type "void"
 	  nparams 2
 	    param in name "timestamp" type class_ref 230278 // Timestamp
-	    param out name "stripes" type class_ref 903046 // Tokens
+	    param out name "stripes" type class_ref 903046 // Messages
 	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}, ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
 "
 	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
@@ -6917,7 +7005,7 @@ ${inlines}
 	  public explicit_return_type "void"
 	  nparams 2
 	    param in name "timestamp" type class_ref 230278 // Timestamp
-	    param out name "stripes" type class_ref 903046 // Tokens
+	    param out name "stripes" type class_ref 903046 // Messages
 	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}, ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
 "
 	  cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
@@ -7786,7 +7874,7 @@ ${inlines}
 	relation 1396870 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 1407238 // <dependency>
 	  b parent class_ref 1176710 // waiting_State
       end
@@ -7812,7 +7900,7 @@ ${inlines}
 	relation 1396998 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 1407366 // <dependency>
 	  b parent class_ref 1176582 // PriceChangeEliminator_State
       end
@@ -8302,6 +8390,21 @@ ${inlines}
 	key "STM generated" value ""
       end
 
+      operation 1781126 "SamePriceMerger"
+	force_body_gen public explicit_return_type ""
+	nparams 1
+	  param in name "next" type class_ref 950918 // MessageHandler_SP
+	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} : TokenHandler{next, \"SamePriceMerger\"}, _current_state{0}  {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
       operation 1745030 "~SamePriceMerger"
 	force_body_gen cpp_virtual public explicit_return_type ""
 	nparams 0
@@ -8356,7 +8459,7 @@ ${inlines}
 	relation 1397510 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 1407878 // <dependency>
 	  b parent class_ref 1177222 // waiting_State
       end
@@ -8382,7 +8485,7 @@ ${inlines}
 	relation 1397638 -_->
 	  stereotype "friend"
 	  a public
-	    cpp default "#include in source"
+	    cpp default "${type}"
 	    classrelation_ref 1408006 // <dependency>
 	  b parent class_ref 1177094 // SamePriceMerger_State
       end
@@ -8471,6 +8574,11 @@ ${inlines}
     
     activitydiagramsettings
      end
+    sequencediagram 545286 "Message - accept"
+      sequencediagramsettings end
+      overlapping_bars size A4
+    end
+
     class 1108486 "processing_error"
       visibility public 
       cpp_decl "${comment}${template}class ${name}${inherit} {
@@ -8617,12 +8725,17 @@ ${inlines}
       end
 
       operation 576006 "extract"
-	abstract cpp_virtual protected return_type class_ref 902918 // Token
+	cpp_virtual protected return_type class_ref 903046 // Messages
 	multiplicity "1..*"
 	nparams 1
 	  param in name "tree" type class_ref 174214 // ptree
 	multiplicity "1"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+	nexceptions 1
+	  exception class_ref 1108614 // exception
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
+  ${body}}
 "
 	
 	
@@ -8636,7 +8749,7 @@ ${inlines}
 	  param in name "message" type class_ref 174214 // ptree
 	multiplicity "1"
 	nexceptions 1
-	  exception class_ref 1108486 // processing_error
+	  exception class_ref 1108614 // exception
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};
 "
 	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
@@ -8651,7 +8764,7 @@ ${inlines}
       operation 827910 "Reconstructor"
 	public explicit_return_type ""
 	nparams 1
-	  param in name "handler" type class_ref 950918 // TokenHandler_SP
+	  param in name "handler" type class_ref 950918 // MessageHandler_SP
 	cpp_decl "    ${comment}${inline}${typeprefix}${name}${(}${t0} ${p0}${v0}${)}${volatile}${throw};
 "
 	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}${throw} : next_{handler} {
@@ -8670,7 +8783,7 @@ ${inlines}
 	    cpp default "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
 "
 	    classrelation_ref 1359494 // next_ (<directional aggregation>)
-	  b parent class_ref 441222 // TokenHandler
+	  b parent class_ref 441222 // MessageHandler
       end
 
       operation 1701638 "~Reconstructor"
@@ -8685,6 +8798,445 @@ ${inlines}
 	
 	
 	
+      end
+
+      operation 1829638 "extractMessage"
+	abstract cpp_virtual protected return_type class_ref 902918 // Message_UP
+	multiplicity "1..*"
+	nparams 1
+	  param in name "tree" type class_ref 174214 // ptree
+	multiplicity "1"
+	nexceptions 1
+	  exception class_ref 1108614 // exception
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};
+"
+	
+	
+	
+	
+      end
+    end
+
+    activity 188294 "Process message (obsolete)"
+      specification operation_ref 575878 // process
+      activitydiagram 572166 "Process message"
+	activitydiagramsettings
+	 end
+	size A4
+      end
+
+      parameter 245766 "tree" type class_ref 174214 // ptree
+	 multiplicity "1" unordered 
+	in
+	flow 455046 "D.01.2"
+	  on pin_ref 394246 // tree
+	end
+      end
+
+      parameter 246022 "target" type class_ref 486278 // Reconstructor
+	 multiplicity "1" unordered 
+	in
+	flow 493574 "D.01.1"
+	  on activitynode_ref 345094 // fork
+	end
+      end
+
+      activityaction 287366 "extract"
+	call_operation_action
+	synchronous operation_ref 576006 // extract
+	pin 394246 "tree" type class_ref 174214 // ptree
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 396806 "target" type class_ref 486278 // Reconstructor
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 394118 "out" type class_ref 902918 // Message_UP
+	   multiplicity "1" unordered is_control
+	  return
+	  flow 493958 "D.01.4"
+	    on pin_ref 420870 // token_in
+	  end
+	end
+
+	pin 397702 "error" type class_ref 1108486 // processing_error
+	   multiplicity "1" unordered 
+	  out exception
+	  flow 457862 "D.01.6"
+	    on parameter_ref 245894 // error
+	  end
+	end
+      end
+
+      parameter 245894 "error" type class_ref 1108486 // processing_error
+	 multiplicity "1" unordered is_control
+	out exception
+      end
+
+      activityaction 309126 "Chain of handlers"
+	call_behavior_action
+	synchronous activity_ref 201350 // Chain of handlers
+	pin 420870 "token_in" type class_ref 902918 // Message_UP
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 420998 "handler" type class_ref 441222 // MessageHandler
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 421126 "error" explicit_type ""
+	   multiplicity "1" unordered 
+	  out exception
+	  flow 494086 "D.01.7"
+	    on parameter_ref 245894 // error
+	  end
+	end
+      end
+
+      activitynode 345094 fork ""
+	flow 493702 "D.01.3"
+	  on pin_ref 396806 // target
+	end
+
+	flow 587014 "D.01.5"
+	  on pin_ref 507014 // object
+	end
+      end
+
+      activityaction 366470 "Read \"next_\""
+	read_structural_feature_action
+	classrelation_ref 1078406 // next_ (<directional aggregation>)
+	pin 507014 "object" type class_ref 486278 // Reconstructor
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 507142 "result" type class_ref 441222 // MessageHandler
+	   multiplicity "1" unordered is_control
+	  out
+	  flow 588422 "D.01.8"
+	    on pin_ref 420998 // handler
+	  end
+	end
+      end
+    end
+
+    activity 201350 "Chain of handlers"
+      parameter 259206 "token_in" explicit_type ""
+	unordered 
+	in
+	flow 491654 "E.01.2"
+	  on activitynode_ref 344326 // merge
+	end
+      end
+
+      parameter 259334 "handler" type class_ref 441222 // MessageHandler
+	 multiplicity "1" unordered is_control
+	in
+	flow 491270 "E.01.1"
+	  on activitynode_ref 344198 // fork
+	end
+      end
+
+      parameter 265862 "error" type class_ref 1108486 // processing_error
+	 multiplicity "1" unordered is_control
+	out exception
+      end
+
+      expansionregion 154886 ""
+	iterative
+	activityaction 302342 "handle"
+	  call_operation_action
+	  synchronous operation_ref 590214 // handle
+	  pin 419718 "target" type class_ref 441222 // MessageHandler
+	     multiplicity "1" unordered is_control
+	    in
+	  end
+
+	  pin 419846 "token_out" type class_ref 902918 // Message_UP
+	     multiplicity "*" unordered is_control
+	    return
+	    flow 493190 "E.01.8"
+	      on expansionnode_ref 155398 // output
+	    end
+	  end
+
+	  pin 419974 "token_in" type class_ref 902918 // Message_UP
+	     multiplicity "1" unordered is_control
+	    in
+	  end
+
+	  pin 421254 "error" type class_ref 1108486 // processing_error
+	     multiplicity "1" unordered 
+	    out exception
+	    flow 493446 "E.01.14"
+	      on parameter_ref 265862 // error
+	    end
+	  end
+	end
+
+	expansionnode 155270 "input"
+	   type class_ref 902918 // Message_UP
+	   multiplicity "1..*" unordered is_control
+	  flow 493318 "E.01.7"
+	    on pin_ref 419974 // token_in
+	  end
+	end
+
+	expansionnode 155398 "output"
+	   type class_ref 902918 // Message_UP
+	   multiplicity "*" fifo is_control
+	  flow 492678 "E.01.9"
+	    on activitynode_ref 344582 // join
+	  end
+	end
+      end
+
+      activitynode 344198 fork ""
+	flow 492422 "E.01.3"
+	  on activitynode_ref 344326 // merge
+	end
+
+	flow 586758 "E.01.10"
+	  on pin_ref 506758 // object
+	end
+      end
+
+      activitynode 344326 merge ""
+	flow 492038 "E.01.4"
+	  on activitynode_ref 344454 // decision
+	end
+      end
+
+      activitynode 344454 decision ""
+	flow 492166 "E.01.5"
+	  on expansionnode_ref 155270 // input
+	    uml_guard "else"
+	end
+
+	flow 492294 "E.01.6"
+	  on pin_ref 419718 // target
+	    uml_guard "is TokenHandler"
+	end
+      end
+
+      activitynode 344582 join ""
+	flow 492806 "E.01.11"
+	  on activitynode_ref 344838 // decision
+	end
+      end
+
+      activitynode 344838 decision ""
+	flow 492934 "E.01.13"
+	  on activitynode_ref 344966 // activity_final
+	    uml_guard "empty"
+	end
+
+	flow 493062 "E.01.12"
+	  on activitynode_ref 344326 // merge
+	    uml_guard "else"
+	end
+      end
+
+      activitynode 344966 activity_final ""
+      end
+
+      activityaction 366342 "Read \"next_\""
+	read_structural_feature_action
+	classrelation_ref 1078406 // next_ (<directional aggregation>)
+	pin 506758 "object" type class_ref 441222 // MessageHandler
+	   multiplicity "1" unordered is_control
+	  in
+	end
+
+	pin 506886 "result" type class_ref 441222 // MessageHandler
+	   multiplicity "0..1" unordered is_control
+	  out
+	  flow 586886 "E.01.14"
+	    on activitynode_ref 344582 // join
+	  end
+	end
+      end
+    end
+
+    activity 294022 "Process message"
+      specification operation_ref 575878 // process
+      activitydiagram 704390 "Process message"
+	activitydiagramsettings
+	 end
+	size A4
+      end
+
+      parameter 349574 "message" type class_ref 174214 // ptree
+	 multiplicity "1" unordered 
+	in
+	flow 729990 "<flow>"
+	  on pin_ref 638726 // 
+	end
+      end
+
+      parameter 349702 "error" type class_ref 1108614 // exception
+	 multiplicity "1" unordered is_control
+	out exception
+      end
+
+      activityaction 465542 "Extract message"
+	call_operation_action
+	synchronous operation_ref 576006 // extract
+	pin 638470 "self" type class_ref 486278 // Reconstructor
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 638598 "" type class_ref 903046 // Messages
+	   multiplicity "1" unordered 
+	  return
+	  flow 730246 "<flow>"
+	    on activitynode_ref 484358 // merge
+	  end
+	end
+
+	pin 638726 "" type class_ref 174214 // ptree
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 639622 "" type class_ref 1108614 // exception
+	   multiplicity "1" unordered is_control
+	  out exception
+	  flow 733318 "<flow>"
+	    on activitynode_ref 485638 // merge
+	  end
+	end
+      end
+
+      activitynode 484230 merge ""
+	flow 732294 "<flow>"
+	  on activitynode_ref 485254 // join
+	end
+      end
+
+      activityaction 465670 "Read \"next_\""
+	read_structural_feature_action
+	classrelation_ref 1359494 // next_ (<directional aggregation>)
+	pin 638854 "self" type class_ref 486278 // Reconstructor
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 638982 "" type class_ref 441222 // MessageHandler
+	   multiplicity "1" unordered 
+	  out
+	  flow 730118 "<flow>"
+	    on activitynode_ref 484230 // merge
+	  end
+	end
+      end
+
+      activitynode 484358 merge ""
+	flow 732422 "<flow>"
+	  on activitynode_ref 485254 // join
+	end
+      end
+
+      activitynode 484742 activity_final ""
+      end
+
+      activitynode 484870 decision ""
+	flow 730630 "<flow>"
+	  on activitynode_ref 484742 // activity_final
+	    uml_guard "empty"
+	end
+
+	flow 732550 "<flow>"
+	  on activitynode_ref 485382 // fork
+	    uml_guard "is MessageHandler"
+	end
+
+	flow 732806 "<flow>"
+	  on expansionnode_ref 182406 // input
+	    uml_guard "is Messages"
+	end
+      end
+
+      expansionregion 174854 "handle"
+	iterative
+	activityaction 465798 "Handle message"
+	  call_operation_action
+	  synchronous operation_ref 590214 // handle
+	  pin 639110 "target" type class_ref 441222 // MessageHandler
+	    unordered is_control
+	    in
+	  end
+
+	  pin 639238 "" type class_ref 903046 // Messages
+	     multiplicity "1" unordered 
+	    return
+	    flow 731270 "<flow>"
+	      on expansionnode_ref 182534 // output
+	    end
+	  end
+
+	  pin 639366 "" type class_ref 902918 // Message_UP
+	     multiplicity "1" unordered is_control
+	    in
+	  end
+
+	  pin 639494 "" type class_ref 1108614 // exception
+	     multiplicity "1" unordered is_control
+	    out exception
+	    flow 733190 "<flow>"
+	      on activitynode_ref 485638 // merge
+	    end
+	  end
+	end
+
+	expansionnode 182406 "input"
+	   type class_ref 903046 // Messages
+	   multiplicity "1" unordered is_control
+	  flow 731654 "<flow>"
+	    on pin_ref 639366 // 
+	  end
+	end
+
+	expansionnode 182534 "output"
+	   type class_ref 903046 // Messages
+	   multiplicity "1" unordered 
+	  flow 731398 "<flow>"
+	    on activitynode_ref 484358 // merge
+	  end
+	end
+      end
+
+      activitynode 485126 join ""
+      end
+
+      activitynode 485254 join ""
+	flow 732166 "<flow>"
+	  on activitynode_ref 484870 // decision
+	end
+      end
+
+      activitynode 485382 fork ""
+	flow 732678 "<flow>"
+	  on activitynode_ref 484230 // merge
+	      uml_transformation "next()"
+	end
+
+	flow 732934 "<flow>"
+	  on pin_ref 639110 // target
+	end
+      end
+
+      activitynode 485638 merge ""
+	flow 733446 "<flow>"
+	  on parameter_ref 349702 // error
+	end
       end
     end
   end
@@ -8836,7 +9388,7 @@ ${namespace_end}"
       end
     end
 
-    artifact 300294 "TokenHandler"
+    artifact 300294 "MessageHandler"
       stereotype "source"
       cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
 #define ${NAMESPACE}_${NAME}_H
@@ -8857,7 +9409,7 @@ ${namespace_start}
 ${members}
 ${namespace_end}"
       associated_elems
-	class_ref 441222 // TokenHandler
+	class_ref 441222 // MessageHandler
       end
     end
 
@@ -8871,7 +9423,7 @@ ${includes}
 ${declarations}
 ${namespace_start}
 ${definition}
-Message::Timestamp operator \"\"_ts(const char *line, size_t);
+Message::Timestamp operator \"\" _ts(const char *line, size_t);
 ${namespace_end}
 #endif
 "
@@ -8882,7 +9434,7 @@ ${includes}
 ${namespace_start}
 ${members}
 
-Message::Timestamp operator \"\"_ts(const char *line, size_t) {
+Message::Timestamp operator \"\" _ts(const char *line, size_t) {
   Message::Timestamp output;
   std::istringstream ss{line};
   ss >> date::parse(\"%FT%TZ\", output);
@@ -8892,8 +9444,7 @@ Message::Timestamp operator \"\"_ts(const char *line, size_t) {
 ${namespace_end}"
       associated_elems
 	class_ref 245766 // Message
-	class_ref 902918 // Token
-	class_ref 903046 // Tokens
+	class_ref 903046 // Messages
       end
     end
 
@@ -9348,28 +9899,6 @@ ${members}
 ${namespace_end}"
       associated_elems
 	class_ref 1108486 // processing_error
-      end
-    end
-
-    artifact 427654 "Test"
-      stereotype "source"
-      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
-#define ${NAMESPACE}_${NAME}_H
-
-${comment}
-${includes}
-${declarations}
-${namespace_start}
-${definition}
-${namespace_end}
-#endif
-"
-      cpp_src "${comment}
-${includes}
-${namespace_start}
-${members}
-${namespace_end}"
-      associated_elems
       end
     end
   end

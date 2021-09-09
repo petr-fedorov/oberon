@@ -35,7 +35,7 @@ for(std::size_t i = 0; i < stm.before_messages_.size(); i++) {
 for(auto &msg: stm.era_messages_) {
   active_chains.erase(static_cast<OrderEvent*>(msg.get())->maker());
   auto iter = std::find_if(stm.before_messages_.begin(), stm.before_messages_.end(),
-                      [order_id = static_cast<OrderEvent *>(msg.get())->maker()](const Token &b) {
+                      [order_id = static_cast<OrderEvent *>(msg.get())->maker()](const Message::Message_UP &b) {
                         auto e = static_cast<OrderEvent*>(b.get());
                         return e->maker() == order_id &&
                                e->state() == OrderEvent::OrderState::kFinished;

@@ -1,0 +1,11 @@
+class Capture
+!!!1773446.cpp!!!	createReconstructor() : Reconstructor::Reconstructor_SP
+if (output_delay_)
+  BOOST_LOG_TRIVIAL(warning) << "--output-delay is ignored for Coinbase";
+
+return makeReconstructor(makeSynchronizer(makeSizeDeducer(makeEventCounter(makeStore()))));
+
+!!!1829766.cpp!!!	makeSynchronizer(in next : MessageHandler::MessageHandler_SP) : Synchronizer::Synchronizer_SP
+return boost::make_shared<reconstructor::coinbase::Synchronizer>(next);
+!!!1829894.cpp!!!	makeReconstructor(in next : MessageHandler::MessageHandler_SP) : Reconstructor::Reconstructor_SP
+return boost::make_shared<reconstructor::coinbase::Reconstructor>(next);

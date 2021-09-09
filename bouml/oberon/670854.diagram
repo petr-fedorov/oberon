@@ -1,0 +1,130 @@
+format 224
+
+activitycanvas 128006 activity_ref 280838 // Acquire and process
+  
+  xyzwh 50.6 91 2000 749 449
+  params
+    parametercanvas 129670 parameter_ref 343046 // error
+        xyzwh 8 363 2002 85 25 label_xy 59 340
+    end
+  end
+end
+activityactioncanvas 128134 activityaction_ref 457734 // activity action Receive messages
+  
+  show_opaque_action_definition default
+  color lightgreen
+  xyzwh 192.8 241.4 3005 101 61
+  pins
+    pincanvas 131974 pin_ref 628998 // 
+      xyzwh 288.2 253.2 3007 11 11 label_xy 248 207
+    end
+    pincanvas 132102 pin_ref 629126 // self
+      xyzwh 182.2 253.2 3007 11 11 label_xy 147 246
+    end
+    pincanvas 132230 pin_ref 629254 // 
+      xyzwh 288.2 280 3007 11 11 label_xy 257 299
+    end
+  end
+end
+activityactioncanvas 128262 activityaction_ref 457862 // activity action Process message
+  
+  show_opaque_action_definition default
+  color lightgreen
+  xyzwh 401.4 241.4 3005 101 61
+  pins
+    pincanvas 128390 pin_ref 627334 // target
+      xyzwh 391.8 252.8 3006 11 11 label_xy 357 234
+    end
+    pincanvas 128518 pin_ref 627462 // message
+      xyzwh 391.8 279.6 3006 11 11 label_xy 342 290
+    end
+    pincanvas 128646 pin_ref 627590 // 
+      xyzwh 497.8 275 3006 11 11 label_xy 501 290
+    end
+  end
+end
+activitynodecanvas 129414 activitynode_ref 476678 // initial_node
+  xyz 87.4 267.4 2005
+end
+activitynodecanvas 130054 activitynode_ref 476934 // activity_final
+  xyz 225.8 486.2 2005
+end
+activityactioncanvas 130694 activityaction_ref 458118 // activity action Failure
+  
+  show_opaque_action_definition default
+  xyzwh 624.6 241.4 2010 101 61
+  pins
+    pincanvas 130822 pin_ref 627974 // self
+      xyzwh 614 250 2012 11 11 label_xy 585 244
+    end
+  end
+end
+activitynodecanvas 132614 activitynode_ref 477062 // decision
+  xyz 224.4 359.8 2010
+end
+activityactioncanvas 132870 activityaction_ref 458246 // activity action Read "exit_code_"
+  
+  show_opaque_action_definition default
+  xyzwh 400 343.2 2010 101 61
+  pins
+    pincanvas 132998 pin_ref 629382 // self
+      xyzwh 445 403.2 2012 11 11 label_xy 431 416
+    end
+    pincanvas 133126 pin_ref 629510 // 
+      xyzwh 390.4 367.8 2012 11 11 label_xy 372 348
+    end
+  end
+end
+activitynodecanvas 134278 activitynode_ref 492166 // flow_final
+  xyz 439.2 173.8 2005
+end
+flowcanvas 129542 flow_ref 718854 // <flow>
+  decenter_end 550
+  
+  from ref 129414 z 3006 to ref 128134
+   write_horizontally default
+end
+flowcanvas 130950 flow_ref 719494 // <flow>
+  decenter_end 633
+  
+  from ref 128646 z 3007 to ref 130694
+   write_horizontally default
+end
+flowcanvas 132358 flow_ref 719622 // <flow>
+  
+  from ref 132230 z 3008 to ref 128518
+   write_horizontally default
+end
+flowcanvas 132486 flow_ref 719750 // <flow>
+  
+  from ref 131974 z 3008 to ref 128390
+   write_horizontally default
+end
+flowcanvas 132742 flow_ref 719878 // <flow>
+  decenter_begin 410
+  
+  from ref 128134 z 3006 to ref 132614
+   write_horizontally default
+end
+flowcanvas 133254 flow_ref 720006 // <flow>
+  decenter_end 432
+  
+  from ref 133126 z 2013 stereotype "<<decisionInputFlow>>" xyz 256 372 3000 to ref 132614
+   write_horizontally default
+end
+flowcanvas 134022 flow_ref 720262 // <flow>
+  
+  from ref 132614 z 2011 label "[EXIT_FAILURE]" xyz 112 366 2011 to ref 129670
+   write_horizontally default
+end
+flowcanvas 134150 flow_ref 729862 // <flow>
+  
+  from ref 132614 z 2011 label "[EXIT_SUCCESS]" xyz 187 431 2011 to ref 130054
+   write_horizontally default
+end
+flowcanvas 134406 flow_ref 739974 // <flow>
+  
+  from ref 128262 z 3006 to ref 134278
+   write_horizontally default
+end
+end

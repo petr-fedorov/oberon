@@ -4,7 +4,7 @@ classcanvas 128006 class_ref 542982 // SizeDeducer
   classdiagramsettings member_max_width 0 end
   xyz 330 106 2000
 end
-classcanvas 128390 class_ref 441222 // TokenHandler
+classcanvas 128390 class_ref 441222 // MessageHandler
   classdiagramsettings member_max_width 0 end
   xyz 642 75 3005
 end
@@ -20,13 +20,21 @@ classcanvas 129926 class_ref 448390 // OrderEvent
   classdiagramsettings member_max_width 0 end
   xyz 453 210 2000
 end
+classcanvas 130182 class_ref 1224326 // SizeDeducer_SP
+  classdiagramsettings member_max_width 0 end
+  xyz 455 501 2006
+end
+classcanvas 130438 class_ref 852614 // shared_ptr
+  classdiagramsettings member_max_width 0 end
+  xyz 537 294 2005
+end
 relationcanvas 128518 relation_ref 1068038 // <directional aggregation>
   decenter_begin 167
   from ref 128390 z 3006 stereotype "<<shared_ptr>>" xyz 615 191 3006 to point 657 261
   line 128646 z 3006 to point 785 271
   line 128774 z 3006 to ref 128390
-  role_a_pos 713 126 3000 no_role_b
-  no_multiplicity_a no_multiplicity_b
+  role_a_pos 717 120 3000 no_role_b
+  multiplicity_a_pos 677 120 3000 no_multiplicity_b
 end
 relationcanvas 128902 relation_ref 1076742 // <generalisation>
   from ref 128006 z 3006 to ref 128390
@@ -35,13 +43,13 @@ relationcanvas 128902 relation_ref 1076742 // <generalisation>
 end
 relationcanvas 129158 relation_ref 1241862 // <directional aggregation>
   from ref 128006 z 2001 stereotype "<<shared_ptr>>" xyz 185 125 3000 to ref 129030
-  role_a_pos 137 102 3000 no_role_b
-  multiplicity_a_pos 137 135 3000 no_multiplicity_b
+  role_a_pos 137 106 3000 no_role_b
+  multiplicity_a_pos 137 131 3000 no_multiplicity_b
 end
 relationcanvas 129414 relation_ref 1241734 // <directional aggregation>
-  from ref 129286 z 2007 stereotype "<<shared_ptr>>" xyz 195.5 234 2007 to ref 129030
+  from ref 129286 z 2007 stereotype "<<shared_ptr>>" xyz 195 234 2007 to ref 129030
   role_a_pos 136 130 3000 no_role_b
-  multiplicity_a_pos 136 163 3000 no_multiplicity_b
+  multiplicity_a_pos 136 163 3000 multiplicity_b_pos 334 334 3000
 end
 relationcanvas 129542 relation_ref 1241990 // <dependency>
   from ref 128006 z 2007 to ref 129286
@@ -50,6 +58,13 @@ relationcanvas 129542 relation_ref 1241990 // <dependency>
 end
 relationcanvas 130054 relation_ref 1255558 // <dependency>
   from ref 128006 z 2001 to ref 129926
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+line 130310 ---+
+  from ref 130182 z 2007 to ref 128006
+relationcanvas 130566 relation_ref 1450374 // <realization>
+  from ref 130182 z 2007 label "<T->SizeDeducer>" max_width 255 xyz 496 409 3000 stereotype "<<bind>>" xyz 521 423 3000 to ref 130438
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end

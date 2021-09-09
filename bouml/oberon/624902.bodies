@@ -1,7 +1,7 @@
 class Reconstructor
-!!!793222.cpp!!!	Reconstructor(inout handler : Store)
+!!!793222.cpp!!!	Reconstructor(inout handler : MessageHandler::MessageHandler_SP)
 
-!!!792582.cpp!!!	extract(in tree : ptree [1]) : Token [1..*]
+!!!792582.cpp!!!	extractMessage(in tree : ptree [1]) : Message::Message_UP [1..*]
 using namespace date;
 using namespace std;
 string type = tree.get<string>("event");
@@ -51,4 +51,4 @@ if (type == "elapsed") {
   assert(output->isOrderFilled());
   return std::move(output);
 }
-return Token{};
+return Message::Message_UP{};

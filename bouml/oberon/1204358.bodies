@@ -1,0 +1,44 @@
+class Capture
+!!!1802246.cpp!!!	Capture(in quote_increment : string, in base_increment : string, in exchange : Command::O_string, in product : Command::O_string, in deleted : bool, in source : bool, in pong_wait_time : int, in output_delay : int, in host : string, in port : string, in target : string)
+// BOOST_LOG_TRIVIAL(debug) << "-s " << source_ << " -w " << pong_wait_time_ << " -o " << output_delay_;
+!!!1822214.cpp!!!	createAcquirer() : Acquirer::Acquirer_SP
+using Snapshot = oberon::acquirer::Snapshot;
+
+boost::shared_ptr<boost::asio::io_context> ioc =
+    boost::make_shared<boost::asio::io_context>();
+
+auto feeder = boost::make_shared<F>(ioc, *product_, pong_wait_time_);
+auto snapshot = boost::make_shared<Snapshot>(ioc, host_, port_, target_);
+auto receiver = boost::make_shared<R>(
+    ioc, boost::static_pointer_cast<F>(feeder), snapshot,
+    std::bind(&reconstructor::Reconstructor::process, createReconstructor(),
+              std::placeholders::_1),
+    *exchange_, *product_, quote_increment_, base_increment_);
+feeder->registerHandlers(std::bind(&R::postEvent, receiver, &R::success),
+                         std::bind(&R::postEvent, receiver, &R::failure),
+                         std::bind(&R::postMessage, receiver,
+                                   std::placeholders::_1));
+snapshot->registerHandlers(std::bind(&R::postEvent, receiver, &R::failure),
+                           std::bind(&R::postSnapshot, receiver,
+                                     std::placeholders::_1));
+// feeder->registerHandlers([]() { std::cout << "Success\n"; }, []() {
+// std::cout << "Failure\n"; },
+// [](boost::shared_ptr<boost::property_tree::ptree> && tree) {
+// boost::property_tree::write_json(std::cout, *tree, false); });
+// feeder->create();
+// feeder->engage();
+// receiver->create();
+return receiver;
+!!!1829126.cpp!!!	createStore() : File::File_SP
+auto store = boost::make_shared<reconstructor::File>();
+store->saveOrderEvents(true).saveDeleted(deleted_).saveEventSource(source_);
+return store;
+
+!!!1829254.cpp!!!	createEventCounter(in next : MessageHandler::MessageHandler_SP) : EventCounter::EventCounter_SP
+return boost::make_shared<reconstructor::EventCounter>(next);
+
+!!!1829382.cpp!!!	createSizeDeducer(in next : MessageHandler::MessageHandler_SP) : SizeDeducer::SizeDeducer_SP
+auto size_deducer = boost::make_shared<reconstructor::SizeDeducer>(next);
+size_deducer->create();
+return size_deducer;
+

@@ -1,5 +1,5 @@
 class Reconstructor
-!!!1453830.cpp!!!	extract(in tree : ptree [1]) : Token [1..*]
+!!!1453830.cpp!!!	extractMessage(in tree : ptree [1]) : Message::Message_UP [1..*]
 // std::ostringstream ss;
 // boost::property_tree::write_json(ss, tree, false);
 using namespace oberon::reconstructor;
@@ -40,4 +40,4 @@ if (tree.get<std::string>("type") == "event") {
 else
   BOOST_LOG_TRIVIAL(error) << "Unknown message type: "
                            << tree.get<std::string>("type");
-return Token{};
+return Message::Message_UP{};
