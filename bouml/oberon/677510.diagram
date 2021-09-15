@@ -4,11 +4,11 @@ classcanvas 128006 class_ref 1196934 // Command
   classdiagramsettings member_max_width 0 end
   xyz 660 40 2000
 end
-classcanvas 128134 class_ref 1197062 // CaptureFromCoinbase
+classcanvas 128134 class_ref 1197062 // Capture
   classdiagramsettings member_max_width 0 end
   xyz 232 780 2000
 end
-classcanvas 128390 class_ref 1197318 // CaptureFromBitstamp
+classcanvas 128390 class_ref 1197318 // Capture
   classdiagramsettings member_max_width 0 end
   xyz 40 780 2000
 end
@@ -30,7 +30,7 @@ classcanvas 129798 class_ref 1197830 // Merge
 end
 classcanvas 130182 class_ref 1204358 // Capture
   classdiagramsettings member_max_width 0 end
-  xyz 251 330 2000
+  xyz 364 313 2000
 end
 classcanvas 132102 class_ref 1210886 // FileNames
   classdiagramsettings member_max_width 0 end
@@ -47,6 +47,10 @@ end
 classcanvas 133638 class_ref 889478 // unique_ptr
   classdiagramsettings member_max_width 0 end
   xyz 867 215 2005
+end
+classcanvas 134150 class_ref 229510 // File
+  classdiagramsettings member_max_width 0 end
+  xyz 115 39 2007
 end
 relationcanvas 129286 relation_ref 1411462 // <generalisation>
   from ref 129158 z 2001 to ref 128006
@@ -78,23 +82,9 @@ relationcanvas 130054 relation_ref 1411846 // <generalisation>
 end
 relationcanvas 130310 relation_ref 1418374 // <generalisation>
   geometry VHV unfixed
-  from ref 130182 z 2001 to point 307 289
+  from ref 130182 z 2001 to point 430 289
   line 132614 z 2001 to point 728 289
   line 132742 z 2001 to ref 128006
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
-end
-relationcanvas 130566 relation_ref 1418630 // <generalisation>
-  geometry VHV unfixed
-  decenter_begin 516
-  from ref 128390 z 2001 to point 115 740
-  line 133894 z 2001 to point 307 740
-  line 134022 z 2001 to ref 130182
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
-end
-relationcanvas 130694 relation_ref 1418758 // <generalisation>
-  from ref 128134 z 2001 to ref 130182
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
@@ -112,6 +102,26 @@ relationcanvas 133766 relation_ref 1434246 // <realization>
   decenter_begin 518
   decenter_end 533
   from ref 133382 z 2007 label "<T->Command>" max_width 255 xyz 862 177 2007 stereotype "<<bind>>" xyz 880 195 3000 to ref 133638
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 134278 relation_ref 1435398 // <dependency>
+  from ref 128902 z 2008 to ref 134150
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 134406 relation_ref 1435014 // <dependency>
+  from ref 129670 z 2008 to ref 134150
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 134534 relation_ref 1434374 // <dependency>
+  from ref 129798 z 2008 to ref 134150
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 134662 relation_ref 1458566 // <dependency>
+  from ref 128006 z 2008 to ref 134150
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end

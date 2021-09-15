@@ -1,7 +1,7 @@
 format 224
 "Reconstr" // Tests::Reconstr
-  revision 20
-  modified_by 6 "petr"
+  revision 21
+  modified_by 6 "root"
   // class settings
   
   classdiagramsettings member_max_width 0 end
@@ -198,7 +198,7 @@ ${members}};
       end
 
       attribute 993798 "output"
-	public type class_ref 902918 // Token
+	public type class_ref 902918 // Message_UP
 	multiplicity "*"
 	stereotype "list"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
@@ -248,7 +248,7 @@ ${members}};
       end
 
       attribute 994310 "sut"
-	public type class_ref 950918 // TokenHandler_SP
+	public type class_ref 950918 // MessageHandler_SP
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -274,7 +274,7 @@ ${members}};
       end
 
       attribute 994438 "episode"
-	public type class_ref 902918 // Token
+	public type class_ref 902918 // Message_UP
 	multiplicity "*"
 	stereotype "vector"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
@@ -439,9 +439,6 @@ ${inlines}
       
       class 1101958 "Gatherer_SP"
 	visibility public stereotype "template_typedef"
-	nactuals 1
-	actual class class_ref 852614 // shared_ptr
-	  rank 0 value class_ref 1101702 // Gatherer
 	cpp_decl "${comment}${template}using ${name} = ${inherit};
 "
 	java_decl ""
@@ -451,18 +448,10 @@ ${inlines}
 	explicit_switch_type ""
 	mysql_decl ""
 	
-	classrelation 1295494 // <realization>
-	  relation 1285126 -_-|>
-	    stereotype "bind"
-	    a public
-	      cpp default "${type}"
-	      classrelation_ref 1295494 // <realization>
-	    b parent class_ref 852614 // shared_ptr
-	end
       end
 
       attribute 994054 "gathered"
-	public type class_ref 902918 // Token
+	public type class_ref 902918 // Message_UP
 	multiplicity "*"
 	stereotype "vector"
 	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
@@ -480,7 +469,7 @@ ${inlines}
 	  a public
 	    cpp default "${type}"
 	    classrelation_ref 1295238 // <generalisation>
-	  b parent class_ref 441222 // TokenHandler
+	  b parent class_ref 441222 // MessageHandler
       end
 
       operation 1605510 "message"

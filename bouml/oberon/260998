@@ -1,6 +1,6 @@
 format 224
 "Coinbase" // App::Coinbase
-  revision 3
+  revision 5
   modified_by 6 "root"
   // class settings
   
@@ -136,7 +136,7 @@ ${inlines}
       end
 
       operation 1829766 "makeSynchronizer"
-	private return_type class_ref 1224582 // Synchronizer_SP
+	private return_type class_ref 950918 // MessageHandler_SP
 	nparams 1
 	  param in name "next" type class_ref 950918 // MessageHandler_SP
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
@@ -198,7 +198,7 @@ ${inlines}
 	size A4
       end
 
-      activityaction 472326 "Make Store"
+      activityaction 472326 "Make Era File storage"
 	call_operation_action
 	synchronous operation_ref 1829126 // makeStore
 	pin 646150 "self" type class_ref 1204358 // Capture
@@ -206,7 +206,7 @@ ${inlines}
 	  in
 	end
 
-	pin 646278 "" type class_ref 1224070 // File_SP
+	pin 646278 "" type class_ref 950918 // MessageHandler_SP
 	   multiplicity "1" unordered 
 	  return
 	  flow 746502 "<flow>"
@@ -223,7 +223,7 @@ ${inlines}
 	  in
 	end
 
-	pin 646534 "" type class_ref 1224198 // EventCounter_SP
+	pin 646534 "" type class_ref 950918 // MessageHandler_SP
 	   multiplicity "1" unordered 
 	  return
 	  flow 746630 "<flow>"
@@ -245,7 +245,7 @@ ${inlines}
 	  in
 	end
 
-	pin 646918 "" type class_ref 1224326 // SizeDeducer_SP
+	pin 646918 "" type class_ref 950918 // MessageHandler_SP
 	   multiplicity "1" unordered 
 	  return
 	  flow 746758 "<flow>"
@@ -267,7 +267,7 @@ ${inlines}
 	  in
 	end
 
-	pin 647302 "" type class_ref 1224582 // Synchronizer_SP
+	pin 647302 "" type class_ref 950918 // MessageHandler_SP
 	   multiplicity "1" unordered 
 	  return
 	  flow 746886 "<flow>"
@@ -310,7 +310,7 @@ ${inlines}
 
       activitynode 498694 initial_node ""
 	flow 747142 "<flow>"
-	  on activityaction_ref 472326 // activity action Make Store
+	  on activityaction_ref 472326 // activity action Make Era File storage
 	end
       end
     end

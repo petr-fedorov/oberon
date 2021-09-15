@@ -1,6 +1,6 @@
 format 224
 "Coinbase" // App::Reconstr::Coinbase
-  revision 30
+  revision 31
   modified_by 6 "root"
   // class settings
   
@@ -223,30 +223,6 @@ ${inlines}
       mysql_decl ""
       
       comment "The handler that synchronizes the stream from Websocket API with an order book snapshot received from REST API"
-      class 1224582 "Synchronizer_SP"
-	visibility public stereotype "template_typedef"
-	nactuals 1
-	actual class class_ref 852614 // shared_ptr
-	  rank 0 value class_ref 958342 // Synchronizer
-	cpp_decl "${comment}${template}using ${name} = ${inherit};
-"
-	java_decl ""
-	php_decl ""
-	python_2_2 python_decl ""
-	idl_decl ""
-	explicit_switch_type ""
-	mysql_decl ""
-	
-	classrelation 1461638 // <realization>
-	  relation 1451270 -_-|>
-	    stereotype "bind"
-	    a public
-	      cpp default "${type}"
-	      classrelation_ref 1461638 // <realization>
-	    b parent class_ref 852614 // shared_ptr
-	end
-      end
-
       classrelation 1087238 // <generalisation>
 	relation 1076870 ---|>
 	  a public

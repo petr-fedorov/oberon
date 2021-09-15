@@ -1,6 +1,6 @@
 format 224
 "App" // App
-  revision 222
+  revision 224
   modified_by 6 "root"
   // class settings
   
@@ -489,7 +489,7 @@ ${inlines}
     activitydiagramsettings
      end
     classdiagram 691206 "Command overview"
-      classdiagramsettings hide_attributes yes show_members_visibility yes member_max_width 0 end
+      classdiagramsettings hide_attributes no show_members_visibility yes member_max_width 0 end
       size A4
     end
 
@@ -620,17 +620,17 @@ ${inlines}
 	MysqlColumn
       end
 
-      operation 1766534 "createReconstructor"
-	abstract cpp_virtual protected return_type class_ref 1142662 // Reconstructor_SP
-	nparams 0
-	nexceptions 1
-	  exception class_ref 1108614 // exception
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${abstract};
+      attribute 944902 "source_"
+	protected explicit_type "bool"
+	init_value "false"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
 "
-	
-	
-	
-	
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
       end
 
       operation 1766662 "createAcquirer"
@@ -646,17 +646,46 @@ ${inlines}
 	
       end
 
+      operation 1766534 "createReconstructor"
+	abstract cpp_virtual protected return_type class_ref 1142662 // Reconstructor_SP
+	nparams 0
+	nexceptions 1
+	  exception class_ref 1108614 // exception
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	
+	
+	
+	
+      end
+
+      operation 1829126 "makeStore"
+	cpp_virtual protected return_type class_ref 950918 // MessageHandler_SP
+	multiplicity "1"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
       operation 1795718 "Command"
 	public explicit_return_type ""
-	nparams 5
+	nparams 6
 	  param in name "quote_increment" explicit_type "string"
 	  param in name "base_increment" explicit_type "string"
 	  param in name "exchange" type class_ref 1013766 // O_string
 	  param in name "product" type class_ref 1013766 // O_string
 	  param in name "deleted" explicit_type "bool"
-	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}, ${t4} ${p4}${v4}${)}${volatile}${throw};
+	  param in name "source" explicit_type "bool"
+	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}, ${t4} ${p4}${v4}, ${t5} ${p5}${v5}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, ${t4} ${p4}${)}${volatile}${throw} : ${p0}_{${p0}}, ${p1}_{${p1}}, ${p2}_{${p2}}, ${p3}_{${p3}}, ${p4}_{${p4}} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, ${t4} ${p4}, ${t5} ${p5}${)}${volatile}${throw} : ${p0}_{${p0}}, ${p1}_{${p1}}, ${p2}_{${p2}}, ${p3}_{${p3}}, ${p4}_{${p4}},  ${p5}_{${p5}} {
   ${body}}
 "
 	
@@ -677,6 +706,14 @@ ${inlines}
 	
 	
 	
+      end
+
+      classrelation 1468934 // <dependency>
+	relation 1458566 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 1468934 // <dependency>
+	  b parent class_ref 229510 // EraFile
       end
     end
 
@@ -719,7 +756,7 @@ ${inlines}
 	  param in name "target" explicit_type "string"
 	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}, ${t4} ${p4}${v4}, ${t5} ${p5}${v5}, ${t6} ${p6}${v6}, ${t7} ${p7}${v7}, const ${t8} & ${p8}${v8}, const ${t9} & ${p9}${v9}, const ${t10} & ${p10}${v10}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, ${t4} ${p4}, ${t5} ${p5}, ${t6} ${p6}, ${t7} ${p7}, const ${t8} & ${p8}, const ${t9} & ${p9}, const ${t10} & ${p10}${)}${volatile}${throw}: Command { ${p0},${p1},${p2},${p3},${p4} }, ${p5}_{${p5}},${p6}_{${p6}}, ${p7}_{${p7}}, ${p8}_{${p8}}, ${p9}_{${p9}}, ${p10}_{${p10}}  {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, ${t4} ${p4}, ${t5} ${p5}, ${t6} ${p6}, ${t7} ${p7}, const ${t8} & ${p8}, const ${t9} & ${p9}, const ${t10} & ${p10}${)}${volatile}${throw}: Command { ${p0},${p1},${p2},${p3},${p4},${p5} } ,${p6}_{${p6}}, ${p7}_{${p7}}, ${p8}_{${p8}}, ${p9}_{${p9}}, ${p10}_{${p10}}  {
   ${body}}
 "
 	
@@ -744,23 +781,8 @@ ${inlines}
 	
       end
 
-      operation 1829126 "makeStore"
-	cpp_inline protected return_type class_ref 1224070 // File_SP
-	multiplicity "1"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
       operation 1829254 "makeEventCounter"
-	cpp_inline protected return_type class_ref 1224198 // EventCounter_SP
+	cpp_inline protected return_type class_ref 950918 // MessageHandler_SP
 	multiplicity "1"
 	nparams 1
 	  param in name "next" type class_ref 950918 // MessageHandler_SP
@@ -777,7 +799,7 @@ ${inlines}
       end
 
       operation 1829382 "makeSizeDeducer"
-	cpp_inline protected return_type class_ref 1224326 // SizeDeducer_SP
+	cpp_inline protected return_type class_ref 950918 // MessageHandler_SP
 	multiplicity "1"
 	nparams 1
 	  param in name "next" type class_ref 950918 // MessageHandler_SP
@@ -791,19 +813,6 @@ ${inlines}
 	
 	
 	
-      end
-
-      attribute 944902 "source_"
-	protected explicit_type "bool"
-	init_value "false"
-	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
       end
 
       attribute 877190 "pong_wait_time_"
@@ -890,14 +899,6 @@ ${inlines}
 	MysqlColumn
       end
 
-      classrelation 1460870 // <dependency>
-	relation 1450502 -_->
-	  a public
-	    cpp default "#include in header"
-	    classrelation_ref 1460870 // <dependency>
-	  b parent class_ref 229510 // File
-      end
-
       classrelation 1460998 // <dependency>
 	relation 1450630 -_->
 	  a public
@@ -968,7 +969,7 @@ ${inlines}
 	  param in name "extension" explicit_type "string"
 	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}, const ${t2} & ${p2}${v2}, const ${t3} & ${p3}${v3}, ${t4} ${p4}${v4}, const ${t5} & ${p5}${v5}, const ${t6} & ${p6}${v6}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, ${t4} ${p4}, const ${t5} & ${p5}, const ${t6} & ${p6}${)}${volatile}${throw} : Command{${p0},${p1},${p2},${p3},${p4}}, ${p5}_{${p5}}, ${p6}_{${p6}} {
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, ${t4} ${p4}, const ${t5} & ${p5}, const ${t6} & ${p6}${)}${volatile}${throw} : Command{${p0},${p1},${p2},${p3},${p4},false}, ${p5}_{${p5}}, ${p6}_{${p6}} {
   ${body}}
 "
 	
@@ -1125,7 +1126,7 @@ ${inlines}
 	  a public
 	    cpp default "#include in source"
 	    classrelation_ref 1445382 // <dependency>
-	  b parent class_ref 229510 // File
+	  b parent class_ref 229510 // EraFile
       end
 
       classrelation 1445510 // <dependency>
@@ -1202,7 +1203,7 @@ ${inlines}
 	  a public
 	    cpp default "#include in source"
 	    classrelation_ref 1444742 // <dependency>
-	  b parent class_ref 229510 // File
+	  b parent class_ref 229510 // EraFile
       end
 
       classrelation 1444870 // <dependency>
@@ -1274,6 +1275,32 @@ ${inlines}
 	
       end
 
+      attribute 1090310 "spread_"
+	private explicit_type "bool"
+	init_value "false"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 1090438 "depth_"
+	private explicit_type "bool"
+	init_value "false"
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
       classrelation 1421958 // <generalisation>
 	relation 1411590 ---|>
 	  a public
@@ -1287,7 +1314,7 @@ ${inlines}
 	  a public
 	    cpp default "#include in source"
 	    classrelation_ref 1445766 // <dependency>
-	  b parent class_ref 229510 // File
+	  b parent class_ref 229510 // EraFile
       end
 
       classrelation 1445894 // <dependency>
@@ -1305,9 +1332,136 @@ ${inlines}
 	    classrelation_ref 1446022 // <dependency>
 	  b parent class_ref 1020550 // Reconstructor
       end
+
+      operation 1836934 "makeSpreadFiles"
+	private return_type class_ref 950918 // MessageHandler_SP
+	multiplicity "1"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1837062 "makeSpreadCalculator"
+	private return_type class_ref 950918 // MessageHandler_SP
+	multiplicity "1"
+	nparams 1
+	  param in name "next" type class_ref 950918 // MessageHandler_SP
+	multiplicity "1"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1837190 "makeDepthFiles"
+	private return_type class_ref 950918 // MessageHandler_SP
+	multiplicity "1"
+	nparams 1
+	  param in name "next" type class_ref 950918 // MessageHandler_SP
+	multiplicity "1"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1837446 "makeSameTimeMerger"
+	private return_type class_ref 950918 // MessageHandler_SP
+	nparams 1
+	  param in name "next" type class_ref 950918 // MessageHandler_SP
+	multiplicity "1"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1837574 "makeSamePriceMerger"
+	private return_type class_ref 950918 // MessageHandler_SP
+	multiplicity "1"
+	nparams 1
+	  param in name "next" type class_ref 950918 // MessageHandler_SP
+	multiplicity "1"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1837702 "makePriceChangeEliminator"
+	private return_type class_ref 950918 // MessageHandler_SP
+	multiplicity "1"
+	nparams 1
+	  param in name "next" type class_ref 950918 // MessageHandler_SP
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 1837830 "makeReconstructor"
+	private return_type class_ref 1142662 // Reconstructor_SP
+	multiplicity "1"
+	nparams 1
+	  param in name "next" type class_ref 950918 // MessageHandler_SP
+	multiplicity "1"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${typeprefix}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      attribute 1096966 "capital_"
+	private type class_ref 305542 // Price
+	cpp_decl "    ${comment}${static}${thread_local}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
     end
 
-    activity 208262 "Create transmuter"
+    activity 208262 "Create Reconstructor for Transmuter"
       specification operation_ref 1773830 // createReconstructor
       activitydiagram 598790 "Create Transmuter"
 	activitydiagramsettings
@@ -1320,72 +1474,258 @@ ${inlines}
 	out
       end
 
-      activityaction 387718 "Create File handler"
-	call_operation_action
-	synchronous operation_ref 1072262 // File
-	pin 613894 "create" type class_ref 229510 // File
-	  unordered 
-	  in
-	  comment "ActionInputPin - CreateObjectAction"
-	end
-
-	pin 614022 "handler" type class_ref 950918 // MessageHandler_SP
-	   multiplicity "1" unordered is_control
-	  out
+      activitynode 416646 initial_node ""
+	flow 756742 "<flow>"
+	  on activitynode_ref 505734 // decision
 	end
       end
 
-      activityaction 387846 "D.08 Create Price Change Eliminator"
-	call_behavior_action
-	synchronous no_behavior
-	pin 533126 "next" type class_ref 950918 // MessageHandler_SP
-	   multiplicity "1" unordered is_control
-	  in
-	end
-
-	pin 533254 "handler" type class_ref 950918 // MessageHandler_SP
-	   multiplicity "1" unordered is_control
-	  out
-	  flow 613638 "<flow>"
-	    on pin_ref 533638 // next
-	  end
-	end
-      end
-
-      activityaction 387974 "D.09 Create Same Price Merger"
+      activityaction 480390 "Make Spread Calculator"
 	call_operation_action
-	synchronous operation_ref 1781126 // SamePriceMerger
-	pin 614150 "target" type class_ref 1176838 // SamePriceMerger
-	  unordered 
-	  in
-	end
-
-	pin 614278 "next" type class_ref 950918 // MessageHandler_SP
+	synchronous operation_ref 1837062 // makeSpreadCalculator
+	pin 657414 "self" type class_ref 1197190 // Transmute
 	   multiplicity "1" unordered 
 	  in
 	end
-      end
 
-      activityaction 388102 "D.10 Create File::Reconstructor"
-	call_behavior_action
-	synchronous no_behavior
-	pin 533638 "next" type class_ref 950918 // MessageHandler_SP
+	pin 657542 "" type class_ref 950918 // MessageHandler_SP
+	   multiplicity "1" unordered is_control
+	  return
+	  flow 757382 "<flow>"
+	    on activitynode_ref 505862 // merge
+	  end
+	end
+
+	pin 657670 "next" type class_ref 950918 // MessageHandler_SP
 	   multiplicity "1" unordered is_control
 	  in
 	end
+      end
 
-	pin 533766 "reconstructor" type class_ref 1020550 // Reconstructor
+      activityaction 480518 "Make a storage for Spread"
+	call_operation_action
+	synchronous operation_ref 1836934 // makeSpreadFiles
+	pin 657798 "self" type class_ref 1197190 // Transmute
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 657926 "" type class_ref 950918 // MessageHandler_SP
 	   multiplicity "1" unordered is_control
-	  out
-	  flow 614022 "<flow>"
-	    on parameter_ref 273926 // transmuter
+	  return
+	  flow 757254 "<flow>"
+	    on pin_ref 657670 // next
 	  end
 	end
       end
 
-      activitynode 416646 initial_node ""
-	flow 614150 "<flow>"
-	  on activityaction_ref 387718 // activity action Create File handler
+      activityaction 480646 "Make a storage for Depth"
+	call_operation_action
+	synchronous operation_ref 1837190 // makeDepthFiles
+	pin 658054 "self" type class_ref 1197190 // Transmute
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 658182 "" type class_ref 950918 // MessageHandler_SP
+	   multiplicity "1" unordered is_control
+	  return
+	  flow 758150 "<flow>"
+	    on activitynode_ref 506118 // merge
+	  end
+	end
+
+	pin 658310 "next" type class_ref 950918 // MessageHandler_SP
+	   multiplicity "1" unordered is_control
+	  in
+	end
+      end
+
+      activityaction 480774 "Make Same Time Merger"
+	call_operation_action
+	synchronous operation_ref 1837446 // makeSameTimeMerger
+	pin 658438 "self" type class_ref 1197190 // Transmute
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 658566 "" type class_ref 950918 // MessageHandler_SP
+	   multiplicity "1" unordered is_control
+	  return
+	  flow 755846 "<flow>"
+	    on pin_ref 659078 // next
+	  end
+	end
+
+	pin 658694 "next" type class_ref 950918 // MessageHandler_SP
+	   multiplicity "1" unordered is_control
+	  in
+	end
+      end
+
+      parameter 362886 "error" type class_ref 1108614 // exception
+	 multiplicity "1" unordered is_control
+	out exception
+      end
+
+      activitynode 505606 decision ""
+	flow 755462 "<flow>"
+	  on parameter_ref 362886 // error
+	    uml_guard "is nullptr?"
+	end
+
+	flow 755590 "<flow>"
+	  on pin_ref 658694 // next
+	    uml_guard "else"
+	end
+      end
+
+      activityaction 480902 "Make Same Price Merger"
+	call_operation_action
+	synchronous operation_ref 1837574 // makeSamePriceMerger
+	pin 658822 "self" type class_ref 1197190 // Transmute
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 658950 "" type class_ref 950918 // MessageHandler_SP
+	   multiplicity "1" unordered is_control
+	  return
+	  flow 755974 "<flow>"
+	    on pin_ref 659462 // next
+	  end
+	end
+
+	pin 659078 "next" type class_ref 950918 // MessageHandler_SP
+	   multiplicity "1" unordered is_control
+	  in
+	end
+      end
+
+      activityaction 481030 "Make Price Change Eliminator"
+	call_operation_action
+	synchronous operation_ref 1837702 // makePriceChangeEliminator
+	pin 659206 "self" type class_ref 1197190 // Transmute
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 659334 "" type class_ref 950918 // MessageHandler_SP
+	   multiplicity "1" unordered is_control
+	  return
+	  flow 756102 "<flow>"
+	    on pin_ref 659846 // next
+	  end
+	end
+
+	pin 659462 "next" type class_ref 950918 // MessageHandler_SP
+	   multiplicity "1" unordered is_control
+	  in
+	end
+      end
+
+      activityaction 481158 "Make Reconstructor"
+	call_operation_action
+	synchronous operation_ref 1837830 // makeReconstructor
+	pin 659590 "self" type class_ref 1197190 // Transmute
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 659718 "" type class_ref 1142662 // Reconstructor_SP
+	   multiplicity "1" unordered is_control
+	  return
+	  flow 756230 "<flow>"
+	    on parameter_ref 273926 // transmuter
+	  end
+	end
+
+	pin 659846 "next" type class_ref 950918 // MessageHandler_SP
+	   multiplicity "1" unordered is_control
+	  in
+	end
+      end
+
+      activitynode 505734 decision ""
+	flow 756870 "<flow>"
+	  on activityaction_ref 480518 // activity action Make a storage for Spread
+	    uml_guard "true"
+	end
+
+	flow 757510 "<flow>"
+	  on activityaction_ref 481414 // activity action Make nullptr
+	    uml_guard "false"
+	end
+      end
+
+      activityaction 481286 "Read spread_"
+	read_structural_feature_action
+	attribute_ref 1090310 // spread_
+	pin 659974 "self" type class_ref 1197190 // Transmute
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 660102 "" explicit_type "bool"
+	   multiplicity "1" unordered 
+	  out
+	  flow 756614 "<flow>"
+	    stereotype "decisionInputFlow"
+	    on activitynode_ref 505734 // decision
+	  end
+	end
+      end
+
+      activityaction 481414 "Make nullptr"
+	create_object_action
+	pin 660230 "" type class_ref 950918 // MessageHandler_SP
+	   multiplicity "1" unordered 
+	  out
+	  flow 757126 "<flow>"
+	    on activitynode_ref 505862 // merge
+	  end
+	end
+      end
+
+      activitynode 505862 merge ""
+	flow 757638 "<flow>"
+	  on activitynode_ref 505990 // decision
+	end
+      end
+
+      activitynode 505990 decision ""
+	flow 757894 "<flow>"
+	  on pin_ref 658310 // next
+	    uml_guard "true"
+	end
+
+	flow 758278 "<flow>"
+	  on activitynode_ref 506118 // merge
+	    uml_guard "false"
+	end
+      end
+
+      activityaction 481542 "Read depth_"
+	read_structural_feature_action
+	attribute_ref 1090438 // depth_
+	pin 660358 "self" type class_ref 1197190 // Transmute
+	   multiplicity "1" unordered 
+	  in
+	end
+
+	pin 660486 "" explicit_type "bool"
+	   multiplicity "1" unordered 
+	  out
+	  flow 757766 "<flow>"
+	    stereotype "decisionInputFlow"
+	    on activitynode_ref 505990 // decision
+	  end
+	end
+      end
+
+      activitynode 506118 merge ""
+	flow 758406 "<flow>"
+	  on activitynode_ref 505606 // decision
 	end
       end
     end
@@ -9445,7 +9785,7 @@ int main(int argc, char **argv) {
 	artifact_ref 233350 // Reconstructor
 	artifact_ref 246406 // Receiver
 	artifact_ref 260102 // common
-	artifact_ref 266630 // File
+	artifact_ref 266630 // EraFile
 	artifact_ref 273286 // Feeder
 	artifact_ref 273414 // Receiver
 	artifact_ref 273542 // Snapshot
@@ -9491,6 +9831,7 @@ int main(int argc, char **argv) {
 	artifact_ref 454662 // Merge
 	artifact_ref 454790 // Transmute
 	artifact_ref 454918 // Acquierer
+	artifact_ref 461446 // SpreadCalculator
       end
       ncouples 10
       key "genpro pro" value "/tmp/oberon/cpp/oberon.pro"
@@ -9534,6 +9875,7 @@ ${namespace_end}
 "
       cpp_src "${comment}
 #include <boost/log/trivial.hpp>
+#include <boost/smart_ptr/make_shared.hpp>
 ${includes}
 ${namespace_start}
 ${members}

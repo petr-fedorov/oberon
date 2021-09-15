@@ -1,6 +1,6 @@
 format 224
 "Reconstr" // App::Reconstr
-  revision 296
+  revision 297
   modified_by 6 "root"
   // class settings
   
@@ -4360,30 +4360,6 @@ ${inlines}
       ncouples 1
       key "STM generated" value ""
       comment " implement the state machine SizeDeducer"
-      class 1224326 "SizeDeducer_SP"
-	visibility public stereotype "template_typedef"
-	nactuals 1
-	actual class class_ref 852614 // shared_ptr
-	  rank 0 value class_ref 542982 // SizeDeducer
-	cpp_decl "${comment}${template}using ${name} = ${inherit};
-"
-	java_decl ""
-	php_decl ""
-	python_2_2 python_decl ""
-	idl_decl ""
-	explicit_switch_type ""
-	mysql_decl ""
-	
-	classrelation 1460742 // <realization>
-	  relation 1450374 -_-|>
-	    stereotype "bind"
-	    a public
-	      cpp default "${type}"
-	      classrelation_ref 1460742 // <realization>
-	    b parent class_ref 852614 // shared_ptr
-	end
-      end
-
       class 958470 "AnyState"
 	abstract visibility protected 
 	cpp_decl "${comment}${template}class ${name}${inherit} {
@@ -5737,7 +5713,7 @@ ${inlines}
       end
     end
 
-    classdiagram 433414 "Token Handler"
+    classdiagram 433414 "Message Handler"
       classdiagramsettings draw_all_relations yes member_max_width 0 end
       size A4
     end
@@ -6146,30 +6122,6 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
-      class 1224198 "EventCounter_SP"
-	visibility public stereotype "template_typedef"
-	nactuals 1
-	actual class class_ref 852614 // shared_ptr
-	  rank 0 value class_ref 564230 // EventCounter
-	cpp_decl "${comment}${template}using ${name} = ${inherit};
-"
-	java_decl ""
-	php_decl ""
-	python_2_2 python_decl ""
-	idl_decl ""
-	explicit_switch_type ""
-	mysql_decl ""
-	
-	classrelation 1460614 // <realization>
-	  relation 1450246 -_-|>
-	    stereotype "bind"
-	    a public
-	      cpp default "${type}"
-	      classrelation_ref 1460614 // <realization>
-	    b parent class_ref 852614 // shared_ptr
-	end
-      end
-
       class 1128198 "Saved"
 	visibility private stereotype "struct"
 	cpp_decl "${comment}${template}struct ${name}${inherit} {
@@ -6330,12 +6282,12 @@ ${members}};
       end
     end
 
-    classdiagram 208774 "File"
+    classdiagram 208774 "OrderEventsFile"
       classdiagramsettings hide_attributes yes hide_operations yes member_max_width 0 end
       size A4
     end
 
-    class 229510 "File"
+    class 229510 "EraFile"
       visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -6348,30 +6300,6 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
-      class 1224070 "File_SP"
-	visibility public stereotype "template_typedef"
-	nactuals 1
-	actual class class_ref 852614 // shared_ptr
-	  rank 0 value class_ref 229510 // File
-	cpp_decl "${comment}${template}using ${name} = ${inherit};
-"
-	java_decl ""
-	php_decl ""
-	python_2_2 python_decl ""
-	idl_decl ""
-	explicit_switch_type ""
-	mysql_decl ""
-	
-	classrelation 1460486 // <realization>
-	  relation 1450118 -_-|>
-	    stereotype "bind"
-	    a public
-	      cpp default "${type}"
-	      classrelation_ref 1460486 // <realization>
-	    b parent class_ref 852614 // shared_ptr
-	end
-      end
-
       operation 1646598 "removeTrailingZeros"
 	class_operation cpp_inline private explicit_return_type "string"
 	nparams 1
@@ -6404,7 +6332,7 @@ ${inlines}
 	
       end
 
-      operation 1072262 "File"
+      operation 1072262 "EraFile"
 	public explicit_return_type ""
 	nparams 0
 	cpp_decl "    ${comment}${inline}${typeprefix}explicit ${name}${(}${)}${volatile}${throw};
@@ -6418,7 +6346,7 @@ ${inlines}
 	
       end
 
-      operation 1072134 "~File"
+      operation 1072134 "~EraFile"
 	cpp_inline public explicit_return_type ""
 	nparams 0
 	cpp_decl "    ${comment}${inline}${virtual}${typeprefix}${name}${(}${)}${volatile}${throw};
@@ -6646,14 +6574,6 @@ ${inlines}
 	comment "signals to the Store that the new era has been started"
       end
 
-      classrelation 1028102 // <generalisation>
-	relation 1017734 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 1028102 // <generalisation>
-	  b parent class_ref 441222 // MessageHandler
-      end
-
       classrelation 1028230 // <dependency>
 	relation 1017862 -_->
 	  a public
@@ -6753,7 +6673,7 @@ ${inlines}
       end
 
       operation 1597062 "saveDeleted"
-	public return_type class_ref 229510 // File
+	public return_type class_ref 229510 // EraFile
 	nparams 1
 	  param in name "save" explicit_type "bool"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type}& ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
@@ -6768,7 +6688,7 @@ ${inlines}
       end
 
       operation 1597190 "saveOrderEvents"
-	public return_type class_ref 229510 // File
+	public return_type class_ref 229510 // EraFile
 	nparams 1
 	  param in name "save" explicit_type "bool"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type}& ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
@@ -6783,7 +6703,7 @@ ${inlines}
       end
 
       operation 1597702 "saveEventSource"
-	public return_type class_ref 229510 // File
+	public return_type class_ref 229510 // EraFile
 	nparams 1
 	  param in name "save" explicit_type "bool"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type}& ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
@@ -6798,7 +6718,7 @@ ${inlines}
       end
 
       operation 1597318 "saveDepth"
-	public return_type class_ref 229510 // File
+	public return_type class_ref 229510 // EraFile
 	nparams 1
 	  param in name "save" explicit_type "bool"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type}& ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
@@ -6813,7 +6733,7 @@ ${inlines}
       end
 
       operation 1597446 "saveSpread"
-	public return_type class_ref 229510 // File
+	public return_type class_ref 229510 // EraFile
 	nparams 1
 	  param in name "save" explicit_type "bool"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type}& ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
@@ -6828,7 +6748,7 @@ ${inlines}
       end
 
       operation 1597574 "saveTrades"
-	public return_type class_ref 229510 // File
+	public return_type class_ref 229510 // EraFile
 	nparams 1
 	  param in name "save" explicit_type "bool"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type}& ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
@@ -6848,6 +6768,14 @@ ${inlines}
 	    cpp default "#include in source"
 	    classrelation_ref 1287814 // <dependency>
 	  b parent class_ref 1080966 // Stripe
+      end
+
+      classrelation 1469702 // <generalisation>
+	relation 1459334 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 1469702 // <generalisation>
+	  b parent class_ref 441222 // MessageHandler
       end
     end
 
@@ -8552,6 +8480,116 @@ ${inlines}
 	  b parent class_ref 1176966 // AnyState
       end
     end
+
+    classdiagram 724102 "SpreadCalculator"
+      classdiagramsettings hide_attributes yes hide_operations yes member_max_width 0 end
+      size A4
+    end
+
+    class 1231750 "SpreadCalculator"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 1469062 // <generalisation>
+	relation 1458694 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 1469062 // <generalisation>
+	  b parent class_ref 441222 // MessageHandler
+      end
+    end
+
+    classdiagram 724230 "Spread Files"
+      classdiagramsettings hide_attributes yes hide_operations yes member_max_width 0 end
+      size A4
+    end
+
+    class 1232262 "SpreadFiles"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 1469958 // <generalisation>
+	relation 1459590 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 1469958 // <generalisation>
+	  b parent class_ref 441222 // MessageHandler
+      end
+
+    end
+
+    classdiagram 724358 "DepthFiles"
+      classdiagramsettings hide_attributes yes hide_operations yes member_max_width 0 end
+      size A4
+    end
+
+    class 1232518 "DepthFiles"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 1470214 // <generalisation>
+	relation 1459846 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 1470214 // <generalisation>
+	  b parent class_ref 441222 // MessageHandler
+      end
+
+    end
+
+    classdiagram 724486 "SameTimeMerger"
+      classdiagramsettings hide_attributes yes hide_operations yes member_max_width 0 end
+      size A4
+    end
+
+    class 1232774 "SameTimeMerger"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 1470470 // <generalisation>
+	relation 1460102 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 1470470 // <generalisation>
+	  b parent class_ref 441222 // MessageHandler
+      end
+    end
   end
 
   classview 280710 "Reconstructor"
@@ -9329,7 +9367,7 @@ ${namespace_end}"
       end
     end
 
-    artifact 266630 "File"
+    artifact 266630 "EraFile"
       stereotype "source"
       cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
 #define ${NAMESPACE}_${NAME}_H
@@ -9355,7 +9393,7 @@ ${namespace_start}
 ${members}
 ${namespace_end}"
       associated_elems
-	class_ref 229510 // File
+	class_ref 229510 // EraFile
       end
     end
 
@@ -9899,6 +9937,98 @@ ${members}
 ${namespace_end}"
       associated_elems
 	class_ref 1108486 // processing_error
+      end
+    end
+
+    artifact 461446 "SpreadCalculator"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 1231750 // SpreadCalculator
+      end
+    end
+
+    artifact 461574 "SpreadFiles"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 1232262 // SpreadFiles
+      end
+    end
+
+    artifact 461702 "DepthFiles"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 1232518 // DepthFiles
+      end
+    end
+
+    artifact 461830 "SameTimeMerger"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 1232774 // SameTimeMerger
       end
     end
   end

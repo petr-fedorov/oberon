@@ -24,7 +24,7 @@
 <meta name="author" content="Petr Fedorov" />
 
 
-<meta name="date" content="2021-09-09" />
+<meta name="date" content="2021-09-15" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -525,7 +525,7 @@ Figure 2.4: Activity <code>Main</code> - the specification of <code>oberon::App:
 <p>CallOperationAction <code>Parse options</code> calls <code>Main::parseOption</code> operation that parse command-line options and returns an instance of a class derived from <code>Command</code> shown on figure <a href="methods.html#fig:Command">2.5</a> in light-green as determined by the value of “command” parameter passed.</p>
 <p>CallOperationAction <code>Create reconstructor and acquirer</code> then calls operation <code>Command::createAcquirer</code> using the received <code>Command</code>-derived instance as a target. The overriden <code>createAcquirer</code> operation returns an appropriate instance of class derived from <code>Acquirer</code> shown on figure <a href="methods.html#fig:Acquirer">2.6</a> in light-green.</p>
 <p>The <code>Acquirer</code>-derived instance is then used as a <code>target</code> by CallOperationAction <code>AcquireAndProcess</code> that calls <code>Acquirer::acquireAndProcess</code> operation.</p>
-<p>There are two kinds of <code>acquireAndProcess</code> operation. Their specifications are shown on figures <a href="methods.html#fig:receiver-acquireAndProcess">2.9</a> and <a href="methods.html#fig:reader-acquireAndProcess">2.10</a>. The former is used when <code>Create reconstructor and acquirer</code> returns an instance derived from <code>Receiver</code> class and the latter is used when the instance is derived from <code>Reader</code> class as shown on figure <a href="methods.html#fig:Acquirer">2.6</a>.</p>
+<p>There are two kinds of <code>acquireAndProcess</code> operation. Their specifications are shown on figures <a href="methods.html#fig:receiver-acquireAndProcess">2.10</a> and <a href="methods.html#fig:reader-acquireAndProcess">2.11</a>. The former is used when <code>Create reconstructor and acquirer</code> returns an instance derived from <code>Receiver</code> class and the latter is used when the instance is derived from <code>Reader</code> class as shown on figure <a href="methods.html#fig:Acquirer">2.6</a>.</p>
 <p>Upon successful completion of <code>acquireAndProcess</code> operation, ValueSpecificationAction <code>Success</code> returns EXIT_SUCCESS constant.</p>
 <p>Otherwise, if some exception was raised, ValueSpecificationAction <code>Failure</code> returns EXIT_FAILURE constant.</p>
 <p><code>Main</code> activity is then completes.</p>
@@ -582,6 +582,12 @@ Figure 2.8: Specification of <code>bitstamp::Capture::createReconstructor</code>
 </div>
 <div id="transmute" class="section level5" number="2.2.3.2.5">
 <h5><span class="header-section-number">2.2.3.2.5</span> Transmute</h5>
+<div class="figure" style="text-align: left"><span style="display:block;" id="fig:create-reconstructor-transmuter"></span>
+<img src="html_docs/fig598790.png" alt="Specification of `Transmute::createReconstructor` operation"  />
+<p class="caption">
+Figure 2.9: Specification of <code>Transmute::createReconstructor</code> operation
+</p>
+</div>
 </div>
 </div>
 </div>
@@ -590,70 +596,70 @@ Figure 2.8: Specification of <code>bitstamp::Capture::createReconstructor</code>
 <p>This section provides specifications of <code>acqureAndProcess</code> operation of concrete classes shown on figure <a href="methods.html#fig:Acquirer">2.6</a> in light-green. Note that both <code>Receiver</code>-derived classes share <code>acquireAndProcess</code> operation defined in <code>Receiver</code> class.</p>
 <div id="receiver-acquire-and-process" class="section level4" number="2.2.4.1">
 <h4><span class="header-section-number">2.2.4.1</span> Receiver</h4>
-<p><code>Coinbase::Receiver</code> and <code>Bitstamp::Receiver</code> classes inherit <code>acquireAndProcess()</code> method from <code>Receiver</code> class. Its activity diagram is shown on figure <a href="methods.html#fig:receiver-acquireAndProcess">2.9</a>.</p>
+<p><code>Coinbase::Receiver</code> and <code>Bitstamp::Receiver</code> classes inherit <code>acquireAndProcess()</code> method from <code>Receiver</code> class. Its activity diagram is shown on figure <a href="methods.html#fig:receiver-acquireAndProcess">2.10</a>.</p>
 <div class="figure" style="text-align: left"><span style="display:block;" id="fig:receiver-acquireAndProcess"></span>
 <img src="html_docs/fig670854.png" alt="Specificationf of `Receiver::acquireAndProcess()` operation"  />
 <p class="caption">
-Figure 2.9: Specificationf of <code>Receiver::acquireAndProcess()</code> operation
+Figure 2.10: Specificationf of <code>Receiver::acquireAndProcess()</code> operation
 </p>
 </div>
 </div>
 <div id="reader-acquire-and-process" class="section level4" number="2.2.4.2">
 <h4><span class="header-section-number">2.2.4.2</span> Reader</h4>
-<p><code>Reader</code> class has another <code>acquireAndProcess()</code> method. Its activity model is shown on figure <a href="methods.html#fig:reader-acquireAndProcess">2.10</a>.</p>
+<p><code>Reader</code> class has another <code>acquireAndProcess()</code> method. Its activity model is shown on figure <a href="methods.html#fig:reader-acquireAndProcess">2.11</a>.</p>
 <div class="figure" style="text-align: left"><span style="display:block;" id="fig:reader-acquireAndProcess"></span>
 <img src="html_docs/fig605318.png" alt="Specificationf of `Reader::acquireAndProcess()` operation"  />
 <p class="caption">
-Figure 2.10: Specificationf of <code>Reader::acquireAndProcess()</code> operation
+Figure 2.11: Specificationf of <code>Reader::acquireAndProcess()</code> operation
 </p>
 </div>
 </div>
 </div>
 <div id="receive-messages" class="section level3" number="2.2.5">
 <h3><span class="header-section-number">2.2.5</span> Receive messages</h3>
-<p>Action <code>Receive messages</code> on figure <a href="methods.html#fig:receiver-acquireAndProcess">2.9</a> is UML2 <code>StartObjectBehaviorAction</code> that starts execution of <code>Receiver</code> StateMachine shown on figure <a href="methods.html#fig:receiver">2.11</a>. The call is synchronous, so the execution of the <code>Receive messages</code> does not complete until the execution of <code>Receiver</code> StateMachine completes.</p>
+<p>Action <code>Receive messages</code> on figure <a href="methods.html#fig:receiver-acquireAndProcess">2.10</a> is UML2 <code>StartObjectBehaviorAction</code> that starts execution of <code>Receiver</code> StateMachine shown on figure <a href="methods.html#fig:receiver">2.12</a>. The call is synchronous, so the execution of the <code>Receive messages</code> does not complete until the execution of <code>Receiver</code> StateMachine completes.</p>
 
 <div class="figure" style="text-align: left"><span style="display:block;" id="fig:receiver"></span>
-<img src="html_docs/fig399494.png" alt="Processing snapshot and Processing messages states pass received portions of data asynchronously to an instance of Reconstructor (by calling operation Reconstructor::process() shown on figure 2.14) thereby the streaming of data between Receive messages and Process message on figure 2.9 is implemented."  />
+<img src="html_docs/fig399494.png" alt="Processing snapshot and Processing messages states pass received portions of data asynchronously to an instance of Reconstructor (by calling operation Reconstructor::process() shown on figure 2.15) thereby the streaming of data between Receive messages and Process message on figure 2.10 is implemented."  />
 <p class="caption">
-Figure 2.11: <code>Processing snapshot</code> and <code>Processing messages</code> states pass received portions of data asynchronously to an instance of <code>Reconstructor</code> (by calling operation <code>Reconstructor::process()</code> shown on figure <a href="methods.html#fig:process-message">2.14</a>) thereby the streaming of data between <code>Receive messages</code> and <code>Process message</code> on figure <a href="methods.html#fig:receiver-acquireAndProcess">2.9</a> is implemented.
+Figure 2.12: <code>Processing snapshot</code> and <code>Processing messages</code> states pass received portions of data asynchronously to an instance of <code>Reconstructor</code> (by calling operation <code>Reconstructor::process()</code> shown on figure <a href="methods.html#fig:process-message">2.15</a>) thereby the streaming of data between <code>Receive messages</code> and <code>Process message</code> on figure <a href="methods.html#fig:receiver-acquireAndProcess">2.10</a> is implemented.
 </p>
 </div>
-<p>Almost all exchanges provide two separate channels for receiving (i) a list of orders currently open on order book and (ii) order updates. In order to capture a dynamics of an order book one need to receive information from both channels and combine it. <code>Feeder</code> StateMachine shown on figure <a href="methods.html#fig:feeder">2.12</a> deals with receiving order updates while <code>Snapshot</code> StateMachine shown on figure <a href="methods.html#fig:snapshot">2.13</a> is responsible for getting a list of orders currently open on order book.</p>
-<p>Now look at figure <a href="methods.html#fig:receiver">2.11</a> again. An entry behaviour of <code>Engage.Engaging Feeder</code> state launches <code>Feeder</code> StateMachine asynchronously. The latter sends “success” event as soon as it successfully subscribed for order updates and <code>Receiver</code> transitions to <code>Engage.Feeder Engaged.Making Snapshot.Obtaining</code> state. The state’s entry behaviour asynchronously launches <code>Snapshot</code> StateMachine shown on figure <a href="methods.html#fig:snapshot">2.13</a>.</p>
+<p>Almost all exchanges provide two separate channels for receiving (i) a list of orders currently open on order book and (ii) order updates. In order to capture a dynamics of an order book one need to receive information from both channels and combine it. <code>Feeder</code> StateMachine shown on figure <a href="methods.html#fig:feeder">2.13</a> deals with receiving order updates while <code>Snapshot</code> StateMachine shown on figure <a href="methods.html#fig:snapshot">2.14</a> is responsible for getting a list of orders currently open on order book.</p>
+<p>Now look at figure <a href="methods.html#fig:receiver">2.12</a> again. An entry behaviour of <code>Engage.Engaging Feeder</code> state launches <code>Feeder</code> StateMachine asynchronously. The latter sends “success” event as soon as it successfully subscribed for order updates and <code>Receiver</code> transitions to <code>Engage.Feeder Engaged.Making Snapshot.Obtaining</code> state. The state’s entry behaviour asynchronously launches <code>Snapshot</code> StateMachine shown on figure <a href="methods.html#fig:snapshot">2.14</a>.</p>
 <p>While <code>Receiver</code> remains in <code>Engaged.Feeder Engaged.Making Snapshot</code> state messages sent by <code>Feeder</code> are queued by internal transition activity on <code>Receiver.Feeder Engaged</code> state. As soon as <code>Snapshot</code> has received the snapshot, it sends <code>Receiver</code> “success” event and <code>Receiver</code> checks whether the snapshot and messages from <code>Feeder</code> cover the intersecting time periods or the snapshot is stale. In the latter case the snapshot is re-queried. Otherwise <code>Receiver</code> transitions to <code>Processing snapshot</code> state which asynchronously passes the snapshot to <code>Reconstruct Order Book</code> activity and upon receiveing “success” event transitions to <code>Processing messages</code> which asynchronously passes messages received from an exchange to <code>Reconstruct Order Book</code>. It is assumed that <code>Receiver</code> spends most of the time in this state.</p>
 
 <div class="figure" style="text-align: left"><span style="display:block;" id="fig:feeder"></span>
 <img src="html_docs/fig406150.png" alt="Transition success between Subscribe and Receive states sends “success” event to Receiver StateMachine. An entry behaviour of Receive state launches asynchronous read operation, whose successfull completion triggers success transition from Receive. If some service message (i.e. heartbeat, subscription) has arrived, it is processed locally. Otherwise “message” event is sent to Receiver."  />
 <p class="caption">
-Figure 2.12: Transition <code>success</code> between <code>Subscribe</code> and <code>Receive</code> states sends “success” event to <code>Receiver</code> StateMachine. An entry behaviour of <code>Receive</code> state launches asynchronous read operation, whose successfull completion triggers <code>success</code> transition from <code>Receive</code>. If some service message (i.e. heartbeat, subscription) has arrived, it is processed locally. Otherwise “message” event is sent to <code>Receiver</code>.
+Figure 2.13: Transition <code>success</code> between <code>Subscribe</code> and <code>Receive</code> states sends “success” event to <code>Receiver</code> StateMachine. An entry behaviour of <code>Receive</code> state launches asynchronous read operation, whose successfull completion triggers <code>success</code> transition from <code>Receive</code>. If some service message (i.e. heartbeat, subscription) has arrived, it is processed locally. Otherwise “message” event is sent to <code>Receiver</code>.
 </p>
 </div>
 
 <div class="figure" style="text-align: left"><span style="display:block;" id="fig:snapshot"></span>
 <img src="html_docs/fig406534.png" alt="Snapshot StateMachine diagram."  />
 <p class="caption">
-Figure 2.13: Snapshot StateMachine diagram.
+Figure 2.14: Snapshot StateMachine diagram.
 </p>
 </div>
 </div>
 <div id="process-message" class="section level3" number="2.2.6">
 <h3><span class="header-section-number">2.2.6</span> Process message</h3>
-<p>Activity <code>Process message</code> shown on figure <a href="methods.html#fig:process-message">2.14</a> is a specification of <code>Reconstructor::process</code> operation.</p>
+<p>Activity <code>Process message</code> shown on figure <a href="methods.html#fig:process-message">2.15</a> is a specification of <code>Reconstructor::process</code> operation.</p>
 <div class="figure" style="text-align: left"><span style="display:block;" id="fig:process-message"></span>
 <img src="html_docs/fig704390.png" alt="Specification of Reconstructor::process() operation that is called by Process message node"  />
 <p class="caption">
-Figure 2.14: Specification of Reconstructor::process() operation that is called by Process message node
+Figure 2.15: Specification of Reconstructor::process() operation that is called by Process message node
 </p>
 </div>
-<p>It takes an instance of <a href="https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html">Boost.PropertyTree</a> container with an exchange-specific data as <code>message</code> parameter and passes it to <code>Extract message</code> action. The action creates then an instance of one of the exchange-independent class, derived from <code>Message</code>. Possible classes are shown in green on figure <a href="methods.html#fig:message-hierarchy-process">2.15</a>. The instance is returned in <code>Messages</code> container. The cointainer is a list of unique pointers <code>Message_UP</code> to <code>Message</code>-derived objects.</p>
+<p>It takes an instance of <a href="https://www.boost.org/doc/libs/1_73_0/doc/html/property_tree.html">Boost.PropertyTree</a> container with an exchange-specific data as <code>message</code> parameter and passes it to <code>Extract message</code> action. The action creates then an instance of one of the exchange-independent class, derived from <code>Message</code>. Possible classes are shown in green on figure <a href="methods.html#fig:message-hierarchy-process">2.16</a>. The instance is returned in <code>Messages</code> container. The cointainer is a list of unique pointers <code>Message_UP</code> to <code>Message</code>-derived objects.</p>
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:message-hierarchy-process"></span>
 <img src="html_docs/fig552070.png" alt="`Extract` returns an instance of class `Messages`"  />
 <p class="caption">
-Figure 2.15: <code>Extract</code> returns an instance of class <code>Messages</code>
+Figure 2.16: <code>Extract</code> returns an instance of class <code>Messages</code>
 </p>
 </div>
-<p>The further processing of messages by <code>MessageHandler</code>s is implemented using <a href="https://en.wikipedia.org/wiki/Chain-of-responsibility_pattern">Chain of Responsibility</a> pattern. <code>Messages</code> container is passed to ExpansionRegion of type “iterative” as <code>input</code> parameter as shown on figure <a href="methods.html#fig:process-message">2.14</a>. The region calls <code>MessageHandler::handle</code> operation on the instance of <code>MessageHandler</code> currently available within the region for each <code>Message_UP</code> in <code>input</code>. The outputs are combined and passed to the next <code>MessageHandler</code> returned by <code>next</code> transformation, if any (this instance becomes available for the next iteration). The cycle repeats until either <code>input</code> or next <code>MessageHandler</code> is empty.</p>
+<p>The further processing of messages by <code>MessageHandler</code>s is implemented using <a href="https://en.wikipedia.org/wiki/Chain-of-responsibility_pattern">Chain of Responsibility</a> pattern. <code>Messages</code> container is passed to ExpansionRegion of type “iterative” as <code>input</code> parameter as shown on figure <a href="methods.html#fig:process-message">2.15</a>. The region calls <code>MessageHandler::handle</code> operation on the instance of <code>MessageHandler</code> currently available within the region for each <code>Message_UP</code> in <code>input</code>. The outputs are combined and passed to the next <code>MessageHandler</code> returned by <code>next</code> transformation, if any (this instance becomes available for the next iteration). The cycle repeats until either <code>input</code> or next <code>MessageHandler</code> is empty.</p>
 <p>When created, an instance of <code>MessageHandler</code> takes, as a constructor parameter, a shared pointer to the next <code>MessageHandler</code> which will receive messages as soon as <code>MessageHandler</code> being constructed has handled them. Thus the chain is static, i.e. it does not change depending on messages received.</p>
 <p>The kind of processing performed by the chain of <code>MessageHandler</code>s depends on command being performed.</p>
 <p>For command “capture” the chain performes so called <em>data cleansing</em>. According to <span class="citation">(Rahm and Do 2000)</span>:</p>
@@ -666,27 +672,27 @@ Figure 2.15: <code>Extract</code> returns an instance of class <code>Messages</c
 </div>
 <div id="handle-message" class="section level3" number="2.2.7">
 <h3><span class="header-section-number">2.2.7</span> Handle message</h3>
-<p>UML2 Sequence Diagram of <code>MessageHandler::handle()</code> is shown on figure <a href="methods.html#fig:sd-Messagehandler-handle">2.16</a>.</p>
+<p>UML2 Sequence Diagram of <code>MessageHandler::handle()</code> is shown on figure <a href="methods.html#fig:sd-Messagehandler-handle">2.17</a>.</p>
 <div class="figure" style="text-align: left"><span style="display:block;" id="fig:sd-Messagehandler-handle"></span>
 <img src="html_docs/fig551814.png" alt="UML2 Sequence diagram showing a &quot;happy path&quot; trace of `MessageHandler::handle()` method."  />
 <p class="caption">
-Figure 2.16: UML2 Sequence diagram showing a “happy path” trace of <code>MessageHandler::handle()</code> method.
+Figure 2.17: UML2 Sequence diagram showing a “happy path” trace of <code>MessageHandler::handle()</code> method.
 </p>
 </div>
-<p>Handling of messages by <code>MessageHandler</code> is implemented using <a href="https://en.wikipedia.org/wiki/Visitor_pattern">Visitor</a> pattern as shown by UML2 Sequence diagram on figure <a href="methods.html#fig:sd-message-accept">2.17</a>.</p>
+<p>Handling of messages by <code>MessageHandler</code> is implemented using <a href="https://en.wikipedia.org/wiki/Visitor_pattern">Visitor</a> pattern as shown by UML2 Sequence diagram on figure <a href="methods.html#fig:sd-message-accept">2.18</a>.</p>
 <div class="figure" style="text-align: left"><span style="display:block;" id="fig:sd-message-accept"></span>
 <img src="html_docs/fig545286.png" alt="UML2 Sequence diagram showing various alternatives of traces for Message::accept() method. By default all `MessageHandler`s callback (i.e. `era`, `message` etc) just pass the message to `output_` and it is expected that derived classes override the callbacks in order to do something useful. The message can be saved by `MessageHandler` instance in order to be processed later together with messages that follows."  />
 <p class="caption">
-Figure 2.17: UML2 Sequence diagram showing various alternatives of traces for <a href="Message::accept" class="uri">Message::accept</a>() method. By default all <code>MessageHandler</code>s callback (i.e. <code>era</code>, <code>message</code> etc) just pass the message to <code>output_</code> and it is expected that derived classes override the callbacks in order to do something useful. The message can be saved by <code>MessageHandler</code> instance in order to be processed later together with messages that follows.
+Figure 2.18: UML2 Sequence diagram showing various alternatives of traces for <a href="Message::accept" class="uri">Message::accept</a>() method. By default all <code>MessageHandler</code>s callback (i.e. <code>era</code>, <code>message</code> etc) just pass the message to <code>output_</code> and it is expected that derived classes override the callbacks in order to do something useful. The message can be saved by <code>MessageHandler</code> instance in order to be processed later together with messages that follows.
 </p>
 </div>
-<p>The result of <code>handle</code> is a set of zero or more messages that are stored in <code>output_</code> member variable that is an instance of <code>Messages</code> class shown on figure <a href="methods.html#fig:message-hierarchy-process">2.15</a>. <code>MessageHandler</code> will not produce output for a message when subsequent messages are required for handling. In this case the message will be kept within this particular <code>MessageHandler</code> instance between runs of <code>Reconstructor::process()</code> until enough subsequent messages have been received. Then all kept and handled messages are returned together, saved into <code>output_</code> variable.</p>
+<p>The result of <code>handle</code> is a set of zero or more messages that are stored in <code>output_</code> member variable that is an instance of <code>Messages</code> class shown on figure <a href="methods.html#fig:message-hierarchy-process">2.16</a>. <code>MessageHandler</code> will not produce output for a message when subsequent messages are required for handling. In this case the message will be kept within this particular <code>MessageHandler</code> instance between runs of <code>Reconstructor::process()</code> until enough subsequent messages have been received. Then all kept and handled messages are returned together, saved into <code>output_</code> variable.</p>
 </div>
 <div id="output-format" class="section level3" number="2.2.8">
 <h3><span class="header-section-number">2.2.8</span> Output format</h3>
 <div id="file" class="section level4" number="2.2.8.1">
 <h4><span class="header-section-number">2.2.8.1</span> File</h4>
-<p>MessageHandler <code>File</code> saves the received events into files. Upon receiving of a message of class <code>Era</code> (see figure <a href="methods.html#fig:message-hierarchy-process">2.15</a>) <code>File</code> opens a new file called <em>Era file</em> and saves the subsequent <code>OrderEvent</code> messages there until obtaining <code>Reset</code> message when the handler closes Era file. <code>File</code> drops <code>Elapsed</code> messages silently.</p>
+<p>MessageHandler <code>File</code> saves the received events into files. Upon receiving of a message of class <code>Era</code> (see figure <a href="methods.html#fig:message-hierarchy-process">2.16</a>) <code>File</code> opens a new file called <em>Era file</em> and saves the subsequent <code>OrderEvent</code> messages there until obtaining <code>Reset</code> message when the handler closes Era file. <code>File</code> drops <code>Elapsed</code> messages silently.</p>
 <p>Era file is <a href="https://en.wikipedia.org/wiki/Comma-separated_values">CSV-file</a> with one row per <code>OrderEvent</code> and its name is constructed from <code>exchange</code>, <code>product</code> and <code>timestamp</code> values carried by <code>Era</code> message. Row fields are described in the table <a href="methods.html#tab:order-record">2.4</a> below.</p>
 <table class="huxtable" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  " id="tab:order-record">
 <caption style="caption-side: top; text-align: left;">

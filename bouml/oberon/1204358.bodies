@@ -29,15 +29,10 @@ snapshot->registerHandlers(std::bind(&R::postEvent, receiver, &R::failure),
 // feeder->engage();
 // receiver->create();
 return receiver;
-!!!1829126.cpp!!!	createStore() : File::File_SP
-auto store = boost::make_shared<reconstructor::File>();
-store->saveOrderEvents(true).saveDeleted(deleted_).saveEventSource(source_);
-return store;
-
-!!!1829254.cpp!!!	createEventCounter(in next : MessageHandler::MessageHandler_SP) : EventCounter::EventCounter_SP
+!!!1829254.cpp!!!	makeEventCounter(in next : MessageHandler::MessageHandler_SP [1]) : EventCounter::EventCounter_SP [1]
 return boost::make_shared<reconstructor::EventCounter>(next);
 
-!!!1829382.cpp!!!	createSizeDeducer(in next : MessageHandler::MessageHandler_SP) : SizeDeducer::SizeDeducer_SP
+!!!1829382.cpp!!!	makeSizeDeducer(in next : MessageHandler::MessageHandler_SP [1]) : SizeDeducer::SizeDeducer_SP [1]
 auto size_deducer = boost::make_shared<reconstructor::SizeDeducer>(next);
 size_deducer->create();
 return size_deducer;

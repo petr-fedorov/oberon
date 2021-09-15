@@ -1,6 +1,6 @@
 class Slice
 !!!1788294.cpp!!!	createReconstructor() : Reconstructor::Reconstructor_SP
-auto store = boost::make_shared<reconstructor::File>();
+auto store = boost::make_shared<reconstructor::EraFile>();
 store->saveOrderEvents(true).saveDeleted(deleted_);
 auto event_counter = boost::make_shared<reconstructor::EventCounter>(store);
 return boost::make_shared<reconstructor::file::Reconstructor>(boost::make_shared<reconstructor::EraSlicer>(boundary_, event_counter));

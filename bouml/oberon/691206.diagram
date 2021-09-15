@@ -5,27 +5,27 @@ classcanvas 128006 class_ref 1196934 // Command
   hidden_operations
     operation_ref 1795718 // Command
     operation_ref 1809158 // ~Command
-  xyz 303.2 178.6 2000
+  xyz 305.2 152.6 2000
 end
 classcanvas 128134 class_ref 1204358 // Capture
   classdiagramsettings member_max_width 0 end
   hidden_operations
     operation_ref 1802246 // Capture
-  xyz 100.8 182.2 2006
+  xyz 39.8 214.2 2006
 end
 classcanvas 128390 class_ref 1197574 // Transform
   classdiagramsettings member_max_width 0 end
   hidden_operations
     operation_ref 1802374 // Transform
-  xyz 544.4 361.6 2006
+  xyz 544.4 432.6 2006
 end
 classcanvas 128646 class_ref 1217542 // Command_UP
   classdiagramsettings member_max_width 0 end
-  xyz 657 183.4 2006
+  xyz 651 210.4 2006
 end
 classcanvas 128902 class_ref 889478 // unique_ptr
   classdiagramsettings member_max_width 0 end
-  xyz 683.2 61 3005
+  xyz 678.2 51 3005
 end
 classcanvas 129158 class_ref 1197062 // Capture
   classdiagramsettings member_max_width 0 end
@@ -34,7 +34,7 @@ classcanvas 129158 class_ref 1197062 // Capture
     operation_ref 1822342 // Capture
     operation_ref 1829766 // makeSynchronizer
     operation_ref 1829894 // makeReconstructor
-  xyz 39.6 475.2 2012
+  xyz 39.6 546.2 2012
 end
 classcanvas 129414 class_ref 1197318 // Capture
   classdiagramsettings member_max_width 0 end
@@ -45,44 +45,52 @@ classcanvas 129414 class_ref 1197318 // Capture
     operation_ref 1830150 // makeTimeOrderEnforcer
     operation_ref 1830278 // makeSynchronizer
     operation_ref 1830406 // makeReconstructor
-  xyz 214.6 475.2 2024
+  xyz 214.6 546.2 2024
 end
 classcanvas 129670 class_ref 1197702 // Slice
   classdiagramsettings member_max_width 0 end
   color lightgreen
   hidden_operations
     operation_ref 1802502 // Slice
-  xyz 382.8 475.2 2012
+  xyz 382.8 546.2 2012
 end
 classcanvas 129926 class_ref 1197830 // Merge
   classdiagramsettings member_max_width 0 end
   color lightgreen
-  xyz 530 475.2 2012
+  xyz 530 546.2 2012
 end
 classcanvas 130182 class_ref 1197190 // Transmute
   classdiagramsettings member_max_width 0 end
   color lightgreen
-  xyz 680 475.2 2012
+  hidden_operations
+    operation_ref 1836934 // makeSpreadFiles
+    operation_ref 1837062 // makeSpreadCalculator
+    operation_ref 1837190 // makeDepthFiles
+    operation_ref 1837446 // makeSameTimeMerger
+    operation_ref 1837574 // makeSamePriceMerger
+    operation_ref 1837702 // makePriceChangeEliminator
+    operation_ref 1837830 // makeReconstructor
+  xyz 680 546.2 2012
 end
 packagecanvas 130438 
   package_ref 147718 // App
-    xyzwh 13 109 1990 817 455
+    xyzwh 13 109 1990 813 537
 end
 packagecanvas 130566 
   package_ref 260998 // Coinbase
-    xyzwh 24 364 1995 171 189
+    xyzwh 24 435 1995 171 189
 end
 packagecanvas 130694 
   package_ref 261126 // Bitstamp
-    xyzwh 203 364 1995 171 189
+    xyzwh 203 435 1995 171 189
 end
 classcanvas 130822 class_ref 1224454 // CaptureFromCoinbase
   classdiagramsettings member_max_width 0 end
-  xyz 39 400 2029
+  xyz 39 471 2029
 end
 classcanvas 131206 class_ref 1225222 // CaptureFromBitstamp
   classdiagramsettings member_max_width 0 end
-  xyz 220 403 2030
+  xyz 220 474 2030
 end
 relationcanvas 128262 relation_ref 1418374 // <generalisation>
   from ref 128134 z 2007 to ref 128006
@@ -97,7 +105,7 @@ end
 line 128774 ---+
   from ref 128646 z 2007 to ref 128006
 relationcanvas 129030 relation_ref 1434246 // <realization>
-  from ref 128646 z 3006 label "<T->Command>" max_width 255 xyz 677 132.5 3006 stereotype "<<bind>>" xyz 695 150.5 3006 to ref 128902
+  from ref 128646 z 3006 label "<T->Command>" max_width 255 xyz 671 140 3006 stereotype "<<bind>>" xyz 689 158 3006 to ref 128902
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
@@ -117,7 +125,7 @@ relationcanvas 130310 relation_ref 1411590 // <generalisation>
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 130950 relation_ref 1451014 // <realization>
-  from ref 130822 z 2030 label "<R->Receiver, F->Feeder>" max_width 255 xyz 61 331.5 2030 stereotype "<<bind>>" xyz 107 345.5 2030 to ref 128134
+  from ref 130822 z 2030 label "<R->Receiver, F->Feeder>" max_width 255 xyz 36 412 2030 stereotype "<<bind>>" xyz 82 426 2030 to ref 128134
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
@@ -127,8 +135,9 @@ relationcanvas 131078 relation_ref 1451142 // <generalisation>
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 131334 relation_ref 1451910 // <realization>
-  from ref 131206 z 2031 label "<R->Receiver, F->Feeder>" max_width 255 xyz 237.5 347 2031 stereotype "<<bind>>" xyz 283.5 361 2031 to point 319 318
-  line 131590 z 2031 to ref 128134
+  decenter_end 786
+  from ref 131206 z 2031 label "<R->Receiver, F->Feeder>" max_width 255 xyz 217 395 2031 stereotype "<<bind>>" xyz 263 409 2031 to point 286 344
+  line 131718 z 2031 to ref 128134
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end

@@ -1,6 +1,6 @@
 format 224
 "Bitstamp" // App::Bitstamp
-  revision 4
+  revision 6
   modified_by 6 "root"
   // class settings
   
@@ -137,7 +137,7 @@ ${inlines}
       end
 
       operation 1830022 "makeDeduplicator"
-	private return_type class_ref 1224838 // Deduplicator_SP
+	private return_type class_ref 950918 // MessageHandler_SP
 	multiplicity "1"
 	nparams 1
 	  param in name "next" type class_ref 950918 // MessageHandler_SP
@@ -154,7 +154,7 @@ ${inlines}
       end
 
       operation 1830150 "makeTimeOrderEnforcer"
-	private return_type class_ref 1224966 // TimeOrderEnforcer_SP
+	private return_type class_ref 950918 // MessageHandler_SP
 	multiplicity "1"
 	nparams 1
 	  param in name "next" type class_ref 950918 // MessageHandler_SP
@@ -171,7 +171,7 @@ ${inlines}
       end
 
       operation 1830278 "makeSynchronizer"
-	private return_type class_ref 1225094 // Synchronizer_SP
+	private return_type class_ref 950918 // MessageHandler_SP
 	multiplicity "1"
 	nparams 1
 	  param in name "next" type class_ref 950918 // MessageHandler_SP
@@ -254,11 +254,11 @@ ${inlines}
 
       activitynode 498822 initial_node ""
 	flow 748294 "<flow>"
-	  on activityaction_ref 472966 // activity action Make Store
+	  on activityaction_ref 472966 // activity action Make Era File storage
 	end
       end
 
-      activityaction 472966 "Make Store"
+      activityaction 472966 "Make Era File storage"
 	call_operation_action
 	synchronous operation_ref 1829126 // makeStore
 	pin 647942 "self" type class_ref 1204358 // Capture
@@ -266,7 +266,7 @@ ${inlines}
 	  in
 	end
 
-	pin 648070 "" type class_ref 1224070 // File_SP
+	pin 648070 "" type class_ref 950918 // MessageHandler_SP
 	   multiplicity "1" unordered is_control
 	  return
 	  flow 748422 "<flow>"
@@ -283,7 +283,7 @@ ${inlines}
 	  in
 	end
 
-	pin 648326 "" type class_ref 1224198 // EventCounter_SP
+	pin 648326 "" type class_ref 950918 // MessageHandler_SP
 	   multiplicity "1" unordered is_control
 	  return
 	  flow 748550 "<flow>"
@@ -305,7 +305,7 @@ ${inlines}
 	  in
 	end
 
-	pin 648710 "" type class_ref 1224326 // SizeDeducer_SP
+	pin 648710 "" type class_ref 950918 // MessageHandler_SP
 	   multiplicity "1" unordered is_control
 	  return
 	  flow 748678 "<flow>"
@@ -327,7 +327,7 @@ ${inlines}
 	  in
 	end
 
-	pin 649094 "" type class_ref 1224838 // Deduplicator_SP
+	pin 649094 "" type class_ref 950918 // MessageHandler_SP
 	   multiplicity "1" unordered is_control
 	  return
 	  flow 747398 "<flow>"
@@ -379,7 +379,7 @@ ${inlines}
 	  in
 	end
 
-	pin 649734 "" type class_ref 1225094 // Synchronizer_SP
+	pin 649734 "" type class_ref 950918 // MessageHandler_SP
 	   multiplicity "1" unordered is_control
 	  return
 	  flow 748166 "<flow>"
@@ -407,7 +407,7 @@ ${inlines}
 	  in
 	end
 
-	pin 650118 "" type class_ref 1224966 // TimeOrderEnforcer_SP
+	pin 650118 "" type class_ref 950918 // MessageHandler_SP
 	   multiplicity "1" unordered is_control
 	  return
 	  flow 747782 "<flow>"

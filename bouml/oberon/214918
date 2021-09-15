@@ -1,6 +1,6 @@
 format 224
 "Bitstamp" // App::Reconstr::Bitstamp
-  revision 46
+  revision 47
   modified_by 6 "root"
   // class settings
   
@@ -183,30 +183,6 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
-      class 1224838 "Deduplicator_SP"
-	visibility public stereotype "template_typedef"
-	nactuals 1
-	actual class class_ref 852614 // shared_ptr
-	  rank 0 value class_ref 965766 // Deduplicator
-	cpp_decl "${comment}${template}using ${name} = ${inherit};
-"
-	java_decl ""
-	php_decl ""
-	python_2_2 python_decl ""
-	idl_decl ""
-	explicit_switch_type ""
-	mysql_decl ""
-	
-	classrelation 1461894 // <realization>
-	  relation 1451526 -_-|>
-	    stereotype "bind"
-	    a public
-	      cpp default "${type}"
-	      classrelation_ref 1461894 // <realization>
-	    b parent class_ref 852614 // shared_ptr
-	end
-      end
-
       classrelation 1095430 // <generalisation>
 	relation 1085062 ---|>
 	  a public
@@ -383,30 +359,6 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
-      class 1224966 "TimeOrderEnforcer_SP"
-	visibility public stereotype "template_typedef"
-	nactuals 1
-	actual class class_ref 852614 // shared_ptr
-	  rank 0 value class_ref 966022 // TimeOrderEnforcer
-	cpp_decl "${comment}${template}using ${name} = ${inherit};
-"
-	java_decl ""
-	php_decl ""
-	python_2_2 python_decl ""
-	idl_decl ""
-	explicit_switch_type ""
-	mysql_decl ""
-	
-	classrelation 1462022 // <realization>
-	  relation 1451654 -_-|>
-	    stereotype "bind"
-	    a public
-	      cpp default "${type}"
-	      classrelation_ref 1462022 // <realization>
-	    b parent class_ref 852614 // shared_ptr
-	end
-      end
-
       classrelation 1095814 // <generalisation>
 	relation 1085446 ---|>
 	  a public
@@ -1438,30 +1390,6 @@ ${inlines}
 	  ncouples 1
 	  key "STM generated" value ""
 	  comment " returns the state containing the current"
-	end
-      end
-
-      class 1225094 "Synchronizer_SP"
-	visibility public stereotype "template_typedef"
-	nactuals 1
-	actual class class_ref 852614 // shared_ptr
-	  rank 0 value class_ref 979334 // Synchronizer
-	cpp_decl "${comment}${template}using ${name} = ${inherit};
-"
-	java_decl ""
-	php_decl ""
-	python_2_2 python_decl ""
-	idl_decl ""
-	explicit_switch_type ""
-	mysql_decl ""
-	
-	classrelation 1462150 // <realization>
-	  relation 1451782 -_-|>
-	    stereotype "bind"
-	    a public
-	      cpp default "${type}"
-	      classrelation_ref 1462150 // <realization>
-	    b parent class_ref 852614 // shared_ptr
 	end
       end
 

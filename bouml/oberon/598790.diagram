@@ -1,91 +1,293 @@
 format 224
 
-activitycanvas 128006 activity_ref 208262 // Create Transmuter
+activitycanvas 128006 activity_ref 208262 // Create Reconstructor for Transmuter
   
-  xyzwh 65 37 2007 737 489
+  xyzwh 62.2 27.2 2007 699 1149
   params
     parametercanvas 128390 parameter_ref 273926 // transmuter
-        xyzwh 613 513 2008 85 25
+        xyzwh 324.8 1163.4 2008 85 25
     end
-  end
-end
-activityactioncanvas 130182 activityaction_ref 387718 // activity action Create File handler
-  
-  show_opaque_action_definition default
-  xyzwh 121 117 2012 120 59
-  pins
-    pincanvas 133638 pin_ref 613894 // create
-      xyzwh 173 107 2014 11 11 label_xy 163 91
-    end
-    pincanvas 133766 pin_ref 614022 // handler
-      xyzwh 174 175 2014 11 11 label_xy 119 177
-    end
-  end
-end
-activityactioncanvas 130438 activityaction_ref 387846 // activity action D.08 Create Price Change Eliminator
-  
-  show_opaque_action_definition default
-  xyzwh 433 305 2012 120 59
-  pins
-    pincanvas 130566 pin_ref 533126 // next
-      xyzwh 423 326 2014 11 11 label_xy 393 339
-    end
-    pincanvas 130694 pin_ref 533254 // handler
-      xyzwh 476 363 2014 11 11 label_xy 416 365
-    end
-  end
-end
-activityactioncanvas 130950 activityaction_ref 387974 // activity action D.09 Create Same Price Merger
-  
-  show_opaque_action_definition default
-  xyzwh 276 210 2012 120 59
-  pins
-    pincanvas 133894 pin_ref 614150 // target
-      xyzwh 347 200 2014 11 11 label_xy 310 187
-    end
-    pincanvas 134022 pin_ref 614278 // next
-      xyzwh 266 234 2014 11 11 label_xy 237 221
-    end
-  end
-end
-activityactioncanvas 131334 activityaction_ref 388102 // activity action D.10 Create File::Reconstructor
-  
-  show_opaque_action_definition default
-  xyzwh 590 400 2012 120 59
-  pins
-    pincanvas 131462 pin_ref 533638 // next
-      xyzwh 580 427 2014 11 11 label_xy 548 437
-    end
-    pincanvas 131590 pin_ref 533766 // reconstructor
-      xyzwh 648 458 2014 11 11 label_xy 561 461
+    parametercanvas 136454 parameter_ref 362886 // error
+        xyzwh 715 578.6 2009 91 25 label_xy 765 606
     end
   end
 end
 activitynodecanvas 132614 activitynode_ref 416646 // initial_node
-  xyz 76 136 2012
+  xyz 348.2 56.6 2012
 end
 note 132870 "Replaces price change events with order deletion and order creation events"
-  xyzwh 571 184 2012 169 77
+  xyzwh 444.2 920.6 2012 297 77
 note 133126 "Creates Level2 Order functionfrom events i.e. assigns all events with the same price to the same order id and adjust volume and volume_change accordingly"
-  xyzwh 347 74 2012 297 89
-flowcanvas 131718 flow_ref 613638 // <flow>
+  xyzwh 444.2 787.6 2012 297 89
+activityactioncanvas 134406 activityaction_ref 480390 // activity action Make Spread Calculator
   
-  from ref 130694 z 2015 to point 479 429
-  line 132230 z 2015 to ref 131462
+  show_opaque_action_definition default
+  xyzwh 538 220 3005 101 61
+  pins
+    pincanvas 134534 pin_ref 657414 // self
+      xyzwh 638.6 240.2 3006 11 11 label_xy 654.6 238.2
+    end
+    pincanvas 134662 pin_ref 657542 // 
+      xyzwh 528.6 239 3006 11 11 label_xy 405.6 249.2
+    end
+    pincanvas 134790 pin_ref 657670 // next
+      xyzwh 580.2 210.6 3006 11 11 label_xy 541.6 200.2
+    end
+  end
+end
+activityactioncanvas 134918 activityaction_ref 480518 // activity action Make a storage for Spread
+  
+  show_opaque_action_definition default
+  xyzwh 538 96 3010 101 61
+  pins
+    pincanvas 135046 pin_ref 657798 // self
+      xyzwh 638.8 123.6 3011 11 11 label_xy 658 124
+    end
+    pincanvas 135174 pin_ref 657926 // 
+      xyzwh 578.6 156 3011 11 11 label_xy 446 160
+    end
+  end
+end
+activityactioncanvas 135302 activityaction_ref 480646 // activity action Make a storage for Depth
+  
+  show_opaque_action_definition default
+  xyzwh 538 393 2012 101 61
+  pins
+    pincanvas 135430 pin_ref 658054 // self
+      xyzwh 638.6 412.6 2013 11 11 label_xy 652.4 410.6
+    end
+    pincanvas 135558 pin_ref 658182 // 
+      xyzwh 581.8 453 2013 11 11 label_xy 583.4 469.6
+    end
+    pincanvas 135686 pin_ref 658310 // next
+      xyzwh 528 417.6 2013 11 11 label_xy 487.4 407.6
+    end
+  end
+end
+activityactioncanvas 135814 activityaction_ref 480774 // activity action Make Same Time Merger
+  
+  show_opaque_action_definition default
+  xyzwh 310 674 2012 101 61
+  pins
+    pincanvas 135942 pin_ref 658438 // self
+      xyzwh 300.6 699 2013 11 11 label_xy 267.2 697.4
+    end
+    pincanvas 136070 pin_ref 658566 // 
+      xyzwh 359 734 2013 11 11 label_xy 228.2 737.4
+    end
+    pincanvas 136198 pin_ref 658694 // next
+      xyzwh 355.6 664.6 2013 11 11 label_xy 317.2 656.4
+    end
+  end
+end
+activitynodecanvas 136582 activitynode_ref 505606 // decision
+  xyz 348 571 2018
+end
+activityactioncanvas 137094 activityaction_ref 480902 // activity action Make Same Price Merger
+  
+  show_opaque_action_definition default
+  xyzwh 310 801 3005 101 61
+  pins
+    pincanvas 137222 pin_ref 658822 // self
+      xyzwh 300.6 821.6 3006 11 11 label_xy 266.6 820.2
+    end
+    pincanvas 137350 pin_ref 658950 // 
+      xyzwh 355 861 3006 11 11 label_xy 224.6 867.2
+    end
+    pincanvas 137478 pin_ref 659078 // next
+      xyzwh 357.2 791.6 3006 11 11 label_xy 318.6 782.2
+    end
+  end
+end
+activityactioncanvas 137990 activityaction_ref 481030 // activity action Make Price Change Eliminator
+  
+  show_opaque_action_definition default
+  xyzwh 310 928 3005 101 61
+  pins
+    pincanvas 138118 pin_ref 659206 // self
+      xyzwh 300.6 947.4 3006 11 11 label_xy 264.4 946.6
+    end
+    pincanvas 138246 pin_ref 659334 // 
+      xyzwh 354 988 3006 11 11 label_xy 220.4 994.6
+    end
+    pincanvas 138374 pin_ref 659462 // next
+      xyzwh 355.8 918.6 3006 11 11 label_xy 317.4 910.6
+    end
+  end
+end
+activityactioncanvas 138758 activityaction_ref 481158 // activity action Make Reconstructor
+  
+  show_opaque_action_definition default
+  xyzwh 310 1055 2013 101 61
+  pins
+    pincanvas 138886 pin_ref 659590 // self
+      xyzwh 300.6 1077.8 2014 11 11 label_xy 268.8 1075
+    end
+    pincanvas 139014 pin_ref 659718 // 
+      xyzwh 359.4 1115 2014 11 11 label_xy 244.8 1124
+    end
+    pincanvas 139142 pin_ref 659846 // next
+      xyzwh 355.6 1045.6 2014 11 11 label_xy 314.8 1036
+    end
+  end
+end
+activitynodecanvas 140166 activitynode_ref 505734 // decision
+  xyz 345 108 2012
+end
+activityactioncanvas 140294 activityaction_ref 481286 // activity action Read spread_
+  
+  show_opaque_action_definition default
+  xyzwh 113 105 2012 100 60
+  pins
+    pincanvas 140422 pin_ref 659974 // self
+      xyzwh 103 129 2014 11 11 label_xy 70 127
+    end
+    pincanvas 140550 pin_ref 660102 // 
+      xyzwh 212 120 2014 11 11 label_xy 223 107
+    end
+  end
+end
+activityactioncanvas 141062 activityaction_ref 481414 // activity action Make nullptr
+  
+  show_opaque_action_definition default
+  xyzwh 113 216 2012 100 60
+  pins
+    pincanvas 141190 pin_ref 660230 // 
+      xyzwh 212 239 2014 11 11 label_xy 216 253
+    end
+  end
+end
+activitynodecanvas 141318 activitynode_ref 505862 // merge
+  xyz 345 220 2012
+end
+activitynodecanvas 142470 activitynode_ref 505990 // decision
+  xyz 345 403 2012
+end
+activityactioncanvas 142726 activityaction_ref 481542 // activity action Read depth_
+  
+  show_opaque_action_definition default
+  xyzwh 112 394 2012 100 60
+  pins
+    pincanvas 142854 pin_ref 660358 // self
+      xyzwh 102 421 2014 11 11 label_xy 68 420
+    end
+    pincanvas 142982 pin_ref 660486 // 
+      xyzwh 211 418 2014 11 11 label_xy 226 409
+    end
+  end
+end
+activitynodecanvas 143750 activitynode_ref 506118 // merge
+  xyz 345 510 2012
+end
+note 144262 "Outputs only best bids and best asks Level2 events calculated using trading capital specified as parameter"
+  xyzwh 441.2 311 2012 297 59
+note 144518 "Merges/deletes Level2 events with the same timestamp"
+  xyzwh 444.2 687 2012 297 35
+flowcanvas 136710 flow_ref 755462 // <flow>
+  decenter_begin 513
+  
+  from ref 136582 z 2019 label "[is nullptr?]" xyz 514 582 2019 to ref 136454
    write_horizontally default
 end
-flowcanvas 132102 flow_ref 614022 // <flow>
+flowcanvas 136838 flow_ref 755590 // <flow>
   
-  from ref 131590 z 2015 to ref 128390
+  from ref 136582 z 2019 label "[else]" xyz 345 628 2019 to ref 136198
    write_horizontally default
 end
-flowcanvas 132742 flow_ref 614150 // <flow>
+flowcanvas 139398 flow_ref 755846 // <flow>
   
-  from ref 132614 z 2013 to ref 130182
+  from ref 136070 z 3007 to ref 137478
    write_horizontally default
 end
-line 132998 -_-_
-  from ref 132870 z 2013 to ref 130438
-line 133254 -_-_
-  from ref 133126 z 2013 to ref 130950
+flowcanvas 139526 flow_ref 755974 // <flow>
+  
+  from ref 137350 z 3007 to ref 138374
+   write_horizontally default
+end
+flowcanvas 139654 flow_ref 756102 // <flow>
+  
+  from ref 138246 z 3007 to ref 139142
+   write_horizontally default
+end
+flowcanvas 139782 flow_ref 756230 // <flow>
+  
+  from ref 139014 z 2015 to ref 128390
+   write_horizontally default
+end
+flowcanvas 140678 flow_ref 756614 // <flow>
+  
+  from ref 140550 z 2015 stereotype "<<decisionInputFlow>>" xyz 221 125 3000 to ref 140166
+   write_horizontally default
+end
+flowcanvas 140806 flow_ref 756742 // <flow>
+  
+  from ref 132614 z 2013 to ref 140166
+   write_horizontally default
+end
+flowcanvas 140934 flow_ref 756870 // <flow>
+  
+  from ref 140166 z 3011 label "[true]" xyz 438 119 3011 to ref 134918
+   write_horizontally default
+end
+flowcanvas 141574 flow_ref 757126 // <flow>
+  decenter_end 594
+  
+  from ref 141190 z 2015 to ref 141318
+   write_horizontally default
+end
+flowcanvas 141702 flow_ref 757254 // <flow>
+  
+  from ref 135174 z 3012 to ref 134790
+   write_horizontally default
+end
+flowcanvas 141830 flow_ref 757382 // <flow>
+  decenter_end 594
+  
+  from ref 134662 z 3007 to ref 141318
+   write_horizontally default
+end
+flowcanvas 142214 flow_ref 757510 // <flow>
+  
+  from ref 140166 z 2013 label "[false]" xyz 259 166 2013 to ref 141062
+   write_horizontally default
+end
+flowcanvas 142598 flow_ref 757638 // <flow>
+  
+  from ref 141318 z 2013 to ref 142470
+   write_horizontally default
+end
+flowcanvas 143110 flow_ref 757766 // <flow>
+  
+  from ref 142982 z 2015 stereotype "<<decisionInputFlow>>" xyz 220 421 3000 to ref 142470
+   write_horizontally default
+end
+flowcanvas 143238 flow_ref 757894 // <flow>
+  
+  from ref 142470 z 2014 label "[true]" xyz 434 414 2014 to ref 135686
+   write_horizontally default
+end
+flowcanvas 143878 flow_ref 758150 // <flow>
+  decenter_end 405
+  
+  from ref 135558 z 2014 to ref 143750
+   write_horizontally default
+end
+flowcanvas 144006 flow_ref 758278 // <flow>
+  
+  from ref 142470 z 2013 label "[false]" xyz 341 467 2013 to ref 143750
+   write_horizontally default
+end
+flowcanvas 144134 flow_ref 758406 // <flow>
+  
+  from ref 143750 z 2019 to ref 136582
+   write_horizontally default
+end
+line 137862 -_-_
+  from ref 133126 z 3006 to ref 137094
+line 138630 -_-_
+  from ref 132870 z 3006 to ref 137990
+line 144390 -_-_
+  from ref 144262 z 3006 to ref 134406
+line 144646 -_-_
+  from ref 144518 z 2013 to ref 135814
 end

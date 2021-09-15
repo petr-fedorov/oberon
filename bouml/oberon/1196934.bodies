@@ -1,3 +1,8 @@
 class Command
-!!!1795718.cpp!!!	Command(in quote_increment : string, in base_increment : string, in exchange : Command::O_string, in product : Command::O_string, in deleted : bool)
+!!!1829126.cpp!!!	makeStore() : EraFile::EraFile_SP [1]
+auto store = boost::make_shared<reconstructor::EraFile>();
+store->saveOrderEvents(true).saveDeleted(deleted_).saveEventSource(source_);
+return store;
+
+!!!1795718.cpp!!!	Command(in quote_increment : string, in base_increment : string, in exchange : Command::O_string, in product : Command::O_string, in deleted : bool, in source : bool)
 BOOST_LOG_TRIVIAL(debug) << "-q " << quote_increment_ << " -b " << base_increment_ << " -e " << exchange_ << " -p " << product_ << " -d " << deleted_;
