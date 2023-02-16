@@ -68,12 +68,23 @@ try {
     output->side(tree.get<std::string>("side") == "buy" ? BookSide::kBid : BookSide::kAsk);
     output->maker(gen(tree.get<string>("order_id")));
 
-    if(!tree.get<std::string>("price").empty()) {
-      output->price(stod(tree.get("price", "0.0")));
+    try
+    {
+     if(!tree.get<std::string>("price").empty()) {
+       output->price(stod(tree.get("price", "0.0")));
+       output->state(OrderEvent::OrderState::kActive);
+     }
+     else // it is a market order
+       output->deleted(true);
+    }
+    catch (const boost::property_tree::ptree_bad_path& e) // It's MODIFY order message
+    {
+      auto new_price = stod(tree.get("new_price", "0.0")); 
+      auto old_price = stod(tree.get("old_price", "0.0")); 
+      output->price(new_price);
+      output->change_price(new_price - old_price);
       output->state(OrderEvent::OrderState::kActive);
     }
-    else // it is a market order
-      output->deleted(true);
 
     output->change(0);
     try {
